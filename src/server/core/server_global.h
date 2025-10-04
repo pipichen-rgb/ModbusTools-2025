@@ -34,7 +34,8 @@ enum FindFlags
     FindCaseSensitively   = 0x0002,
     FindWholeWords        = 0x0004,
     FindEscapeSequence    = 0x0008,
-    FindRegularExpression = 0x0010
+    FindRegularExpression = 0x0010,
+    FindLoopSearch        = 0x0100
 };
 
 } // namespace mb

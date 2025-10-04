@@ -150,9 +150,31 @@ int mbServerScriptEditor::lineNumberAreaWidth()
 bool mbServerScriptEditor::findText(const QString &text, int findFlags)
 {
     QTextDocument::FindFlags tFindFlags = toQTextDocumentFindFlags(findFlags);
-    if (findFlags & mb::FindRegularExpression)
-        return this->find(QRegExp(text));
-    return this->find(text, tFindFlags);
+    bool found = false;
+    int loop = 0;
+    do
+    {
+        ++loop;
+        if (findFlags & mb::FindRegularExpression)
+            found = this->find(QRegExp(text), tFindFlags);
+        else
+            found = this->find(text, tFindFlags);
+        if (loop > 1)
+            break; // Prevent infinite loop
+        if (!found && (findFlags & mb::FindLoopSearch))
+        {
+            QTextCursor cursor(document());
+            if (findFlags & mb::FindBackward)
+                cursor.movePosition(QTextCursor::End);
+            else
+                cursor.movePosition(QTextCursor::Start);
+            setTextCursor(cursor);
+            continue;
+        }
+        break;
+    }
+    while (1);
+    return found;
 }
 
 bool mbServerScriptEditor::replaceText(const QString &text, const QString &replacement, int findFlags)
@@ -176,19 +198,7 @@ bool mbServerScriptEditor::replaceText(const QString &text, const QString &repla
     cursor.insertText(replacement);
 
     // Move to the next occurrence
-    QTextDocument::FindFlags tFindFlags = toQTextDocumentFindFlags(findFlags);
-    QTextDocument *doc = document();
-    QTextCursor next;
-    if (findFlags & mb::FindRegularExpression)
-        next = doc->find(QRegExp(selectedText), cursor, tFindFlags);
-    else
-        next = doc->find(selectedText, cursor, tFindFlags);
-
-    if (next.isNull())
-        return true;
-
-    // Select the next found text
-    setTextCursor(next);
+    findText(text, findFlags);
     return true;
 }
 
@@ -197,22 +207,6 @@ bool mbServerScriptEditor::replaceTextAll(const QString &text, const QString &re
     QTextDocument::FindFlags tFindFlags = toQTextDocumentFindFlags(findFlags);
     moveCursor(QTextCursor::Start);
     bool replaced = false;
-
-    /*
-    QTextDocument *doc = document();
-    QTextCursor searchCursor(doc);
-
-    searchCursor.beginEditBlock();
-    while (true)
-    {
-        searchCursor = doc->find(selectedText, searchCursor);
-        if (searchCursor.isNull())
-            break;
-        searchCursor.insertText(replacement);
-        replaced = true;
-    }
-    searchCursor.endEditBlock();
-    */
 
     this->textCursor().beginEditBlock();
     while (this->find(text, tFindFlags))

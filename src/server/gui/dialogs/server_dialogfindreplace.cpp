@@ -192,10 +192,11 @@ void mbServerDialogFindReplace::replaceAll()
 int mbServerDialogFindReplace::getFindFlags()
 {
     int flags = 0;
-    if (ui->chbMatchCase        ->isChecked()) flags |= mb::FindCaseSensitively  ;
-    if (ui->chbMatchWord        ->isChecked()) flags |= mb::FindWholeWords       ;
-    if (ui->chbEscapeSequence   ->isChecked()) flags |= mb::FindEscapeSequence   ;
-    if (ui->chbRegularExpression->isChecked()) flags |= mb::FindRegularExpression;
+    flags |= mb::FindCaseSensitively   * (ui->chbMatchCase        ->isChecked());
+    flags |= mb::FindWholeWords        * (ui->chbMatchWord        ->isChecked());
+    flags |= mb::FindEscapeSequence    * (ui->chbEscapeSequence   ->isChecked());
+    flags |= mb::FindRegularExpression * (ui->chbRegularExpression->isChecked());
+    flags |= mb::FindLoopSearch        * (ui->chbLoopSearch       ->isChecked());
     return flags;
 }
 
