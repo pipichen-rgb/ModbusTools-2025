@@ -687,6 +687,10 @@ Inputs:
 Options:
 * `Match case` - match case of the Letter-symbols;
 * `Match whole word only` - find only whole words;
+* `Escape Sequences` - resolve C-style escape sequnces:
+  `\0`,`\a`,`\b`,`\f`,`\n`,`\r`,`\t`,`\v`,`\\`,`\xDD`,`\uDDDD`;
+* `Regular expression` - use regular expression language (https://perldoc.perl.org/perlre);
+* `Loop Search` - continue to search if start/end of document is reached;
 
 Buttons:
 * `Find Next` - find forward to next match;

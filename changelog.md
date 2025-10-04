@@ -175,3 +175,14 @@ List of changes of new v0.4 version of ModbusTools:
 
 * Fixed log crash issue #56
 * Made support for Python 3.6+ interpreter
+
+# 0.4.6
+
+* Fixed memory leak bug within ModbusLib subproject
+* Improve script module import/export
+* Add script module import/export for XML format
+* Add author attribute to the script module
+* Fix multiline Python string issue for ScriptLoop
+* Improve Find/Replace dialog: support for escape sequnces,
+  regular expressions etc
+* Updated docs

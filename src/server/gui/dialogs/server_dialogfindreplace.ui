@@ -102,7 +102,7 @@
        <item row="3" column="0">
         <widget class="QCheckBox" name="chbRegularExpression">
          <property name="text">
-          <string>RegularExpression</string>
+          <string>Regular expression</string>
          </property>
         </widget>
        </item>
