@@ -10,7 +10,8 @@
 mbServerDialogFindReplace::Strings::Strings() :
     cachePrefix    (QStringLiteral("Ui.Dialogs.FindReplace.")),
     findComboBox   (QStringLiteral("findComboBox")),
-    replaceComboBox(QStringLiteral("replaceComboBox"))
+    replaceComboBox(QStringLiteral("replaceComboBox")),
+    flags          (QStringLiteral("flags"))
 {
 }
 
@@ -57,6 +58,7 @@ MBSETTINGS mbServerDialogFindReplace::cachedSettings() const
     MBSETTINGS m = mbCoreDialogBase::cachedSettings();
     m[prefix+ds.findComboBox   ] = lsFindComboBox   ;
     m[prefix+ds.replaceComboBox] = lsReplaceComboBox;
+    m[prefix+ds.flags          ] = getFindFlags()   ;
     return m;
 }
 
@@ -68,6 +70,7 @@ void mbServerDialogFindReplace::setCachedSettings(const MBSETTINGS &settings)
 
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = settings.end();
+    bool ok;
 
     it = settings.find(prefix+ds.findComboBox);
     if (it != end)
@@ -91,6 +94,14 @@ void mbServerDialogFindReplace::setCachedSettings(const MBSETTINGS &settings)
             ui->cmbReplace->insertItem(i, s);
             ++i;
         }
+    }
+
+    it = settings.find(prefix+ds.flags);
+    if (it != end)
+    {
+        int flags = it.value().toInt(&ok);
+        if (ok)
+            setFindFlags(flags);
     }
 }
 
@@ -189,7 +200,7 @@ void mbServerDialogFindReplace::replaceAll()
     }
 }
 
-int mbServerDialogFindReplace::getFindFlags()
+int mbServerDialogFindReplace::getFindFlags() const
 {
     int flags = 0;
     flags |= mb::FindCaseSensitively   * (ui->chbMatchCase        ->isChecked());
@@ -198,6 +209,15 @@ int mbServerDialogFindReplace::getFindFlags()
     flags |= mb::FindRegularExpression * (ui->chbRegularExpression->isChecked());
     flags |= mb::FindLoopSearch        * (ui->chbLoopSearch       ->isChecked());
     return flags;
+}
+
+void mbServerDialogFindReplace::setFindFlags(int flags)
+{
+    ui->chbMatchCase        ->setChecked(flags & mb::FindCaseSensitively  );
+    ui->chbMatchWord        ->setChecked(flags & mb::FindWholeWords       );
+    ui->chbEscapeSequence   ->setChecked(flags & mb::FindEscapeSequence   );
+    ui->chbRegularExpression->setChecked(flags & mb::FindRegularExpression);
+    ui->chbLoopSearch       ->setChecked(flags & mb::FindLoopSearch       );
 }
 
 void mbServerDialogFindReplace::processCombo(QComboBox *cmb)
