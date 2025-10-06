@@ -50,6 +50,9 @@ public:
     struct Strings : public mbCoreBuilder::Strings
     {
         const QChar sep;
+        QString scriptModuleName   ;
+        QString scriptModuleAuthor ;
+        QString scriptModuleComment;
         //----------------
         Strings();
         static const Strings &instance();
@@ -94,13 +97,13 @@ public:
     mbServerDomScriptModule *newDomScriptModule() const;
 
 public: // 'mbCoreBuilder'-interface
-    mbCoreProject     *toProject   (mbCoreDomProject *dom) override;
-    mbCorePort        *toPort      (mbCoreDomPort    *dom) override;
-    mbCoreDevice      *toDevice    (mbCoreDomDevice  *dom) override;
+    void fillProject(mbCoreProject *obj, const mbCoreDomProject *dom) override;
+    void fillPort   (mbCorePort    *obj, const mbCoreDomPort    *dom) override;
+    void fillDevice (mbCoreDevice  *obj, const mbCoreDomDevice  *dom) override;
 
-    mbCoreDomProject  *toDomProject(mbCoreProject    *cfg) override;
-    mbCoreDomPort     *toDomPort   (mbCorePort       *cfg) override;
-    mbCoreDomDevice   *toDomDevice (mbCoreDevice     *cfg) override;
+    void fillDomProject(mbCoreDomProject *dom, const mbCoreProject *obj) override;
+    void fillDomPort   (mbCoreDomPort    *dom, const mbCorePort    *obj) override;
+    void fillDomDevice (mbCoreDomDevice  *dom, const mbCoreDevice  *obj) override;
 
 public:
     mbServerSimAction        *toSimAction (mbServerDomSimAction *dom);
@@ -112,8 +115,12 @@ public:
     QList<mbServerDomSimAction*> toDomSimActions(const QList<mbServerSimAction*> &cfg);
 
 public:
-    mbServerScriptModule    *toScriptModule(mbServerDomScriptModule *dom) const;
+    mbServerScriptModule *toScriptModule(mbServerDomScriptModule *dom) const;
+    void fillScriptModule(mbServerScriptModule *obj, const mbServerDomScriptModule *dom) const;
+
     mbServerDomScriptModule *toDomScriptModule(mbServerScriptModule *cfg) const;
+    void fillDomScriptModule(mbServerDomScriptModule *dom, const mbServerScriptModule *obj) const;
+
     QList<mbServerDomScriptModule*> toDomScriptModules(const QList<mbServerScriptModule*> &cfg) const;
 
 public:
@@ -128,6 +135,19 @@ public:
     bool exportSimActionsCsv(const QString &file, const QList<mbServerSimAction*> &cfg);
     bool exportSimActionsXml(QIODevice *io, const QList<mbServerSimAction*> &cfg);
     bool exportSimActionsCsv(QIODevice *io, const QList<mbServerSimAction*> &cfg);
+
+public:
+    mbServerScriptModule* importScriptModule(const QString &file);
+    mbServerScriptModule* importScriptModuleXml(const QString &file);
+    mbServerScriptModule* importScriptModuleTxt(const QString &file);
+    mbServerScriptModule* importScriptModuleXml(QIODevice *io);
+    mbServerScriptModule* importScriptModuleTxt(QIODevice *io);
+
+    bool exportScriptModule(const QString &file, const mbServerScriptModule* obj);
+    bool exportScriptModuleXml(const QString &file, const mbServerScriptModule* obj);
+    bool exportScriptModuleTxt(const QString &file, const mbServerScriptModule* obj);
+    bool exportScriptModuleXml(QIODevice *io, const mbServerScriptModule* obj);
+    bool exportScriptModuleTxt(QIODevice *io, const mbServerScriptModule* obj);
 
 public:
     bool importBoolData(const QString& file, QByteArray &data, const QChar& sep = Strings::instance().sep);

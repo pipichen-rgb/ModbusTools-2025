@@ -22,6 +22,8 @@
 */
 #include "core_dom.h"
 
+#include "core_port.h"
+#include "core_device.h"
 #include "core_dataview.h"
 
 void mbCoreXmlStreamReader::raiseWarning(const QString &text)
@@ -287,7 +289,10 @@ void mbCoreDomDevice::read(mbCoreXmlStreamReader &reader)
             const QString tag = reader.name().toString();
             if (readElement(reader, tag))
                 continue;
-            m_settings.insert(tag, reader.readElementText());
+            QString v = reader.readElementText();
+            m_settings.insert(tag, v);
+            if (tag == mbCoreDevice::Strings::instance().name)
+                m_name = v;
         }
             break;
         case mbCoreXmlStreamReader::EndElement :
@@ -320,6 +325,14 @@ void mbCoreDomDevice::write(mbCoreXmlStreamWriter &writer, const QString &tagNam
         writer.writeCharacters(m_text);
 
     writer.writeEndElement();
+}
+
+void mbCoreDomDevice::setSettings(const MBSETTINGS &settings)
+{
+    auto it = settings.find(mbCoreDevice::Strings::instance().name);
+    if (it != settings.end())
+        m_name = it.value().toString();
+    m_settings = settings;
 }
 
 bool mbCoreDomDevice::readAttribute(mbCoreXmlStreamReader &/*reader*/, const QXmlStreamAttribute &/*attribute*/)
@@ -386,7 +399,10 @@ void mbCoreDomPort::read(mbCoreXmlStreamReader &reader)
             const QString tag = reader.name().toString();
             if (readElement(reader, tag))
                 continue;
-            m_settings.insert(tag, reader.readElementText());
+            QString v = reader.readElementText();
+            m_settings.insert(tag, v);
+            if (tag == mbCorePort::Strings::instance().name)
+                m_name = v;
         }
             break;
         case mbCoreXmlStreamReader::EndElement :
@@ -416,6 +432,14 @@ void mbCoreDomPort::write(mbCoreXmlStreamWriter &writer, const QString &tagName)
         writer.writeCharacters(m_text);
 
     writer.writeEndElement();
+}
+
+void mbCoreDomPort::setSettings(const MBSETTINGS &settings)
+{
+    auto it = settings.find(mbCorePort::Strings::instance().name);
+    if (it != settings.end())
+        m_name = it.value().toString();
+    m_settings = settings;
 }
 
 bool mbCoreDomPort::readAttribute(mbCoreXmlStreamReader &/*reader*/, const QXmlStreamAttribute &/*attribute*/)

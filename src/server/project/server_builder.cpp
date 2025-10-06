@@ -22,6 +22,7 @@
 */
 #include "server_builder.h"
 
+#include <QTextStream>
 #include <QFileInfo>
 #include <QDir>
 #include <QSettings>
@@ -38,8 +39,10 @@
 #include "server_dataview.h"
 
 mbServerBuilder::Strings::Strings() :
-    sep(QChar(';'))
-
+    sep(QChar(';')),
+    scriptModuleName   (QStringLiteral("# mbtools-name:")),
+    scriptModuleAuthor (QStringLiteral("# mbtools-author:")),
+    scriptModuleComment(QStringLiteral("# mbtools-comment:"))
 {
 }
 
@@ -149,21 +152,22 @@ mbServerDomScriptModule *mbServerBuilder::newDomScriptModule() const
     return new mbServerDomScriptModule;
 }
 
-mbCoreProject *mbServerBuilder::toProject(mbCoreDomProject *dom)
+void mbServerBuilder::fillProject(mbCoreProject *obj, const mbCoreDomProject *dom)
 {
-    mbServerProject *project = static_cast<mbServerProject*>(mbCoreBuilder::toProject(dom));
+    mbCoreBuilder::fillProject(obj, dom);
+    mbServerProject *project = static_cast<mbServerProject*>(obj);
     setWorkingProjectCore(project);
-    project->simActionsAdd(toSimActions(static_cast<mbServerDomProject*>(dom)->simActions()));
-    Q_FOREACH(mbServerDomScriptModule *d, static_cast<mbServerDomProject*>(dom)->scriptModules())
+    project->simActionsAdd(toSimActions(static_cast<const mbServerDomProject*>(dom)->simActions()));
+    Q_FOREACH(mbServerDomScriptModule *d, static_cast<const mbServerDomProject*>(dom)->scriptModules())
         project->scriptModuleAdd(toScriptModule(d));
     setWorkingProjectCore(nullptr);
-    return project;
 }
 
-mbCorePort *mbServerBuilder::toPort(mbCoreDomPort *dom)
+void mbServerBuilder::fillPort(mbCorePort *obj, const mbCoreDomPort *dom)
 {
-    mbServerPort *port = static_cast<mbServerPort*>(mbCoreBuilder::toPort(dom));
-    Q_FOREACH (mbServerDomDeviceRef *domDeviceRef, static_cast<mbServerDomPort*>(dom)->devices())
+    mbCoreBuilder::fillPort(obj, dom);
+    mbServerPort *port = static_cast<mbServerPort*>(obj);
+    Q_FOREACH (mbServerDomDeviceRef *domDeviceRef, static_cast<const mbServerDomPort*>(dom)->devices())
     {
         mbServerDevice *dev = project()->device(domDeviceRef->name());
         if (dev)
@@ -173,45 +177,45 @@ mbCorePort *mbServerBuilder::toPort(mbCoreDomPort *dom)
             port->deviceAdd(ref);
         }
     }
-    return port;
 }
 
-mbCoreDevice *mbServerBuilder::toDevice(mbCoreDomDevice *dom)
+void mbServerBuilder::fillDevice(mbCoreDevice *obj, const mbCoreDomDevice *dom)
 {
-    mbServerDevice *device = static_cast<mbServerDevice*>(mbCoreBuilder::toDevice(dom));
-    const mbServerDomDeviceData *data = &static_cast<mbServerDomDevice*>(dom)->data0x();
+    mbCoreBuilder::fillDevice(obj, dom);
+    mbServerDevice *device = static_cast<mbServerDevice*>(obj);
+    const mbServerDomDeviceData *data = &static_cast<const mbServerDomDevice*>(dom)->data0x();
     if (device->isSaveData())
         device->write_0x_bool(data->offset(), data->count(), reinterpret_cast<const bool*>(toBoolData(data->data()).constData()));
 
-    data = &static_cast<mbServerDomDevice*>(dom)->data1x();
+    data = &static_cast<const mbServerDomDevice*>(dom)->data1x();
     if (device->isSaveData())
         device->write_1x_bool(data->offset(), data->count(), reinterpret_cast<const bool*>(toBoolData(data->data()).constData()));
 
-    data = &static_cast<mbServerDomDevice*>(dom)->data3x();
+    data = &static_cast<const mbServerDomDevice*>(dom)->data3x();
     if (device->isSaveData())
         device->write_3x(data->offset(), data->count(), reinterpret_cast<const quint16*>(toUInt16Data(data->data()).constData()));
 
-    data = &static_cast<mbServerDomDevice*>(dom)->data4x();
+    data = &static_cast<const mbServerDomDevice*>(dom)->data4x();
     if (device->isSaveData())
         device->write_4x(data->offset(), data->count(), reinterpret_cast<const quint16*>(toUInt16Data(data->data()).constData()));
-    return device;
 }
 
-mbCoreDomProject *mbServerBuilder::toDomProject(mbCoreProject *project)
+void mbServerBuilder::fillDomProject(mbCoreDomProject *dom, const mbCoreProject *obj)
 {
-    mbServerDomProject *domProject = static_cast<mbServerDomProject*>(mbCoreBuilder::toDomProject(project));
-    setWorkingProjectCore(project);
-    domProject->setSimActions(toDomSimActions(static_cast<mbServerProject*>(project)->simActions()));
-    domProject->setScriptModules(toDomScriptModules(static_cast<mbServerProject*>(project)->scriptModules()));
+    mbCoreBuilder::fillDomProject(dom, obj);
+    mbServerDomProject *domProject = static_cast<mbServerDomProject*>(dom);
+    setWorkingProjectCore(const_cast<mbCoreProject*>(obj));
+    domProject->setSimActions(toDomSimActions(static_cast<const mbServerProject*>(obj)->simActions()));
+    domProject->setScriptModules(toDomScriptModules(static_cast<const mbServerProject*>(obj)->scriptModules()));
     setWorkingProjectCore(nullptr);
-    return domProject;
 }
 
-mbCoreDomPort *mbServerBuilder::toDomPort(mbCorePort *port)
+void mbServerBuilder::fillDomPort(mbCoreDomPort *dom, const mbCorePort *obj)
 {
-    mbServerDomPort *domPort = static_cast<mbServerDomPort*>(mbCoreBuilder::toDomPort(port));
+    mbCoreBuilder::fillDomPort(dom, obj);
+    mbServerDomPort *domPort = static_cast<mbServerDomPort*>(dom);
     QList<mbServerDomDeviceRef*> domDeviceRefs;
-    Q_FOREACH (mbServerDeviceRef *ref, static_cast<mbServerPort*>(port)->devices())
+    Q_FOREACH (mbServerDeviceRef *ref, static_cast<const mbServerPort*>(obj)->devices())
     {
         mbServerDomDeviceRef *dRef = new mbServerDomDeviceRef;
         dRef->setName(ref->name());
@@ -219,48 +223,47 @@ mbCoreDomPort *mbServerBuilder::toDomPort(mbCorePort *port)
         domDeviceRefs.append(dRef);
     }
     domPort->setDevices(domDeviceRefs);
-    return domPort;
 }
 
-mbCoreDomDevice *mbServerBuilder::toDomDevice(mbCoreDevice *device)
+void mbServerBuilder::fillDomDevice(mbCoreDomDevice *dom, const mbCoreDevice *obj)
 {
-    mbServerDomDevice* domDevice = static_cast<mbServerDomDevice*>(mbCoreBuilder::toDomDevice(device));
+    mbCoreBuilder::fillDomDevice(dom, obj);
+    mbServerDomDevice* domDevice = static_cast<mbServerDomDevice*>(dom);
 
     mbServerDomDeviceData* data0x = &domDevice->data0x();
-    data0x->setCount(static_cast<mbServerDevice*>(device)->count_0x());
+    data0x->setCount(static_cast<const mbServerDevice*>(obj)->count_0x());
     // 1x
     mbServerDomDeviceData* data1x = &domDevice->data1x();
-    data1x->setCount(static_cast<mbServerDevice*>(device)->count_1x());
+    data1x->setCount(static_cast<const mbServerDevice*>(obj)->count_1x());
     // 3x
     mbServerDomDeviceData* data3x = &domDevice->data3x();
-    data3x->setCount(static_cast<mbServerDevice*>(device)->count_3x());
+    data3x->setCount(static_cast<const mbServerDevice*>(obj)->count_3x());
     // 4x
     mbServerDomDeviceData* data4x = &domDevice->data4x();
-    data4x->setCount(static_cast<mbServerDevice*>(device)->count_4x());
-    if (static_cast<mbServerDevice*>(device)->isSaveData())
+    data4x->setCount(static_cast<const mbServerDevice*>(obj)->count_4x());
+    if (static_cast<const mbServerDevice*>(obj)->isSaveData())
     {
         // 0x
         data0x->setOffset(0);
-        QByteArray v0x(static_cast<mbServerDevice*>(device)->count_0x(), '\0');
-        static_cast<mbServerDevice*>(device)->read_0x_bool(0, static_cast<mbServerDevice*>(device)->count_0x(), reinterpret_cast<bool*>(v0x.data()));
+        QByteArray v0x(static_cast<const mbServerDevice*>(obj)->count_0x(), '\0');
+        static_cast<const mbServerDevice*>(obj)->read_0x_bool(0, static_cast<const mbServerDevice*>(obj)->count_0x(), reinterpret_cast<bool*>(v0x.data()));
         data0x->setData(fromBoolData(v0x));
         // 1x
         data1x->setOffset(0);
-        QByteArray v1x(static_cast<mbServerDevice*>(device)->count_1x(), '\0');
-        static_cast<mbServerDevice*>(device)->read_1x_bool(0, static_cast<mbServerDevice*>(device)->count_1x(), reinterpret_cast<bool*>(v1x.data()));
+        QByteArray v1x(static_cast<const mbServerDevice*>(obj)->count_1x(), '\0');
+        static_cast<const mbServerDevice*>(obj)->read_1x_bool(0, static_cast<const mbServerDevice*>(obj)->count_1x(), reinterpret_cast<bool*>(v1x.data()));
         data1x->setData(fromBoolData(v1x));
         // 3x
         data3x->setOffset(0);
-        QByteArray v3x(static_cast<mbServerDevice*>(device)->count_3x()*MB_REGE_SZ_BYTES, '\0');
-        static_cast<mbServerDevice*>(device)->read_3x(0, static_cast<mbServerDevice*>(device)->count_3x(), reinterpret_cast<quint16*>(v3x.data()));
+        QByteArray v3x(static_cast<const mbServerDevice*>(obj)->count_3x()*MB_REGE_SZ_BYTES, '\0');
+        static_cast<const mbServerDevice*>(obj)->read_3x(0, static_cast<const mbServerDevice*>(obj)->count_3x(), reinterpret_cast<quint16*>(v3x.data()));
         data3x->setData(fromUInt16Data(v3x));
         // 4x
         data4x->setOffset(0);
-        QByteArray v4x(static_cast<mbServerDevice*>(device)->count_4x()*MB_REGE_SZ_BYTES, '\0');
-        static_cast<mbServerDevice*>(device)->read_4x(0, static_cast<mbServerDevice*>(device)->count_4x(), reinterpret_cast<quint16*>(v4x.data()));
+        QByteArray v4x(static_cast<const mbServerDevice*>(obj)->count_4x()*MB_REGE_SZ_BYTES, '\0');
+        static_cast<const mbServerDevice*>(obj)->read_4x(0, static_cast<const mbServerDevice*>(obj)->count_4x(), reinterpret_cast<quint16*>(v4x.data()));
         data4x->setData(fromUInt16Data(v4x));
     }
-    return domDevice;
 }
 
 mbServerSimAction *mbServerBuilder::toSimAction(mbServerDomSimAction *dom)
@@ -354,9 +357,14 @@ QList<mbServerDomSimAction *> mbServerBuilder::toDomSimActions(const QList<mbSer
 
 mbServerScriptModule *mbServerBuilder::toScriptModule(mbServerDomScriptModule *dom) const
 {
-    mbServerScriptModule *cfg = newScriptModule();
-    cfg->setSettings(dom->settings());
-    return cfg;
+    mbServerScriptModule *obj = newScriptModule();
+    fillScriptModule(obj, dom);
+    return obj;
+}
+
+void mbServerBuilder::fillScriptModule(mbServerScriptModule *obj, const mbServerDomScriptModule *dom) const
+{
+    obj->setSettings(dom->settings());
 }
 
 mbServerDomScriptModule *mbServerBuilder::toDomScriptModule(mbServerScriptModule *cfg) const
@@ -364,6 +372,11 @@ mbServerDomScriptModule *mbServerBuilder::toDomScriptModule(mbServerScriptModule
     mbServerDomScriptModule *dom = newDomScriptModule();
     dom->setSettings(cfg->settings());
     return dom;
+}
+
+void mbServerBuilder::fillDomScriptModule(mbServerDomScriptModule *dom, const mbServerScriptModule *obj) const
+{
+    dom->setSettings(obj->settings());
 }
 
 QList<mbServerDomScriptModule*> mbServerBuilder::toDomScriptModules(const QList<mbServerScriptModule *> &cfg) const
@@ -461,9 +474,9 @@ bool mbServerBuilder::exportSimActionsCsv(const QString &file, const QList<mbSer
 
 bool mbServerBuilder::exportSimActionsXml(QIODevice *io, const QList<mbServerSimAction *> &actions)
 {
-    mbServerDomSimActions domSimActions;
-    domSimActions.setItems(toDomSimActions(actions));
-    return saveXml(io, &domSimActions);
+    mbServerDomSimActions dom;
+    dom.setItems(toDomSimActions(actions));
+    return saveXml(io, &dom);
 }
 
 bool mbServerBuilder::exportSimActionsCsv(QIODevice *io, const QList<mbServerSimAction *> &cfg)
@@ -478,6 +491,143 @@ bool mbServerBuilder::exportSimActionsCsv(QIODevice *io, const QList<mbServerSim
         io->write(sLine.toUtf8());
     }
     return true;;
+}
+
+mbServerScriptModule *mbServerBuilder::importScriptModule(const QString &file)
+{
+    if (file.endsWith(Strings::instance().xml))
+        return importScriptModuleXml(file);
+    return importScriptModuleTxt(file);
+}
+
+mbServerScriptModule *mbServerBuilder::importScriptModuleXml(const QString &file)
+{
+    mbServerDomScriptModule dom;
+    if (loadXml(file, &dom))
+        return toScriptModule(&dom);
+    return nullptr;
+}
+
+mbServerScriptModule *mbServerBuilder::importScriptModuleTxt(const QString &file)
+{
+    QFile qf(file);
+    if (!qf.open(QIODevice::ReadOnly))
+    {
+        setError(qf.errorString());
+        return nullptr;
+    }
+    mbServerScriptModule* obj = importScriptModuleTxt(&qf);
+    qf.close();
+    return obj;
+}
+
+mbServerScriptModule *mbServerBuilder::importScriptModuleXml(QIODevice *io)
+{
+    mbServerDomScriptModule dom;
+    if (loadXml(io, &dom))
+        return toScriptModule(&dom);
+    return nullptr;
+}
+
+mbServerScriptModule *mbServerBuilder::importScriptModuleTxt(QIODevice *io)
+{
+    const Strings& s = Strings::instance();
+    mbServerScriptModule *obj = new mbServerScriptModule;
+    QTextStream stream(io);
+    QString line;
+    QString code;
+    while (!stream.atEnd() && (line = stream.readLine()).startsWith('#'))
+    {
+        if (line.startsWith(s.scriptModuleName))
+            obj->setName(line.mid(s.scriptModuleName.length()).trimmed());
+        else if (line.startsWith(s.scriptModuleAuthor))
+            obj->setAuthor(line.mid(s.scriptModuleAuthor.length()).trimmed());
+        else if (line.startsWith(s.scriptModuleComment))
+            obj->setComment(line.mid(s.scriptModuleComment.length()).trimmed());
+        else
+            code += line + QChar('\n');
+    }
+
+    while (!stream.atEnd())
+    {
+        code += line + QChar('\n');
+        line = stream.readLine();
+    }
+    obj->setSourceCode(code);
+    return obj;
+}
+
+bool mbServerBuilder::exportScriptModule(const QString &file, const mbServerScriptModule *obj)
+{
+    if (file.endsWith(Strings::instance().xml))
+        return exportScriptModuleXml(file, obj);
+    return exportScriptModuleTxt(file, obj);
+}
+
+bool mbServerBuilder::exportScriptModuleXml(const QString &file, const mbServerScriptModule *obj)
+{
+    mbServerDomScriptModule dom;
+    fillDomScriptModule(&dom, obj);
+    return saveXml(file, &dom);
+}
+
+bool mbServerBuilder::exportScriptModuleTxt(const QString &file, const mbServerScriptModule *obj)
+{
+    QFile qf(file);
+    if (!qf.open(QIODevice::ReadOnly))
+    {
+        setError(qf.errorString());
+        return false;
+    }
+    bool res = exportScriptModuleTxt(&qf, obj);
+    qf.close();
+    return res;
+}
+
+bool mbServerBuilder::exportScriptModuleXml(QIODevice *io, const mbServerScriptModule *obj)
+{
+    mbServerDomScriptModule dom;
+    fillDomScriptModule(&dom, obj);
+    return saveXml(io, &dom);
+}
+
+bool mbServerBuilder::exportScriptModuleTxt(QIODevice *io, const mbServerScriptModule *obj)
+{
+    const Strings& s = Strings::instance();
+    QTextStream stream(io);
+    QString code = obj->sourceCode();
+    QTextStream scode(&code);
+    QString line;
+    bool bName = true, bAuthor = true, bComment = true;
+    while (!scode.atEnd() && (line = stream.readLine()).startsWith('#'))
+    {
+        if (line.startsWith(s.scriptModuleName) && bName)
+        {
+            stream << s.scriptModuleName << obj->name() << QChar('\n');
+            bName = false;
+        }
+        if (line.startsWith(s.scriptModuleAuthor) && bAuthor)
+        {
+            stream << s.scriptModuleAuthor << obj->author() << QChar('\n');
+            bAuthor = false;
+        }
+        else if (line.startsWith(s.scriptModuleComment) && bComment)
+        {
+            stream << s.scriptModuleComment << obj->comment() << QChar('\n');
+            bComment = false;
+        }
+        else
+            stream << line << QChar('\n');
+    }
+    if (bName)
+        stream << s.scriptModuleName << obj->name() << QChar('\n');
+    if (bAuthor)
+        stream << s.scriptModuleAuthor << obj->author() << QChar('\n');
+    if (bComment)
+        stream << s.scriptModuleComment << obj->comment() << QChar('\n');
+    while (!scode.atEnd())
+        stream << scode.readLine() << QChar('\n');
+    return true;
 }
 
 bool mbServerBuilder::importBoolData(const QString &file, QByteArray &data, const QChar &sep)
@@ -627,10 +777,6 @@ bool mbServerBuilder::exportUInt16Data(QIODevice *buff, const QByteArray &data, 
 
 void mbServerBuilder::importDomProject(mbCoreDomProject *dom)
 {
-    mbServerProject *project = this->project();
-    project->simActionsAdd(toSimActions(static_cast<mbServerDomProject*>(dom)->simActions()));
-    Q_FOREACH(mbServerDomScriptModule *d, static_cast<mbServerDomProject*>(dom)->scriptModules())
-        project->scriptModuleAdd(toScriptModule(d));
 }
 
 mbServerBuilder::BoolData_t mbServerBuilder::toBoolData(const QString &str, int reserve)

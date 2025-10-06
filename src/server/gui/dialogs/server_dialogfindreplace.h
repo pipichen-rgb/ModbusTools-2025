@@ -21,6 +21,7 @@ public:
         const QString cachePrefix;
         const QString findComboBox;
         const QString replaceComboBox;
+        const QString flags;
 
         Strings();
         static const Strings &instance();
@@ -44,7 +45,8 @@ public Q_SLOTS:
     void replaceAll();
 
 private:
-    int getFindFlags();
+    int getFindFlags() const;
+    void setFindFlags(int flags);
     void processCombo(QComboBox *cmb);
 
 private:

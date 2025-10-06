@@ -368,8 +368,14 @@ QString mbServerRunScriptThread::getScriptLoop()
     res += "        continue\n";
     res += "    _mb_time_start = time()\n";
     QStringList lines = m_scriptLoop.split('\n', Qt::SkipEmptyParts);
+    bool multiline = false;
     Q_FOREACH(const QString &line, lines)
-        res += QStringLiteral("    ") + line + QChar('\n');
+    {
+        if (processMultiLineStringLiteral(line, multiline))
+            res += line + QChar('\n');
+        else
+            res += QStringLiteral("    ") + line + QChar('\n');
+    }
     res += "    mbdevice._incpycycle()\n";
     res += QChar('\n');
     return res;
@@ -385,3 +391,34 @@ QString mbServerRunScriptThread::getScriptFinal()
     res += QChar('\n');
     return res;
 }
+
+bool mbServerRunScriptThread::processMultiLineStringLiteral(const QString &line, bool &multiline)
+{
+    static const QString Single3Quotes = QStringLiteral("'''");
+    static const QString Double3Quotes = QStringLiteral("\"\"\"");
+    static const int Size3Quotes = Single3Quotes.size();
+
+    bool prev = multiline;
+    int pos = 0;
+    const int len = line.size();
+    while (pos < len)
+    {
+        QString stext = line.mid(pos, Size3Quotes);
+        if (!multiline && (stext == Single3Quotes || stext == Double3Quotes))
+        {
+            multiline = true;
+            m_quotes = stext;
+            pos += Size3Quotes;
+        }
+        else if (multiline && stext == m_quotes)
+        {
+            multiline = false;
+            m_quotes.clear();
+            pos += Size3Quotes;
+        }
+        else
+            ++pos;
+    }
+    return prev;
+}
+

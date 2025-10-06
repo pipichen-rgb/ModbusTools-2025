@@ -27,6 +27,7 @@ private:
     QString getScriptInit();
     QString getScriptLoop();
     QString getScriptFinal();
+    bool processMultiLineStringLiteral(const QString &line, bool &multiline);
 
 private:
     bool m_ctrlRun;
@@ -41,6 +42,7 @@ private:
     QString m_scriptInit ;
     QString m_scriptLoop ;
     QString m_scriptFinal;
+    QString m_quotes;
     QProcess *m_py;
 };
 

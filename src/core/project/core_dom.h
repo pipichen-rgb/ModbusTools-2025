@@ -31,6 +31,8 @@
 #include <Modbus.h>
 #include <mbcore.h>
 
+// Note: tagName values are supposed to be lowercase
+
 class MB_EXPORT mbCoreXmlStreamReader : public QXmlStreamReader
 {
 public:
@@ -95,7 +97,7 @@ public:
             {
             case mbCoreXmlStreamReader::StartElement :
             {
-                const QString tag = reader.name().toString();
+                const QString tag = reader.name().toString().toLower();
                 if (tag == c_tagItem)
                 {
                     T *item = newItem();
@@ -270,8 +272,9 @@ public:
     void write(mbCoreXmlStreamWriter &writer, const QString &tagName = QString()) const override;
 
     // elements
+    QString name() const { return m_name; }
     inline MBSETTINGS settings() const { return m_settings; }
-    inline void setSettings(const MBSETTINGS &settings) { m_settings = settings; }
+    void setSettings(const MBSETTINGS &settings);
 
 protected:
     virtual bool readAttribute(mbCoreXmlStreamReader &reader, const QXmlStreamAttribute &attribute);
@@ -281,6 +284,7 @@ protected:
 
 protected:
     // elements
+    QString m_name;
     MBSETTINGS m_settings;
 
 private:
@@ -313,8 +317,9 @@ public:
     void write(mbCoreXmlStreamWriter &writer, const QString &tagName = QString()) const override;
 
     // settings
+    QString name() const { return m_name; }
     inline MBSETTINGS settings() const { return m_settings; }
-    inline void setSettings(const MBSETTINGS& settings) { m_settings = settings; }
+    void setSettings(const MBSETTINGS &settings);
 
 protected:
     virtual bool readAttribute(mbCoreXmlStreamReader &reader, const QXmlStreamAttribute &attribute);
@@ -324,6 +329,7 @@ protected:
 
 protected:
     // settings
+    QString m_name;
     MBSETTINGS m_settings;
 
 private:

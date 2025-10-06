@@ -63,6 +63,7 @@ public:
     inline mbClientProjectUi* projectUi() const { return reinterpret_cast<mbClientProjectUi*>(projectUiCore()); }
     inline mbClientWindowManager *windowManager() const { return reinterpret_cast<mbClientWindowManager*>(windowManagerCore()); }
     inline mbClientDataViewManager *dataViewManager() const { return reinterpret_cast<mbClientDataViewManager*>(dataViewManagerCore()); }
+    inline mbClientProject *project() const { return reinterpret_cast<mbClientProject*>(projectCore()); }
 
 public:
     void initialize() override;
@@ -123,6 +124,7 @@ private Q_SLOTS:
 private:
     void editPort(mbCorePort *port);
     void editDevice(mbClientDevice *device);
+    void importDomProject(mbCoreDomProject *dom) override;
 
 private:
     MBSETTINGS getDataViewItemCreateSettings() override;

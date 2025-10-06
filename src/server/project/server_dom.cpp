@@ -22,6 +22,8 @@
 */
 #include "server_dom.h"
 
+#include <project/server_scriptmodule.h>
+
 // -----------------------------------------------------------------------------------------------------------------------
 // -------------------------------------------------------- ACTION -------------------------------------------------------
 // -----------------------------------------------------------------------------------------------------------------------
@@ -160,7 +162,7 @@ void mbServerDomSimAction::write(mbCoreXmlStreamWriter &writer, const QString &t
 // -----------------------------------------------------------------------------------------------------------------------
 
 mbServerDomScriptModule::Strings::Strings() :
-    tagName(QStringLiteral("scriptModule"))
+    tagName(QStringLiteral("scriptmodule"))
 {
 }
 
@@ -195,7 +197,10 @@ void mbServerDomScriptModule::read(mbCoreXmlStreamReader &reader)
         case mbCoreXmlStreamReader::StartElement :
         {
             const QString tag = reader.name().toString();
-            m_settings.insert(tag, reader.readElementText());
+            QString v = reader.readElementText();
+            m_settings.insert(tag, v);
+            if (tag == mbServerScriptModule::Strings::instance().name)
+                m_name = v;
         }
             break;
         case mbCoreXmlStreamReader::EndElement :
@@ -228,6 +233,14 @@ void mbServerDomScriptModule::write(mbCoreXmlStreamWriter &writer, const QString
     writer.writeEndElement();
 }
 
+void mbServerDomScriptModule::setSettings(const MBSETTINGS &settings)
+{
+    auto it = settings.find(mbServerScriptModule::Strings::instance().name);
+    if (it != settings.end())
+        m_name = it.value().toString();
+    m_settings = settings;
+}
+
 // -----------------------------------------------------------------------------------------------------------------------
 // ------------------------------------------------------ DATA VIEW ------------------------------------------------------
 // -----------------------------------------------------------------------------------------------------------------------
@@ -245,7 +258,7 @@ mbServerDomDataView::mbServerDomDataView() : mbCoreDomDataView()
 // -----------------------------------------------------------------------------------------------------------------------
 
 mbServerDomDeviceData::Strings::Strings() :
-    tagName(QStringLiteral("tagName")),
+    tagName(QStringLiteral("data")),
     offset (QStringLiteral("offset")),
     count  (QStringLiteral("count"))
 {
