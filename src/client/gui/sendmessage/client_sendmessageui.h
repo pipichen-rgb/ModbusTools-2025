@@ -135,14 +135,6 @@ private:
     mbClientPort *currentPort() const;
     mbClientDevice *currentDevice() const;
     void setEnableParams(bool v);
-    int getReadAddress() const;
-    void setReadAddress(int v);
-    int getWriteAddress() const;
-    uint16_t getReadOffset() const;
-    void setReadOffset(uint16_t v);
-    void setWriteAddress(int v);
-    uint16_t getWriteOffset() const;
-    void setWriteOffset(uint16_t v);
     void setSendTo(int type);
     void createMessage();
     void createMessageList();
@@ -172,9 +164,29 @@ private:
     static mbClientSendMessageParams* restoreParams(const QString &params);
 
 private:
+    uint16_t getDefaultOffset() const;
+    void setDefaultOffset(uint16_t v);
+    int getDefaultAddress() const;
+    void setDefaultAddress(int v);
+    uint16_t getRWMultiRegWriteOffset() const;
+    void setRWMultiRegWriteOffset(uint16_t v);
+    int getRWMultiRegWriteAddress() const;
+    void setRWMultiRegWriteAddress(int v);
+    uint16_t getRWMultiRegReadOffset() const;
+    void setRWMultiRegReadOffset(uint16_t v);
+    int getRWMultiRegReadAddress() const;
+    void setRWMultiRegReadAddress(int v);
+    uint16_t getWriteMaskOffset() const;
+    void setWriteMaskOffset(uint16_t v);
+    int getWriteMaskAddress() const;
+    void setWriteMaskAddress(int v);
+
+private:
     Ui::mbClientSendMessageUi *ui;
-    mbCoreAddressWidget *m_readAddress;
-    mbCoreAddressWidget *m_writeAddress;
+    mbCoreAddressWidget *m_DefaultAddress;
+    mbCoreAddressWidget *m_RWMultiRegWriteAddress;
+    mbCoreAddressWidget *m_RWMultiRegReadAddress;
+    mbCoreAddressWidget *m_WriteMaskAddress;
 
 private:
     mbClientProject *m_project;
