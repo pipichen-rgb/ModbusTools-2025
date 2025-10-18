@@ -200,9 +200,9 @@
        <number>0</number>
       </property>
       <item>
-       <widget class="QStackedWidget" name="swWriteData">
+       <widget class="QStackedWidget" name="swFunctionData">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="pgDefault">
          <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -224,7 +224,7 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,1">
             <item>
-             <layout class="QFormLayout" name="formLayoutReadData">
+             <layout class="QFormLayout" name="formLayoutDefaultParams">
               <item row="1" column="0">
                <widget class="QLabel" name="label_16">
                 <property name="text">
@@ -300,7 +300,7 @@
           </item>
          </layout>
         </widget>
-        <widget class="QWidget" name="pgExcStatus">
+        <widget class="QWidget" name="pgReadData">
          <layout class="QVBoxLayout" name="verticalLayout_6">
           <property name="spacing">
            <number>2</number>
@@ -327,12 +327,12 @@
              </widget>
             </item>
             <item>
-             <widget class="QComboBox" name="cmbExcStatusFormat"/>
+             <widget class="QComboBox" name="cmbReadDataFormat"/>
             </item>
            </layout>
           </item>
           <item>
-           <widget class="QPlainTextEdit" name="txtExcStatusData">
+           <widget class="QPlainTextEdit" name="txtReadData">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -350,90 +350,76 @@
          </layout>
         </widget>
         <widget class="QWidget" name="pgWriteMask">
-         <layout class="QFormLayout" name="formLayout_2">
-          <property name="horizontalSpacing">
-           <number>2</number>
-          </property>
-          <property name="verticalSpacing">
-           <number>2</number>
-          </property>
-          <property name="leftMargin">
-           <number>4</number>
-          </property>
-          <property name="topMargin">
-           <number>4</number>
-          </property>
-          <property name="rightMargin">
-           <number>4</number>
-          </property>
-          <property name="bottomMargin">
-           <number>4</number>
-          </property>
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_30">
-            <property name="text">
-             <string>Address:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_19">
-            <property name="text">
-             <string>And Mask (Hex):</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="spWriteMaskAnd">
-            <property name="minimumSize">
-             <size>
-              <width>80</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>2100</number>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_20">
-            <property name="text">
-             <string>Or Mask (Hex):</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="1">
-           <widget class="QSpinBox" name="spWriteMaskOr">
-            <property name="minimumSize">
-             <size>
-              <width>80</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="minimum">
-             <number>1</number>
-            </property>
-            <property name="maximum">
-             <number>2100</number>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="1">
-           <spacer name="verticalSpacer_8">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>374</width>
-              <height>68</height>
-             </size>
-            </property>
-           </spacer>
+         <layout class="QVBoxLayout" name="verticalLayout_8">
+          <item>
+           <layout class="QFormLayout" name="formLayoutWriteMaskParams">
+            <item row="0" column="0">
+             <widget class="QLabel" name="label_30">
+              <property name="text">
+               <string>Address:</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QLabel" name="label_19">
+              <property name="text">
+               <string>And Mask (Hex):</string>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSpinBox" name="spWriteMaskAnd">
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>2100</number>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="0">
+             <widget class="QLabel" name="label_20">
+              <property name="text">
+               <string>Or Mask (Hex):</string>
+              </property>
+             </widget>
+            </item>
+            <item row="2" column="1">
+             <widget class="QSpinBox" name="spWriteMaskOr">
+              <property name="minimumSize">
+               <size>
+                <width>80</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="minimum">
+               <number>1</number>
+              </property>
+              <property name="maximum">
+               <number>2100</number>
+              </property>
+             </widget>
+            </item>
+            <item row="3" column="1">
+             <spacer name="verticalSpacer_8">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>374</width>
+                <height>68</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
           </item>
          </layout>
         </widget>
@@ -457,7 +443,7 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_10" stretch="0,1">
             <item>
-             <layout class="QFormLayout" name="formLayoutReadData_2">
+             <layout class="QFormLayout" name="formLayoutRWMultiRegWriteParams">
               <item row="1" column="0">
                <widget class="QLabel" name="label_24">
                 <property name="text">
@@ -514,7 +500,7 @@
              </layout>
             </item>
             <item>
-             <widget class="QPlainTextEdit" name="txtRW_WriteData">
+             <widget class="QPlainTextEdit" name="txtRWMultiRegWriteData">
               <property name="minimumSize">
                <size>
                 <width>0</width>
@@ -534,7 +520,7 @@
           <item>
            <layout class="QHBoxLayout" name="horizontalLayout_11" stretch="0,1">
             <item>
-             <layout class="QFormLayout" name="formLayoutReadData_3">
+             <layout class="QFormLayout" name="formLayoutRWMultiRegReadParams">
               <item row="1" column="0">
                <widget class="QLabel" name="label_27">
                 <property name="text">
@@ -591,7 +577,7 @@
              </layout>
             </item>
             <item>
-             <widget class="QPlainTextEdit" name="txtReadData_3">
+             <widget class="QPlainTextEdit" name="txtRWMultiRegReadData">
               <property name="minimumSize">
                <size>
                 <width>0</width>

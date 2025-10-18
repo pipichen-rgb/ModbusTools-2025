@@ -55,23 +55,27 @@ public:
 public:
     struct Strings : public mbCoreDialogBase::Strings
     {
-        const QString prefix        ;
-        const QString sendTo        ;
-        const QString unit          ;
-        const QString function      ;
-        const QString readAdrType   ;
-        const QString readAddress   ;
-        const QString readFormat    ;
-        const QString readCount     ;
-        const QString writeAdrType  ;
-        const QString writeAddress  ;
-        const QString writeFormat   ;
-        const QString writeCount    ;
-        const QString writeData     ;
-        const QString list          ;
-        const QString period        ;
-        const QString writeMaskAnd  ;
-        const QString writeMaskOr   ;
+        const QString prefix                ;
+        const QString sendTo                ;
+        const QString unit                  ;
+        const QString function              ;
+        const QString defaultAddress        ;
+        const QString defaultFormat         ;
+        const QString defaultCount          ;
+        const QString defaultData           ;
+        const QString rwMultiRegWriteAddress;
+        const QString rwMultiRegWriteFormat ;
+        const QString rwMultiRegWriteCount  ;
+        const QString rwMultiRegWriteData   ;
+        const QString rwMultiRegReadAddress ;
+        const QString rwMultiRegReadFormat  ;
+        const QString rwMultiRegReadCount   ;
+        const QString rwMultiRegReadData    ;
+        const QString writeMaskAddress      ;
+        const QString writeMaskAnd          ;
+        const QString writeMaskOr           ;
+        const QString list                  ;
+        const QString period                ;
         Strings();
         static const Strings &instance();
     };
@@ -183,10 +187,10 @@ private:
 
 private:
     Ui::mbClientSendMessageUi *ui;
-    mbCoreAddressWidget *m_DefaultAddress;
-    mbCoreAddressWidget *m_RWMultiRegWriteAddress;
-    mbCoreAddressWidget *m_RWMultiRegReadAddress;
-    mbCoreAddressWidget *m_WriteMaskAddress;
+    mbCoreAddressWidget *m_defaultAddress        ;
+    mbCoreAddressWidget *m_rwMultiRegWriteAddress;
+    mbCoreAddressWidget *m_rwMultiRegReadAddress ;
+    mbCoreAddressWidget *m_writeMaskAddress      ;
 
 private:
     mbClientProject *m_project;

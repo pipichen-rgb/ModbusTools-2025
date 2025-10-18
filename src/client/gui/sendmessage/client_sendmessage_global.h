@@ -10,17 +10,19 @@ struct mbClientSendMessageParams
         func = MBF_READ_HOLDING_REGISTERS;
         offset = 0;
         count = 0;
+        format = mb::Dec16;
         writeOffset = 0;
         writeCount = 0;
-        format = mb::Dec16;
+        writeFormat = mb::Dec16;
     }
 
     int func;
     uint16_t offset;
     uint16_t count;
+    mb::Format format;
     uint16_t writeOffset;
     uint16_t writeCount;
-    mb::Format format;
+    mb::Format writeFormat;
     QString data;
 
 };
