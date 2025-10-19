@@ -98,27 +98,43 @@ const Defaults &Defaults::instance()
 }
 
 Strings::Strings() :
-    ReadCoils                 (QStringLiteral("ReadCoils")),
-    ReadDiscreteInputs        (QStringLiteral("ReadDiscreteInputs")),
-    ReadHoldingRegisters      (QStringLiteral("ReadHoldingRegisters")),
-    ReadInputRegisters        (QStringLiteral("ReadInputRegisters")),
-    WriteSingleCoil           (QStringLiteral("WriteSingleCoil")),
-    WriteSingleRegister       (QStringLiteral("WriteSingleRegister")),
-    ReadExceptionStatus       (QStringLiteral("ReadExceptionStatus")),
-    WriteMultipleCoils        (QStringLiteral("WriteMultipleCoils")),
-    WriteMultipleRegisters    (QStringLiteral("WriteMultipleRegisters")),
-    ReportServerID            (QStringLiteral("ReportServerID")),
-    MaskWriteRegister         (QStringLiteral("MaskWriteRegister")),
-    ReadWriteMultipleRegisters(QStringLiteral("ReadWriteMultipleRegisters")),
-    Address_Default           (QStringLiteral("Default")),
-    Address_Modbus            (QStringLiteral("Modbus")),
-    Address_IEC61131          (QStringLiteral("IEC61131")),
-    Address_IEC61131Hex       (QStringLiteral("IEC61131Hex")),
-    IEC61131Prefix0x          (QStringLiteral("%Q")),
-    IEC61131Prefix1x          (QStringLiteral("%I")),
-    IEC61131Prefix3x          (QStringLiteral("%IW")),
-    IEC61131Prefix4x          (QStringLiteral("%MW")),
-    IEC61131SuffixHex         ('h')
+    ReadCoils                              (QStringLiteral("ReadCoils")),
+    ReadDiscreteInputs                     (QStringLiteral("ReadDiscreteInputs")),
+    ReadHoldingRegisters                   (QStringLiteral("ReadHoldingRegisters")),
+    ReadInputRegisters                     (QStringLiteral("ReadInputRegisters")),
+    WriteSingleCoil                        (QStringLiteral("WriteSingleCoil")),
+    WriteSingleRegister                    (QStringLiteral("WriteSingleRegister")),
+    ReadExceptionStatus                    (QStringLiteral("ReadExceptionStatus")),
+    Diagnostics                            (QStringLiteral("Diagnostics")),
+    WriteMultipleCoils                     (QStringLiteral("WriteMultipleCoils")),
+    WriteMultipleRegisters                 (QStringLiteral("WriteMultipleRegisters")),
+    ReportServerID                         (QStringLiteral("ReportServerID")),
+    MaskWriteRegister                      (QStringLiteral("MaskWriteRegister")),
+    ReadWriteMultipleRegisters             (QStringLiteral("ReadWriteMultipleRegisters")),
+    DiagnReturnQueryData                   (QStringLiteral("ReturnQueryData")),
+    DiagnRestartCommunicationsOption       (QStringLiteral("RestartCommunicationsOption")),
+    DiagnReturnDiagnosticRegister          (QStringLiteral("ReturnDiagnosticRegister")),
+    DiagnChangeAsciiInputDelimiter         (QStringLiteral("ChangeAsciiInputDelimiter")),
+    DiagnForceListenOnlyMode               (QStringLiteral("ForceListenOnlyMode")),
+    DiagnClearCountersAndDiagnosticRegister(QStringLiteral("ClearCountersAndDiagnosticRegister")),
+    DiagnReturnBusMessageCount             (QStringLiteral("ReturnBusMessageCount")),
+    DiagnReturnBusCommunicationErrorCount  (QStringLiteral("ReturnBusCommunicationErrorCount")),
+    DiagnReturnBusExceptionErrorCount      (QStringLiteral("ReturnBusExceptionErrorCount")),
+    DiagnReturnServerMessageCount          (QStringLiteral("ReturnServerMessageCount")),
+    DiagnReturnServerNoResponseCount       (QStringLiteral("ReturnServerNoResponseCount")),
+    DiagnReturnServerNAKCount              (QStringLiteral("ReturnServerNAKCount")),
+    DiagnReturnServerBusyCount             (QStringLiteral("ReturnServerBusyCount")),
+    DiagnReturnBusCharacterOverrunCount    (QStringLiteral("ReturnBusCharacterOverrunCount")),
+    DiagnClearOverrunCounterAndFlags       (QStringLiteral("ClearOverrunCounterAndFlags")),
+    Address_Default                        (QStringLiteral("Default")),
+    Address_Modbus                         (QStringLiteral("Modbus")),
+    Address_IEC61131                       (QStringLiteral("IEC61131")),
+    Address_IEC61131Hex                    (QStringLiteral("IEC61131Hex")),
+    IEC61131Prefix0x                       (QStringLiteral("%Q")),
+    IEC61131Prefix1x                       (QStringLiteral("%I")),
+    IEC61131Prefix3x                       (QStringLiteral("%IW")),
+    IEC61131Prefix4x                       (QStringLiteral("%MW")),
+    IEC61131SuffixHex                      ('h')
 {
 }
 
@@ -505,6 +521,7 @@ uint8_t ModbusFunction(const QString &func)
     if (func == s.WriteSingleCoil           ) return MBF_WRITE_SINGLE_COIL            ;
     if (func == s.WriteSingleRegister       ) return MBF_WRITE_SINGLE_REGISTER        ;
     if (func == s.ReadExceptionStatus       ) return MBF_READ_EXCEPTION_STATUS        ;
+    if (func == s.Diagnostics               ) return MBF_DIAGNOSTICS                  ;
     if (func == s.WriteMultipleCoils        ) return MBF_WRITE_MULTIPLE_COILS         ;
     if (func == s.WriteMultipleRegisters    ) return MBF_WRITE_MULTIPLE_REGISTERS     ;
     if (func == s.ReportServerID            ) return MBF_REPORT_SERVER_ID             ;
@@ -516,19 +533,70 @@ uint8_t ModbusFunction(const QString &func)
 QString ModbusFunctionString(uint8_t func)
 {
     const Strings &s = Strings::instance();
-    if (func == MBF_READ_COILS                   ) return s.ReadCoils                 ;
-    if (func == MBF_READ_DISCRETE_INPUTS         ) return s.ReadDiscreteInputs        ;
-    if (func == MBF_READ_HOLDING_REGISTERS       ) return s.ReadHoldingRegisters      ;
-    if (func == MBF_READ_INPUT_REGISTERS         ) return s.ReadInputRegisters        ;
-    if (func == MBF_WRITE_SINGLE_COIL            ) return s.WriteSingleCoil           ;
-    if (func == MBF_WRITE_SINGLE_REGISTER        ) return s.WriteSingleRegister       ;
-    if (func == MBF_READ_EXCEPTION_STATUS        ) return s.ReadExceptionStatus       ;
-    if (func == MBF_WRITE_MULTIPLE_COILS         ) return s.WriteMultipleCoils        ;
-    if (func == MBF_WRITE_MULTIPLE_REGISTERS     ) return s.WriteMultipleRegisters    ;
-    if (func == MBF_REPORT_SERVER_ID             ) return s.ReportServerID            ;
-    if (func == MBF_MASK_WRITE_REGISTER          ) return s.MaskWriteRegister         ;
-    if (func == MBF_READ_WRITE_MULTIPLE_REGISTERS) return s.ReadWriteMultipleRegisters;
-    return QString();
+    switch(func)
+    {
+    case MBF_READ_COILS                   : return s.ReadCoils                 ;
+    case MBF_READ_DISCRETE_INPUTS         : return s.ReadDiscreteInputs        ;
+    case MBF_READ_HOLDING_REGISTERS       : return s.ReadHoldingRegisters      ;
+    case MBF_READ_INPUT_REGISTERS         : return s.ReadInputRegisters        ;
+    case MBF_WRITE_SINGLE_COIL            : return s.WriteSingleCoil           ;
+    case MBF_WRITE_SINGLE_REGISTER        : return s.WriteSingleRegister       ;
+    case MBF_READ_EXCEPTION_STATUS        : return s.ReadExceptionStatus       ;
+    case MBF_DIAGNOSTICS                  : return s.Diagnostics               ;
+    case MBF_WRITE_MULTIPLE_COILS         : return s.WriteMultipleCoils        ;
+    case MBF_WRITE_MULTIPLE_REGISTERS     : return s.WriteMultipleRegisters    ;
+    case MBF_REPORT_SERVER_ID             : return s.ReportServerID            ;
+    case MBF_MASK_WRITE_REGISTER          : return s.MaskWriteRegister         ;
+    case MBF_READ_WRITE_MULTIPLE_REGISTERS: return s.ReadWriteMultipleRegisters;
+    default:
+        return QString();
+    }
+}
+
+uint16_t ModbusDiagnSubfunction(const QString &func)
+{
+    const Strings &s = Strings::instance();
+    if (func == s.DiagnReturnQueryData                   ) return MBDIAGN_RETURN_QUERY_DATA                     ;
+    if (func == s.DiagnRestartCommunicationsOption       ) return MBDIAGN_RESTART_COMMUNICATIONS_OPTION         ;
+    if (func == s.DiagnReturnDiagnosticRegister          ) return MBDIAGN_RETURN_DIAGNOSTIC_REGISTER            ;
+    if (func == s.DiagnChangeAsciiInputDelimiter         ) return MBDIAGN_CHANGE_ASCII_INPUT_DELIMITER          ;
+    if (func == s.DiagnForceListenOnlyMode               ) return MBDIAGN_FORCE_LISTEN_ONLY_MODE                ;
+    if (func == s.DiagnClearCountersAndDiagnosticRegister) return MBDIAGN_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER;
+    if (func == s.DiagnReturnBusMessageCount             ) return MBDIAGN_RETURN_BUS_MESSAGE_COUNT              ;
+    if (func == s.DiagnReturnBusCommunicationErrorCount  ) return MBDIAGN_RETURN_BUS_COMMUNICATION_ERROR_COUNT  ;
+    if (func == s.DiagnReturnBusExceptionErrorCount      ) return MBDIAGN_RETURN_BUS_EXCEPTION_ERROR_COUNT      ;
+    if (func == s.DiagnReturnServerMessageCount          ) return MBDIAGN_RETURN_SERVER_MESSAGE_COUNT           ;
+    if (func == s.DiagnReturnServerNoResponseCount       ) return MBDIAGN_RETURN_SERVER_NO_RESPONSE_COUNT       ;
+    if (func == s.DiagnReturnServerNAKCount              ) return MBDIAGN_RETURN_SERVER_NAK_COUNT               ;
+    if (func == s.DiagnReturnServerBusyCount             ) return MBDIAGN_RETURN_SERVER_BUSY_COUNT              ;
+    if (func == s.DiagnReturnBusCharacterOverrunCount    ) return MBDIAGN_RETURN_BUS_CHARACTER_OVERRUN_COUNT    ;
+    if (func == s.DiagnClearOverrunCounterAndFlags       ) return MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAGS       ;
+    return 0;
+}
+
+QString ModbusDiagnSubfunctionString(uint16_t func)
+{
+    const Strings &s = Strings::instance();
+    switch(func)
+    {
+    case MBDIAGN_RETURN_QUERY_DATA                     : return s.DiagnReturnQueryData                   ;
+    case MBDIAGN_RESTART_COMMUNICATIONS_OPTION         : return s.DiagnRestartCommunicationsOption       ;
+    case MBDIAGN_RETURN_DIAGNOSTIC_REGISTER            : return s.DiagnReturnDiagnosticRegister          ;
+    case MBDIAGN_CHANGE_ASCII_INPUT_DELIMITER          : return s.DiagnChangeAsciiInputDelimiter         ;
+    case MBDIAGN_FORCE_LISTEN_ONLY_MODE                : return s.DiagnForceListenOnlyMode               ;
+    case MBDIAGN_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER: return s.DiagnClearCountersAndDiagnosticRegister;
+    case MBDIAGN_RETURN_BUS_MESSAGE_COUNT              : return s.DiagnReturnBusMessageCount             ;
+    case MBDIAGN_RETURN_BUS_COMMUNICATION_ERROR_COUNT  : return s.DiagnReturnBusCommunicationErrorCount  ;
+    case MBDIAGN_RETURN_BUS_EXCEPTION_ERROR_COUNT      : return s.DiagnReturnBusExceptionErrorCount      ;
+    case MBDIAGN_RETURN_SERVER_MESSAGE_COUNT           : return s.DiagnReturnServerMessageCount          ;
+    case MBDIAGN_RETURN_SERVER_NO_RESPONSE_COUNT       : return s.DiagnReturnServerNoResponseCount       ;
+    case MBDIAGN_RETURN_SERVER_NAK_COUNT               : return s.DiagnReturnServerNAKCount              ;
+    case MBDIAGN_RETURN_SERVER_BUSY_COUNT              : return s.DiagnReturnServerBusyCount             ;
+    case MBDIAGN_RETURN_BUS_CHARACTER_OVERRUN_COUNT    : return s.DiagnReturnBusCharacterOverrunCount    ;
+    case MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAGS       : return s.DiagnClearOverrunCounterAndFlags       ;
+    default:
+        return QString();
+    }
 }
 
 QString toModbusMemoryTypeString(Modbus::MemoryType mem, AddressNotation notation)

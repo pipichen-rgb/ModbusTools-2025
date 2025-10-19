@@ -95,11 +95,28 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) :
     m_funcNums.append(MBF_WRITE_SINGLE_COIL             );
     m_funcNums.append(MBF_WRITE_SINGLE_REGISTER         );
     m_funcNums.append(MBF_READ_EXCEPTION_STATUS         );
+    m_funcNums.append(MBF_DIAGNOSTICS                   );
     m_funcNums.append(MBF_WRITE_MULTIPLE_COILS          );
     m_funcNums.append(MBF_WRITE_MULTIPLE_REGISTERS      );
     m_funcNums.append(MBF_REPORT_SERVER_ID              );
     m_funcNums.append(MBF_MASK_WRITE_REGISTER           );
     m_funcNums.append(MBF_READ_WRITE_MULTIPLE_REGISTERS );
+
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_QUERY_DATA                     );
+    m_diagnSubfuncNums.append(MBDIAGN_RESTART_COMMUNICATIONS_OPTION         );
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_DIAGNOSTIC_REGISTER            );
+    m_diagnSubfuncNums.append(MBDIAGN_CHANGE_ASCII_INPUT_DELIMITER          );
+    m_diagnSubfuncNums.append(MBDIAGN_FORCE_LISTEN_ONLY_MODE                );
+    m_diagnSubfuncNums.append(MBDIAGN_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER);
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_MESSAGE_COUNT              );
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_COMMUNICATION_ERROR_COUNT  );
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_EXCEPTION_ERROR_COUNT      );
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_MESSAGE_COUNT           );
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_NO_RESPONSE_COUNT       );
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_NAK_COUNT               );
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_BUSY_COUNT              );
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_CHARACTER_OVERRUN_COUNT    );
+    m_diagnSubfuncNums.append(MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAGS       );
 
     // -----------------------------------------------------------------------
     // Unit
@@ -115,7 +132,6 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) :
     ui->formLayoutDefaultParams->setWidget(1, QFormLayout::FieldRole, m_defaultAddress);
 
     // Formats
-    cmb = ui->cmbDefaultFormat;
     ls = mb::enumFormatKeyList();
     Q_FOREACH (const QString &s, ls)
     {
@@ -123,11 +139,13 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) :
         ui->cmbRWMultiRegWriteFormat->addItem(s);
         ui->cmbRWMultiRegReadFormat ->addItem(s);
         ui->cmbReadDataFormat       ->addItem(s);
+        ui->cmbDiagnFormat          ->addItem(s);
     }
     ui->cmbDefaultFormat        ->setCurrentIndex(mb::Dec16);
     ui->cmbRWMultiRegWriteFormat->setCurrentIndex(mb::Dec16);
     ui->cmbRWMultiRegReadFormat ->setCurrentIndex(mb::Dec16);
     ui->cmbReadDataFormat       ->setCurrentIndex(mb::Dec16);
+    ui->cmbDiagnFormat          ->setCurrentIndex(mb::Dec16);
 
     sp = ui->spDefaultCount;
     sp->setMinimum(1);
@@ -182,6 +200,17 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) :
         cmb->addItem(QString("%1 - %2")
                          .arg(funcNum, 2, 10, QChar('0'))
                          .arg(mb::ModbusFunctionString(funcNum))
+                     );
+    }
+    cmb->setCurrentIndex(2);
+
+    cmb = ui->cmbDiagnSubfunction;
+    connect(cmb, SIGNAL(currentIndexChanged(int)), this, SLOT(setCurrentDiagnSubfuncIndex(int)));
+    Q_FOREACH (auto funcNum, m_diagnSubfuncNums)
+    {
+        cmb->addItem(QString("%1 - %2")
+                         .arg(funcNum, 2, 10, QChar('0'))
+                         .arg(mb::ModbusDiagnSubfunctionString(funcNum))
                      );
     }
     cmb->setCurrentIndex(2);
@@ -369,6 +398,12 @@ void mbClientSendMessageUi::setCurrentFuncIndex(int funcIndex)
 {
     uint8_t funcNum = m_funcNums.value(funcIndex);
     setCurrentFuncNum(funcNum);
+}
+
+void mbClientSendMessageUi::setCurrentDiagnSubfuncIndex(int funcIndex)
+{
+    uint8_t funcNum = m_diagnSubfuncNums.value(funcIndex);
+    setCurrentDiagnSubfuncNum(funcNum);
 }
 
 void mbClientSendMessageUi::setRunStatus(int status)
@@ -1476,6 +1511,9 @@ void mbClientSendMessageUi::setCurrentFuncNum(uint8_t func)
     case MBF_REPORT_SERVER_ID:
         ui->swFunctionData->setCurrentWidget(ui->pgReadData);
         break;
+    case MBF_DIAGNOSTICS:
+        ui->swFunctionData->setCurrentWidget(ui->pgDiagn);
+        break;
     case MBF_WRITE_MULTIPLE_COILS:
         ui->swFunctionData->setCurrentWidget(ui->pgDefault);
         m_defaultAddress->setAddressType(Modbus::Memory_0x);
@@ -1507,6 +1545,25 @@ void mbClientSendMessageUi::setCurrentFuncNum(uint8_t func)
             break;
         }
         ++i;
+    }
+}
+
+void mbClientSendMessageUi::setCurrentDiagnSubfuncNum(uint16_t func)
+{
+    switch(func)
+    {
+    case MBDIAGN_RETURN_QUERY_DATA:
+        ui->swDiagn->setCurrentWidget(ui->pgDiagnEcho);
+        break;
+    case MBDIAGN_RESTART_COMMUNICATIONS_OPTION:
+    case MBDIAGN_FORCE_LISTEN_ONLY_MODE       :
+    case MBDIAGN_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER:
+    case MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAGS:
+        ui->swDiagn->setCurrentWidget(ui->pgDiagnEmpty);
+        break;
+    default:
+        ui->swDiagn->setCurrentWidget(ui->pgDiagnData);
+        break;
     }
 }
 

@@ -102,6 +102,7 @@ private Q_SLOTS:
     void removeDevice(mbCoreDevice *device);
     void renameDevice(mbCoreDevice *device, const QString newName);
     void setCurrentFuncIndex(int funcIndex);
+    void setCurrentDiagnSubfuncIndex(int funcIndex);
     void setRunStatus(int status);
 
 private Q_SLOTS: // list
@@ -162,6 +163,7 @@ private:
     QStringList dataToStringList(const QString &s);
     uint8_t getCurrentFuncNum() const;
     void setCurrentFuncNum(uint8_t func);
+    void setCurrentDiagnSubfuncNum(uint16_t func);
     static QStringList saveMessages(const QList<const mbClientSendMessageParams*> messages);
     static QList<const mbClientSendMessageParams*> restoreMessages(const QStringList &messages);
     static QString saveParams(const mbClientSendMessageParams &params);
@@ -196,6 +198,7 @@ private:
     mbClientProject *m_project;
     int m_sendTo;
     QList<uint8_t> m_funcNums;
+    QList<uint16_t> m_diagnSubfuncNums;
     int m_timer;
 
 private:

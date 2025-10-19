@@ -442,27 +442,43 @@ struct MB_EXPORT Defaults
 
 struct MB_EXPORT Strings
 {
-    const QString ReadCoils                 ;
-    const QString ReadDiscreteInputs        ;
-    const QString ReadHoldingRegisters      ;
-    const QString ReadInputRegisters        ;
-    const QString WriteSingleCoil           ;
-    const QString WriteSingleRegister       ;
-    const QString ReadExceptionStatus       ;
-    const QString WriteMultipleCoils        ;
-    const QString WriteMultipleRegisters    ;
-    const QString ReportServerID            ;
-    const QString MaskWriteRegister         ;
-    const QString ReadWriteMultipleRegisters;
-    const QString Address_Default           ;
-    const QString Address_Modbus            ;
-    const QString Address_IEC61131          ;
-    const QString Address_IEC61131Hex       ;
-    const QString IEC61131Prefix0x          ;
-    const QString IEC61131Prefix1x          ;
-    const QString IEC61131Prefix3x          ;
-    const QString IEC61131Prefix4x          ;
-    const QChar   IEC61131SuffixHex         ;
+    const QString ReadCoils                              ;
+    const QString ReadDiscreteInputs                     ;
+    const QString ReadHoldingRegisters                   ;
+    const QString ReadInputRegisters                     ;
+    const QString WriteSingleCoil                        ;
+    const QString WriteSingleRegister                    ;
+    const QString ReadExceptionStatus                    ;
+    const QString Diagnostics                            ;
+    const QString WriteMultipleCoils                     ;
+    const QString WriteMultipleRegisters                 ;
+    const QString ReportServerID                         ;
+    const QString MaskWriteRegister                      ;
+    const QString ReadWriteMultipleRegisters             ;
+    const QString DiagnReturnQueryData                   ;
+    const QString DiagnRestartCommunicationsOption       ;
+    const QString DiagnReturnDiagnosticRegister          ;
+    const QString DiagnChangeAsciiInputDelimiter         ;
+    const QString DiagnForceListenOnlyMode               ;
+    const QString DiagnClearCountersAndDiagnosticRegister;
+    const QString DiagnReturnBusMessageCount             ;
+    const QString DiagnReturnBusCommunicationErrorCount  ;
+    const QString DiagnReturnBusExceptionErrorCount      ;
+    const QString DiagnReturnServerMessageCount          ;
+    const QString DiagnReturnServerNoResponseCount       ;
+    const QString DiagnReturnServerNAKCount              ;
+    const QString DiagnReturnServerBusyCount             ;
+    const QString DiagnReturnBusCharacterOverrunCount    ;
+    const QString DiagnClearOverrunCounterAndFlags       ;
+    const QString Address_Default                        ;
+    const QString Address_Modbus                         ;
+    const QString Address_IEC61131                       ;
+    const QString Address_IEC61131Hex                    ;
+    const QString IEC61131Prefix0x                       ;
+    const QString IEC61131Prefix1x                       ;
+    const QString IEC61131Prefix3x                       ;
+    const QString IEC61131Prefix4x                       ;
+    const QChar   IEC61131SuffixHex                      ;
 
     Strings();
     static const Strings &instance();
@@ -556,8 +572,14 @@ MB_EXPORT QString toString(mb::Timestamp_t timestamp);
 // convert string representation to Modbus function number
 MB_EXPORT uint8_t ModbusFunction(const QString &s);
 
-// convert Modbus function number to string representation
+// convert Modbus diagnostic function number to string representation
 MB_EXPORT QString ModbusFunctionString(uint8_t func);
+
+// convert string representation to Modbus diagnostic subfunction number
+MB_EXPORT uint16_t ModbusDiagnSubfunction(const QString &s);
+
+// convert Modbus diagnostic subfunction number to string representation
+MB_EXPORT QString ModbusDiagnSubfunctionString(uint16_t func);
 
 MB_EXPORT QString toModbusMemoryTypeString(Modbus::MemoryType mem, mb::AddressNotation notation = mb::Address::Notation_Modbus);
 
