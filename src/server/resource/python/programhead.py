@@ -24,5 +24,13 @@ mem1x = mbdevice.getmem1x()
 mem3x = mbdevice.getmem3x()
 mem4x = mbdevice.getmem4x()
 
+# make `mbdevice` and `mem...` variabless global
+import builtins
+builtins.mbdevice = mbdevice
+builtins.mem0x = mem0x
+builtins.mem1x = mem1x
+builtins.mem3x = mem3x
+builtins.mem4x = mem4x
+
 _mb_time_period = _args.period / 1000
 
