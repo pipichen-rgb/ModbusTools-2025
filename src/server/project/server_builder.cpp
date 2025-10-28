@@ -574,7 +574,7 @@ bool mbServerBuilder::exportScriptModuleXml(const QString &file, const mbServerS
 bool mbServerBuilder::exportScriptModuleTxt(const QString &file, const mbServerScriptModule *obj)
 {
     QFile qf(file);
-    if (!qf.open(QIODevice::ReadOnly))
+    if (!qf.open(QIODevice::WriteOnly))
     {
         setError(qf.errorString());
         return false;
