@@ -433,6 +433,7 @@ void mbCoreBuilder::fillDataView(mbCoreDataView *obj, const mbCoreDomDataView *d
     obj->setAddressNotation(mb::toAddressNotation(dom->addressNotation()));
     obj->setUseDefaultColumns(dom->useDefaultColumns());
     obj->setColumnNames(dom->columns());
+    obj->setEnableProcessing(dom->enableProcessing());
     Q_FOREACH (mbCoreDomDataViewItem *domItem, dom->items())
     {
         mbCoreDataViewItem *item = toDataViewItem(domItem);
@@ -517,6 +518,7 @@ void mbCoreBuilder::fillDomDataView(mbCoreDomDataView *dom, const mbCoreDataView
     dom->setAddressNotation(mb::toString(obj->addressNotation()));
     dom->setUseDefaultColumns(obj->useDefaultColumns());
     dom->setColumns(obj->columnNames());
+    dom->setEnableProcessing(obj->isEnableProcessing());
     QList<mbCoreDomDataViewItem*> domItems;
     Q_FOREACH(mbCoreDataViewItem *item, obj->itemsCore())
     {

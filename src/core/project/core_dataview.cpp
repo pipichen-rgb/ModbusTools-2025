@@ -458,7 +458,8 @@ mbCoreDataView::Strings::Strings() :
     period           (QStringLiteral("period")),
     addressNotation  (QStringLiteral("addressNotation")),
     useDefaultColumns(QStringLiteral("useDefaultColumns")),
-    columns          (QStringLiteral("columns"))
+    columns          (QStringLiteral("columns")),
+    enableProcessing (QStringLiteral("enableProcessing"))
 {
 }
 
@@ -472,7 +473,8 @@ mbCoreDataView::Defaults::Defaults() :
     name(QStringLiteral("dataView")),
     period(1000),
     addressNotation(mb::Address::Notation_Default),
-    useDefaultColumns(true)
+    useDefaultColumns(true),
+    enableProcessing(true)
 {
 }
 
@@ -498,6 +500,7 @@ mbCoreDataView::mbCoreDataView(QObject *parent) : QObject(parent)
     m_period            = d.period;
     m_addressNotation   = d.addressNotation;
     m_useDefaultColumns = false;
+    m_enableProcessing  = d.enableProcessing;
 
     setUseDefaultColumns(d.useDefaultColumns);
 
@@ -664,6 +667,15 @@ int mbCoreDataView::getColumnIndexByType(int type)
     return columnIndexByType(type);
 }
 
+void mbCoreDataView::setEnableProcessing(bool enable)
+{
+    if (m_enableProcessing != enable)
+    {
+        m_enableProcessing = enable;
+        Q_EMIT enableProcessingChanged(enable);
+    }
+}
+
 MBSETTINGS mbCoreDataView::settings() const
 {
     const Strings &s = Strings::instance();
@@ -674,6 +686,7 @@ MBSETTINGS mbCoreDataView::settings() const
     p[s.addressNotation  ] = addressNotation();
     p[s.useDefaultColumns] = useDefaultColumns();
     p[s.columns          ] = columnNames();
+    p[s.enableProcessing ] = isEnableProcessing();
     return p;
 }
 
@@ -713,6 +726,13 @@ bool mbCoreDataView::setSettings(const MBSETTINGS &settings)
     {
         QStringList v = it.value().toStringList();
         setColumnNames(v);
+    }
+
+    it = settings.find(s.enableProcessing);
+    if (it != end)
+    {
+        bool v = it.value().toBool();
+        setEnableProcessing(v);
     }
 
     return true;

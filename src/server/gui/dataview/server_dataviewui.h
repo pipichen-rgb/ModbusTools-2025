@@ -47,6 +47,7 @@ public:
 
 protected Q_SLOTS:
     void changePeriod(int period);
+    void setEnableProcessing(bool enable) override;
 
 private:
     bool event(QEvent *event) override;

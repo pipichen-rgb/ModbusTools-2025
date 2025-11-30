@@ -72,6 +72,7 @@ public Q_SLOTS:
 protected Q_SLOTS:
     void doubleClick(const QModelIndex &index);
     void contextMenu(const QModelIndex &index);
+    virtual void setEnableProcessing(bool enable);
 
 protected:
     QTableView *m_view;

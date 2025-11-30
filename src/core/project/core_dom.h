@@ -202,6 +202,7 @@ public:
         const QString addressNotation;
         const QString useDefaultColumns;
         const QString columns;
+        const QString enableProcessing;
         const QChar   sepColumns;
 
         Strings();
@@ -231,6 +232,9 @@ public:
     inline QStringList columns() const { return m_columns; }
     inline void setColumns(const QStringList &columns) { m_columns = columns; }
 
+    inline bool enableProcessing() const { return m_enableProcessing; }
+    inline void setEnableProcessing(bool v) { m_enableProcessing = v; }
+
     inline QList<mbCoreDomDataViewItem*> items() const { return m_items; }
     inline void setItems(const  QList<mbCoreDomDataViewItem*> &items) { m_items = items; }
 
@@ -242,6 +246,7 @@ private:
     QString m_addressNotation;
     bool m_useDefaultColumns;
     QStringList m_columns;
+    bool m_enableProcessing;
 
     QList<mbCoreDomDataViewItem*> m_items;
 

@@ -197,6 +197,7 @@ public:
         const QString addressNotation;
         const QString useDefaultColumns;
         const QString columns;
+        const QString enableProcessing;
 
         Strings();
         static const Strings &instance();
@@ -208,6 +209,7 @@ public:
         const int period;
         const mb::AddressNotation addressNotation;
         const bool useDefaultColumns;
+        const bool enableProcessing;
         Defaults();
         static const Defaults &instance();
     };
@@ -259,6 +261,8 @@ public:
     QString getColumnNameByIndex(int i) const;
     int columnIndexByType(int type);
     int getColumnIndexByType(int type);
+    inline bool isEnableProcessing() const { return m_enableProcessing; }
+    void setEnableProcessing(bool enable);
 
     virtual MBSETTINGS settings() const;
     virtual bool setSettings(const MBSETTINGS& settings);
@@ -286,6 +290,7 @@ Q_SIGNALS:
     void periodChanged(int period);
     void addressNotationChanged(mb::AddressNotation addressNotation);
     void columnsChanged();
+    void enableProcessingChanged(bool enable);
 
 protected Q_SLOTS:
     void changed();
@@ -299,6 +304,7 @@ protected:
     mb::AddressNotation m_addressNotation;
     bool m_useDefaultColumns;
     QList<int> m_columns;
+    bool m_enableProcessing;
 };
 
 #endif // CORE_DATAVIEW_H

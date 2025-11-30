@@ -75,6 +75,9 @@ mbCoreDialogDataView::mbCoreDialogDataView(QWidget *parent) :
     connect(chb, &QCheckBox::stateChanged, this, &mbCoreDialogDataView::slotUseDefaultColumnsChange);
     chb->setChecked(d.useDefaultColumns);
 
+    chb = ui->chbEnableProcessing;
+    chb->setChecked(d.enableProcessing);
+
     setColumns(mbCore::globalCore()->availableDataViewColumns());
     connect(ui->btnEditDataViewColumns, &QPushButton::clicked, this, &mbCoreDialogDataView::slotEditColumns);
 
@@ -102,6 +105,8 @@ MBSETTINGS mbCoreDialogDataView::cachedSettings() const
     m[prefix+vs.useDefaultColumns] = useDefaultColumns;
     if (useDefaultColumns)
         m[prefix+vs.columns] = getColumns();
+
+    //m[prefix+vs.enableProcessing] = ui->chbEnableProcessing->isChecked();
     return m;
 }
 
@@ -120,6 +125,7 @@ void mbCoreDialogDataView::setCachedSettings(const MBSETTINGS &m)
     it = m.find(prefix+vs.addressNotation);   if (it != end) setAddressNotation(mb::toAddressNotation(it.value()));
     it = m.find(prefix+vs.useDefaultColumns); if (it != end) ui->chbUseDefaultColumns->setChecked(it.value().toBool());
     it = m.find(prefix+vs.columns);           if (it != end) setColumns(it.value().toStringList());
+    //it = m.find(prefix+vs.enableProcessing);  if (it != end) ui->chbEnableProcessing->setChecked(it.value().toBool());
 }
 
 MBSETTINGS mbCoreDialogDataView::getSettings(const MBSETTINGS &settings, const QString &title)
@@ -158,6 +164,13 @@ void mbCoreDialogDataView::fillForm(const MBSETTINGS &m)
 
     ui->chbUseDefaultColumns->setChecked(m.value(vs.useDefaultColumns).toBool());
     setColumns(m.value(vs.columns).toStringList());
+
+    it = m.find(vs.enableProcessing);
+    if (it != end)
+        ui->chbEnableProcessing->setChecked(it.value().toBool());
+    else
+        ui->chbEnableProcessing->setChecked(true);
+
 }
 
 void mbCoreDialogDataView::fillData(MBSETTINGS &settings)
@@ -169,6 +182,7 @@ void mbCoreDialogDataView::fillData(MBSETTINGS &settings)
     settings[s.addressNotation  ] = addressNotation();
     settings[s.useDefaultColumns] = ui->chbUseDefaultColumns->isChecked();
     settings[s.columns          ] = getColumns();
+    settings[s.enableProcessing ] = ui->chbEnableProcessing->isChecked();
 }
 
 mb::AddressNotation mbCoreDialogDataView::addressNotation() const
