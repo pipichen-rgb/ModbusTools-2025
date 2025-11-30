@@ -31,6 +31,7 @@
 mbClientPort::mbClientPort(QObject *parent) :
     mbCorePort(parent)
 {
+    m_settings.host = Modbus::Defaults::instance().host;
 }
 
 mbClientPort::~mbClientPort()
