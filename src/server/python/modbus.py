@@ -37,10 +37,9 @@ IEC61131PrefixMap = {
             }
 
 class Address:
-    """
-    @brief Modbus Data Address class. Represents Modbus Data Address.
+    """Modbus Data Address class. Represents Modbus Data Address.
 
-    @details `Address` class is used to represent Modbus Data Address. It contains memory type and offset.
+    `Address` class is used to represent Modbus Data Address. It contains memory type and offset.
     E.g. `modbus.Address(modbus.Memory_4x, 0)` creates `400001` standard address.
     E.g. `modbus.Address(400001)` creates `Address` with type `Modbus::Memory_4x` and offset `0`, and
     `modbus.Address(1)` creates `modbus.Address` with type `modbus.Memory_0x` and offset `0`.
@@ -51,10 +50,9 @@ class Address:
     """
 
     def __init__(self, value=None, offset=None):
-        """
-        @brief Constructor of the class.
+        """Constructor of the class.
 
-        @details Can have next forms:
+        Can have next forms:
         * `Address()`  - creates invalid address class
         * `Address(Memory_4x, 0)`  - creates address for holding registers with `offset=0`
         * `Address("%MW0")`  - creates address for holding registers with `offset=0`
@@ -78,54 +76,46 @@ class Address:
             raise ValueError("Invalid constructor parameters")
 
     def isvalid(self) -> bool:
-        """
-        @details Returns `True` if memory type is not `Modbus::Memory_Unknown`, `False` otherwise.
+        """Returns `True` if memory type is not `Modbus::Memory_Unknown`, `False` otherwise.
         """
         return self._type != Memory_Unknown
 
     def type(self) -> int:
-        """
-        @details Returns memory type of Modbus Data Address.
+        """Returns memory type of Modbus Data Address.
         """
         return self._type
 
     def settype(self, tp: int):
-        """
-        @details Set memory type of Modbus Data Address.
+        """Sets memory type of Modbus Data Address.
         """
         if tp not in MemoryTypeSet:
             raise ValueError(f"Invalid memory type: {tp}. Memory type must be [0,1,3,4]")
         self._type = tp
 
     def offset(self) -> int:
-        """
-        @details Returns memory offset of Modbus Data Address.
+        """Returns memory offset of Modbus Data Address.
         """
         return self._offset
 
     def setoffset(self, offset: int):
-        """
-        @details Set memory offset of Modbus Data Address.
+        """Sets memory offset of Modbus Data Address.
         """
         if not (0 <= offset <= 65535):
             raise ValueError(f"Invalid offset: {offset}. Offset must be in range [0:65535]")
         self._offset = offset
 
     def number(self) -> int:
-        """
-        @details Returns memory number (offset+1) of Modbus Data Address.
+        """ Returns memory number (offset+1) of Modbus Data Address.
         """
         return self._offset + 1
 
     def setnumber(self, number: int):
-        """
-        @details Set memory number (offset+1) of Modbus Data Address.
+        """Set memory number (offset+1) of Modbus Data Address.
         """
         self.setoffset(number - 1)
 
     def fromint(self, v: int):
-        """
-        @details Make modbus address from integer representaion
+        """Make modbus address from integer representaion
         """
         number = v % 100000
         if number < 1 or number > 65536:
@@ -141,15 +131,13 @@ class Address:
             raise ValueError(f"Invalid integer '{v}' to convert into Address: memory type '{mem_type}' must be [0,1,3,4]")
 
     def toint(self) -> int:
-        """
-        @details Converts current Modbus Data Address to `int`,
+        """Converts current Modbus Data Address to `int`,
         e.g. `Address(Memory_4x, 0)` will be converted to `400001`.
         """
         return (self._type * 100000) + self.number()
 
     def fromstr(self, s: str):
-        """
-        @details Make modbus address from string representaion
+        """Make modbus address from string representaion
         """
         def dec_digit(c):
             return int(c) if c.isdigit() else -1
@@ -204,8 +192,7 @@ class Address:
             self.fromint(acc)
 
     def tostr(self, notation: int = Notation_Default) -> str:
-        """
-        @details Returns string repr of Modbus Data Address with specified notation:
+        """Returns string repr of Modbus Data Address with specified notation:
         * `Notation_Modbus`      - `Address(Memory_4x, 0)` will be converted to `"400001"`.
         * `Notation_IEC61131`    - `Address(Memory_4x, 0)` will be converted to `"%MW0"`.
         * `Notation_IEC61131Hex` - `Address(Memory_4x, 0)` will be converted to `"%MW0000h"`.
@@ -228,87 +215,73 @@ class Address:
             return to_dec_string(self.toint(), 6)
 
     def __int__(self):
-        """
-        @details Return the integer representation of the object by calling the toint() method.
+        """Return the integer representation of the object by calling the toint() method.
         """
         return self.toint()
 
     def __lt__(self, other):
-        """
-        @details Return self.toint() < other.toint()
+        """Return self.toint() < other.toint()
         """
         return self.toint() < other.toint()
     
     def __le__(self, other):
-        """
-        @details Return self.toint() <= other.toint()
+        """Return self.toint() <= other.toint()
         """
         return self.toint() <= other.toint()
 
     def __eq__(self, other):
-        """
-        @details Return self.toint() == other.toint()
+        """Return self.toint() == other.toint()
         """
         return self.toint() == other.toint()
 
     def __ne__(self, other):
-        """
-        @details Return self.toint() != other.toint()
+        """Return self.toint() != other.toint()
         """
         return self.toint() != other.toint()
     
     def __gt__(self, other):
-        """
-        @details Return self.toint() > other.toint()
+        """Return self.toint() > other.toint()
         """
         return self.toint() > other.toint()
 
     def __ge__(self, other):
-        """
-        @details Return self.toint() >= other.toint()
+        """Return self.toint() >= other.toint()
         """
         return self.toint() >= other.toint()
 
     def __hash__(self):
-        """
-        @details Return the hash of the object.
+        """Return the hash of the object.
         """
         return self.toint()
 
     def __add__(self, other: int):
-        """
-        @details Return a new Address object with the offset increased by the given integer.
+        """Return a new Address object with the offset increased by the given integer.
         """
         return Address(self._type, self._offset + other)
 
     def __sub__(self, other: int):
-        """
-        @details Return a new Address object with the offset decreased by the given integer.
+        """ Return a new Address object with the offset decreased by the given integer.
         """
         return Address(self._type, self._offset - other)
 
     def __iadd__(self, other: int):
-        """
-        @details Increase the offset by the given integer.
+        """Increase the offset by the given integer.
         """
         self.setoffset(self._offset + other)
         return self
     
     def __isub__(self, other: int):
-        """
-        @details Decrease the offset by the given integer.
+        """Decrease the offset by the given integer.
         """
         self.setoffset(self._offset - other)
         return self
     
     def __repr__(self):
-        """
-        @details Return the string representation of the object.
+        """Return the string representation of the object.
         """
         return self.tostr(Notation_Default)
 
     def __str__(self):
-        """
-        @details Return the string representation of the object.
+        """Return the string representation of the object.
         """
         return self.tostr(Notation_Default)

@@ -186,3 +186,11 @@ List of changes of new v0.4 version of ModbusTools:
 * Improve Find/Replace dialog: support for escape sequnces,
   regular expressions etc
 * Updated docs
+
+# 0.4.7
+
+* Add `IP Address` setting for TCP server to bind
+* Add Enable/Disable functionality for DataViews
+* Update `ModbusLib` subproject
+* Update docs
+

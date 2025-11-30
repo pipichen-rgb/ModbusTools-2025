@@ -75,7 +75,7 @@ mbCorePort::mbCorePort(QObject *parent)
     m_settings.isBroadcastEnabled = d.isBroadcastEnabled;
 
     m_stat.countTx = 0;
-    m_stat.countRx  = 0;
+    m_stat.countRx = 0;
 }
 
 void mbCorePort::setProjectCore(mbCoreProject *project)
