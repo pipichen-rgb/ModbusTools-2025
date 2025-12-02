@@ -11,16 +11,6 @@ find_program(MBTOOLS_DOXYGEN_EXECUTABLE
     DOC "Doxygen documentation generator"
 )
 
-find_program(MBTOOLS_QHELP_GENERATOR
-    NAMES qhelpgenerator qhelpgenerator.exe
-    PATHS
-        "$ENV{QT_HOME}/bin"
-        "$ENV{ProgramFiles}/Qt/Tools/QtCreator/bin"
-        "$ENV{ProgramFiles\(x86\)}/Qt/Tools/QtCreator/bin"
-        "C:/Qt/Tools/QtCreator/bin"
-        "C:/Qt/5.15.2/msvc2019_64/bin"
-    DOC "Qt Help Generator"
-)
 if(MBTOOLS_DOXYGEN_EXECUTABLE)
     message(STATUS "MBTOOLS-DOC: Found Doxygen: ${MBTOOLS_DOXYGEN_EXECUTABLE}")
     project("mbtools-doc" VERSION ${MBTOOLS_VERSION})
@@ -66,7 +56,19 @@ if(MBTOOLS_DOXYGEN_EXECUTABLE)
     add_dependencies(doxygen-server ${MBTOOLS_CORE_LIB_NAME}
                                     ${MBTOOLS_CLIENT_APP_NAME}
                                     ${MBTOOLS_SERVER_APP_NAME})
-                                                
+    
+
+    find_program(MBTOOLS_QHELP_GENERATOR
+        NAMES qhelpgenerator qhelpgenerator.exe
+        PATHS
+            "$ENV{QT_HOME}/bin"
+            "$ENV{ProgramFiles}/Qt/Tools/QtCreator/bin"
+            "$ENV{ProgramFiles\(x86\)}/Qt/Tools/QtCreator/bin"
+            "C:/Qt/Tools/QtCreator/bin"
+            "C:/Qt/5.15.2/msvc2019_64/bin"
+        DOC "Qt Help Generator"
+    )
+
     if (MBTOOLS_QHELP_GENERATOR)
         message(STATUS "MBTOOLS-DOC: Found QHelpGenerator: ${MBTOOLS_QHELP_GENERATOR}")
         file(COPY ${MBTOOLS_DOC_SRC_DIR}/ModbusClient.qhcp
