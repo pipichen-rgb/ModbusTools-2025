@@ -51,5 +51,5 @@ install(FILES ${MBTOOLS_SCRIPT_FILES} DESTINATION "./script/server")
 
 # Install help files
 # Collect help files using GLOB
-file(GLOB MBTOOLS_HELP_FILES "${CMAKE_SOURCE_DIR}/doc/output/*.qch" "${CMAKE_SOURCE_DIR}/doc/output/*.qhc")
+file(GLOB MBTOOLS_HELP_FILES "${CMAKE_BINARY_DIR}/doc/output/*.qch" "${CMAKE_BINARY_DIR}/doc/output/*.qhc")
 install(FILES ${MBTOOLS_HELP_FILES} DESTINATION "./help")
