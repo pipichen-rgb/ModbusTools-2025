@@ -193,4 +193,5 @@ List of changes of new v0.4 version of ModbusTools:
 * Add Enable/Disable functionality for DataViews
 * Update `ModbusLib` subproject
 * Update docs
+* Fix `ModbusLib` subproject inner connection error for TCP client on Windows
 
