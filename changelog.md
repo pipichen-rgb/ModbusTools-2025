@@ -195,3 +195,7 @@ List of changes of new v0.4 version of ModbusTools:
 * Update docs
 * Fix `ModbusLib` subproject inner connection error for TCP client on Windows
 
+# 0.4.8
+
+* Fixed bug within `ModbusLib` subproject when TCP client unable to connect on Windows
+
