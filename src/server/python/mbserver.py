@@ -18,13 +18,19 @@ import modbus
 
 def swapbyteorder(data: bytearray) -> bytearray:
     """
-    @note Since v0.4.2
+    Swap adjacent bytes in a bytearray.
 
-    @details
-    Function swaps byte array pair: 0 with 1, 2 with 3, 4 with 5 and so on.
-    If byte count is odd then last byte is left unchanged.
+    Swaps pairs (0↔1, 2↔3, 4↔5, ...) and leaves the last
+    byte unchanged if the length is odd.
 
-    @return Input `data` reference
+    Args:
+        data  Bytearray to modify in place.
+
+    Returns:
+        Same `bytearray` object with bytes swapped.
+
+    Note:
+        Since v0.4.2
     """
     for j in range(0, len(data) // 2):
         i = j * 2
@@ -183,35 +189,35 @@ class _MemoryBlock:
     ## @endcond
 
     def getid(self)->int:
-        """
-        @details Returns id (0, 1, 3 or 4) of the current memory object as integer.
+        """Returns id (0, 1, 3 or 4) of the current memory object as integer.
         """
         return self._id
     
     def getbyteorder(self)->str:
-        """
-        @note Since v0.4.2
+        """Return current byte order as string: 'little' or 'big'.
 
-        @details Returns string 'little' or 'big' for current byte order
+        Note:
+            Since v0.4.2
         """
         return self._byteorder
 
     def getregisterorder(self)->str:
-        """
-        @note Since v0.4.2
+        """Return current register order as int.
 
-        @details Returns int that represents current register order:
-        *  -1 = default
-        *  0  = R0R1R2R3
-        *  1  = R3R2R1R0
-        *  2  = R1R0R3R2
-        *  3  = R2R3R0R1
+        Values:
+            -1  default
+             0  R0R1R2R3
+             1  R3R2R1R0
+             2  R1R0R3R2
+             3  R2R3R0R1
+
+        Note:
+            Since v0.4.2
         """
         return self._registerorder
 
     def getbytes(self, byteoffset:int, bytecount:int)->bytes:
-        """
-        @details Function returns `bytes` object from device memory  starting with `byteoffset` and `bytecount` bytes.
+        """Function returns `bytes` object from device memory  starting with `byteoffset` and `bytecount` bytes.
 
         For bit memory `byteoffset` is calculated as `bitoffset // 8`.
         So bit with offset 0 is in byte with offset 0, bit with offset 8 is in byte with offset 1, etc.
@@ -219,35 +225,43 @@ class _MemoryBlock:
         So register with offset 0 is byte offset 0 and 1, 
         register with offset 1 is byte offset 2 and 3, etc.
         
-        @param[in]  byteoffset  Byte offset (0-based).
-        @param[in]  bytecount   Count of bytes to read.
+        Args:
+            byteoffset  Byte offset (0-based).
+            bytecount   Count of bytes to read.
+
+        Returns:
+            `bytes` object with data read from device memory.
         """
         return self._getbytes(byteoffset, bytecount, bytes)
 
     def getbytearray(self, byteoffset:int, bytecount:int)->bytearray:
         """
-        @details 
-        Function returns `bytearray` object from device memory  starting with `byteoffset` and `count` bytes.
-        Parameters are the same as getbytes() function.
+        Return `bytearray` from device memory starting at `byteoffset`.
 
-        @sa getbytes()
+        Same parameters and behavior as `getbytes()`.
+
+        Args:
+            byteoffset  Byte offset (0-based).
+            bytecount   Count of bytes to read.
+
+        Returns:
+            `bytearray` with data read from device memory.
+
+        See Also:
+            getbytes()
         """
         return self._getbytes(byteoffset, bytecount, bytearray)
 
     def setbytes(self, byteoffset: int, value: Union[bytes, bytearray]):
         """
-        @details 
-        Function set `value` (`bytes` or `bytearray`) array object into device memory
-        starting with `byteoffset`.
+        Write `value` (`bytes` or `bytearray`) into device memory.
 
-        For bit memory `byteoffset` is calculated as `bitoffset // 8`.
-        So bit with offset 0 is in byte with offset 0, bit with offset 8 is in byte with offset 1, etc.
-        For register memory `byteoffset` is calculated as `offset * 2`.
-        So register with offset 0 is byte offset 0 and 1, 
-        register with offset 1 is byte offset 2 and 3, etc.
-        
-        @param[in]  byteoffset  Byte offset (0-based).
-        @param[in]  value       `bytes` or `bytearray` value to set.
+        Starts at `byteoffset`. For bit memory, `byteoffset = bitoffset // 8`.
+        For register memory, `byteoffset = offset * 2`.
+
+        Args:
+            byteoffset  Byte offset (0-based).
+            value       `bytes` or `bytearray` value to set.
         """
         ## @cond
         if 0 <= byteoffset < self._countbytes:
@@ -267,11 +281,19 @@ class _MemoryBlock:
 
     def getbitbytearray(self, bitoffset:int, bitcount:int)->bytearray:
         """
-        @details 
-        Function returns `bytearray` object from device memory starting with `bitoffset` and `bitcount` bits.
-        Parameters are the same as `getbitbytes()` function.
+        Return `bytearray` from bit memory starting at `bitoffset`.
 
-        @sa getbitbytes()
+        Same parameters and behavior as `getbitbytes()`.
+
+        Args:
+            bitoffset  Bit offset (0-based).
+            bitcount   Count of bits to read.
+
+        Returns:
+            `bytearray` with data read as bits.
+
+        See Also:
+            getbitbytes()
         """
         byteoffset = bitoffset // 8
         rbyteoffset = (bitoffset+bitcount-1) // 8
@@ -299,33 +321,31 @@ class _MemoryBlock:
 
     def getbitbytes(self, bitoffset:int, bitcount:int)->bytes:
         """
-        @details
-        Function returns `bytes` object from device memory starting with `bitoffset` and `count` bits.
+        Return `bytes` from device memory starting at `bitoffset` for `bitcount` bits.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        For register memory `bitoffset` is calculated as `offset * 16`.
-        So register with offset 0 is bit offset 0-15, 
-        register with offset 1 is bit offset 16-31, etc.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
-        @param[in]  bitcount    Count of bits to read.
+        For bit memory, `bitoffset` is the coil/bit index.
+        For register memory, `bitoffset = offset * 16`.
+
+        Args:
+            bitoffset  Bit offset (0-based).
+            bitcount   Count of bits to read.
+
+        Returns:
+            `bytes` object with data read from device memory.
         """
         return bytes(self.getbitbytearray(bitoffset, bitcount))
 
     def setbitbytes(self, bitoffset: int, bitcount: int, value: Union[bytes, bytearray]):
         """
-        @details
-        Function set `value` (`bytes` or `bytearray`) array object into device memory
-        starting with `bitoffset` and `bitcount` bits.
+        Write `value` (`bytes` or `bytearray`) into bit memory.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        For register memory `bitoffset` is calculated as `offset * 16`.
-        So register with offset 0 is bit offset 0-15, 
-        register with offset 1 is bit offset 16-31, etc.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
-        @param[in]  bitcount    Count of bits to write from `value` array.
-        @param[in]  value       Array of bytes that contains bits to write.
+        Starts at `bitoffset` and writes `bitcount` bits. For register
+        memory, `bitoffset = offset * 16`.
+
+        Args:
+            bitoffset  Bit offset (0-based).
+            bitcount   Count of bits to write from `value`.
+            value      Array of bytes that contains bits to write.
         """
         byteoffset = bitoffset // 8
         rbyteoffset = (bitoffset+bitcount-1) // 8
@@ -368,18 +388,18 @@ class _MemoryBlock:
 
     def getbit(self, bitoffset:int)->bool:
         """
-        @details
-        Function returns value of bit (`True` or `False`) from device memory starting with `bitoffset`.
+        Return a single bit value as bool starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        For register memory `bitoffset` is calculated as `offset * 16`.
-        So register with offset 0 is bit offset 0-15, 
-        register with offset 1 is bit offset 16-31, etc.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
-        @param[in]  bitcount    Count of bits to read.
+        For register memory, `bitoffset = offset * 16`.
 
-        @note If `bitoffset` is out of range, function returns `False`.
+        Args:
+            bitoffset  Bit offset (0-based).
+
+        Returns:
+            `True` or `False`.
+
+        Note:
+            If `bitoffset` is out of range, returns `False`.
         """
         ## @cond
         byteoffset = bitoffset // 8
@@ -393,18 +413,16 @@ class _MemoryBlock:
 
     def setbit(self, bitoffset:int, value:bool):
         """
-        @details
-        Function set value of bit (`True` or `False`) into device memory starting with `bitoffset`.
+        Set a single bit value (`True` or `False`) at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        For register memory `bitoffset` is calculated as `offset * 16`.
-        So register with offset 0 is bit offset 0-15, 
-        register with offset 1 is bit offset 16-31, etc.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
-        @param[in]  value       Value to set: `True` or `False`.
+        For register memory, `bitoffset = offset * 16`.
 
-        @note If `bitoffset` is out of range, function does nothing.
+        Args:
+            bitoffset  Bit offset (0-based).
+            value      Value to set: `True` or `False`.
+
+        Note:
+            If `bitoffset` is out of range, does nothing.
         """
         ## @cond
         byteoffset = bitoffset // 8
@@ -421,18 +439,19 @@ class _MemoryBlock:
 
     def getbitstring(self, bitoffset:int, bytecount:int)->str:
         """
-        @note Since v0.4.2
+        Return UTF-8 string from bit memory starting at `bitoffset`.
 
-        @details
-        Function returns `string` object from device memory starting with `bitoffset` and `bytecount` bytes for `utf-8` encoding.
+        Reads `bytecount` bytes (as bits) and decodes as UTF-8.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        For register memory `bitoffset` is calculated as `offset * 16`.
-        So register with offset 0 is bit offset 0-15,
-        register with offset 1 is bit offset 16-31, etc.
+        Args:
+            bitoffset  Bit offset (0-based).
+            bytecount  Number of bytes of UTF-8 data to read.
 
-        @param[in]  bitoffset   Bit offset (0-based).
-        @param[in]  bytecount   Count of byte of `utf-8` string encoding to read.
+        Returns:
+            Decoded string value.
+
+        Note:
+            Since v0.4.2
         """
         ## @cond
         if self._byteorder == 'big':
@@ -442,19 +461,16 @@ class _MemoryBlock:
 
     def setbitstring(self, bitoffset:int, value:str):
         """
-        @note Since v0.4.2
+        Write UTF-8 string to bit memory starting at `bitoffset`.
 
-        @details
-        Function set `string` object into device memory starting with `bitoffset`.
-        Value will be set using `utf-8` encoding.
+        Value is encoded as UTF-8 and written bitwise.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        For register memory `bitoffset` is calculated as `offset * 16`.
-        So register with offset 0 is bit offset 0-15,
-        register with offset 1 is bit offset 16-31, etc.
+        Args:
+            bitoffset  Bit offset (0-based).
+            value      String value to write.
 
-        @param[in]  bitoffset   Bit offset (0-based).
-        @param[in]  value       String value to be written.
+        Note:
+            Since v0.4.2
         """
         ## @cond
         if self._byteorder == 'big':
@@ -466,19 +482,17 @@ class _MemoryBlock:
 
     def getbytestring(self, byteoffset:int, bytecount:int)->str:
         """
-        @note Since v0.4.2
+        Return UTF-8 string from memory starting at `byteoffset`.
 
-        @details
-        Function returns `string` object from device memory starting with `byteoffset` and `bytecount` bytes for `utf-8` encoding.
+        Args:
+            byteoffset  Byte offset (0-based).
+            bytecount   Count of bytes to read.
 
-        For bit memory `byteoffset` is calculated as `bitoffset // 8`.
-        So bit with offset 0 is in byte with offset 0, bit with offset 8 is in byte with offset 1, etc.
-        For register memory `byteoffset` is calculated as `offset * 2`.
-        So register with offset 0 is byte offset 0 and 1,
-        register with offset 1 is byte offset 2 and 3, etc.
+        Returns:
+            Decoded string value.
 
-        @param[in]  byteoffset  Byte offset (0-based).
-        @param[in]  bytecount   Count of bytes to read.
+        Note:
+            Since v0.4.2
         """
         ## @cond
         if self._byteorder == 'big':
@@ -488,20 +502,14 @@ class _MemoryBlock:
 
     def setbytestring(self, byteoffset:int, value:str):
         """
-        @note Since v0.4.2
+        Write UTF-8 string to memory starting at `byteoffset`.
 
-        @details
-        Function set `value` (`bytes` or `bytearray`) array object into device memory
-        starting with `byteoffset`.
+        Args:
+            byteoffset  Byte offset (0-based).
+            value       String value to be written.
 
-        For bit memory `byteoffset` is calculated as `bitoffset // 8`.
-        So bit with offset 0 is in byte with offset 0, bit with offset 8 is in byte with offset 1, etc.
-        For register memory `byteoffset` is calculated as `offset * 2`.
-        So register with offset 0 is byte offset 0 and 1,
-        register with offset 1 is byte offset 2 and 3, etc.
-
-        @param[in]  byteoffset  Byte offset (0-based).
-        @param[in]  value       String value to be written.
+        Note:
+            Since v0.4.2
         """
         ## @cond
         if self._byteorder == 'big':
@@ -513,21 +521,19 @@ class _MemoryBlock:
 
     def getregstring(self, regoffset:int, bytecount:int)->str:
         """
-        @note Since v0.4.2
+        Return UTF-8 string from register memory starting at `regoffset`.
 
-        @details
-        Function returns `string` object from device memory starting with `regoffset` and `bytecount` bytes for `utf-8` encoding.
-        `regoffset` is offset in 16-bit registers and equal to `byteoffset * 2`.
-        So `regoffset = 0` is equal to `byteoffset = 0`, `regoffset = 1` is equal to `byteoffset = 2` ans so on.
+        `regoffset` is specified in 16-bit registers (`byteoffset = regoffset * 2`).
 
-        For bit memory `regoffset` is calculated as `bitoffset // 16`.
-        So bit with offset 0 is in register with offset 0, bit with offset 16 is registere with offset 1, etc.
-        For register memory `regoffset` is equal to `offset`.
-        So register with offset 0 is byte offset 0 and 1,
-        register with offset 1 is byte offset 2 and 3, etc.
+        Args:
+            regoffset  16-bit register offset (0-based).
+            bytecount  Count of bytes to read.
 
-        @param[in]  regoffset   16-bit register offset (0-based).
-        @param[in]  bytecount   Count of bytes to read.
+        Returns:
+            Decoded string value.
+
+        Note:
+            Since v0.4.2
         """
         ## @cond
         if self._byteorder == 'big':
@@ -537,21 +543,16 @@ class _MemoryBlock:
 
     def setregstring(self, regoffset:int, value:str):
         """
-        @note Since v0.4.2
+        Write UTF-8 string to register memory starting at `regoffset`.
 
-        @details
-        Function set `value` (`bytes` or `bytearray`) array object into device memory
-        starting with `regoffset`, offset in 16-bit registers and equal to `byteoffset * 2`.
-        So `regoffset = 0` is equal to `byteoffset = 0`, `regoffset = 1` is equal to `byteoffset = 2` ans so on.
+        `regoffset` is specified in 16-bit registers (`byteoffset = regoffset * 2`).
 
-        For bit memory `regoffset` is calculated as `bitoffset // 16`.
-        So bit with offset 0 is in register with offset 0, bit with offset 16 is registere with offset 1, etc.
-        For register memory `regoffset` is equal to `offset`.
-        So register with offset 0 is byte offset 0 and 1,
-        register with offset 1 is byte offset 2 and 3, etc.
+        Args:
+            regoffset  16-bit register offset (0-based).
+            value      String value to be written.
 
-        @param[in]  regoffset   16-bit register offset (0-based).
-        @param[in]  value       String value to be written.
+        Note:
+            Since v0.4.2
         """
         ## @cond
         if self._byteorder == 'big':
@@ -576,8 +577,9 @@ class _MemoryBlockBits(_MemoryBlock):
 
     def __getitem__(self, index:int)->int:
         """
-        @details
-        Same as getbit() function but generates `IndexError` if `index` is out of range.
+        Return bit value at `index`.
+
+        Same as `getbit()` but raises `IndexError` if out of range.
         """
         if index < 0 or index >= self._count:
             raise IndexError("Memory index out of range")
@@ -585,8 +587,9 @@ class _MemoryBlockBits(_MemoryBlock):
     
     def __setitem__(self, index:int, value:int):
         """
-        @details
-        Same as setbit() function but generates `IndexError` if `index` is out of range.
+        Set bit value at `index`.
+
+        Same as `setbit()` but raises `IndexError` if out of range.
         """
         if index < 0 or index >= self._count:
             raise IndexError("Memory index out of range")
@@ -594,14 +597,13 @@ class _MemoryBlockBits(_MemoryBlock):
     
     def getint8(self, bitoffset:int)->int:
         """
-        @details
-        Function returns integer value of [-128:127] from device memory starting with `bitoffset`.
+        Return int8 value from bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
+        Args:
+            bitoffset  Bit offset (0-based).
 
-        @note If `bitoffset` is out of range, function returns `0`.
+        Returns:
+            Integer in range [-128:127], or 0 if out of range.
         """
         if 0 <= bitoffset < self._count-7:
             b = self.getbitbytearray(bitoffset, 8)
@@ -610,14 +612,14 @@ class _MemoryBlockBits(_MemoryBlock):
     
     def setint8(self, bitoffset:int, value:int):
         """
-        @details
-        Function set integer value of [-128:127] into device memory starting with `bitoffset`.
+        Write int8 value into bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
+        Args:
+            bitoffset  Bit offset (0-based).
+            value      Integer in range [-128:127].
 
-        @note If `bitoffset` is out of range, function returns `0`.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= bitoffset < self._count-7:
             b = value.to_bytes(1, self._byteorder, signed=True)
@@ -625,14 +627,13 @@ class _MemoryBlockBits(_MemoryBlock):
 
     def getuint8(self, bitoffset:int)->int:
         """
-        @details
-        Function returns integer value of [0:255] from device memory starting with `bitoffset`.
+        Return uint8 value from bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
+        Args:
+            bitoffset  Bit offset (0-based).
 
-        @note If `bitoffset` is out of range, function returns `0`.
+        Returns:
+            Integer in range [0:255], or 0 if out of range.
         """
         if 0 <= bitoffset < self._count-7:
             b = self.getbitbytearray(bitoffset, 8)
@@ -641,15 +642,14 @@ class _MemoryBlockBits(_MemoryBlock):
     
     def setuint8(self, bitoffset:int, value:int):
         """
-        @details
-        Function set integer value of [0:255] into device memory starting with `bitoffset`.
+        Write uint8 value into bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
-        @param[in]  value       Value to write.
+        Args:
+            bitoffset  Bit offset (0-based).
+            value      Integer in range [0:255].
 
-        @note If `bitoffset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= bitoffset < self._count-7:
             b = value.to_bytes(1, self._byteorder, signed=False)
@@ -657,14 +657,13 @@ class _MemoryBlockBits(_MemoryBlock):
 
     def getint16(self, bitoffset:int)->int:
         """
-        @details
-        Function returns integer value of [-32768:32767] from device memory starting with `bitoffset`.
+        Return int16 value from bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
+        Args:
+            bitoffset  Bit offset (0-based).
 
-        @note If `bitoffset` is out of range, function returns `0`.
+        Returns:
+            Integer in range [-32768:32767], or 0 if out of range.
         """
         if 0 <= bitoffset < self._count-15:
             b = self.getbitbytearray(bitoffset, 16)
@@ -673,15 +672,14 @@ class _MemoryBlockBits(_MemoryBlock):
     
     def setint16(self, bitoffset:int, value:int):
         """
-        @details
-        Function set integer value of [-32768:32767] into device memory starting with `bitoffset`.
+        Write int16 value into bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
-        @param[in]  value       Value to write.
+        Args:
+            bitoffset  Bit offset (0-based).
+            value      Integer in range [-32768:32767].
 
-        @note If `bitoffset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= bitoffset < self._count-15:
             b = value.to_bytes(2, self._byteorder, signed=True)
@@ -689,14 +687,13 @@ class _MemoryBlockBits(_MemoryBlock):
 
     def getuint16(self, bitoffset:int)->int:
         """
-        @details
-        Function returns integer value of [0:65535] from device memory starting with `bitoffset`.
+        Return uint16 value from bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
+        Args:
+            bitoffset  Bit offset (0-based).
 
-        @note If `bitoffset` is out of range, function returns `0`.
+        Returns:
+            Integer in range [0:65535], or 0 if out of range.
         """
         if 0 <= bitoffset < self._count-15:
             b = self.getbitbytearray(bitoffset, 16)
@@ -705,15 +702,14 @@ class _MemoryBlockBits(_MemoryBlock):
     
     def setuint16(self, bitoffset:int, value:int):
         """
-        @details
-        Function set integer value of [0:65535] into device memory starting with `bitoffset`.
+        Write uint16 value into bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
-        @param[in]  value       Value to write.
+        Args:
+            bitoffset  Bit offset (0-based).
+            value      Integer in range [0:65535].
 
-        @note If `bitoffset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= bitoffset < self._count-15:
             b = value.to_bytes(2, self._byteorder, signed=False)
@@ -721,14 +717,13 @@ class _MemoryBlockBits(_MemoryBlock):
 
     def getint32(self, bitoffset:int)->int:
         """
-        @details
-        Function returns integer value of [-2147483648:2147483647] from device memory starting with `bitoffset`.
+        Return int32 value from bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
+        Args:
+            bitoffset  Bit offset (0-based).
 
-        @note If `bitoffset` is out of range, function returns `0`.
+        Returns:
+            Integer in range [-2147483648:2147483647], or 0 if out of range.
         """
         if 0 <= bitoffset < self._count-31:
             b = self.swap32(self.getbitbytearray(bitoffset, 32))
@@ -737,15 +732,14 @@ class _MemoryBlockBits(_MemoryBlock):
     
     def setint32(self, bitoffset:int, value:int):
         """
-        @details
-        Function set integer value of [-2147483648:2147483647] into device memory starting with `bitoffset`.
+        Write int32 value into bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
-        @param[in]  value       Value to write.
+        Args:
+            bitoffset  Bit offset (0-based).
+            value      Integer in range [-2147483648:2147483647].
 
-        @note If `bitoffset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= bitoffset < self._count-31:
             b = self.swap32(value.to_bytes(4, MB_BYTEORDER_DEFAULT, signed=True))
@@ -753,14 +747,13 @@ class _MemoryBlockBits(_MemoryBlock):
 
     def getuint32(self, bitoffset:int)->int:
         """
-        @details
-        Function returns integer value of [0:4294967295] from device memory starting with `bitoffset`.
+        Return uint32 value from bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
+        Args:
+            bitoffset  Bit offset (0-based).
 
-        @note If `bitoffset` is out of range, function returns `0`.
+        Returns:
+            Integer in range [0:4294967295], or 0 if out of range.
         """
         if 0 <= bitoffset < self._count-31:
             b = self.swap32(self.getbitbytearray(bitoffset, 32))
@@ -769,15 +762,14 @@ class _MemoryBlockBits(_MemoryBlock):
     
     def setuint32(self, bitoffset:int, value:int):
         """
-        @details
-        Function set integer value of [0:4294967295] into device memory starting with `bitoffset`.
+        Write uint32 value into bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
-        @param[in]  value       Value to write.
+        Args:
+            bitoffset  Bit offset (0-based).
+            value      Integer in range [0:4294967295].
 
-        @note If `bitoffset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= bitoffset < self._count-31:
             b = self.swap32(value.to_bytes(4, MB_BYTEORDER_DEFAULT, signed=False))
@@ -785,15 +777,13 @@ class _MemoryBlockBits(_MemoryBlock):
 
     def getint64(self, bitoffset:int)->int:
         """
-        @details
-        Function returns integer value of [-9223372036854775808:9223372036854775807]
-        from device memory starting with `bitoffset`.
+        Return int64 value from bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
+        Args:
+            bitoffset  Bit offset (0-based).
 
-        @note If `bitoffset` is out of range, function returns `0`.
+        Returns:
+            Integer in range [-9223372036854775808:9223372036854775807], or 0 if out of range.
         """
         if 0 <= bitoffset < self._count-63:
             b = self.swap64(self.getbitbytearray(bitoffset, 64))
@@ -802,16 +792,14 @@ class _MemoryBlockBits(_MemoryBlock):
     
     def setint64(self, bitoffset:int, value:int):
         """
-        @details
-        Function set integer value of [-9223372036854775808:9223372036854775807]
-        into device memory starting with `bitoffset`.
+        Write int64 value into bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
-        @param[in]  value       Value to write.
+        Args:
+            bitoffset  Bit offset (0-based).
+            value      Integer in range [-9223372036854775808:9223372036854775807].
 
-        @note If `bitoffset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= bitoffset < self._count-63:
             b = self.swap64(value.to_bytes(8, MB_BYTEORDER_DEFAULT, signed=True))
@@ -819,15 +807,13 @@ class _MemoryBlockBits(_MemoryBlock):
 
     def getuint64(self, bitoffset:int)->int:
         """
-        @details
-        Function returns integer value of [0:18446744073709551615]
-        from device memory starting with `bitoffset`.
+        Return uint64 value from bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
+        Args:
+            bitoffset  Bit offset (0-based).
 
-        @note If `bitoffset` is out of range, function returns `0`.
+        Returns:
+            Integer in range [0:18446744073709551615], or 0 if out of range.
         """
         if 0 <= bitoffset < self._count-63:
             b = self.swap64(self.getbitbytearray(bitoffset, 64))
@@ -836,16 +822,14 @@ class _MemoryBlockBits(_MemoryBlock):
     
     def setuint64(self, bitoffset:int, value:int):
         """
-        @details
-        Function set integer value of [0:18446744073709551615]
-        into device memory starting with `bitoffset`.
+        Write uint64 value into bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
-        @param[in]  value       Value to write.
+        Args:
+            bitoffset  Bit offset (0-based).
+            value      Integer in range [0:18446744073709551615].
 
-        @note If `bitoffset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= bitoffset < self._count-63:
             b = self.swap64(value.to_bytes(8, MB_BYTEORDER_DEFAULT, signed=False))
@@ -853,14 +837,13 @@ class _MemoryBlockBits(_MemoryBlock):
 
     def getfloat(self, bitoffset:int)->float:
         """
-        @details
-        Function returns float 32-bit value from device memory starting with `bitoffset`.
+        Return 32-bit float from bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
+        Args:
+            bitoffset  Bit offset (0-based).
 
-        @note If `bitoffset` is out of range, function returns `0`.
+        Returns:
+            Float value, or 0.0 if out of range.
         """
         if 0 <= bitoffset < self._count-31:
             b = self.swap32(self.getbitbytearray(bitoffset, 32))
@@ -869,15 +852,14 @@ class _MemoryBlockBits(_MemoryBlock):
     
     def setfloat(self, bitoffset:int, value:float):
         """
-        @details
-        Function set float 32-bit value into device memory starting with `bitoffset`.
+        Write 32-bit float into bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
-        @param[in]  value       Value to write.
+        Args:
+            bitoffset  Bit offset (0-based).
+            value      Float value to write.
 
-        @note If `bitoffset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= bitoffset < self._count-31:
             b = self.swap32(struct.pack('<f', value))
@@ -885,14 +867,13 @@ class _MemoryBlockBits(_MemoryBlock):
 
     def getdouble(self, bitoffset:int)->float:
         """
-        @details
-        Function returns float 64-bit value from device memory starting with `bitoffset`.
+        Return 64-bit float from bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
+        Args:
+            bitoffset  Bit offset (0-based).
 
-        @note If `bitoffset` is out of range, function returns `0`.
+        Returns:
+            Float value, or 0.0 if out of range.
         """
         if 0 <= bitoffset < self._count-63:
             b = self.swap64(self.getbitbytearray(bitoffset, 64))
@@ -901,15 +882,14 @@ class _MemoryBlockBits(_MemoryBlock):
     
     def setdouble(self, bitoffset:int, value:float):
         """
-        @details
-        Function set float 64-bit value into device memory starting with `bitoffset`.
+        Write 64-bit float into bit memory starting at `bitoffset`.
 
-        For bit memory `bitoffset` is offset of the bit/coil.
-        
-        @param[in]  bitoffset   Bit offset (0-based).
-        @param[in]  value       Value to write.
+        Args:
+            bitoffset  Bit offset (0-based).
+            value      Float value to write.
 
-        @note If `bitoffset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= bitoffset < self._count-63:
             b = self.swap64(struct.pack('<d', value))
@@ -917,23 +897,25 @@ class _MemoryBlockBits(_MemoryBlock):
 
     def getstring(self, bitoffset:int, bytecount:int)->str:
         """
-        @note Since v0.4.2
+        Return string from bit memory; same as `getbitstring()`.
 
-        @details
-        For bit memory is same as `getbitstring()`.
+        See Also:
+            getbitstring()
 
-        @sa  `getbitstring()`
+        Note:
+            Since v0.4.2
         """
         return self.getbitstring(bitoffset, bytecount)
 
     def setstring(self, bitoffset:int, value:str):
         """
-        @note Since v0.4.2
+        Write string to bit memory; same as `setbitstring()`.
 
-        @details
-        For bit memory is same as `setbitstring()`.
+        See Also:
+            setbitstring()
 
-        @sa  `setbitstring()`
+        Note:
+            Since v0.4.2
         """
         self.setbitstring(bitoffset, value)
 
@@ -954,8 +936,9 @@ class _MemoryBlockRegs(_MemoryBlock):
 
     def __getitem__(self, index:int)->int:
         """
-        @details
-        Same as getuint16() function but generates `IndexError` if `index` is out of range.
+        Return uint16 register at `index`.
+
+        Same as `getuint16()` but raises `IndexError` if out of range.
         """
         if index < 0 or index >= self._count:
             raise IndexError("Memory index out of range")
@@ -963,8 +946,9 @@ class _MemoryBlockRegs(_MemoryBlock):
     
     def __setitem__(self, index:int, value:int)->int:
         """
-        @details
-        Same as setuint16() function but generates `IndexError` if `index` is out of range.
+        Set uint16 register at `index`.
+
+        Same as `setuint16()` but raises `IndexError` if out of range.
         """
         if index < 0 or index >= self._count:
             raise IndexError("Memory index out of range")
@@ -972,18 +956,16 @@ class _MemoryBlockRegs(_MemoryBlock):
     
     def getint8(self, regoffset:int)->int:
         """
-        @note Since v0.4.4 offset input parameter was changed from `byteoffset` to `regoffset`
+        Return int8 value from register memory at `regoffset` (first byte).
 
-        @details
-        Function returns integer value of [-128:127] from device memory starting with `regoffset`.
+        Args:
+            regoffset  Register offset (0-based).
 
-        For register memory `regoffset` defines register offset.
-        It means that only first byte of the register
-        will be got using this method.
+        Returns:
+            Integer in range [-128:127], or 0 if out of range.
 
-        @param[in]  regoffset  Register offset (0-based).
-
-        @note If `regoffset` is out of range, function returns `0`.
+        Note:
+            Since v0.4.4, parameter renamed from `byteoffset` to `regoffset`.
         """
         ## @cond
         byteoffset = regoffset * 2
@@ -997,36 +979,29 @@ class _MemoryBlockRegs(_MemoryBlock):
 
     def setint8(self, regoffset:int, value:int):
         """
-        @note Since v0.4.4 offset input parameter was changed from `byteoffset` to `regoffset`
+        Write int8 value to register memory at `regoffset` (first byte).
 
-        @details
-        Function set value of [-128:127] into device memory starting with `regoffset`.
+        Args:
+            regoffset  Register offset (0-based).
+            value      Integer in range [-128:127].
 
-        For register memory `regoffset` defines register offset.
-        It means that only first byte of the register
-        will be set using this method.
-
-        @param[in]  regoffset  register offset (0-based).
-        @param[in]  value      Integer value of [-128:127].
-
-        @note If `regoffset` is out of range, function does nothing.
+        Note:
+            Since v0.4.4, parameter renamed from `byteoffset` to `regoffset`.
         """
         self.setuint8(regoffset, value)
 
     def getuint8(self, regoffset:int)->int:
         """
-        @note Since v0.4.4 offset input parameter was changed from `byteoffset` to `regoffset`
+        Return uint8 value from register memory at `regoffset` (first byte).
 
-        @details
-        Function returns integer value of [0:255] from device memory starting with `regoffset`.
+        Args:
+            regoffset  Register offset (0-based).
 
-        For register memory `regoffset` defines register offset.
-        It means that only first byte of the register
-        will be got using this method.
+        Returns:
+            Integer in range [0:255], or 0 if out of range.
 
-        @param[in]  regoffset  Register offset (0-based).
-
-        @note If `regoffset` is out of range, function returns `0`.
+        Note:
+            Since v0.4.4, parameter renamed from `byteoffset` to `regoffset`.
         """
         ## @cond
         byteoffset = regoffset * 2
@@ -1040,19 +1015,14 @@ class _MemoryBlockRegs(_MemoryBlock):
     
     def setuint8(self, regoffset:int, value:int):
         """
-        @note Since v0.4.4 offset input parameter was changed from `byteoffset` to `regoffset`
+        Write uint8 value to register memory at `regoffset` (first byte).
 
-        @details
-        Function set value of [0:255] into device memory starting with `regoffset`.
+        Args:
+            regoffset  Register offset (0-based).
+            value      Integer in range [0:255].
 
-        For register memory `regoffset` defines register offset.
-        It means that only first byte of the register
-        will be set using this method.
-        
-        @param[in]  regoffset  Register offset (0-based).
-        @param[in]  value      Integer value of [0:255].
-
-        @note If `regoffset` is out of range, function does nothing.
+        Note:
+            Since v0.4.4, parameter renamed from `byteoffset` to `regoffset`.
         """
         ## @cond
         byteoffset = regoffset * 2
@@ -1066,12 +1036,13 @@ class _MemoryBlockRegs(_MemoryBlock):
             
     def getint16(self, offset:int)->int:
         """
-        @details
-        Function returns integer value of [-32768:32767] from device memory starting with `offset`.
+        Return int16 value from register memory starting at `offset`.
 
-        @param[in]  offset   Offset of the first register (0-based).
+        Args:
+            offset  Offset of the first register (0-based).
 
-        @note If `offset` is out of range, function returns `0`.
+        Returns:
+            Integer in range [-32768:32767], or 0 if out of range.
         """
         if 0 <= offset < self._count:
             self._shm.lock()
@@ -1084,13 +1055,14 @@ class _MemoryBlockRegs(_MemoryBlock):
 
     def setint16(self, offset:int, value:int):
         """
-        @details
-        Function set integer value of [-32768:32767] into device memory starting with `offset`.
+        Write int16 value to register memory starting at `offset`.
 
-        @param[in]  offset  Offset of the first register (0-based).
-        @param[in]  value   Integer value of [-32768:32767].
+        Args:
+            offset  Offset of the first register (0-based).
+            value   Integer value in range [-32768:32767].
 
-        @note If `offset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= offset < self._count:
             if self._byteorder == 'big':
@@ -1103,12 +1075,13 @@ class _MemoryBlockRegs(_MemoryBlock):
 
     def getuint16(self, offset:int)->int:
         """
-        @details
-        Function returns integer value of [0:65535] from device memory starting with `offset`.
+        Return uint16 value from register memory starting at `offset`.
 
-        @param[in]  offset   Offset of the first register (0-based).
+        Args:
+            offset  Offset of the first register (0-based).
 
-        @note If `offset` is out of range, function returns `0`.
+        Returns:
+            Integer in range [0:65535], or 0 if out of range.
         """
         if 0 <= offset < self._count:
             self._shm.lock()
@@ -1121,13 +1094,14 @@ class _MemoryBlockRegs(_MemoryBlock):
     
     def setuint16(self, offset:int, value:int):
         """
-        @details
-        Function set integer value of [0:65535] into device memory starting with `offset`.
+        Write uint16 value to register memory starting at `offset`.
 
-        @param[in]  offset   Offset of the first register (0-based).
-        @param[in]  value    Integer value of [0:65535].
+        Args:
+            offset  Offset of the first register (0-based).
+            value   Integer value in range [0:65535].
 
-        @note If `offset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= offset < self._count:
             if self._byteorder == 'big':
@@ -1140,12 +1114,13 @@ class _MemoryBlockRegs(_MemoryBlock):
 
     def getint32(self, offset:int)->int:
         """
-        @details
-        Function returns integer value of [-2147483648:2147483647] from device memory starting with `offset`.
+        Return int32 value from register memory starting at `offset`.
 
-        @param[in]  offset   Offset of the first register (0-based).
+        Args:
+            offset  Offset of the first register (0-based).
 
-        @note If `offset` is out of range, function returns `0`.
+        Returns:
+            Integer in range [-2147483648:2147483647], or 0 if out of range.
         """
         if 0 <= offset < self._count-1:
             self._shm.lock()
@@ -1159,13 +1134,14 @@ class _MemoryBlockRegs(_MemoryBlock):
 
     def setint32(self, offset:int, value:int):
         """
-        @details
-        Function set integer value of [-2147483648:2147483647] into device memory starting with `offset`.
+        Write int32 value to register memory starting at `offset`.
 
-        @param[in]  offset   Offset of the first register (0-based).
-        @param[in]  value    Integer value of [-2147483648:2147483647].
+        Args:
+            offset  Offset of the first register (0-based).
+            value   Integer value in range [-2147483648:2147483647].
 
-        @note If `offset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= offset < self._count-1:
             if not (self._byteorder == MB_BYTEORDER_DEFAULT and self._registerorder == MB_REGISTERORDER_R0R1R2R3):
@@ -1179,12 +1155,13 @@ class _MemoryBlockRegs(_MemoryBlock):
 
     def getuint32(self, offset:int)->int:
         """
-        @details
-        Function returns integer value of [0:4294967295] from device memory starting with `offset`.
+        Return uint32 value from register memory starting at `offset`.
 
-        @param[in]  offset   Offset of the first register (0-based).
+        Args:
+            offset  Offset of the first register (0-based).
 
-        @note If `offset` is out of range, function returns `0`.
+        Returns:
+            Integer in range [0:4294967295], or 0 if out of range.
         """
         if 0 <= offset < self._count-1:
             self._shm.lock()
@@ -1198,13 +1175,14 @@ class _MemoryBlockRegs(_MemoryBlock):
     
     def setuint32(self, offset:int, value:int):
         """
-        @details
-        Function set integer value of [0:4294967295] into device memory starting with `offset`.
+        Write uint32 value to register memory starting at `offset`.
 
-        @param[in]  offset   Offset of the first register (0-based).
-        @param[in]  value    Integer value of [0:4294967295].
+        Args:
+            offset  Offset of the first register (0-based).
+            value   Integer value in range [0:4294967295].
 
-        @note If `offset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= offset < self._count-1:
             if not (self._byteorder == MB_BYTEORDER_DEFAULT and self._registerorder == MB_REGISTERORDER_R0R1R2R3):
@@ -1218,13 +1196,13 @@ class _MemoryBlockRegs(_MemoryBlock):
 
     def getint64(self, offset:int)->int:
         """
-        @details
-        Function returns integer value of [-9223372036854775808:9223372036854775807]
-        from device memory starting with `offset`.
+        Return int64 value from register memory starting at `offset`.
 
-        @param[in]  offset   Offset of the first register (0-based).
+        Args:
+            offset  Offset of the first register (0-based).
 
-        @note If `offset` is out of range, function returns `0`.
+        Returns:
+            Integer in range [-9223372036854775808:9223372036854775807], or 0 if out of range.
         """
         if 0 <= offset < self._count-3:
             self._shm.lock()
@@ -1238,14 +1216,14 @@ class _MemoryBlockRegs(_MemoryBlock):
 
     def setint64(self, offset:int, value:int):
         """
-        @details
-        Function set integer value of [-9223372036854775808:9223372036854775807]
-        into device memory starting with `offset`.
+        Write int64 value to register memory starting at `offset`.
 
-        @param[in]  offset   Offset of the first register (0-based).
-        @param[in]  value    Integer value of [-9223372036854775808:9223372036854775807].
+        Args:
+            offset  Offset of the first register (0-based).
+            value   Integer value in range [-9223372036854775808:9223372036854775807].
 
-        @note If `offset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= offset < self._count-3:
             if not (self._byteorder == MB_BYTEORDER_DEFAULT and self._registerorder == MB_REGISTERORDER_R0R1R2R3):
@@ -1259,13 +1237,13 @@ class _MemoryBlockRegs(_MemoryBlock):
 
     def getuint64(self, offset:int)->int:
         """
-        @details
-        Function returns integer value of [0:18446744073709551615]
-        from device memory starting with `offset`.
+        Return uint64 value from register memory starting at `offset`.
 
-        @param[in]  offset   Offset of the first register (0-based).
+        Args:
+            offset  Offset of the first register (0-based).
 
-        @note If `offset` is out of range, function returns `0`.
+        Returns:
+            Integer in range [0:18446744073709551615], or 0 if out of range.
         """
         if 0 <= offset < self._count-3:
             self._shm.lock()
@@ -1279,14 +1257,14 @@ class _MemoryBlockRegs(_MemoryBlock):
     
     def setuint64(self, offset:int, value:int):
         """
-        @details
-        Function set integer value of [0:18446744073709551615]
-        into device memory starting with `offset`.
+        Write uint64 value to register memory starting at `offset`.
 
-        @param[in]  offset   Offset of the first register (0-based).
-        @param[in]  value    Integer value of [0:18446744073709551615].
+        Args:
+            offset  Offset of the first register (0-based).
+            value   Integer value in range [0:18446744073709551615].
 
-        @note If `offset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= offset < self._count-3:
             if not (self._byteorder == MB_BYTEORDER_DEFAULT and self._registerorder == MB_REGISTERORDER_R0R1R2R3):
@@ -1300,12 +1278,13 @@ class _MemoryBlockRegs(_MemoryBlock):
 
     def getfloat(self, offset:int)->int:
         """
-        @details
-        Function returns float 32-bit value from device memory starting with `offset`.
+        Return 32-bit float from register memory starting at `offset`.
 
-        @param[in]  offset   Offset of the first register (0-based).
+        Args:
+            offset  Offset of the first register (0-based).
 
-        @note If `offset` is out of range, function returns `0`.
+        Returns:
+            Float value, or 0.0 if out of range.
         """
         if 0 <= offset < self._count-1:
             self._shm.lock()
@@ -1319,13 +1298,14 @@ class _MemoryBlockRegs(_MemoryBlock):
     
     def setfloat(self, offset:int, value:float):
         """
-        @details
-        Function set float 32-bit value into device memory starting with `offset`.
+        Write 32-bit float to register memory starting at `offset`.
 
-        @param[in]  offset   Offset of the first register (0-based).
-        @param[in]  value    32-bit float value.
+        Args:
+            offset  Offset of the first register (0-based).
+            value   32-bit float value.
 
-        @note If `offset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= offset < self._count-1:
             if not (self._byteorder == MB_BYTEORDER_DEFAULT and self._registerorder == MB_REGISTERORDER_R0R1R2R3):
@@ -1339,12 +1319,13 @@ class _MemoryBlockRegs(_MemoryBlock):
 
     def getdouble(self, offset:int)->int:
         """
-        @details
-        Function returns float 64-bit value from device memory starting with `offset`.
+        Return 64-bit float from register memory starting at `offset`.
 
-        @param[in]  offset   Offset of the first register (0-based).
+        Args:
+            offset  Offset of the first register (0-based).
 
-        @note If `offset` is out of range, function returns `0`.
+        Returns:
+            Float value, or 0.0 if out of range.
         """
         if 0 <= offset < self._count-3:
             self._shm.lock()
@@ -1358,13 +1339,14 @@ class _MemoryBlockRegs(_MemoryBlock):
     
     def setdouble(self, offset:int, value:float):
         """
-        @details
-        Function set float 64-bit value into device memory starting with `offset`.
+        Write 64-bit float to register memory starting at `offset`.
 
-        @param[in]  offset   Offset of the first register (0-based).
-        @param[in]  value    64-bit float value.
+        Args:
+            offset  Offset of the first register (0-based).
+            value   64-bit float value.
 
-        @note If `offset` is out of range, function does nothing.
+        Note:
+            Does nothing if out of range.
         """
         if 0 <= offset < self._count-3:
             if not (self._byteorder == MB_BYTEORDER_DEFAULT and self._registerorder == MB_REGISTERORDER_R0R1R2R3):
@@ -1378,23 +1360,25 @@ class _MemoryBlockRegs(_MemoryBlock):
 
     def getstring(self, regoffset:int, bytecount:int)->str:
         """
-        @note Since v0.4.2
+        Return string from register memory; same as `getregstring()`.
 
-        @details
-        For register memory is same as `getregstring()`.
+        See Also:
+            getregstring()
 
-        @sa  `getregstring()`
+        Note:
+            Since v0.4.2
         """
         return self.getregstring(regoffset, bytecount)
 
     def setstring(self, regoffset:int, value:str):
         """
-        @note Since v0.4.2
+        Write string to register memory; same as `setregstring()`.
 
-        @details
-        For register memory is same as `setregstring()`.
+        See Also:
+            setregstring()
 
-        @sa  `setregstring()`
+        Note:
+            Since v0.4.2
         """
         self.setregstring(regoffset, value)
 
@@ -1491,120 +1475,99 @@ class _MbDevice:
 
     def getlibpath(self)->str:
         """
-        @note Since v0.4.4
+        Return absolute path to the mbtools server library folder.
 
-        @details Returns absolute path for library folder of mbtools server.
+        Note:
+            Since v0.4.4
         """
         return self._libpath
 
     def getprojectpath(self)->str:
         """
-        @note Since v0.4.4
+        Return absolute path to the current project folder.
 
-        @details Returns absolute path to the current project folder
+        Note:
+            Since v0.4.4
         """
         return self._projectpath
 
     def getprojectfile(self)->str:
         """
-        @note Since v0.4.4
+        Return file name of the current project.
 
-        @details Returns file name of the current project.
+        Note:
+            Since v0.4.4
         """
         return self._projectfile
 
     def getname(self)->str:
-        """
-        @details Returns name of the current device as string.
-        """
+        """Return name of the current device as string."""
         return self._name
     
     def getflags(self)->int:
-        """
-        @details Returns bit flags of the current device as integer.
-        """
+        """Return bit flags of the current device as integer."""
         self._shm.lock()
         r = self._control.flags
         self._shm.unlock()
         return r
 
     def getcycle(self)->int:
-        """
-        @details Returns count of cycles of Modbus Server app synchronizer.
-        """
+        """Return cycle counter of Modbus Server app synchronizer."""
         self._shm.lock()
         r = self._control.cycle
         self._shm.unlock()
         return r
 
     def getcount0x(self)->int:
-        """
-        @details Returns count of coils (bits, 0x) of the current device.
-        """
+        """Return count of coils (bits, 0x) of the current device."""
         self._shm.lock()
         r = self._control.count0x
         self._shm.unlock()
         return r
 
     def getcount1x(self)->int:
-        """
-        @details Returns count of discrete inputs (bits, 1x) of the current device.
-        """
+        """Return count of discrete inputs (bits, 1x) of the current device."""
         self._shm.lock()
         r = self._control.count1x
         self._shm.unlock()
         return r
 
     def getcount3x(self)->int:
-        """
-        @details Returns count of input regs (16-bit words, 3x) of the current device.
-        """
+        """Return count of input regs (16-bit words, 3x) of the current device."""
         self._shm.lock()
         r = self._control.count3x
         self._shm.unlock()
         return r
 
     def getcount4x(self)->int:
-        """
-        @details Returns count of holding regs (16-bit words, 4x) of the current device.
-        """
+        """Return count of holding regs (16-bit words, 4x) of the current device."""
         self._shm.lock()
         r = self._control.count4x
         self._shm.unlock()
         return r
 
     def getexcstatus(self)->int:
-        """
-        @details Returns exception status of the current device as integer [0:255].
-        """
+        """Return exception status of the current device as integer [0:255]."""
         ## @cond
         return self._excmem.getuint8(self._excoffset)
         ## @endcond
 
     def setexcstatus(self, value:int):
-        """
-        @details Set exception status `value` of the current device as integer [0:255].
-        """
+        """Set exception status of the current device as integer [0:255]."""
         ## @cond
         self._excmem.setuint8(self._excoffset, value)
         ## @endcond
     
     def getbyteorder(self)->int:
-        """
-        @details Returns byte order id of the current device as integer.
-        """
+        """Return byte order id of the current device as integer."""
         return self._byteorder
     
     def getregisterorder(self)->int:
-        """
-        @details Returns register order id of the current device as integer.
-        """
+        """Return register order id of the current device as integer."""
         return self._registerorder
     
     def getpycycle(self)->int:
-        """
-        @details Returns count of cycles since python program started.
-        """
+        """Return count of cycles since python program started."""
         return self._python.getpycycle()
     
     ## @cond
@@ -1613,278 +1576,314 @@ class _MbDevice:
     ## @endcond
 
     def getmem0x(self)->_MemoryBlockBits:
-        """
-        @details Returns object that provide access to device `0x` memory.
-        """
+        """Return object that provides access to device `0x` memory."""
         return self._mem0x
     
     def getmem1x(self)->_MemoryBlockBits:
-        """
-        @details Returns object that provide access to device `1x` memory.
-        """
+        """Return object that provides access to device `1x` memory."""
         return self._mem1x
 
     def getmem3x(self)->_MemoryBlockRegs:
-        """
-        @details Returns object that provide access to device `3x` memory.
-        """
+        """Return object that provides access to device `3x` memory."""
         return self._mem3x
     
     def getmem4x(self)->_MemoryBlockRegs:
-        """
-        @details Returns object that provide access to device `4x` memory.
-        """
+        """Return object that provides access to device `4x` memory."""
         return self._mem4x
     
     def getint8(self, adr)->int:
         """
-        @note Since v0.4.4
+        Return int8 value from memory defined by `adr`.
 
-        @details Return int8 value from memory defined by address `adr`
+        Args:
+            adr  Address of memory. Accepts `modbus.Address` or int/str address.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         return self._memdict[madr.type()].getint8(madr.offset())
 
     def setint8(self, adr, value:int):
         """
-        @note Since v0.4.4
+        Write int8 value into memory defined by `adr`.
 
-        @details Set int8 value into memory defined by address `adr`
+        Args:
+            adr    Address of memory. Accepts `modbus.Address` or int/str address.
+            value  int8 value to set.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
-        @param[in]  value int8 value to set
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         self._memdict[madr.type()].setint8(madr.offset(), value)
 
     def getuint8(self, adr)->int:
         """
-        @note Since v0.4.4
+        Return uint8 value from memory defined by `adr`.
 
-        @details Return uint8 value from memory defined by address `adr`
+        Args:
+            adr  Address of memory. Accepts `modbus.Address` or int/str address.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         return self._memdict[madr.type()].getuint8(madr.offset())
 
     def setuint8(self, adr, value:int):
         """
-        @note Since v0.4.4
+        Write uint8 value into memory defined by `adr`.
 
-        @details Set uint8 value into memory defined by address `adr`
+        Args:
+            adr    Address of memory. Accepts `modbus.Address` or int/str address.
+            value  uint8 value to set.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
-        @param[in]  value uint8 value to set
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         self._memdict[madr.type()].setuint8(madr.offset(), value)
 
     def getint16(self, adr)->int:
         """
-        @note Since v0.4.4
+        Return int16 value from memory defined by `adr`.
 
-        @details Return int16 value from memory defined by address `adr`
+        Args:
+            adr  Address of memory. Accepts `modbus.Address` or int/str address.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         return self._memdict[madr.type()].getint16(madr.offset())
 
     def setint16(self, adr, value:int):
         """
-        @note Since v0.4.4
+        Write int16 value into memory defined by `adr`.
 
-        @details Set int16 value into memory defined by address `adr`
+        Args:
+            adr    Address of memory. Accepts `modbus.Address` or int/str address.
+            value  int16 value to set.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
-        @param[in]  value int16 value to set
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         self._memdict[madr.type()].setint16(madr.offset(), value)
 
     def getuint16(self, adr)->int:
         """
-        @note Since v0.4.4
+        Return uint16 value from memory defined by `adr`.
 
-        @details Return uint16 value from memory defined by address `adr`
+        Args:
+            adr  Address of memory. Accepts `modbus.Address` or int/str address.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         return self._memdict[madr.type()].getuint16(madr.offset())
     
     def setuint16(self, adr, value:int):
         """
-        @note Since v0.4.4
+        Write uint16 value into memory defined by `adr`.
 
-        @details Set uint16 value into memory defined by address `adr`
+        Args:
+            adr    Address of memory. Accepts `modbus.Address` or int/str address.
+            value  uint16 value to set.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
-        @param[in]  value uint16 value to set
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         self._memdict[madr.type()].setuint16(madr.offset(), value)
 
     def getint32(self, adr)->int:
         """
-        @note Since v0.4.4
+        Return int32 value from memory defined by `adr`.
 
-        @details Return int32 value from memory defined by address `adr`
+        Args:
+            adr  Address of memory. Accepts `modbus.Address` or int/str address.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         return self._memdict[madr.type()].getint32(madr.offset())
 
     def setint32(self, adr, value:int):
         """
-        @note Since v0.4.4
+        Write int32 value into memory defined by `adr`.
 
-        @details Set int32 value into memory defined by address `adr`
+        Args:
+            adr    Address of memory. Accepts `modbus.Address` or int/str address.
+            value  int32 value to set.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
-        @param[in]  value int32 value to set
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         self._memdict[madr.type()].setint32(madr.offset(), value)
 
     def getuint32(self, adr)->int:
         """
-        @note Since v0.4.4
+        Return uint32 value from memory defined by `adr`.
 
-        @details Return uint32 value from memory defined by address `adr`
+        Args:
+            adr  Address of memory. Accepts `modbus.Address` or int/str address.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         return self._memdict[madr.type()].getuint32(madr.offset())
     
     def setuint32(self, adr, value:int):
         """
-        @note Since v0.4.4
+        Write uint32 value into memory defined by `adr`.
 
-        @details Set uint32 value into memory defined by address `adr`
+        Args:
+            adr    Address of memory. Accepts `modbus.Address` or int/str address.
+            value  uint32 value to set.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
-        @param[in]  value uint32 value to set
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         self._memdict[madr.type()].setuint32(madr.offset(), value)
 
     def getint64(self, adr)->int:
         """
-        @note Since v0.4.4
+        Return int64 value from memory defined by `adr`.
 
-        @details Return int64 value from memory defined by address `adr`
+        Args:
+            adr  Address of memory. Accepts `modbus.Address` or int/str address.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         return self._memdict[madr.type()].getint64(madr.offset())
 
     def setint64(self, adr, value:int):
         """
-        @note Since v0.4.4
+        Write int64 value into memory defined by `adr`.
 
-        @details Set int64 value into memory defined by address `adr`
+        Args:
+            adr    Address of memory. Accepts `modbus.Address` or int/str address.
+            value  int64 value to set.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
-        @param[in]  value int64 value to set
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         self._memdict[madr.type()].setint64(madr.offset(), value)
 
     def getuint64(self, adr)->int:
         """
-        @note Since v0.4.4
+        Return uint64 value from memory defined by `adr`.
 
-        @details Return uint64 value from memory defined by address `adr`
+        Args:
+            adr  Address of memory. Accepts `modbus.Address` or int/str address.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         return self._memdict[madr.type()].getuint64(madr.offset())
     
     def setuint64(self, adr, value:int):
         """
-        @note Since v0.4.4
+        Write uint64 value into memory defined by `adr`.
 
-        @details Set uint64 value into memory defined by address `adr`
+        Args:
+            adr    Address of memory. Accepts `modbus.Address` or int/str address.
+            value  uint64 value to set.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
-        @param[in]  value uint64 value to set
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         self._memdict[madr.type()].setuint64(madr.offset(), value)
 
     def getfloat(self, adr)->float:
         """
-        @note Since v0.4.4
+        Return 32-bit float from memory defined by `adr`.
 
-        @details Return float value from memory defined by address `adr`
+        Args:
+            adr  Address of memory. Accepts `modbus.Address` or int/str address.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         return self._memdict[madr.type()].getfloat(madr.offset())
 
     def setfloat(self, adr, value:float):
         """
-        @note Since v0.4.4
+        Write 32-bit float into memory defined by `adr`.
 
-        @details Set float value into memory defined by address `adr`
+        Args:
+            adr    Address of memory. Accepts `modbus.Address` or int/str address.
+            value  Float value to set.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
-        @param[in]  value float value to set
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         self._memdict[madr.type()].setfloat(madr.offset(), value)
 
     def getdouble(self, adr)->float:
         """
-        @note Since v0.4.4
+        Return 64-bit float from memory defined by `adr`.
 
-        @details Return double value from memory defined by address `adr`
+        Args:
+            adr  Address of memory. Accepts `modbus.Address` or int/str address.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         return self._memdict[madr.type()].getdouble(madr.offset())
     
     def setdouble(self, adr, value:float):
         """
-        @note Since v0.4.4
+        Write 64-bit float into memory defined by `adr`.
 
-        @details Set double value into memory defined by address `adr`
+        Args:
+            adr    Address of memory. Accepts `modbus.Address` or int/str address.
+            value  Float value to set.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
-        @param[in]  value double value to set
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         self._memdict[madr.type()].setdouble(madr.offset(), value)
 
     def getstring(self, adr)->str:
         """
-        @note Since v0.4.4
+        Return string value from memory defined by `adr`.
 
-        @details Return string value from memory defined by address `adr`
+        Args:
+            adr  Address of memory. Accepts `modbus.Address` or int/str address.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         return self._memdict[madr.type()].getstring(madr.offset())
     
     def setstring(self, adr, value:str):
         """
-        @note Since v0.4.4
+        Write string value into memory defined by `adr`.
 
-        @details Set string value into memory defined by address `adr`
+        Args:
+            adr    Address of memory. Accepts `modbus.Address` or int/str address.
+            value  String value to set.
 
-        @param[in]  adr   address of memory. Can have type modbus.Address or int/str representation of address
-        @param[in]  value string value to set
+        Note:
+            Since v0.4.4
         """
         madr = adr if isinstance(adr, modbus.Address) else modbus.Address(adr)
         self._memdict[madr.type()].setstring(madr.offset(), value)

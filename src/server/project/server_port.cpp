@@ -34,6 +34,7 @@
 mbServerPort::mbServerPort(QObject *parent) :
     mbCorePort(parent)
 {
+    m_settings.host = Modbus::Defaults::instance().ipaddr;
     memset(m_units, 0, sizeof(m_units));
 }
 

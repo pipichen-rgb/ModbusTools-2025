@@ -137,6 +137,7 @@ mbCoreDomDataView::Strings::Strings() :
     addressNotation  (QStringLiteral("addressNotation")),
     useDefaultColumns(QStringLiteral("useDefaultColumns")),
     columns          (QStringLiteral("columns")),
+    enableProcessing (QStringLiteral("enableProcessing")),
     sepColumns       (';')
 {
 }
@@ -151,6 +152,7 @@ mbCoreDomDataView::mbCoreDomDataView()
 {
     m_attr_period = mbCoreDataView::Defaults::instance().period;
     m_useDefaultColumns = mbCoreDataView::Defaults::instance().useDefaultColumns;
+    m_enableProcessing = mbCoreDataView::Defaults::instance().enableProcessing;
 }
 
 mbCoreDomDataView::~mbCoreDomDataView()
@@ -208,6 +210,11 @@ void mbCoreDomDataView::read(mbCoreXmlStreamReader &reader)
                 m_items.append(item);
                 continue;
             }
+            if (tag == s.enableProcessing)
+            {
+                setEnableProcessing(reader.readElementText().toInt());
+                continue;
+            }
             reader.processUnexpectedElement(tag);
         }
         break;
@@ -235,6 +242,7 @@ void mbCoreDomDataView::write(mbCoreXmlStreamWriter &writer, const QString &tagN
     writer.writeTextElement(s.addressNotation, addressNotation());
     writer.writeTextElement(s.useDefaultColumns, QString::number(useDefaultColumns()));
     writer.writeTextElement(s.columns, columns().join(s.sepColumns));
+    writer.writeTextElement(s.enableProcessing, QString::number(enableProcessing()));
 
     Q_FOREACH (mbCoreDomDataViewItem *v, m_items)
         v->write(writer);

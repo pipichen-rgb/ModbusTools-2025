@@ -587,6 +587,7 @@ Window for managing additional import path list for Python interpreter.
 * `Port`-dialog displayed when creating/editing current port settings such as:
 * `Name` - name of current port;
 * `Type` - type of current port. Can be `TCP` for TCP/IP version and `RTU` or `ASC` for serial port version;
+* `IP Address` - IP address to bind the server (default is `0.0.0.0` - all interfaces);
 * `Port` - TCP/IP port number;
 * `Timeout` - timeout for TCP/IP connection;
 * `Max.connections` - maximum active TCP-connections for current port;
@@ -646,6 +647,8 @@ Encoding can be selected from list of supported encodings from Qt Framework (`QT
 * `Columns` - DataView list columns can be customized: included/excluded, changed order.
 If `Use Default Columns` is checked then system setting `DataView columns` order 
 setting will be used.
+* `Enable Processing` - enable/disable processing of current DataView.
+For server it means enable/disable autorefresh of the current DataView items.
 
 ## DataViewItem dialog
 

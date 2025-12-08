@@ -50,10 +50,13 @@ void mbClientRuntime::createComponents()
     QHash<mbClientDevice*, QList<mbClientDataViewItem*> > hashDevices;
     Q_FOREACH (mbClientDataView *wl, project()->dataViews())
     {
-        Q_FOREACH (mbClientDataViewItem *item, wl->items())
+        if (wl->isEnableProcessing())
         {
-            if (item->device())
-                hashDevices[item->device()].append(item);
+            Q_FOREACH (mbClientDataViewItem *item, wl->items())
+            {
+                if (item->device())
+                    hashDevices[item->device()].append(item);
+            }
         }
     }
 

@@ -38,6 +38,10 @@ mbServerDialogPort::mbServerDialogPort(QWidget *parent) :
     const Modbus::Defaults &d = Modbus::Defaults::instance();
 
     QSpinBox *sp;
+    QLineEdit *ln;
+    // IP Address
+    ln = ui->lnIpaddr;
+    ln->setText(d.ipaddr);
     // Max conncetions
     sp = ui->spMaxConn;
     sp->setMinimum(1);
@@ -75,6 +79,7 @@ MBSETTINGS mbServerDialogPort::cachedSettings() const
     Modbus::Strings vs = Modbus::Strings::instance();
     const QString &prefix = Strings().cachePrefix;
     MBSETTINGS m = mbCoreDialogPort::cachedSettings();
+    m[prefix+vs.ipaddr ] = ui->lnIpaddr ->text ();
     m[prefix+vs.maxconn] = ui->spMaxConn->value();
     return m;
 }
@@ -89,7 +94,8 @@ void mbServerDialogPort::setCachedSettings(const MBSETTINGS &m)
     MBSETTINGS::const_iterator end = m.end();
     //bool ok;
 
-    it = m.find(prefix+vs.maxconn); if (it != end) ui->spMaxConn->setValue(it.value().toInt());
+    it = m.find(prefix+vs.ipaddr ); if (it != end) ui->lnIpaddr ->setText (it.value().toString());
+    it = m.find(prefix+vs.maxconn); if (it != end) ui->spMaxConn->setValue(it.value().toInt   ());
 }
 
 void mbServerDialogPort::fillFormInner(const MBSETTINGS &settings)
@@ -98,12 +104,14 @@ void mbServerDialogPort::fillFormInner(const MBSETTINGS &settings)
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = settings.end();
 
-    it = settings.find(vs.maxconn); if (it != end) ui->spMaxConn->setValue(it.value().toInt());
+    it = settings.find(vs.ipaddr ); if (it != end) ui->lnIpaddr ->setText (it.value().toString());
+    it = settings.find(vs.maxconn); if (it != end) ui->spMaxConn->setValue(it.value().toInt   ());
 }
 
 void mbServerDialogPort::fillDataInner(MBSETTINGS &settings) const
 {
     Modbus::Strings vs = Modbus::Strings::instance();
 
+    settings[vs.ipaddr ] = ui->lnIpaddr ->text ();
     settings[vs.maxconn] = ui->spMaxConn->value();
 }

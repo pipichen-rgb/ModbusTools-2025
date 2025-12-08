@@ -187,6 +187,18 @@ List of changes of new v0.4 version of ModbusTools:
   regular expressions etc
 * Updated docs
 
+# 0.4.7
+
+* Add `IP Address` setting for TCP server to bind
+* Add Enable/Disable functionality for DataViews
+* Update `ModbusLib` subproject
+* Update docs
+* Fix `ModbusLib` subproject inner connection error for TCP client on Windows
+
+# 0.4.8
+
+* Fixed bug within `ModbusLib` subproject when TCP client unable to connect on Windows
+
 # 0.5.0
 
 * Added support for Modbus protocol versions:

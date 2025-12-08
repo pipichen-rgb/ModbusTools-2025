@@ -63,7 +63,6 @@ mbCoreDataViewUi::mbCoreDataViewUi(mbCoreDataView *dataView, mbCoreDataViewModel
     this->setContextMenuPolicy(Qt::CustomContextMenu);
 
     m_dataView = dataView;
-
     m_model = model;
     m_model->setParent(this);
 
@@ -84,24 +83,8 @@ mbCoreDataViewUi::mbCoreDataViewUi(mbCoreDataView *dataView, mbCoreDataViewModel
     header = m_view->verticalHeader();
     header->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-    QString headerStyleSheet = R"(
-    QHeaderView::section {
-        background-color: #f0f0f0;        /* Light gray background */
-        color: #2c3e50;                   /* Dark gray text color */
-        border: 1px solid #dcdcdc;        /* Subtle light gray border around sections */
-        font-size: 11px;                  /* Font size */
-        font-weight: normal;              /* Normal text weight for a clean look */
-        text-align: left;                 /* Align text to the left */
-    }
-
-    QHeaderView::section:pressed {
-        background-color: #d0d0d0;        /* Darker background when pressed */
-        border: 1px solid #bcbcbc;        /* Darker border when pressed */
-    }
-
-    )";
-
-    m_view->setStyleSheet(headerStyleSheet);
+    setEnableProcessing(m_dataView->isEnableProcessing());
+    connect(m_dataView, &mbCoreDataView::enableProcessingChanged, this, &mbCoreDataViewUi::setEnableProcessing);
 
     connect(dataView, &mbCoreDataView::nameChanged, this, &mbCoreDataViewUi::nameChanged);
 
@@ -175,5 +158,64 @@ void mbCoreDataViewUi::contextMenu(const QModelIndex &index)
 {
     if (mbCoreDataViewItem *item = m_model->itemCore(index))
         Q_EMIT itemContextMenu(item);
+}
+
+void mbCoreDataViewUi::setEnableProcessing(bool enable)
+{
+    if (enable)
+    {
+        QString headerStyleSheet = R"(
+        QHeaderView::section {
+            background-color: #f0f0f0;        /* Light gray background */
+            color: #2c3e50;                   /* Dark gray text color */
+            border: 1px solid #dcdcdc;        /* Subtle light gray border around sections */
+            font-size: 11px;                  /* Font size */
+            font-weight: normal;              /* Normal text weight for a clean look */
+            text-align: left;                 /* Align text to the left */
+        }
+
+        QHeaderView::section:pressed {
+            background-color: #d0d0d0;        /* Darker background when pressed */
+            border: 1px solid #bcbcbc;        /* Darker border when pressed */
+        }
+
+        )";
+
+        m_view->setStyleSheet(headerStyleSheet);
+    }
+    else
+    {
+        QString headerStyleSheet = R"(
+        QHeaderView::section {
+            background-color: #e0e0e0;        /* Darker gray background for disabled */
+            color: #a0a0a0;                   /* Muted gray text color */
+            border: 1px solid #c0c0c0;        /* Darker border for disabled state */
+            font-size: 11px;                  /* Font size */
+            font-weight: normal;              /* Normal text weight */
+            text-align: left;                 /* Align text to the left */
+        }
+
+        QHeaderView::section:pressed {
+            background-color: #e0e0e0;        /* Same as normal disabled state */
+            border: 1px solid #c0c0c0;        /* Same border when pressed in disabled */
+        }
+
+        )";
+
+        m_view->setStyleSheet(headerStyleSheet);
+    }
+    QPalette p = this->palette();
+    QPalette newPalette = p;
+    QPalette::ColorGroup cg = enable ? QPalette::Active : QPalette::Disabled;
+    // Copy how disabled text, backgrounds, buttons normally look
+    newPalette.setColor(QPalette::Window,    p.color(cg, QPalette::Window));
+    newPalette.setColor(QPalette::WindowText,p.color(cg, QPalette::WindowText));
+    newPalette.setColor(QPalette::Base,      p.color(cg, QPalette::Base));
+    newPalette.setColor(QPalette::Text,      p.color(cg, QPalette::Text));
+    newPalette.setColor(QPalette::Button,    p.color(cg, QPalette::Button));
+    newPalette.setColor(QPalette::ButtonText,p.color(cg, QPalette::ButtonText));
+
+    m_view->setPalette(newPalette);
+    m_view->setAutoFillBackground(true);
 }
 

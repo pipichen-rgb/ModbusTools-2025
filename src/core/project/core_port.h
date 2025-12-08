@@ -80,6 +80,8 @@ public: // common settings
 public: // tcp settings
     inline QString host() const { return m_settings.host; }
     inline void setHost(const QString& host) { m_settings.host = host; }
+    inline QString ipaddr() const { return m_settings.host; }
+    inline void setIpaddr(const QString& host) { m_settings.host = host; }
     inline uint16_t port() const { return m_settings.port; }
     inline void setPort(uint16_t port) { m_settings.port = port; }
     inline uint32_t timeout() const { return m_settings.timeout; }
@@ -136,6 +138,7 @@ protected:
     {
         Modbus::ProtocolType        type              ;
         QString                     host              ;
+        QString                     ipaddr            ;
         uint16_t                    port              ;
         uint32_t                    timeout           ;
         uint32_t                    maxconn           ;

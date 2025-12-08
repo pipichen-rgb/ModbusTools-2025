@@ -22,7 +22,7 @@ device and has many formats to represent the current data.
 ![](client_view.png)
 
 To start working with the program, you need to run `client.exe`. Then, by default,
-when you first start the program,  \an empty project is created, consisting of a single port,
+when you first start the program, an empty project is created, consisting of a single port,
 a device attached to it, and an empty DataView data list.
 
 ## Port
@@ -493,6 +493,8 @@ Encoding can be selected from list of supported encodings from Qt Framework (`QT
 * `Columns` - DataView list columns can be customized: included/excluded, changed order.
 If `Use Default Columns` is checked then system setting `DataView columns` order 
 setting will be used.
+* `Enable Processing` - enable/disable processing of current DataView.
+For client it means enable/disable polling of the current DataView items.
 
 ## DataViewItem dialog
 

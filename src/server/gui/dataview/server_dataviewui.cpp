@@ -48,6 +48,15 @@ void mbServerDataViewUi::changePeriod(int period)
     }
 }
 
+void mbServerDataViewUi::setEnableProcessing(bool enable)
+{
+    mbCoreDataViewUi::setEnableProcessing(enable);
+    if (enable)
+        startScanning(m_dataView->period());
+    else
+        stopScanning();
+}
+
 bool mbServerDataViewUi::event(QEvent *event)
 {
     if (event->type() == QEvent::Show)

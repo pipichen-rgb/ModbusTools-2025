@@ -3,6 +3,9 @@ cmake_minimum_required(VERSION 3.13) # 2.2 - case insensitive syntax
 
 project(ModbusTools VERSION 0.5.0 LANGUAGES CXX)
 
+set(MBTOOLS_VERSION ${PROJECT_VERSION})
+set(MBTOOLS_ROOT_DIR ${CMAKE_SOURCE_DIR})
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
@@ -24,6 +27,7 @@ endif()
 
 set(MB_QT_ENABLED ON)
 set(MB_C_SUPPORT_DISABLE ON)
+set(MB_NO_INSTALL ON)
 # EXCLUDE_FROM_ALL: to not generate install data
 add_subdirectory(modbus/src EXCLUDE_FROM_ALL)
 
@@ -33,60 +37,7 @@ add_subdirectory(src/client)
 
 add_subdirectory(src/server)
 
-# Check if Doxygen is available
-#find_package(Doxygen)
-#
-#if (DOXYGEN_FOUND)
-#    message("Doxygen found: ${DOXYGEN_EXECUTABLE}")
-#    # Add a target to generate Doxygen documentation for the client
-#    add_custom_target(DoxygenClient
-#        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/doc/DoxyfileClient
-#        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc
-#        COMMENT "Generating Doxygen documentation for Client"
-#        VERBATIM
-#    )
-#
-#    # Add a target to generate Doxygen documentation for the server
-#    add_custom_target(DoxygenServer
-#        COMMAND ${DOXYGEN_EXECUTABLE} ${CMAKE_SOURCE_DIR}/doc/DoxyfileServer
-#        WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc
-#        COMMENT "Generating Doxygen documentation for Server"
-#        VERBATIM
-#    )
-#
-#    # Find qhelpgenerator executable
-#    find_program(QHELPGENERATOR_EXECUTABLE qhelpgenerator)
-#
-#    if (QHELPGENERATOR_EXECUTABLE)
-#        message("qhelpgenerator found: ${QHELPGENERATOR_EXECUTABLE}")
-#
-#        # Add a target to generate Qt help files for the server
-#        add_custom_target(QtHelpServer
-#            COMMAND ${QHELPGENERATOR_EXECUTABLE} ${CMAKE_SOURCE_DIR}/doc/output/ModbusServer.qhcp
-#            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc/output
-#            COMMENT "Generating Qt help files for Server"
-#            VERBATIM
-#        )
-#
-#        # Add a target to generate Qt help files for the client
-#        add_custom_target(QtHelpClient
-#            COMMAND ${QHELPGENERATOR_EXECUTABLE} ${CMAKE_SOURCE_DIR}/doc/output/ModbusClient.qhcp
-#            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/doc/output
-#            COMMENT "Generating Qt help files for Client"
-#            VERBATIM
-#        )
-#
-#        # Make sure QtHelpServer runs after DoxygenServer
-#        add_dependencies(QtHelpServer DoxygenServer)
-#
-#        # Make sure QtHelpClient runs after DoxygenClient
-#        add_dependencies(QtHelpClient DoxygenClient)
-#    else()
-#        message(STATUS "qhelpgenerator not found. Qt help targets will not be generated.")
-#    endif()
-#else()
-#    message(STATUS "Doxygen not found. Documentation targets will not be generated/regenerated.")
-#endif()
+add_subdirectory("doc")
 
 install(TARGETS ${MB_LIBRARY_NAME}         DESTINATION .)
 install(TARGETS ${MBTOOLS_CORE_LIB_NAME}   DESTINATION .)
@@ -101,5 +52,5 @@ install(FILES ${MBTOOLS_SCRIPT_FILES} DESTINATION "./script/server")
 
 # Install help files
 # Collect help files using GLOB
-file(GLOB MBTOOLS_HELP_FILES "${CMAKE_SOURCE_DIR}/doc/output/*.qch" "${CMAKE_SOURCE_DIR}/doc/output/*.qhc")
+file(GLOB MBTOOLS_HELP_FILES "${CMAKE_BINARY_DIR}/doc/output/*.qch" "${CMAKE_BINARY_DIR}/doc/output/*.qhc")
 install(FILES ${MBTOOLS_HELP_FILES} DESTINATION "./help")
