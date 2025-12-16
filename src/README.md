@@ -9,21 +9,46 @@ This page describes the process of building a ModbusTools project from source fi
 The ModbusTools project requires Qt version 5.8 or later.
 
 1.  Update package list:
+  
+    Debian/Ubuntu based systems:
 
     ```console
-    $ sudo apt-get update
+    $ sudo apt update
+    ```
+
+    RedHat/Fedora based systems:
+
+    ```console
+    $ sudo dnf check-update
+    $ sudo dnf update
     ```
 
 2.  Install main build tools like g++, make etc:
 
+    Debian/Ubuntu based systems:
+
     ```console
-    $ sudo apt-get install build-essential
+    $ sudo apt install build-essential
+    ```
+
+    RedHat/Fedora based systems:
+
+    ```console
+    $ sudo dnf install gcc-c++ make
     ```
 
 3.  Install Qt tools:
 
+    Debian/Ubuntu based systems:
+
     ```console
-    $ sudo apt-get install qtbase5-dev qttools5-dev
+    $ sudo apt install qtbase5-dev qttools5-dev
+    ```
+
+    RedHat/Fedora based systems:
+
+    ```console
+    $ sudo dnf install qt5-qtbase-devel qt5-qttools-devel
     ```
 
 4.  Check for correct instalation:
@@ -47,8 +72,16 @@ The ModbusTools project requires Qt version 5.8 or later.
 
 5.  Install git:
 
+    Debian/Ubuntu based systems:
+
     ```console
-    $ sudo apt-get install git
+    $ sudo apt install git
+    ```
+
+    RedHat/Fedora based systems:
+
+    ```console
+    $ sudo dnf install git
     ```
 
 6.  Create project directory, move to it and clone repository:
@@ -65,6 +98,21 @@ The ModbusTools project requires Qt version 5.8 or later.
     $ cd ~
     $ mkdir -p bin/ModbusTools
     $ cd bin/ModbusTools
+    ```
+
+8.  To build ModbusTools with `cmake` you need to have `cmake` installed.
+    Install it using package manager:
+
+    Debian/Ubuntu based systems:
+
+    ```console
+    $ sudo apt install cmake
+    ```
+
+    RedHat/Fedora based systems:
+
+    ```console
+    $ sudo dnf install cmake
     ```
 
 ### Build using cmake
