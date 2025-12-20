@@ -26,9 +26,9 @@
             "generator": "Visual Studio 17 2022",
             "toolset": "host=x64",
             "architecture": "x64",
-            "binaryDir": "$env{USERPROFILE}/tmp/cmake/ModbusTools/bin/Win64",
+            "binaryDir": "$env{USERPROFILE}/tmp123/cmake/ModbusTools/bin/Win64",
             "cacheVariables": {
-                "CMAKE_PREFIX_PATH": "C:/Qt/5.15.2/msvc2019_64",
+                "CMAKE_PREFIX_PATH": "D:/Qt-5.15.2/5.15.2/msvc2019_64",
                 "CMAKE_C_COMPILER": "cl.exe",
                 "CMAKE_CXX_COMPILER": "cl.exe"
             }
