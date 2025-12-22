@@ -199,3 +199,6 @@ List of changes of new v0.4 version of ModbusTools:
 
 * Fixed bug within `ModbusLib` subproject when TCP client unable to connect on Windows
 
+# 0.4.9
+
+* Fixed bug 'UTF-16 strings write inserts BOM (U+FEFF)', Issue #63

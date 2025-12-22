@@ -802,7 +802,9 @@ QByteArray toByteArray(const QVariant &value, Format format, Modbus::MemoryType 
             else
                 s = s.left(index+1);
         }
-        data = codec->fromUnicode(s);
+        QTextCodec::ConverterState state;
+        state.flags = QTextCodec::IgnoreHeader;
+        data = codec->fromUnicode(s.constData(), s.size(), &state);
         if ((stringLengthType == FullLength) && data.length() < cBytes)
             data.append(cBytes-data.length(), '\0');
         else if (data.length() > cBytes)
@@ -996,7 +998,9 @@ QVariant toVariant(const QByteArray &data, Format format, Modbus::MemoryType mem
     case String:
     {
         QTextCodec *codec = QTextCodec::codecForName(stringEncoding);
-        QString s = codec->toUnicode(newData);
+        QTextCodec::ConverterState state;
+        state.flags = QTextCodec::IgnoreHeader;
+        QString s = codec->toUnicode(newData.constData(), newData.size(), &state);
         if (stringLengthType == ZerroEnded)
         {
             int i = s.indexOf(QChar(0));
