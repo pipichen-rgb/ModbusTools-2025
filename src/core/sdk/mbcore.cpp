@@ -820,8 +820,11 @@ QByteArray toByteArray(const QVariant &value, Format format, Modbus::MemoryType 
         const QString sep = byteArraySeparator;
         QString s = value.toString();
         int i = 0;
-        data = QByteArray(variableLength, '\0');
         QStringList bytes = s.split(sep);
+        if (variableLength > 0)
+            data = QByteArray(variableLength, '\0');
+        else
+            data = QByteArray(bytes.length(), '\0');
         Q_FOREACH(QString byteStr, bytes)
         {
             byteStr = byteStr.trimmed();
@@ -833,42 +836,41 @@ QByteArray toByteArray(const QVariant &value, Format format, Modbus::MemoryType 
                 quint8 v = static_cast<quint8>(byteStr.toUInt(&ok, 2));
                 data[i] = static_cast<char>(v);
             }
-            break;
+                break;
             case Oct:
             {
                 quint8 v = static_cast<quint8>(byteStr.toUInt(&ok, 8));
                 data[i] = static_cast<char>(v);
             }
-            break;
+                break;
             case Dec:
             {
                 quint8 v = static_cast<quint8>(byteStr.toInt(&ok, 10));
                 data[i] = static_cast<char>(v);
             }
-            break;
+                break;
             case UDec:
             {
                 quint8 v = static_cast<quint8>(byteStr.toUInt(&ok, 10));
                 data[i] = static_cast<char>(v);
             }
-            break;
+                break;
             case Hex:
             default:
             {
                 quint8 v = static_cast<quint8>(byteStr.toUInt(&ok, 16));
                 data[i] = static_cast<char>(v);
             }
-            break;
+                break;
             }
             if (!ok)
                 return QByteArray();
             i++;
         }
     }
-    break;
+        break;
     case String:
     {
-        const int cBytes = variableLength;
         QTextCodec *codec = QTextCodec::codecForName(stringEncoding);
         QString s = fromEscapeSequence(value.toString());
         if (stringLengthType == ZerroEnded)
@@ -879,15 +881,21 @@ QByteArray toByteArray(const QVariant &value, Format format, Modbus::MemoryType 
             else
                 s = s.left(index+1);
         }
-        data = codec->fromUnicode(s);
-        if ((stringLengthType == FullLength) && data.length() < cBytes)
-            data.append(cBytes-data.length(), '\0');
-        else if (data.length() > cBytes)
-            data = data.left(cBytes);
-        if (data.length() & 1) // data len is odd number
+        QTextCodec::ConverterState state;
+        state.flags = QTextCodec::IgnoreHeader;
+        data = codec->fromUnicode(s.constData(), s.size(), &state);
+        if (variableLength > 0)
+        {
+            const int cBytes = variableLength;
+            if ((stringLengthType == FullLength) && data.length() < cBytes)
+                data.append(cBytes-data.length(), '\0');
+            else if (data.length() > cBytes)
+                data = data.left(cBytes);
+        }
+        if ((data.length() & 1) && ((memoryType == Modbus::Memory_3x) || (memoryType == Modbus::Memory_4x)))// data len is odd number
             data.append(1, '\0');
     }
-    break;
+        break;
     }
 
     switch (format)
@@ -1043,27 +1051,32 @@ QVariant toVariant(const QByteArray &data, Format format, Modbus::MemoryType mem
     {
         const QString sep = byteArraySeparator;
         QString s;
+        int cBytes;
+        if ((variableLength <= 0) || (variableLength > data.length()))
+            cBytes = data.length();
+        else
+            cBytes = variableLength;
         switch (byteArrayFormat)
         {
         case Bin:
-            for (int i = 0; i < variableLength; i++)
+            for (int i = 0; i < cBytes; i++)
                 s += toBinString(reinterpret_cast<const unsigned char*>(buff)[i]) + sep;
             break;
         case Oct:
-            for (int i = 0; i < variableLength; i++)
+            for (int i = 0; i < cBytes; i++)
                 s += toOctString(reinterpret_cast<const unsigned char*>(buff)[i]) + sep;
             break;
         case Dec:
-            for (int i = 0; i < variableLength; i++)
+            for (int i = 0; i < cBytes; i++)
                 s += QString::number(static_cast<int>(reinterpret_cast<const char*>(buff)[i]), 10) + sep;
             break;
         case UDec:
-            for (int i = 0; i < variableLength; i++)
+            for (int i = 0; i < cBytes; i++)
                 s += QString::number(static_cast<unsigned int>(reinterpret_cast<const unsigned char*>(buff)[i]), 10) + sep;
             break;
         case Hex:
         default:
-            for (int i = 0; i < variableLength; i++)
+            for (int i = 0; i < cBytes; i++)
                 s += toHexString(reinterpret_cast<const unsigned char*>(buff)[i]) + sep;
             break;
         }
@@ -1073,7 +1086,9 @@ QVariant toVariant(const QByteArray &data, Format format, Modbus::MemoryType mem
     case String:
     {
         QTextCodec *codec = QTextCodec::codecForName(stringEncoding);
-        QString s = codec->toUnicode(newData);
+        QTextCodec::ConverterState state;
+        state.flags = QTextCodec::IgnoreHeader;
+        QString s = codec->toUnicode(newData.constData(), newData.size(), &state);
         if (stringLengthType == ZerroEnded)
         {
             int i = s.indexOf(QChar(0));
