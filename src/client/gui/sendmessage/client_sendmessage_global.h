@@ -17,7 +17,11 @@ struct mbClientSendMessageParams
     }
 
     int func;
+    union
+    {
     uint16_t offset;
+    uint16_t subfunc;
+    };
     uint16_t count;
     mb::Format format;
     uint16_t writeOffset;

@@ -736,6 +736,63 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientSendMessa
         break;
     case MBF_READ_EXCEPTION_STATUS:
         return new mbClientRunMessageReadExceptionStatus(this);
+    case MBF_DIAGNOSTICS:
+        switch (params.subfunc)
+        {
+        case MBDIAGN_RETURN_QUERY_DATA:
+            switch (params.format)
+            {
+            case mb::Bool:
+            {
+                QStringList ls = dataToStringList(params.data);
+                data = fromStringListBits(ls);
+            }
+                break;
+            case mb::ByteArray:
+            case mb::String:
+                data = mb::toByteArray(params.data,
+                                       params.format,
+                                       Modbus::Memory_0x,
+                                       m_dataParams.byteOrder,
+                                       m_dataParams.registerOrder,
+                                       m_dataParams.byteArrayFormat,
+                                       m_dataParams.stringEncoding,
+                                       m_dataParams.stringLengthType,
+                                       m_dataParams.byteArraySeparator,
+                                       0);
+                break;
+            default:
+            {
+                QStringList ls = dataToStringList(params.data);
+                data = fromStringListNumbers(ls, params.format);
+            }
+                break;
+            }
+            break;
+        case MBDIAGN_RESTART_COMMUNICATIONS_OPTION:
+            if (params.data.toInt())
+                data = QByteArray("\xFF\x00", 2);
+            else
+                data = QByteArray("\0\0", 2);
+            break;
+        case MBDIAGN_CHANGE_ASCII_INPUT_DELIMITER:
+            if (params.data.length())
+            {
+                char d[2];
+                d[0] = params.data.front().toLatin1();
+                d[1] = '\0';
+                data = QByteArray(d, 2);
+            }
+            else
+            {
+                data = QByteArray("\0\0", 2);
+            }
+            break;
+        default:
+            data = QByteArray("\0\0", 2);
+            break;
+        }
+        return new mbClientRunMessageDiagnostics(params.subfunc, data.constData(), data.size(), this);
     case MBF_WRITE_MULTIPLE_COILS:
     {
         msg = new mbClientRunMessageWriteMultipleCoils(params.offset,
@@ -819,11 +876,11 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientSendMessa
     case MBF_MASK_WRITE_REGISTER:
     {
         msg = new mbClientRunMessageMaskWriteRegister(params.offset, this);
-       struct { quint16 andMask; quint16 orMask; } v;
-       v.andMask = static_cast<quint16>(ui->spWriteMaskAnd->value());
-       v.orMask  = static_cast<quint16>(ui->spWriteMaskOr ->value());
-       data = QByteArray(reinterpret_cast<char*>(&v), sizeof(v));
-       c = 2;
+        struct { quint16 andMask; quint16 orMask; } v;
+        v.andMask = static_cast<quint16>(ui->spWriteMaskAnd->value());
+        v.orMask  = static_cast<quint16>(ui->spWriteMaskOr ->value());
+        data = QByteArray(reinterpret_cast<char*>(&v), sizeof(v));
+        c = 2;
     }
         break;
     case MBF_READ_WRITE_MULTIPLE_REGISTERS:
@@ -1081,6 +1138,11 @@ void mbClientSendMessageUi::fillParams(mbClientSendMessageParams &params)
         break;
     case MBF_READ_EXCEPTION_STATUS:
         break;
+    case MBF_DIAGNOSTICS:
+        params.subfunc = getCurrentDiagnSubfuncNum();
+        params.format = mb::enumFormatValueByIndex(ui->cmbDiagnFormat->currentIndex());
+        params.data = ui->txtDiagnRequest->toPlainText();
+        break;
     case MBF_WRITE_MULTIPLE_COILS:
     case MBF_WRITE_MULTIPLE_REGISTERS:
         params.offset = getDefaultOffset();
@@ -1130,6 +1192,11 @@ void mbClientSendMessageUi::fillForm(const mbClientSendMessageParams &params)
     case MBF_READ_EXCEPTION_STATUS:
     case MBF_REPORT_SERVER_ID:
         ui->cmbReadDataFormat->setCurrentText(mb::enumFormatKey(params.format));
+        break;
+    case MBF_DIAGNOSTICS:
+        setCurrentDiagnSubfuncNum(params.subfunc);
+        ui->cmbDiagnFormat->setCurrentText(mb::enumFormatKey(params.format));
+        ui->txtDiagnRequest->setPlainText(params.data);
         break;
     case MBF_WRITE_MULTIPLE_COILS:
     case MBF_WRITE_MULTIPLE_REGISTERS:
@@ -1245,6 +1312,36 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
         {
         case mb::Bool:
             ls = toStringListBits(data, count * 16);
+            break;
+        case mb::ByteArray:
+        case mb::String:
+            ls.append(mb::toVariant(data,
+                                    format,
+                                    Modbus::Memory_0x,
+                                    m_dataParams.byteOrder,
+                                    m_dataParams.registerOrder,
+                                    m_dataParams.byteArrayFormat,
+                                    m_dataParams.stringEncoding,
+                                    m_dataParams.stringLengthType,
+                                    m_dataParams.byteArraySeparator,
+                                    data.count()).toString());
+            break;
+        default:
+            ls = toStringListNumbers(data, format);
+            break;
+        }
+    }
+        break;
+    case MBF_DIAGNOSTICS:
+    {
+        txt = ui->txtDiagnResponse;
+        uint16_t count = message->count();
+        QByteArray data(reinterpret_cast<char*>(message->innerBuffer()), count);
+        format = mb::enumFormatValueByIndex(ui->cmbDiagnFormat->currentIndex());
+        switch (format)
+        {
+        case mb::Bool:
+            ls = toStringListBits(data, count*8);
             break;
         case mb::ByteArray:
         case mb::String:
@@ -1467,6 +1564,11 @@ uint8_t mbClientSendMessageUi::getCurrentFuncNum() const
     return m_funcNums.value(ui->cmbFunction->currentIndex());
 }
 
+uint16_t mbClientSendMessageUi::getCurrentDiagnSubfuncNum() const
+{
+    return m_diagnSubfuncNums.value(ui->cmbDiagnSubfunction->currentIndex());
+}
+
 void mbClientSendMessageUi::setCurrentFuncNum(uint8_t func)
 {
     switch(func)
@@ -1548,22 +1650,29 @@ void mbClientSendMessageUi::setCurrentFuncNum(uint8_t func)
     }
 }
 
-void mbClientSendMessageUi::setCurrentDiagnSubfuncNum(uint16_t func)
+void mbClientSendMessageUi::setCurrentDiagnSubfuncNum(uint16_t subfunc)
 {
-    switch(func)
+    switch (subfunc)
     {
     case MBDIAGN_RETURN_QUERY_DATA:
-        ui->swDiagn->setCurrentWidget(ui->pgDiagnEcho);
-        break;
-    case MBDIAGN_RESTART_COMMUNICATIONS_OPTION:
-    case MBDIAGN_FORCE_LISTEN_ONLY_MODE       :
-    case MBDIAGN_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER:
-    case MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAGS:
-        ui->swDiagn->setCurrentWidget(ui->pgDiagnEmpty);
+    case MBDIAGN_RETURN_DIAGNOSTIC_REGISTER:
+    case MBDIAGN_CHANGE_ASCII_INPUT_DELIMITER:
+        ui->txtDiagnRequest->setEnabled(true);
         break;
     default:
-        ui->swDiagn->setCurrentWidget(ui->pgDiagnData);
+        ui->txtDiagnRequest->setEnabled(false);
         break;
+    }
+
+    int i = 0;
+    Q_FOREACH (int f, m_diagnSubfuncNums)
+    {
+        if (f == subfunc)
+        {
+            ui->cmbDiagnSubfunction->setCurrentIndex(i);
+            break;
+        }
+        ++i;
     }
 }
 

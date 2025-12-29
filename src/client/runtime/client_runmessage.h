@@ -309,6 +309,25 @@ public:
 
 
 // --------------------------------------------------------------------------------------------------------
+// ---------------------------------------------- DIAGNOSTICS ---------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+class mbClientRunMessageDiagnostics : public mbClientRunMessageRead
+{
+public:
+    explicit mbClientRunMessageDiagnostics(uint8_t unit, uint16_t subfunc, const void *buff, uint8_t buffsz, QObject *parent = nullptr);
+    explicit mbClientRunMessageDiagnostics(uint16_t subfunc, const void *buff, uint8_t buffsz, QObject *parent = nullptr) : mbClientRunMessageDiagnostics(0, subfunc, buff, buffsz, parent) {}
+
+public:
+    uint8_t function() const override { return MBF_DIAGNOSTICS; }
+    Modbus::MemoryType memoryType() const override { return Modbus::Memory_0x; }
+    Modbus::StatusCode getData(uint16_t innerOffset, uint16_t count, void *buff) const override;
+    inline uint16_t subFunction() const { return m_offset; }
+    inline void setCount(uint16_t count) { m_count = count; }
+};
+
+
+// --------------------------------------------------------------------------------------------------------
 // ------------------------------------------- REPORT SERVER ID -------------------------------------------
 // --------------------------------------------------------------------------------------------------------
 

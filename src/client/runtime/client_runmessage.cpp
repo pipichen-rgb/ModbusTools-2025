@@ -358,6 +358,22 @@ Modbus::StatusCode mbClientRunMessageReadExceptionStatus::getData(uint16_t inner
 }
 
 // --------------------------------------------------------------------------------------------------------
+// ---------------------------------------------- DIAGNOSTICS ---------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+mbClientRunMessageDiagnostics::mbClientRunMessageDiagnostics(uint8_t unit, uint16_t subfunc, const void *buff, uint8_t buffsz, QObject *parent) :
+    mbClientRunMessageRead(unit, subfunc, buffsz, MSG_MAX_BYTES, parent)
+{
+    memcpy(m_buff, buff, buffsz);
+}
+
+Modbus::StatusCode mbClientRunMessageDiagnostics::getData(uint16_t innerOffset, uint16_t count, void *buff) const
+{
+    memcpy(buff, m_buff+innerOffset, count);
+    return Modbus::Status_Good;
+}
+
+// --------------------------------------------------------------------------------------------------------
 // ------------------------------------------- REPORT SERVER ID -------------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
@@ -449,4 +465,3 @@ Modbus::StatusCode mbClientRunMessageReadWriteMultipleRegisters::setData(uint16_
     uint32_t c;
     return Modbus::writeMemRegs(innerOffset, count, buff, m_buff, innerBufferRegSize(), &c);
 }
-

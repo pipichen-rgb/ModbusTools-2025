@@ -162,6 +162,7 @@ private:
     bool fromStringNumber(mb::Format format, const QString &v, void *buff);
     QStringList dataToStringList(const QString &s);
     uint8_t getCurrentFuncNum() const;
+    uint16_t getCurrentDiagnSubfuncNum() const;
     void setCurrentFuncNum(uint8_t func);
     void setCurrentDiagnSubfuncNum(uint16_t func);
     static QStringList saveMessages(const QList<const mbClientSendMessageParams*> messages);
