@@ -106,6 +106,7 @@ Strings::Strings() :
     WriteSingleRegister                    (QStringLiteral("WriteSingleRegister")),
     ReadExceptionStatus                    (QStringLiteral("ReadExceptionStatus")),
     Diagnostics                            (QStringLiteral("Diagnostics")),
+    GetCommEventCounter                    (QStringLiteral("GetCommEventCounter")),
     WriteMultipleCoils                     (QStringLiteral("WriteMultipleCoils")),
     WriteMultipleRegisters                 (QStringLiteral("WriteMultipleRegisters")),
     ReportServerID                         (QStringLiteral("ReportServerID")),
@@ -522,6 +523,7 @@ uint8_t ModbusFunction(const QString &func)
     if (func == s.WriteSingleRegister       ) return MBF_WRITE_SINGLE_REGISTER        ;
     if (func == s.ReadExceptionStatus       ) return MBF_READ_EXCEPTION_STATUS        ;
     if (func == s.Diagnostics               ) return MBF_DIAGNOSTICS                  ;
+    if (func == s.GetCommEventCounter       ) return MBF_GET_COMM_EVENT_COUNTER       ;
     if (func == s.WriteMultipleCoils        ) return MBF_WRITE_MULTIPLE_COILS         ;
     if (func == s.WriteMultipleRegisters    ) return MBF_WRITE_MULTIPLE_REGISTERS     ;
     if (func == s.ReportServerID            ) return MBF_REPORT_SERVER_ID             ;
@@ -543,6 +545,7 @@ QString ModbusFunctionString(uint8_t func)
     case MBF_WRITE_SINGLE_REGISTER        : return s.WriteSingleRegister       ;
     case MBF_READ_EXCEPTION_STATUS        : return s.ReadExceptionStatus       ;
     case MBF_DIAGNOSTICS                  : return s.Diagnostics               ;
+    case MBF_GET_COMM_EVENT_COUNTER       : return s.GetCommEventCounter       ;
     case MBF_WRITE_MULTIPLE_COILS         : return s.WriteMultipleCoils        ;
     case MBF_WRITE_MULTIPLE_REGISTERS     : return s.WriteMultipleRegisters    ;
     case MBF_REPORT_SERVER_ID             : return s.ReportServerID            ;

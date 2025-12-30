@@ -450,6 +450,7 @@ struct MB_EXPORT Strings
     const QString WriteSingleRegister                    ;
     const QString ReadExceptionStatus                    ;
     const QString Diagnostics                            ;
+    const QString GetCommEventCounter                    ;
     const QString WriteMultipleCoils                     ;
     const QString WriteMultipleRegisters                 ;
     const QString ReportServerID                         ;
@@ -668,6 +669,9 @@ inline QString toOctString(T value) { return Modbus::toOctString<QString, T>(val
 
 template<class T>
 inline QString toHexString(T value) { return Modbus::toHexString<QString, T>(value); }
+
+template<class T>
+inline QString toDecString(T value) { return Modbus::toDecString<QString, T>(value); }
 
 MB_EXPORT Modbus::MemoryType memoryType(int index);
 

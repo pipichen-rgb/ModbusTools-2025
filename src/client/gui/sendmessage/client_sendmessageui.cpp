@@ -96,6 +96,7 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) :
     m_funcNums.append(MBF_WRITE_SINGLE_REGISTER         );
     m_funcNums.append(MBF_READ_EXCEPTION_STATUS         );
     m_funcNums.append(MBF_DIAGNOSTICS                   );
+    m_funcNums.append(MBF_GET_COMM_EVENT_COUNTER        );
     m_funcNums.append(MBF_WRITE_MULTIPLE_COILS          );
     m_funcNums.append(MBF_WRITE_MULTIPLE_REGISTERS      );
     m_funcNums.append(MBF_REPORT_SERVER_ID              );
@@ -214,6 +215,10 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) :
                      );
     }
     cmb->setCurrentIndex(2);
+
+    // GetCommEventCounter
+    ui->lnGetCommEventCounterStatus->setText("0000");
+    ui->lnGetCommEventCounterCount->setText("0");
 
     connect(mbCore::globalCore(), &mbCore::addressNotationChanged, this, &mbClientSendMessageUi::setModbusAddresNotation);
 
@@ -793,6 +798,8 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientSendMessa
             break;
         }
         return new mbClientRunMessageDiagnostics(params.subfunc, data.constData(), data.size(), this);
+    case MBF_GET_COMM_EVENT_COUNTER:
+        return new mbClientRunMessageGetCommEventCounter(this);
     case MBF_WRITE_MULTIPLE_COILS:
     {
         msg = new mbClientRunMessageWriteMultipleCoils(params.offset,
@@ -1143,6 +1150,8 @@ void mbClientSendMessageUi::fillParams(mbClientSendMessageParams &params)
         params.format = mb::enumFormatValueByIndex(ui->cmbDiagnFormat->currentIndex());
         params.data = ui->txtDiagnRequest->toPlainText();
         break;
+    case MBF_GET_COMM_EVENT_COUNTER:
+        break;
     case MBF_WRITE_MULTIPLE_COILS:
     case MBF_WRITE_MULTIPLE_REGISTERS:
         params.offset = getDefaultOffset();
@@ -1368,6 +1377,13 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
             ls = toStringListNumbers(data, format);
             break;
         }
+    }
+        break;
+    case MBF_GET_COMM_EVENT_COUNTER:
+    {
+        auto m = reinterpret_cast<mbClientRunMessageGetCommEventCounter*>(message.data());
+        ui->lnGetCommEventCounterStatus->setText(mb::toHexString(m->status()));
+        ui->lnGetCommEventCounterCount->setText(mb::toDecString(m->eventCount()));
     }
         break;
     case MBF_REPORT_SERVER_ID:
@@ -1631,6 +1647,9 @@ void mbClientSendMessageUi::setCurrentFuncNum(uint8_t func)
         break;
     case MBF_DIAGNOSTICS:
         ui->swFunctionData->setCurrentWidget(ui->pgDiagn);
+        break;
+    case MBF_GET_COMM_EVENT_COUNTER:
+        ui->swFunctionData->setCurrentWidget(ui->pgGetCommEventCounter);
         break;
     case MBF_WRITE_MULTIPLE_COILS:
         ui->swFunctionData->setCurrentWidget(ui->pgDefault);

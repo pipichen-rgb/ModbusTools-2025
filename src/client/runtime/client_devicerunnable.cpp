@@ -274,6 +274,18 @@ Modbus::StatusCode mbClientDeviceRunnable::execExternalMessage()
         if (Modbus::StatusIsGood(res))
             static_cast<mbClientRunMessageDiagnostics*>(m_currentMessage.data())->setCount(m_byteCount);
         break;
+    case MBF_GET_COMM_EVENT_COUNTER:
+    {
+        uint16_t status, eventCount;
+        res = m_modbusClient->getCommEventCounter(&status,
+                                                  &eventCount);
+        if (Modbus::StatusIsGood(res))
+        {
+            static_cast<mbClientRunMessageGetCommEventCounter*>(m_currentMessage.data())->setStatus(status);
+            static_cast<mbClientRunMessageGetCommEventCounter*>(m_currentMessage.data())->setEventCount(eventCount);
+        }
+    }
+        break;
     case MBF_WRITE_MULTIPLE_COILS:
         res = m_modbusClient->writeMultipleCoils(m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBuffer());
         break;

@@ -328,6 +328,26 @@ public:
 
 
 // --------------------------------------------------------------------------------------------------------
+// ---------------------------------------- GET COMM EVENT COUNTER ----------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+class mbClientRunMessageGetCommEventCounter : public mbClientRunMessageRead
+{
+public:
+    explicit mbClientRunMessageGetCommEventCounter(uint8_t unit, QObject *parent = nullptr);
+    explicit mbClientRunMessageGetCommEventCounter( QObject *parent = nullptr) : mbClientRunMessageGetCommEventCounter(0, parent) {}
+
+public:
+    uint8_t function() const override { return MBF_GET_COMM_EVENT_COUNTER; }
+    Modbus::MemoryType memoryType() const override { return Modbus::Memory_4x; }
+    inline uint16_t status() const { return m_offset; }
+    inline void setStatus(uint16_t s) { m_offset = s; }
+    inline uint16_t eventCount() const { return m_count; }
+    inline void setEventCount(uint16_t c) { m_count = c; }
+};
+
+
+// --------------------------------------------------------------------------------------------------------
 // ------------------------------------------- REPORT SERVER ID -------------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
