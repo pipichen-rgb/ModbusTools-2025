@@ -1240,6 +1240,8 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
     case MBF_READ_COILS:
     case MBF_READ_DISCRETE_INPUTS:
     {
+        if (!Modbus::StatusIsGood(message->status()))
+            break;
         uint16_t count = message->count();
         QByteArray data((count+7)/8, '\0');
         message->getData(0, count, data.data());
@@ -1270,6 +1272,8 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
     case MBF_READ_EXCEPTION_STATUS:
     {
         txt = ui->txtReadData;
+        if (!Modbus::StatusIsGood(message->status()))
+            break;
         format = mb::enumFormatValueByIndex(ui->cmbReadDataFormat->currentIndex());
         uint16_t count = 8;
         QByteArray data((count+7)/8, '\0');
@@ -1305,6 +1309,8 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
     case MBF_READ_HOLDING_REGISTERS:
     case MBF_READ_INPUT_REGISTERS:
     {
+        if (!Modbus::StatusIsGood(message->status()))
+            break;
         uint16_t count = message->count();
         QByteArray data(count * 2, '\0');
         message->getData(0, count, data.data());
@@ -1335,6 +1341,8 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
     case MBF_DIAGNOSTICS:
     {
         txt = ui->txtDiagnResponse;
+        if (!Modbus::StatusIsGood(message->status()))
+            break;
         uint16_t count = message->count();
         QByteArray data(reinterpret_cast<char*>(message->innerBuffer()), count);
         format = mb::enumFormatValueByIndex(ui->cmbDiagnFormat->currentIndex());
@@ -1365,6 +1373,8 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
     case MBF_REPORT_SERVER_ID:
     {
         txt = ui->txtReadData;
+        if (!Modbus::StatusIsGood(message->status()))
+            break;
         format = mb::enumFormatValueByIndex(ui->cmbReadDataFormat->currentIndex());
         uint16_t count = message->count();
         QByteArray data(count, '\0');
@@ -1578,36 +1588,42 @@ void mbClientSendMessageUi::setCurrentFuncNum(uint8_t func)
         m_defaultAddress->setAddressType(Modbus::Memory_0x);
         m_defaultAddress->setEnabledAddress(true);
         ui->spDefaultCount->setEnabled(true);
+        ui->txtDefaultData->setReadOnly(true);
         break;
     case MBF_READ_DISCRETE_INPUTS:
         ui->swFunctionData->setCurrentWidget(ui->pgDefault);
         m_defaultAddress->setAddressType(Modbus::Memory_1x);
         m_defaultAddress->setEnabledAddress(true);
         ui->spDefaultCount->setEnabled(true);
+        ui->txtDefaultData->setReadOnly(true);
         break;
     case MBF_READ_HOLDING_REGISTERS:
         ui->swFunctionData->setCurrentWidget(ui->pgDefault);
         m_defaultAddress->setAddressType(Modbus::Memory_4x);
         m_defaultAddress->setEnabledAddress(true);
         ui->spDefaultCount->setEnabled(true);
+        ui->txtDefaultData->setReadOnly(true);
         break;
     case MBF_READ_INPUT_REGISTERS:
         ui->swFunctionData->setCurrentWidget(ui->pgDefault);
         m_defaultAddress->setAddressType(Modbus::Memory_3x);
         m_defaultAddress->setEnabledAddress(true);
         ui->spDefaultCount->setEnabled(true);
+        ui->txtDefaultData->setReadOnly(true);
         break;
     case MBF_WRITE_SINGLE_COIL:
         ui->swFunctionData->setCurrentWidget(ui->pgDefault);
         m_defaultAddress->setAddressType(Modbus::Memory_0x);
         m_defaultAddress->setEnabledAddress(true);
         ui->spDefaultCount->setEnabled(false);
+        ui->txtDefaultData->setReadOnly(false);
         break;
     case MBF_WRITE_SINGLE_REGISTER:
         ui->swFunctionData->setCurrentWidget(ui->pgDefault);
         m_defaultAddress->setAddressType(Modbus::Memory_4x);
         m_defaultAddress->setEnabledAddress(true);
         ui->spDefaultCount->setEnabled(false);
+        ui->txtDefaultData->setReadOnly(false);
         break;
     case MBF_READ_EXCEPTION_STATUS:
     case MBF_REPORT_SERVER_ID:
@@ -1621,12 +1637,14 @@ void mbClientSendMessageUi::setCurrentFuncNum(uint8_t func)
         m_defaultAddress->setAddressType(Modbus::Memory_0x);
         m_defaultAddress->setEnabledAddress(true);
         ui->spDefaultCount->setEnabled(true);
+        ui->txtDefaultData->setReadOnly(false);
         break;
     case MBF_WRITE_MULTIPLE_REGISTERS:
         ui->swFunctionData->setCurrentWidget(ui->pgDefault);
         m_defaultAddress->setAddressType(Modbus::Memory_4x);
         m_defaultAddress->setEnabledAddress(true);
         ui->spDefaultCount->setEnabled(true);
+        ui->txtDefaultData->setReadOnly(false);
         break;
     case MBF_MASK_WRITE_REGISTER:
         ui->swFunctionData->setCurrentWidget(ui->pgWriteMask);
