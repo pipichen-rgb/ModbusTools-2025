@@ -71,9 +71,40 @@ const mbClientSendMessageUi::Strings &mbClientSendMessageUi::Strings::instance()
     return s;
 }
 
-mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) :
-    mbCoreDialogBase(Strings::instance().prefix, parent),
-    ui(new Ui::mbClientSendMessageUi)
+QString mbClientSendMessageUi::getEventLogDescription(uint8_t eventId)
+{
+    QString res;
+    if (eventId & 0x80)
+    {
+        res = "Receive Event: ";
+        QStringList ls;
+        if (eventId & 0x02) ls.append("Communication Error");
+        if (eventId & 0x10) ls.append("Character Overrun");
+        if (eventId & 0x20) ls.append("Currently in Listen Only Mode");
+        if (eventId & 0x40) ls.append("Broadcast Received");
+        res += ls.join(", ");
+    }
+    else if (eventId & 0x40)
+    {
+        res = "Send Event: ";
+        QStringList ls;
+        if (eventId & 0x01) ls.append("Read Exception Sent");
+        if (eventId & 0x02) ls.append("Server Abort Exception Sent ");
+        if (eventId & 0x04) ls.append("Server Busy Exception Sent");
+        if (eventId & 0x08) ls.append("Server Program NAK Exception Sent");
+        if (eventId & 0x10) ls.append("Write Timeout Error Occurred");
+        if (eventId & 0x20) ls.append("Currently in Listen Only Mode");
+        res += ls.join(", ");
+    }
+    else if (eventId == 0x04)
+        res = "Entered Listen Only Mode";
+    else if (eventId == 0x00)
+        res = "Initiated Communication Restart";
+    return res;
+}
+
+mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase(Strings::instance().prefix, parent),
+                                                                ui(new Ui::mbClientSendMessageUi)
 {
     ui->setupUi(this);
     m_list = new mbClientSendMessageListModel(this);
@@ -97,6 +128,7 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) :
     m_funcNums.append(MBF_READ_EXCEPTION_STATUS         );
     m_funcNums.append(MBF_DIAGNOSTICS                   );
     m_funcNums.append(MBF_GET_COMM_EVENT_COUNTER        );
+    m_funcNums.append(MBF_GET_COMM_EVENT_LOG            );
     m_funcNums.append(MBF_WRITE_MULTIPLE_COILS          );
     m_funcNums.append(MBF_WRITE_MULTIPLE_REGISTERS      );
     m_funcNums.append(MBF_REPORT_SERVER_ID              );
@@ -219,6 +251,11 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) :
     // GetCommEventCounter
     ui->lnGetCommEventCounterStatus->setText("0000");
     ui->lnGetCommEventCounterCount->setText("0");
+
+    // GetCommEventLog
+    ui->lnGetCommEventLogStatus->setText("0000");
+    ui->lnGetCommEventLogEventCount->setText("0");
+    ui->lnGetCommEventLogMessageCount->setText("0");
 
     connect(mbCore::globalCore(), &mbCore::addressNotationChanged, this, &mbClientSendMessageUi::setModbusAddresNotation);
 
@@ -800,6 +837,8 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientSendMessa
         return new mbClientRunMessageDiagnostics(params.subfunc, data.constData(), data.size(), this);
     case MBF_GET_COMM_EVENT_COUNTER:
         return new mbClientRunMessageGetCommEventCounter(this);
+    case MBF_GET_COMM_EVENT_LOG:
+        return new mbClientRunMessageGetCommEventLog(this);
     case MBF_WRITE_MULTIPLE_COILS:
     {
         msg = new mbClientRunMessageWriteMultipleCoils(params.offset,
@@ -1151,6 +1190,7 @@ void mbClientSendMessageUi::fillParams(mbClientSendMessageParams &params)
         params.data = ui->txtDiagnRequest->toPlainText();
         break;
     case MBF_GET_COMM_EVENT_COUNTER:
+    case MBF_GET_COMM_EVENT_LOG:
         break;
     case MBF_WRITE_MULTIPLE_COILS:
     case MBF_WRITE_MULTIPLE_REGISTERS:
@@ -1381,11 +1421,33 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
         break;
     case MBF_GET_COMM_EVENT_COUNTER:
     {
+        if (!Modbus::StatusIsGood(message->status()))
+            break;
         auto m = reinterpret_cast<mbClientRunMessageGetCommEventCounter*>(message.data());
         ui->lnGetCommEventCounterStatus->setText(mb::toHexString(m->status()));
         ui->lnGetCommEventCounterCount->setText(mb::toDecString(m->eventCount()));
     }
         break;
+    case MBF_GET_COMM_EVENT_LOG:
+    {
+        if (!Modbus::StatusIsGood(message->status()))
+            break;
+        auto m = reinterpret_cast<mbClientRunMessageGetCommEventCounter*>(message.data());
+        ui->lnGetCommEventLogStatus->setText(mb::toHexString(m->status()));
+        ui->lnGetCommEventLogEventCount->setText(mb::toDecString(m->eventCount()));
+        ui->lnGetCommEventLogMessageCount->setText(mb::toDecString(m->eventCount()));
+        ui->tblEventLog->clearContents();
+        for (int i = 0; i < m->count(); i++)
+        {
+            uint8_t eventId = reinterpret_cast<uint8_t*>(m->innerBuffer())[i];
+            ui->tblEventLog->insertRow(i);
+            QTableWidgetItem *item0 = new QTableWidgetItem(mb::toHexString(eventId));
+            QTableWidgetItem *item1 = new QTableWidgetItem(getEventLogDescription(eventId));
+            ui->tblEventLog->setItem(i, 0, item0);
+            ui->tblEventLog->setItem(i, 1, item1);
+        }
+    }
+    break;
     case MBF_REPORT_SERVER_ID:
     {
         txt = ui->txtReadData;
@@ -1650,6 +1712,9 @@ void mbClientSendMessageUi::setCurrentFuncNum(uint8_t func)
         break;
     case MBF_GET_COMM_EVENT_COUNTER:
         ui->swFunctionData->setCurrentWidget(ui->pgGetCommEventCounter);
+        break;
+    case MBF_GET_COMM_EVENT_LOG:
+        ui->swFunctionData->setCurrentWidget(ui->pgGetCommEventLog);
         break;
     case MBF_WRITE_MULTIPLE_COILS:
         ui->swFunctionData->setCurrentWidget(ui->pgDefault);

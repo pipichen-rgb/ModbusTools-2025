@@ -320,7 +320,7 @@ public:
 
 public:
     uint8_t function() const override { return MBF_DIAGNOSTICS; }
-    Modbus::MemoryType memoryType() const override { return Modbus::Memory_0x; }
+    Modbus::MemoryType memoryType() const override { return Modbus::Memory_Unknown; }
     Modbus::StatusCode getData(uint16_t innerOffset, uint16_t count, void *buff) const override;
     inline uint16_t subFunction() const { return m_offset; }
     inline void setCount(uint16_t count) { m_count = count; }
@@ -335,15 +335,38 @@ class mbClientRunMessageGetCommEventCounter : public mbClientRunMessageRead
 {
 public:
     explicit mbClientRunMessageGetCommEventCounter(uint8_t unit, QObject *parent = nullptr);
-    explicit mbClientRunMessageGetCommEventCounter( QObject *parent = nullptr) : mbClientRunMessageGetCommEventCounter(0, parent) {}
+    explicit mbClientRunMessageGetCommEventCounter(QObject *parent = nullptr) : mbClientRunMessageGetCommEventCounter(0, parent) {}
 
 public:
     uint8_t function() const override { return MBF_GET_COMM_EVENT_COUNTER; }
-    Modbus::MemoryType memoryType() const override { return Modbus::Memory_4x; }
+    Modbus::MemoryType memoryType() const override { return Modbus::Memory_Unknown; }
     inline uint16_t status() const { return m_offset; }
     inline void setStatus(uint16_t s) { m_offset = s; }
     inline uint16_t eventCount() const { return m_count; }
     inline void setEventCount(uint16_t c) { m_count = c; }
+};
+
+
+// --------------------------------------------------------------------------------------------------------
+// ------------------------------------------ GET COMM EVENT LOG ------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+class mbClientRunMessageGetCommEventLog : public mbClientRunMessageRead
+{
+public:
+    explicit mbClientRunMessageGetCommEventLog(uint8_t unit, QObject *parent = nullptr);
+    explicit mbClientRunMessageGetCommEventLog(QObject *parent = nullptr) : mbClientRunMessageGetCommEventLog(0, parent) {}
+
+public:
+    uint8_t function() const override { return MBF_GET_COMM_EVENT_LOG; }
+    Modbus::MemoryType memoryType() const override { return Modbus::Memory_Unknown; }
+    inline void setCount(uint16_t count) { m_count = count; }
+    inline uint16_t status() const { return m_offset; }
+    inline void setStatus(uint16_t s) { m_offset = s; }
+    inline uint16_t messageCount() const { return m_writeOffset; }
+    inline void setMessageCount(uint16_t c) { m_writeOffset = c; }
+    inline uint16_t eventCount() const { return m_writeCount; }
+    inline void setEventCount(uint16_t c) { m_writeCount = c; }
 };
 
 

@@ -451,6 +451,7 @@ struct MB_EXPORT Strings
     const QString ReadExceptionStatus                    ;
     const QString Diagnostics                            ;
     const QString GetCommEventCounter                    ;
+    const QString GetCommEventLog                        ;
     const QString WriteMultipleCoils                     ;
     const QString WriteMultipleRegisters                 ;
     const QString ReportServerID                         ;

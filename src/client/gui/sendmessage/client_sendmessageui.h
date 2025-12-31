@@ -81,6 +81,9 @@ public:
     };
 
 public:
+    static QString getEventLogDescription(uint8_t eventId);
+
+public:
     explicit mbClientSendMessageUi(QWidget *parent = nullptr);
     ~mbClientSendMessageUi();
 
