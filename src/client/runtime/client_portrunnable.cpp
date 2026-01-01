@@ -139,14 +139,58 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
     case MBF_READ_HOLDING_REGISTERS:
         res = m_modbusClientPort->readHoldingRegisters(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
         break;
-    case MBF_READ_EXCEPTION_STATUS:
-        res = m_modbusClientPort->readExceptionStatus(m_currentMessage->unit(), reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
-        break;
     case MBF_WRITE_SINGLE_COIL:
         res = m_modbusClientPort->writeSingleCoil(m_currentMessage->unit(), m_currentMessage->offset(), *reinterpret_cast<const bool*>(m_currentMessage->innerBuffer()));
         break;
     case MBF_WRITE_SINGLE_REGISTER:
         res = m_modbusClientPort->writeSingleRegister(m_currentMessage->unit(), m_currentMessage->offset(), *reinterpret_cast<const uint16_t*>(m_currentMessage->innerBuffer()));
+        break;
+    case MBF_READ_EXCEPTION_STATUS:
+        res = m_modbusClientPort->readExceptionStatus(m_currentMessage->unit(), reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
+        break;
+    case MBF_DIAGNOSTICS:
+        res = m_modbusClientPort->diagnostics(m_currentMessage->unit(),
+                                              static_cast<mbClientRunMessageDiagnostics*>(m_currentMessage.data())->subFunction(),
+                                              static_cast<uint8_t>(m_currentMessage->count()),
+                                              m_currentMessage->innerBuffer(),
+                                              &m_byteCount,
+                                              reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
+        if (Modbus::StatusIsGood(res))
+            static_cast<mbClientRunMessageDiagnostics*>(m_currentMessage.data())->setCount(m_byteCount);
+        break;
+    case MBF_GET_COMM_EVENT_COUNTER:
+    {
+        uint16_t status, eventCount;
+        res = m_modbusClientPort->getCommEventCounter(m_currentMessage->unit(),
+                                                      &status,
+                                                      &eventCount);
+        if (Modbus::StatusIsGood(res))
+        {
+            auto m = static_cast<mbClientRunMessageGetCommEventCounter*>(m_currentMessage.data());
+            m->setStatus(status);
+            m->setEventCount(eventCount);
+        }
+    }
+        break;
+    case MBF_GET_COMM_EVENT_LOG:
+    {
+        uint16_t status, eventCount, messageCount;
+        uint8_t byteCount;
+        res = m_modbusClientPort->getCommEventLog(m_currentMessage->unit(),
+                                                  &status,
+                                                  &eventCount,
+                                                  &messageCount,
+                                                  &byteCount,
+                                                  reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
+        if (Modbus::StatusIsGood(res))
+        {
+            auto m = static_cast<mbClientRunMessageGetCommEventLog*>(m_currentMessage.data());
+            m->setStatus(status);
+            m->setEventCount(eventCount);
+            m->setMessageCount(messageCount);
+            m->setCount(byteCount);
+        }
+    }
         break;
     case MBF_WRITE_MULTIPLE_COILS:
         res = m_modbusClientPort->writeMultipleCoils(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBuffer());

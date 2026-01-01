@@ -1029,7 +1029,7 @@ void mbClientSendMessageUi::startSendMessages()
     ui->txtModbusRx->clear();
     Q_FOREACH (auto msg, m_messageList)
     {
-        prepareToSend(reinterpret_cast<mbClientRunMessageRaw*>(msg.data()));
+        prepareToSend(msg.data());
     }
     sendMessage();
     if ((m_messageList.count() > 1 || ui->chbUseLoop->isChecked()) && isTimerStopped())
@@ -1447,7 +1447,7 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
             ui->tblEventLog->setItem(i, 1, item1);
         }
     }
-    break;
+        break;
     case MBF_REPORT_SERVER_ID:
     {
         txt = ui->txtReadData;

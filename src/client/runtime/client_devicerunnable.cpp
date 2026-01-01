@@ -305,7 +305,7 @@ Modbus::StatusCode mbClientDeviceRunnable::execExternalMessage()
             m->setCount(byteCount);
         }
     }
-    break;
+        break;
     case MBF_WRITE_MULTIPLE_COILS:
         res = m_modbusClient->writeMultipleCoils(m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBuffer());
         break;
