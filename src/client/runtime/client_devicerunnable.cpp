@@ -324,6 +324,14 @@ Modbus::StatusCode mbClientDeviceRunnable::execExternalMessage()
         res = m_modbusClient->readWriteMultipleRegisters(m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBufferReg(),
                                                          m_currentMessage->writeOffset(), m_currentMessage->writeCount(), m_currentMessage->innerBufferReg());
         break;
+    case MBF_READ_FIFO_QUEUE:
+    {
+        uint16_t count;
+        res = m_modbusClient->readFIFOQueue(m_currentMessage->offset(), &count, reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+        if (Modbus::StatusIsGood(res))
+            static_cast<mbClientRunMessageReadFIFOQueue*>(m_currentMessage.data())->setCount(count);
+    }
+        break;
     default:
         return Modbus::Status_Bad;
     }

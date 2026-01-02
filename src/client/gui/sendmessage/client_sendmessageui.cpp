@@ -134,6 +134,7 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
     m_funcNums.append(MBF_REPORT_SERVER_ID              );
     m_funcNums.append(MBF_MASK_WRITE_REGISTER           );
     m_funcNums.append(MBF_READ_WRITE_MULTIPLE_REGISTERS );
+    m_funcNums.append(MBF_READ_FIFO_QUEUE               );
 
     m_diagnSubfuncNums.append(MBDIAGN_RETURN_QUERY_DATA                     );
     m_diagnSubfuncNums.append(MBDIAGN_RESTART_COMMUNICATIONS_OPTION         );
@@ -173,12 +174,14 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
         ui->cmbRWMultiRegReadFormat ->addItem(s);
         ui->cmbReadDataFormat       ->addItem(s);
         ui->cmbDiagnFormat          ->addItem(s);
+        ui->cmbFIFOFormat           ->addItem(s);
     }
     ui->cmbDefaultFormat        ->setCurrentIndex(mb::Dec16);
     ui->cmbRWMultiRegWriteFormat->setCurrentIndex(mb::Dec16);
     ui->cmbRWMultiRegReadFormat ->setCurrentIndex(mb::Dec16);
     ui->cmbReadDataFormat       ->setCurrentIndex(mb::Dec16);
     ui->cmbDiagnFormat          ->setCurrentIndex(mb::Dec16);
+    ui->cmbFIFOFormat           ->setCurrentIndex(mb::Dec16);
 
     sp = ui->spDefaultCount;
     sp->setMinimum(1);
@@ -256,6 +259,11 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
     ui->lnGetCommEventLogStatus->setText("0000");
     ui->lnGetCommEventLogEventCount->setText("0");
     ui->lnGetCommEventLogMessageCount->setText("0");
+
+    // Read FIFO queue
+    ui->spFIFOOffset->setMinimum(0x0000);
+    ui->spFIFOOffset->setMaximum(0xFFFF);
+    ui->spFIFOOffset->setValue(0);
 
     connect(mbCore::globalCore(), &mbCore::addressNotationChanged, this, &mbClientSendMessageUi::setModbusAddresNotation);
 
@@ -590,9 +598,10 @@ void mbClientSendMessageUi::slotStop()
 {
     stopSendMessages();
 }
-
+#include <QDebug>
 void mbClientSendMessageUi::slotBytesTx(const QByteArray &bytes)
 {
+    qDebug() << "mbClientSendMessageUi::slotBytesTx:" << Modbus::bytesToString(reinterpret_cast<const uint8_t*>(bytes.data()), bytes.length()).data();
     ui->txtModbusTx->setPlainText(Modbus::bytesToString(bytes));
 }
 
@@ -969,6 +978,9 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientSendMessa
         c = data.count() / 2;
     }
         break;
+    case MBF_READ_FIFO_QUEUE:
+        return new mbClientRunMessageReadFIFOQueue(params.offset,
+                                                   this);
     default:
         return nullptr;
     }
@@ -1215,6 +1227,10 @@ void mbClientSendMessageUi::fillParams(mbClientSendMessageParams &params)
         params.writeCount  = static_cast<uint16_t>(ui->spRWMultiRegReadCount  ->value());
         params.writeFormat = mb::enumFormatValueByIndex(ui->cmbRWMultiRegWriteFormat->currentIndex());
         break;
+    case MBF_READ_FIFO_QUEUE:
+        params.offset = static_cast<uint16_t>(ui->spFIFOOffset->value());
+        params.format = mb::enumFormatValueByIndex(ui->cmbFIFOFormat->currentIndex());
+        break;
     default:
         return;
     }
@@ -1273,6 +1289,10 @@ void mbClientSendMessageUi::fillForm(const mbClientSendMessageParams &params)
         ui->spRWMultiRegWriteCount->setValue(params.writeCount);
         ui->cmbRWMultiRegWriteFormat->setCurrentText(mb::enumFormatKey(params.writeFormat));
         ui->txtRWMultiRegWriteData->setPlainText(params.data);
+        break;
+    case MBF_READ_FIFO_QUEUE:
+        ui->spFIFOOffset->setValue(params.offset);
+        ui->cmbFIFOFormat->setCurrentText(mb::enumFormatKey(params.format));
         break;
     default:
         return;
@@ -1481,6 +1501,37 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
         }
     }
         break;
+    case MBF_READ_FIFO_QUEUE:
+    {
+        if (!Modbus::StatusIsGood(message->status()))
+            break;
+        uint16_t count = message->count();
+        QByteArray data(count * 2, '\0');
+        message->getData(0, count, data.data());
+        switch (format)
+        {
+        case mb::Bool:
+            ls = toStringListBits(data, count * 16);
+            break;
+        case mb::ByteArray:
+        case mb::String:
+            ls.append(mb::toVariant(data,
+                                    format,
+                                    Modbus::Memory_0x,
+                                    m_dataParams.byteOrder,
+                                    m_dataParams.registerOrder,
+                                    m_dataParams.byteArrayFormat,
+                                    m_dataParams.stringEncoding,
+                                    m_dataParams.stringLengthType,
+                                    m_dataParams.byteArraySeparator,
+                                    data.count()).toString());
+            break;
+        default:
+            ls = toStringListNumbers(data, format);
+            break;
+        }
+    }
+    break;
     default:
         return;
     }
@@ -1738,6 +1789,9 @@ void mbClientSendMessageUi::setCurrentFuncNum(uint8_t func)
         ui->swFunctionData->setCurrentWidget(ui->pgRWMultiReg);
         m_rwMultiRegReadAddress ->setAddressType(Modbus::Memory_4x);
         m_rwMultiRegWriteAddress->setAddressType(Modbus::Memory_4x);
+        break;
+    case MBF_READ_FIFO_QUEUE:
+        ui->swFunctionData->setCurrentWidget(ui->pgFIFO);
         break;
     }
     int i = 0;

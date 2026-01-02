@@ -456,4 +456,22 @@ public:
     Modbus::StatusCode setData(uint16_t innerOffset, uint16_t count, const void *buff) override;
 };
 
+// --------------------------------------------------------------------------------------------------------
+// -------------------------------------------- READ_FIFO_QUEUE -------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+class mbClientRunMessageReadFIFOQueue : public mbClientRunMessageRead
+{
+public:
+    mbClientRunMessageReadFIFOQueue(uint8_t unit, uint16_t offset, QObject *parent = nullptr);
+    mbClientRunMessageReadFIFOQueue(uint16_t offset, QObject *parent = nullptr) : mbClientRunMessageReadFIFOQueue(0, offset, parent){}
+
+public:
+    uint8_t function() const override { return MBF_READ_FIFO_QUEUE; }
+    Modbus::MemoryType memoryType() const override { return Modbus::Memory_Unknown; }
+    Modbus::StatusCode getData(uint16_t innerOffset, uint16_t count, void *buff) const override;
+    inline void setCount(uint16_t count) { m_count = count; }
+};
+
+
 #endif // CLIENT_RUNMESSAGE_H

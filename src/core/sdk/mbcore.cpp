@@ -113,6 +113,7 @@ Strings::Strings() :
     ReportServerID                         (QStringLiteral("ReportServerID")),
     MaskWriteRegister                      (QStringLiteral("MaskWriteRegister")),
     ReadWriteMultipleRegisters             (QStringLiteral("ReadWriteMultipleRegisters")),
+    ReadFIFOQueue                          (QStringLiteral("ReadFIFOQueue")),
     DiagnReturnQueryData                   (QStringLiteral("ReturnQueryData")),
     DiagnRestartCommunicationsOption       (QStringLiteral("RestartCommunicationsOption")),
     DiagnReturnDiagnosticRegister          (QStringLiteral("ReturnDiagnosticRegister")),
@@ -531,6 +532,7 @@ uint8_t ModbusFunction(const QString &func)
     if (func == s.ReportServerID            ) return MBF_REPORT_SERVER_ID             ;
     if (func == s.MaskWriteRegister         ) return MBF_MASK_WRITE_REGISTER          ;
     if (func == s.ReadWriteMultipleRegisters) return MBF_READ_WRITE_MULTIPLE_REGISTERS;
+    if (func == s.ReadFIFOQueue             ) return MBF_READ_FIFO_QUEUE              ;
     return 0;
 }
 
@@ -554,6 +556,7 @@ QString ModbusFunctionString(uint8_t func)
     case MBF_REPORT_SERVER_ID             : return s.ReportServerID            ;
     case MBF_MASK_WRITE_REGISTER          : return s.MaskWriteRegister         ;
     case MBF_READ_WRITE_MULTIPLE_REGISTERS: return s.ReadWriteMultipleRegisters;
+    case MBF_READ_FIFO_QUEUE              : return s.ReadFIFOQueue             ;
     default:
         return QString();
     }

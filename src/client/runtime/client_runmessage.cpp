@@ -483,3 +483,20 @@ Modbus::StatusCode mbClientRunMessageReadWriteMultipleRegisters::setData(uint16_
     uint32_t c;
     return Modbus::writeMemRegs(innerOffset, count, buff, m_buff, innerBufferRegSize(), &c);
 }
+
+// --------------------------------------------------------------------------------------------------------
+// -------------------------------------------- READ_FIFO_QUEUE -------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+mbClientRunMessageReadFIFOQueue::mbClientRunMessageReadFIFOQueue(uint8_t unit, uint16_t offset, QObject *parent) :
+    mbClientRunMessageRead(unit, offset, 0, MB_READ_FIFO_QUEUE_MAX, parent)
+{
+
+}
+
+Modbus::StatusCode mbClientRunMessageReadFIFOQueue::getData(uint16_t innerOffset, uint16_t count, void *buff) const
+{
+    uint32_t c;
+    return Modbus::readMemRegs(innerOffset, count, buff, m_buff, innerBufferRegSize(), &c);
+}
+

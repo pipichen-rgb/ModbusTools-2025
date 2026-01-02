@@ -457,6 +457,7 @@ struct MB_EXPORT Strings
     const QString ReportServerID                         ;
     const QString MaskWriteRegister                      ;
     const QString ReadWriteMultipleRegisters             ;
+    const QString ReadFIFOQueue                          ;
     const QString DiagnReturnQueryData                   ;
     const QString DiagnRestartCommunicationsOption       ;
     const QString DiagnReturnDiagnosticRegister          ;
