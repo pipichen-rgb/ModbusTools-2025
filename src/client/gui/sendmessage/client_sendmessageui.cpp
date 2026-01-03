@@ -532,7 +532,7 @@ void mbClientSendMessageUi::slotListImport()
             while (!in.atEnd())
             {
                 QString line = in.readLine();
-                mbClientSendMessageParams *m = restoreParams(line);
+                mbClientSendMessageParams *m = mb::restoreSendMessageParams(line);
                 if (m)
                     messages.append(m);
             }
@@ -558,7 +558,7 @@ void mbClientSendMessageUi::slotListExport()
             QList<const mbClientSendMessageParams*> messages = m_list->messages();
             Q_FOREACH (const mbClientSendMessageParams *m, messages)
             {
-                QString line = saveParams(*m);
+                QString line = mb::saveSendMessageParams(*m);
                 out << line << '\n';
             }
             qf.close();
@@ -666,12 +666,12 @@ void mbClientSendMessageUi::timerEvent(QTimerEvent */*event*/)
 
 QStringList mbClientSendMessageUi::getListItems() const
 {
-    return saveMessages(m_list->messages());
+    return mb::saveSendMessages(m_list->messages());
 }
 
 void mbClientSendMessageUi::setListItems(const QStringList &list)
 {
-    m_list->setMessages(restoreMessages(list));
+    m_list->setMessages(mb::restoreSendMessages(list));
 }
 
 int mbClientSendMessageUi::currentListIndex() const
@@ -1216,16 +1216,17 @@ void mbClientSendMessageUi::fillParams(mbClientSendMessageParams &params)
     case MBF_MASK_WRITE_REGISTER:
         params.offset = getWriteMaskOffset();
         params.format = mb::Hex16; //mb::enumFormatValueByIndex(ui->cmbWriteMaskFormat->currentIndex());
-        params.data = ui->spWriteMaskAnd->text() + QStringLiteral(",") + ui->spWriteMaskOr->text();
+        params.andMask = static_cast<uint16_t>(ui->spWriteMaskAnd->value());
+        params.orMask = static_cast<uint16_t>(ui->spWriteMaskOr->value());
         break;
     case MBF_READ_WRITE_MULTIPLE_REGISTERS:
         params.offset      = getRWMultiRegReadOffset();
         params.count       = static_cast<uint16_t>(ui->spRWMultiRegReadCount   ->value());
         params.format = mb::enumFormatValueByIndex(ui->cmbRWMultiRegReadFormat->currentIndex());
-        params.data = ui->txtRWMultiRegReadData->toPlainText();
-        params.writeOffset = getRWMultiRegReadOffset();
-        params.writeCount  = static_cast<uint16_t>(ui->spRWMultiRegReadCount  ->value());
+        params.writeOffset = getRWMultiRegWriteOffset();
+        params.writeCount  = static_cast<uint16_t>(ui->spRWMultiRegWriteCount  ->value());
         params.writeFormat = mb::enumFormatValueByIndex(ui->cmbRWMultiRegWriteFormat->currentIndex());
+        params.data = ui->txtRWMultiRegWriteData->toPlainText();
         break;
     case MBF_READ_FIFO_QUEUE:
         params.offset = static_cast<uint16_t>(ui->spFIFOOffset->value());
@@ -1246,6 +1247,7 @@ void mbClientSendMessageUi::fillForm(const mbClientSendMessageParams &params)
     case MBF_READ_HOLDING_REGISTERS:
     case MBF_READ_INPUT_REGISTERS:
         setDefaultOffset(params.offset);
+        ui->cmbDefaultFormat->setCurrentText(mb::enumFormatKey(params.format));
         ui->spDefaultCount->setValue(params.count);
         break;
     case MBF_WRITE_SINGLE_COIL:
@@ -1273,12 +1275,8 @@ void mbClientSendMessageUi::fillForm(const mbClientSendMessageParams &params)
     case MBF_MASK_WRITE_REGISTER:
     {
         setWriteMaskOffset(params.offset);
-        QStringList data = params.data.split(QStringLiteral(","));
-        if (data.size() == 2)
-        {
-            ui->spWriteMaskAnd->setValue(data.at(0).toInt(nullptr, 16));
-            ui->spWriteMaskOr ->setValue(data.at(0).toInt(nullptr, 16));
-        }
+        ui->spWriteMaskAnd->setValue(params.andMask);
+        ui->spWriteMaskOr ->setValue(params.orMask );
     }
         break;
     case MBF_READ_WRITE_MULTIPLE_REGISTERS:
@@ -1830,105 +1828,6 @@ void mbClientSendMessageUi::setCurrentDiagnSubfuncNum(uint16_t subfunc)
         }
         ++i;
     }
-}
-
-QStringList mbClientSendMessageUi::saveMessages(const QList<const mbClientSendMessageParams *> messages)
-{
-    QStringList res;
-    Q_FOREACH(const mbClientSendMessageParams *p, messages)
-    {
-        res.append(saveParams(*p));
-    }
-    return res;
-}
-
-QList<const mbClientSendMessageParams *> mbClientSendMessageUi::restoreMessages(const QStringList &messages)
-{
-    QList<const mbClientSendMessageParams *> res;
-    Q_FOREACH(const QString &p, messages)
-    {
-        res.append(restoreParams(p));
-    }
-    return res;
-}
-
-QString mbClientSendMessageUi::saveParams(const mbClientSendMessageParams &params)
-{
-    QString res = QString("func=%1").arg(params.func);
-    switch(params.func)
-    {
-    case MBF_READ_COILS:
-        res += QString(";offset=%1;count=%2").arg(params.offset).arg(params.count);
-        break;
-    case MBF_READ_DISCRETE_INPUTS:
-        res += QString(";offset=%1;count=%2").arg(params.offset).arg(params.count);
-        break;
-    case MBF_READ_HOLDING_REGISTERS:
-        res += QString(";offset=%1;count=%2").arg(params.offset).arg(params.count);
-        break;
-    case MBF_READ_INPUT_REGISTERS:
-        res += QString(";offset=%1;count=%2").arg(params.offset).arg(params.count);
-        break;
-    case MBF_WRITE_SINGLE_COIL:
-        res += QString(";offset=%1;data=%2").arg(params.offset).arg(mb::enumFormatKey(params.format), params.data);
-        break;
-    case MBF_WRITE_SINGLE_REGISTER:
-        res += QString(";offset=%1;format=%2;data=%3").arg(params.offset).arg(mb::enumFormatKey(params.format), params.data);
-        break;
-    case MBF_READ_EXCEPTION_STATUS:
-        break;
-    case MBF_WRITE_MULTIPLE_COILS:
-        res += QString(";offset=%1;count=%2;format=%3;data=%4")
-                   .arg(params.offset).arg(params.count).arg(mb::enumFormatKey(params.format), params.data);
-        break;
-    case MBF_WRITE_MULTIPLE_REGISTERS:
-        res += QString(";offset=%1;count=%2;format=%3;data=%4")
-                   .arg(params.offset).arg(params.count).arg(mb::enumFormatKey(params.format), params.data);
-        break;
-    case MBF_REPORT_SERVER_ID:
-        break;
-    case MBF_MASK_WRITE_REGISTER:
-        res += QString(";offset=%1;data=%2").arg(params.offset).arg(params.data);
-        break;
-    case MBF_READ_WRITE_MULTIPLE_REGISTERS:
-        res += QString(";readoffset=%1;readcount=%2;writeoffset=%3;writecount=%4;format=%5;data=%6")
-                   .arg(params.offset).arg(params.count).arg(params.writeOffset).arg(params.writeCount).arg(params.data);
-        break;
-    default:
-        break;
-    }
-    return res;
-}
-
-mbClientSendMessageParams *mbClientSendMessageUi::restoreParams(const QString &params)
-{
-    mbClientSendMessageParams *res = new mbClientSendMessageParams;
-    QStringList pairs = params.split(';', Qt::SkipEmptyParts);
-
-    Q_FOREACH (const QString &pair, pairs)
-    {
-        int eqPos = pair.indexOf('=');
-        if (eqPos > 0)
-        {
-            QString name = pair.left(eqPos).trimmed();
-            QString value = pair.mid(eqPos + 1).trimmed();
-            if (name == "func")
-                res->func = static_cast<decltype(res->func)>(value.toInt());
-            else if (name == "offset" || name == "readoffset")
-                res->offset = static_cast<decltype(res->offset)>(value.toInt());
-            else if (name == "count" || name == "readcount")
-                res->count = static_cast<decltype(res->count)>(value.toInt());
-            else if (name == "writeoffset")
-                res->writeOffset = static_cast<decltype(res->writeOffset)>(value.toInt());
-            else if (name == "writecount")
-                res->writeCount = static_cast<decltype(res->writeCount)>(value.toInt());
-            else if (name == "format")
-                res->format = mb::enumFormatValue(value);
-            else if (name == "data")
-                res->data = value;
-        }
-    }
-    return res;
 }
 
 uint16_t mbClientSendMessageUi::getDefaultOffset() const

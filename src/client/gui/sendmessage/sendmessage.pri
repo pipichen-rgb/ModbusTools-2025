@@ -4,6 +4,7 @@ HEADERS += \
     $$PWD/client_sendmessageui.h
     
 SOURCES += \
+    $$PWD/client_sendmessage_global.cpp \
     $$PWD/client_sendmessagelistmodel.cpp \
     $$PWD/client_sendmessageui.cpp
 

@@ -19,7 +19,7 @@ set(CMAKE_AUTORCC ON)
 find_package(QT NAMES Qt5 REQUIRED COMPONENTS Core Gui Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Core Gui Widgets)
 
-set(HEADERS
+set(MBTOOLS_HEADERS
     core/client_global.h
     core/client.h
     ${CMAKE_CURRENT_LIST_DIR}/project/client_builder.h
@@ -40,6 +40,7 @@ set(HEADERS
     gui/project/client_projectdelegate.h
     gui/project/client_projectmodel.h
     gui/project/client_projectui.h
+    gui/sendmessage/client_sendmessage_global.h
     gui/sendmessage/client_sendmessagelistmodel.h
     gui/sendmessage/client_sendmessageui.h
     gui/sendbytes/client_sendbyteslistmodel.h
@@ -60,7 +61,7 @@ set(HEADERS
     runtime/client_runthread.h
     runtime/client_runtime.h)
 
-set(SOURCES
+set(MBTOOLS_SOURCES
     core/client.cpp
     ${CMAKE_CURRENT_LIST_DIR}/project/client_builder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/project/client_device.cpp
@@ -80,6 +81,7 @@ set(SOURCES
     gui/project/client_projectdelegate.cpp
     gui/project/client_projectmodel.cpp
     gui/project/client_projectui.cpp
+    gui/sendmessage/client_sendmessage_global.cpp
     gui/sendmessage/client_sendmessagelistmodel.cpp
     gui/sendmessage/client_sendmessageui.cpp
     gui/sendbytes/client_sendbyteslistmodel.cpp
@@ -119,7 +121,7 @@ if(WIN32)
                 ${CMAKE_CURRENT_LIST_DIR}/${MBTOOLS_WIN_RESOURCE_FILE})
 endif()
 
-add_executable(${MBTOOLS_CLIENT_APP_NAME} ${HEADERS} ${SOURCES} ${RESOURCES})
+add_executable(${MBTOOLS_CLIENT_APP_NAME} ${MBTOOLS_HEADERS} ${MBTOOLS_SOURCES} ${RESOURCES})
 
 include_directories(
   .

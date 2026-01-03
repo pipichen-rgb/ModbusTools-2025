@@ -168,10 +168,6 @@ private:
     uint16_t getCurrentDiagnSubfuncNum() const;
     void setCurrentFuncNum(uint8_t func);
     void setCurrentDiagnSubfuncNum(uint16_t func);
-    static QStringList saveMessages(const QList<const mbClientSendMessageParams*> messages);
-    static QList<const mbClientSendMessageParams*> restoreMessages(const QStringList &messages);
-    static QString saveParams(const mbClientSendMessageParams &params);
-    static mbClientSendMessageParams* restoreParams(const QString &params);
 
 private:
     uint16_t getDefaultOffset() const;
