@@ -252,13 +252,13 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
     cmb->setCurrentIndex(2);
 
     // GetCommEventCounter
-    ui->lnGetCommEventCounterStatus->setText("0000");
-    ui->lnGetCommEventCounterCount->setText("0");
+    //ui->lnGetCommEventCounterStatus->setText("0000");
+    //ui->lnGetCommEventCounterCount->setText("0");
 
     // GetCommEventLog
-    ui->lnGetCommEventLogStatus->setText("0000");
-    ui->lnGetCommEventLogEventCount->setText("0");
-    ui->lnGetCommEventLogMessageCount->setText("0");
+    //ui->lnGetCommEventLogStatus->setText("0000");
+    //ui->lnGetCommEventLogEventCount->setText("0");
+    //ui->lnGetCommEventLogMessageCount->setText("0");
 
     // Read FIFO queue
     ui->spFIFOOffset->setMinimum(0x0000);
@@ -1027,6 +1027,38 @@ void mbClientSendMessageUi::prepareToSend(mbClientRunMessage *msg)
     connect(msg, &mbClientRunMessage::signalAsciiTx, this, &mbClientSendMessageUi::slotBytesTx     );
     connect(msg, &mbClientRunMessage::signalAsciiRx, this, &mbClientSendMessageUi::slotBytesRx     );
     connect(msg, &mbClientRunMessage::completed    , this, &mbClientSendMessageUi::messageCompleted);
+    switch (msg->function())
+    {
+    case MBF_READ_COILS:
+    case MBF_READ_DISCRETE_INPUTS:
+    case MBF_READ_HOLDING_REGISTERS:
+    case MBF_READ_INPUT_REGISTERS:
+        ui->txtDefaultData->clear();
+        break;
+    case MBF_READ_EXCEPTION_STATUS:
+    case MBF_REPORT_SERVER_ID:
+        ui->txtReadData->clear();
+        break;
+    case MBF_DIAGNOSTICS:
+        ui->txtDiagnResponse->clear();
+        break;
+    case MBF_GET_COMM_EVENT_COUNTER:
+        ui->lnGetCommEventCounterStatus->clear();
+        ui->lnGetCommEventCounterCount->clear();
+        break;
+    case MBF_GET_COMM_EVENT_LOG:
+        ui->lnGetCommEventLogStatus->clear();
+        ui->lnGetCommEventLogEventCount->clear();
+        ui->lnGetCommEventLogMessageCount->clear();
+        ui->tblEventLog->clearContents();
+        break;
+    case MBF_READ_WRITE_MULTIPLE_REGISTERS:
+        ui->txtRWMultiRegReadData->clear();
+        break;
+    case MBF_READ_FIFO_QUEUE:
+        ui->txtFIFOData->clear();
+        break;
+    }
 }
 
 void mbClientSendMessageUi::clearAfterSend(mbClientRunMessage *msg)
@@ -1299,6 +1331,8 @@ void mbClientSendMessageUi::fillForm(const mbClientSendMessageParams &params)
 
 void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
 {
+    if (!Modbus::StatusIsGood(message->status()))
+        return;
     QStringList ls;
     mb::Format format = mb::enumFormatValueByIndex(ui->cmbDefaultFormat->currentIndex());
     QPlainTextEdit *txt = ui->txtDefaultData;
@@ -1307,8 +1341,6 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
     case MBF_READ_COILS:
     case MBF_READ_DISCRETE_INPUTS:
     {
-        if (!Modbus::StatusIsGood(message->status()))
-            break;
         uint16_t count = message->count();
         QByteArray data((count+7)/8, '\0');
         message->getData(0, count, data.data());
@@ -1339,8 +1371,6 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
     case MBF_READ_EXCEPTION_STATUS:
     {
         txt = ui->txtReadData;
-        if (!Modbus::StatusIsGood(message->status()))
-            break;
         format = mb::enumFormatValueByIndex(ui->cmbReadDataFormat->currentIndex());
         uint16_t count = 8;
         QByteArray data((count+7)/8, '\0');
@@ -1376,8 +1406,6 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
     case MBF_READ_HOLDING_REGISTERS:
     case MBF_READ_INPUT_REGISTERS:
     {
-        if (!Modbus::StatusIsGood(message->status()))
-            break;
         uint16_t count = message->count();
         QByteArray data(count * 2, '\0');
         message->getData(0, count, data.data());
@@ -1408,8 +1436,6 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
     case MBF_DIAGNOSTICS:
     {
         txt = ui->txtDiagnResponse;
-        if (!Modbus::StatusIsGood(message->status()))
-            break;
         uint16_t count = message->count();
         QByteArray data(reinterpret_cast<char*>(message->innerBuffer()), count);
         format = mb::enumFormatValueByIndex(ui->cmbDiagnFormat->currentIndex());
@@ -1439,8 +1465,6 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
         break;
     case MBF_GET_COMM_EVENT_COUNTER:
     {
-        if (!Modbus::StatusIsGood(message->status()))
-            break;
         auto m = reinterpret_cast<mbClientRunMessageGetCommEventCounter*>(message.data());
         ui->lnGetCommEventCounterStatus->setText(mb::toHexString(m->status()));
         ui->lnGetCommEventCounterCount->setText(mb::toDecString(m->eventCount()));
@@ -1448,8 +1472,6 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
         break;
     case MBF_GET_COMM_EVENT_LOG:
     {
-        if (!Modbus::StatusIsGood(message->status()))
-            break;
         auto m = reinterpret_cast<mbClientRunMessageGetCommEventCounter*>(message.data());
         ui->lnGetCommEventLogStatus->setText(mb::toHexString(m->status()));
         ui->lnGetCommEventLogEventCount->setText(mb::toDecString(m->eventCount()));
@@ -1469,8 +1491,6 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
     case MBF_REPORT_SERVER_ID:
     {
         txt = ui->txtReadData;
-        if (!Modbus::StatusIsGood(message->status()))
-            break;
         format = mb::enumFormatValueByIndex(ui->cmbReadDataFormat->currentIndex());
         uint16_t count = message->count();
         QByteArray data(count, '\0');
@@ -1501,8 +1521,6 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
         break;
     case MBF_READ_FIFO_QUEUE:
     {
-        if (!Modbus::StatusIsGood(message->status()))
-            break;
         uint16_t count = message->count();
         QByteArray data(count * 2, '\0');
         message->getData(0, count, data.data());
@@ -1529,11 +1547,11 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
             break;
         }
     }
-    break;
+        break;
     default:
         return;
     }
-    txt->clear();
+    //txt->clear();
     if (ls.count())
     {
         QStringList::ConstIterator it = ls.constBegin();
