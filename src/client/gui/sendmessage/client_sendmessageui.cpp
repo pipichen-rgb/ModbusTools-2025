@@ -474,7 +474,7 @@ void mbClientSendMessageUi::slotListShowHide()
 
 void mbClientSendMessageUi::slotListInsert()
 {
-    mbClientSendMessageParams params;
+    mbClientMessageParams params;
     fillParams(params);
     int i = currentListIndex();
     m_list->insertMessage(i, params);
@@ -485,7 +485,7 @@ void mbClientSendMessageUi::slotListEdit()
     int i = currentListIndex();
     if (i < 0)
         return;
-    mbClientSendMessageParams params;
+    mbClientMessageParams params;
     fillParams(params);
     m_list->editMessage(i, params);
 }
@@ -528,12 +528,13 @@ void mbClientSendMessageUi::slotListImport()
         if (qf.open(QIODevice::ReadOnly | QIODevice::Text))
         {
             QTextStream in(&qf);
-            QList<const mbClientSendMessageParams*> messages;
+            QList<mbClientMessageParams> messages;
+            bool ok = false;
             while (!in.atEnd())
             {
                 QString line = in.readLine();
-                mbClientSendMessageParams *m = mb::restoreSendMessageParams(line);
-                if (m)
+                mbClientMessageParams m = mb::restoreClientMessageParams(line, &ok);
+                if (ok)
                     messages.append(m);
             }
             qf.close();
@@ -555,10 +556,10 @@ void mbClientSendMessageUi::slotListExport()
         if (qf.open(QIODevice::WriteOnly | QIODevice::Text))
         {
             QTextStream out(&qf);
-            QList<const mbClientSendMessageParams*> messages = m_list->messages();
-            Q_FOREACH (const mbClientSendMessageParams *m, messages)
+            QList<mbClientMessageParams> messages = m_list->messages();
+            Q_FOREACH (const mbClientMessageParams &m, messages)
             {
-                QString line = mb::saveSendMessageParams(*m);
+                QString line = mb::saveClientMessageParams(m);
                 out << line << '\n';
             }
             qf.close();
@@ -639,8 +640,8 @@ void mbClientSendMessageUi::getListItem(const QModelIndex &index)
     if (i < 0)
         return;
     // TODO: check if txt already has data and ask user to confirm
-    const mbClientSendMessageParams *p = m_list->message(i);
-    fillForm(*p);
+    mbClientMessageParams p = m_list->message(i);
+    fillForm(p);
 }
 
 void mbClientSendMessageUi::timerEvent(QTimerEvent */*event*/)
@@ -666,12 +667,12 @@ void mbClientSendMessageUi::timerEvent(QTimerEvent */*event*/)
 
 QStringList mbClientSendMessageUi::getListItems() const
 {
-    return mb::saveSendMessages(m_list->messages());
+    return mb::saveClientMessages(m_list->messages());
 }
 
 void mbClientSendMessageUi::setListItems(const QStringList &list)
 {
-    m_list->setMessages(mb::restoreSendMessages(list));
+    m_list->setMessages(mb::restoreClientMessages(list));
 }
 
 int mbClientSendMessageUi::currentListIndex() const
@@ -692,7 +693,7 @@ void mbClientSendMessageUi::createMessage()
 {
     m_messageIndex = 0;
     m_messageList.clear();
-    mbClientSendMessageParams params;
+    mbClientMessageParams params;
     fillParams(params);
     mbClientRunMessage *msg = this->createMessage(params);
     m_messageList.append(msg);
@@ -705,14 +706,14 @@ void mbClientSendMessageUi::createMessageList()
     auto msgList = m_list->messages();
     if (msgList.count() == 0)
         return;
-    Q_FOREACH (const auto* params, msgList)
+    Q_FOREACH (const auto& params, msgList)
     {
-        mbClientRunMessage *msg = this->createMessage(*params);
+        mbClientRunMessage *msg = this->createMessage(params);
         m_messageList.append(msg);
     }
 }
 
-mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientSendMessageParams &params)
+mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessageParams &params)
 {
     mbClientDevice *device = currentDevice();
     if (!device)
@@ -1208,7 +1209,7 @@ bool mbClientSendMessageUi::prepareSendParams()
     return true;
 }
 
-void mbClientSendMessageUi::fillParams(mbClientSendMessageParams &params)
+void mbClientSendMessageUi::fillParams(mbClientMessageParams &params)
 {
     params.func = getCurrentFuncNum();
     switch(params.func)
@@ -1269,7 +1270,7 @@ void mbClientSendMessageUi::fillParams(mbClientSendMessageParams &params)
     }
 }
 
-void mbClientSendMessageUi::fillForm(const mbClientSendMessageParams &params)
+void mbClientSendMessageUi::fillForm(const mbClientMessageParams &params)
 {
     setCurrentFuncNum(params.func);
     switch(params.func)

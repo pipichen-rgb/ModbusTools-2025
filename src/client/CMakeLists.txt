@@ -40,7 +40,6 @@ set(MBTOOLS_HEADERS
     gui/project/client_projectdelegate.h
     gui/project/client_projectmodel.h
     gui/project/client_projectui.h
-    gui/sendmessage/client_sendmessage_global.h
     gui/sendmessage/client_sendmessagelistmodel.h
     gui/sendmessage/client_sendmessageui.h
     gui/sendbytes/client_sendbyteslistmodel.h
@@ -62,6 +61,7 @@ set(MBTOOLS_HEADERS
     runtime/client_runtime.h)
 
 set(MBTOOLS_SOURCES
+    core/client_global.cpp
     core/client.cpp
     ${CMAKE_CURRENT_LIST_DIR}/project/client_builder.cpp
     ${CMAKE_CURRENT_LIST_DIR}/project/client_device.cpp
@@ -81,7 +81,6 @@ set(MBTOOLS_SOURCES
     gui/project/client_projectdelegate.cpp
     gui/project/client_projectmodel.cpp
     gui/project/client_projectui.cpp
-    gui/sendmessage/client_sendmessage_global.cpp
     gui/sendmessage/client_sendmessagelistmodel.cpp
     gui/sendmessage/client_sendmessageui.cpp
     gui/sendbytes/client_sendbyteslistmodel.cpp

@@ -24,7 +24,7 @@
 #define CLIENT_DIALOGSENDMESSAGE_H
 
 #include <gui/dialogs/core_dialogbase.h>
-#include "client_sendmessage_global.h"
+#include <client_global.h>
 
 class mbCoreProject;
 class mbCorePort;
@@ -146,7 +146,7 @@ private:
     void setSendTo(int type);
     void createMessage();
     void createMessageList();
-    mbClientRunMessage* createMessage(const mbClientSendMessageParams &params);
+    mbClientRunMessage* createMessage(const mbClientMessageParams &params);
     void sendMessage();
     void prepareToSend(mbClientRunMessage *msg);
     void clearAfterSend(mbClientRunMessage *msg);
@@ -155,8 +155,8 @@ private:
 
 private:
     bool prepareSendParams();
-    void fillParams(mbClientSendMessageParams &params);
-    void fillForm(const mbClientSendMessageParams &params);
+    void fillParams(mbClientMessageParams &params);
+    void fillForm(const mbClientMessageParams &params);
     void fillForm(const mbClientRunMessagePtr &message);
     QStringList toStringListBits(const QByteArray &data, uint16_t count);
     QStringList toStringListNumbers(const QByteArray &data, mb::Format format);

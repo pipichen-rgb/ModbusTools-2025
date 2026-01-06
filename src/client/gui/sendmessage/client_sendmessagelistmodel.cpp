@@ -3,7 +3,7 @@
 struct mbClientSendMessageListModel::Item
 {
     QString repr;
-    mbClientSendMessageParams params;
+    mbClientMessageParams params;
 };
 
 mbClientSendMessageListModel::mbClientSendMessageListModel(QObject *parent)
@@ -75,20 +75,20 @@ QVariant mbClientSendMessageListModel::data(const QModelIndex &index, int role) 
     return QVariant();
 }
 
-QList<const mbClientSendMessageParams *> mbClientSendMessageListModel::messages() const
+QList<mbClientMessageParams> mbClientSendMessageListModel::messages() const
 {
-    QList<const mbClientSendMessageParams*> res;
-    Q_FOREACH (const auto item, m_items)
-        res.append(&item->params);
+    QList<mbClientMessageParams> res;
+    Q_FOREACH (const auto& item, m_items)
+        res.append(item->params);
     return res;
 }
 
-const mbClientSendMessageParams *mbClientSendMessageListModel::message(int i) const
+mbClientMessageParams mbClientSendMessageListModel::message(int i) const
 {
     Item *item = m_items.value(i);
     if (item)
-        return &item->params;
-    return nullptr;
+        return item->params;
+    return mbClientMessageParams();
 }
 
 QString mbClientSendMessageListModel::messageRepr(int i)
@@ -99,18 +99,18 @@ QString mbClientSendMessageListModel::messageRepr(int i)
     return QString();
 }
 
-void mbClientSendMessageListModel::setMessages(const QList<const mbClientSendMessageParams *> messages)
+void mbClientSendMessageListModel::setMessages(const QList<mbClientMessageParams> messages)
 {
     beginResetModel();
     clear();
     endResetModel();
-    Q_FOREACH(const mbClientSendMessageParams *p, messages)
+    Q_FOREACH(const mbClientMessageParams &p, messages)
     {
-        addMessage(*p);
+        addMessage(p);
     }
 }
 
-void mbClientSendMessageListModel::insertMessage(int i, const mbClientSendMessageParams &params)
+void mbClientSendMessageListModel::insertMessage(int i, const mbClientMessageParams &params)
 {
     if (i < 0 || i > m_items.count())
         i = m_items.count();
@@ -120,7 +120,7 @@ void mbClientSendMessageListModel::insertMessage(int i, const mbClientSendMessag
     endInsertRows();
 }
 
-void mbClientSendMessageListModel::editMessage(int i, const mbClientSendMessageParams &params)
+void mbClientSendMessageListModel::editMessage(int i, const mbClientMessageParams &params)
 {
     Item *item = m_items.value(i);
     if (item)
@@ -183,7 +183,7 @@ bool mbClientSendMessageListModel::moveTo(int oldPos, int newPos)
     return false;
 }
 
-QString mbClientSendMessageListModel::paramsRepr(const mbClientSendMessageParams &params) const
+QString mbClientSendMessageListModel::paramsRepr(const mbClientMessageParams &params) const
 {
-    return mb::saveSendMessageParams(params, false);
+    return mb::saveClientMessageParams(params, false);
 }

@@ -3,7 +3,7 @@
 
 #include <QAbstractTableModel>
 
-#include "client_sendmessage_global.h"
+#include <client_global.h>
 
 class mbClientSendMessageListModel : public QAbstractTableModel
 {
@@ -27,13 +27,13 @@ public: // QAbstractItemModel interface
     QVariant data(const QModelIndex &index, int role) const override;
 
 public:
-    QList<const mbClientSendMessageParams*> messages() const;
-    const mbClientSendMessageParams* message(int i) const;
+    QList<mbClientMessageParams> messages() const;
+    mbClientMessageParams message(int i) const;
     QString messageRepr(int i);
-    void setMessages(const QList<const mbClientSendMessageParams*> messages);
-    void insertMessage(int i, const mbClientSendMessageParams &params);
-    inline void addMessage(const mbClientSendMessageParams &params) { insertMessage(-1, params); }
-    void editMessage(int i, const mbClientSendMessageParams &params);
+    void setMessages(const QList<mbClientMessageParams> messages);
+    void insertMessage(int i, const mbClientMessageParams &params);
+    inline void addMessage(const mbClientMessageParams &params) { insertMessage(-1, params); }
+    void editMessage(int i, const mbClientMessageParams &params);
     void removeMessage(int i);
     bool moveUp(int i);
     bool moveDown(int i);
@@ -42,7 +42,7 @@ public:
 private:
     struct Item;
     bool moveTo(int oldPos, int newPos);
-    QString paramsRepr(const mbClientSendMessageParams &params) const;
+    QString paramsRepr(const mbClientMessageParams &params) const;
 
 private:
     QList<Item*> m_items;

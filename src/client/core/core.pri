@@ -3,4 +3,7 @@ HEADERS += \
     $$PWD/client_global.h
 
 SOURCES += \
-    $$PWD/client.cpp
+    $$PWD/client.cpp \
+    $$PWD/client_global.cpp \
+    $$PWD/client_global.cpp
+
