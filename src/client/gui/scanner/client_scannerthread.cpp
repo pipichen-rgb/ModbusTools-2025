@@ -162,7 +162,7 @@ void mbClientScannerThread::run()
             m_scanner->setStatDevice(sPortUnit);
             Modbus::StatusCode status = Modbus::Status_Bad;
             bool deviceIsFound = false;
-            Q_FOREACH (const mbClientScanner::FuncParams &f, m_request)
+            Q_FOREACH (const auto &f, m_request)
             {
                 while(1)
                 {

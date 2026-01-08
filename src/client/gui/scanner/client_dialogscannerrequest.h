@@ -50,8 +50,8 @@ private Q_SLOTS:
     void setCurrentFuncIndex(int i);
 
 private:
-    mbClientScanner::FuncParams getCurrentFunc() const;
-    void setCurrentFunc(const mbClientScanner::FuncParams &f);
+    mbClientMessageParams getCurrentFunc() const;
+    void setCurrentFunc(const mbClientMessageParams &f);
     uint8_t getCurrentFuncNum() const;
     void setCurrentFuncNum(uint8_t funcNum);
 
@@ -70,9 +70,9 @@ private:
         void setRequest(const mbClientScanner::Request_t &req);
 
     public:
-        mbClientScanner::FuncParams func(int i);
-        void addFunc(const mbClientScanner::FuncParams &f);
-        void modifyFunc(int i, const mbClientScanner::FuncParams &f);
+        mbClientMessageParams func(int i);
+        void addFunc(const mbClientMessageParams &f);
+        void modifyFunc(int i, const mbClientMessageParams &f);
         void deleteFunc(int i);
 
     private:

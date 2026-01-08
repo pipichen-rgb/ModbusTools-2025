@@ -5,6 +5,7 @@
 #include <QReadWriteLock>
 
 #include <ModbusQt.h>
+#include <client_global.h>
 
 class mbClientProject;
 class mbClientPort;
@@ -31,7 +32,7 @@ public:
 
     };
 
-    typedef QList<FuncParams> Request_t;
+    typedef QList<mbClientMessageParams> Request_t;
 
 public:
     static uint8_t      getSettingUnitStart(const Modbus::Settings &s, bool *ok = nullptr);
@@ -104,13 +105,13 @@ public:
         uint32_t                timeoutInterByte;
     };
 
-    static FuncParams toFuncParams(const QString &s, bool *ok = nullptr);
-    static QString toString(const FuncParams &f);
+    static mbClientMessageParams toFuncParams(const QString &s, bool *ok = nullptr);
+    static QString toString(const mbClientMessageParams &f);
     static Request_t toRequest(const QString &s, bool *ok = nullptr);
     static QString toString(const Request_t &req);
     static Request_t createRequestParam2(uint8_t funcNum, uint16_t offset, uint16_t count)
     {
-        FuncParams f;
+        mbClientMessageParams f;
         f.func = funcNum;
         f.offset = offset;
         f.count = count;
