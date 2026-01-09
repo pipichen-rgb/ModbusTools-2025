@@ -32,6 +32,11 @@ uint8_t mbClientScanner::getSettingUnitEnd(const Modbus::Settings &s, bool *ok)
     MBCLIENTSCANNER_GET_SETTING_MACRO(uint8_t, unitEnd, v = static_cast<uint8_t>(var.toUInt(&okInner)))
 }
 
+QVariantList mbClientScanner::getSettingHost(const Modbus::Settings &s, bool *ok)
+{
+    return s.value(Modbus::Strings::instance().host).toList();
+}
+
 QVariantList mbClientScanner::getSettingBaudRate(const Modbus::Settings &s, bool */*ok*/)
 {
     return s.value(Modbus::Strings::instance().baudRate).toList();
@@ -65,6 +70,11 @@ void mbClientScanner::setSettingUnitStart(Modbus::Settings &s, uint8_t v)
 void mbClientScanner::setSettingUnitEnd(Modbus::Settings &s, uint8_t v)
 {
     s[mbClientScanner::Strings::instance().unitEnd] = v;
+}
+
+void mbClientScanner::setSettingHost(Modbus::Settings &s, const QVariantList &v)
+{
+    s[Modbus::Strings::instance().host] = v;
 }
 
 void mbClientScanner::setSettingBaudRate(Modbus::Settings &s, const QVariantList &v)
@@ -173,8 +183,7 @@ mbClientScanner::Strings::Strings() :
     unitEnd       (QStringLiteral("unitEnd")),
     request       (QStringLiteral("request")),
     func_prefix   (QStringLiteral("FN")),
-    func_param_sep(':'),
-    func_sep      (';')
+    func_sep      (':')
 {
 }
 

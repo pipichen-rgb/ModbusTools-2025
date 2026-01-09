@@ -57,6 +57,18 @@ void mbClientScannerThread::setSettings(const Modbus::Settings &settings)
     m_names     .clear();
     m_valuesList.clear();
 
+#define DEFINE_COMBINATION_ELEMENT(elem)            \
+        if (elem.count())                           \
+        {                                           \
+                DivMod dm;                          \
+                dm.div = m_combinationCount;        \
+                dm.mod = elem.count();              \
+                m_divMods.append(dm);               \
+                m_names.append(s.elem);             \
+                m_valuesList.append(elem);          \
+                m_combinationCount *= elem.count(); \
+        }
+
     Modbus::ProtocolType type = Modbus::getSettingType(settings);
     switch (type)
     {
@@ -68,18 +80,6 @@ void mbClientScannerThread::setSettings(const Modbus::Settings &settings)
         QVariantList parity   = mbClientScanner::getSettingParity  (settings);
         QVariantList stopBits = mbClientScanner::getSettingStopBits(settings);
 
-#define DEFINE_COMBINATION_ELEMENT(elem)            \
-        if (elem.count())                           \
-        {                                           \
-            DivMod dm;                              \
-            dm.div = m_combinationCount;            \
-            dm.mod = elem.count();                  \
-            m_divMods.append(dm);                   \
-            m_names.append(s.elem);                 \
-            m_valuesList.append(elem);              \
-            m_combinationCount *= elem.count();     \
-        }
-
         DEFINE_COMBINATION_ELEMENT(stopBits)
         DEFINE_COMBINATION_ELEMENT(parity  )
         DEFINE_COMBINATION_ELEMENT(dataBits)
@@ -87,6 +87,10 @@ void mbClientScannerThread::setSettings(const Modbus::Settings &settings)
     }
         break;
     default:
+        QVariantList host = mbClientScanner::getSettingHost(settings);
+
+        DEFINE_COMBINATION_ELEMENT(host)
+
         break;
     }
     m_combinationCountAll = m_combinationCount * (m_unitEnd - m_unitStart + 1);

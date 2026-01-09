@@ -12,6 +12,7 @@
 #include "client_scanner.h"
 #include "client_scannermodel.h"
 #include "client_dialogscannerrequest.h"
+#include "client_dialogscannerhost.h"
 
 mbClientScannerUi::Strings::Strings() : mbCoreDialogBase::Strings(),
     prefix        (QStringLiteral("Ui.Scanner.")),
@@ -24,6 +25,7 @@ mbClientScannerUi::Strings::Strings() : mbCoreDialogBase::Strings(),
     host          (prefix+Modbus::Strings::instance().host),
     port          (prefix+Modbus::Strings::instance().port),
     serialPortName(prefix+Modbus::Strings::instance().serialPortName),
+    hostList      (QStringLiteral("hostList")),
     baudRateList  (QStringLiteral("baudRateList")),
     dataBitsList  (QStringLiteral("dataBitsList")),
     parityList    (QStringLiteral("parityList")),
@@ -97,6 +99,18 @@ mbClientScannerUi::mbClientScannerUi(QWidget *parent) :
     sp->setMaximum(UCHAR_MAX);
     sp->setValue(d.unitEnd);
 
+    //--------------------- TCP ---------------------
+    // Host
+    vls.clear();
+    vls.append(md.host);
+    setValues(ui->lsHost, vls);
+
+    // Port
+    sp = ui->spNetPort;
+    sp->setMinimum(0);
+    sp->setMaximum(USHRT_MAX);
+    sp->setValue(md.port);
+
     //--------------------- SERIAL ---------------------
     // Serial Port
     cmb = ui->cmbSerialPortName;
@@ -125,16 +139,6 @@ mbClientScannerUi::mbClientScannerUi(QWidget *parent) :
     vls.append(Modbus::toString(md.stopBits));
     setValues(ui->lsStopBits, vls);
 
-    //--------------------- TCP ---------------------
-    // Host
-    ln = ui->lnTcpHost;
-    ln->setText(md.host);
-    // Port
-    sp = ui->spTcpPort;
-    sp->setMinimum(0);
-    sp->setMaximum(USHRT_MAX);
-    sp->setValue(md.port);
-
     //-------------------- OTHER --------------------
     setRequest(d.request);
 
@@ -149,8 +153,10 @@ mbClientScannerUi::mbClientScannerUi(QWidget *parent) :
     header->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     m_dialogRequest = new mbClientDialogScannerRequest(this);
+    m_dialogHost = new mbClientDialogScannerHost(this);
 
     connect(ui->btnEditRequest , &QPushButton::clicked, this, &mbClientScannerUi::slotEditRequest );
+    connect(ui->btnEditHost    , &QPushButton::clicked, this, &mbClientScannerUi::slotEditHost    );
     connect(ui->btnEditBaudRate, &QPushButton::clicked, this, &mbClientScannerUi::slotEditBaudRate);
     connect(ui->btnEditDataBits, &QPushButton::clicked, this, &mbClientScannerUi::slotEditDataBits);
     connect(ui->btnEditParity  , &QPushButton::clicked, this, &mbClientScannerUi::slotEditParity  );
@@ -175,6 +181,7 @@ MBSETTINGS mbClientScannerUi::cachedSettings() const
 {
     MBSETTINGS m = mbCoreDialogBase::cachedSettings();
     mb::unite(m, m_dialogRequest->cachedSettings());
+    mb::unite(m, m_dialogHost   ->cachedSettings());
 
     const Strings &s = Strings::instance();
 
@@ -184,8 +191,8 @@ MBSETTINGS mbClientScannerUi::cachedSettings() const
     m[s.unitStart     ] = ui->spUnitStart      ->value      ();
     m[s.unitEnd       ] = ui->spUnitEnd        ->value      ();
     m[s.request       ] = mbClientScanner::toString(m_request);
-    m[s.host          ] = ui->lnTcpHost        ->text       ();
-    m[s.port          ] = ui->spTcpPort        ->value      ();
+    m[s.hostList      ] = getValues(ui->lsHost);
+    m[s.port          ] = ui->spNetPort        ->value      ();
     m[s.serialPortName] = ui->cmbSerialPortName->currentText();
     m[s.baudRateList  ] = getValues(ui->lsBaudRate);
     m[s.dataBitsList  ] = getValues(ui->lsDataBits);
@@ -200,6 +207,7 @@ void mbClientScannerUi::setCachedSettings(const MBSETTINGS &m)
 {
     mbCoreDialogBase::setCachedSettings(m);
     m_dialogRequest->setCachedSettings(m);
+    m_dialogHost->setCachedSettings(m);
 
     const Strings &s = Strings::instance();
 
@@ -212,8 +220,8 @@ void mbClientScannerUi::setCachedSettings(const MBSETTINGS &m)
     it = m.find(s.unitStart     ); if (it != end) ui->spUnitStart      ->setValue      (it.value().toInt()   );
     it = m.find(s.unitEnd       ); if (it != end) ui->spUnitEnd        ->setValue      (it.value().toInt()   );
     it = m.find(s.request       ); if (it != end) this                 ->setRequest    (it.value().toString());
-    it = m.find(s.host          ); if (it != end) ui->lnTcpHost        ->setText       (it.value().toString());
-    it = m.find(s.port          ); if (it != end) ui->spTcpPort        ->setValue      (it.value().toInt()   );
+    it = m.find(s.hostList      ); if (it != end) setValues(ui->lsHost, it.value().toList());
+    it = m.find(s.port          ); if (it != end) ui->spNetPort        ->setValue      (it.value().toInt()   );
     it = m.find(s.serialPortName); if (it != end) ui->cmbSerialPortName->setCurrentText(it.value().toString());
     it = m.find(s.baudRateList  ); if (it != end) setValues(ui->lsBaudRate, it.value().toList());
     it = m.find(s.dataBitsList  ); if (it != end) setValues(ui->lsDataBits, it.value().toList());
@@ -227,6 +235,13 @@ void mbClientScannerUi::slotEditRequest()
     mbClientScanner::Request_t req = m_request;
     if (m_dialogRequest->getRequest(req))
         setRequest(req);
+}
+
+void mbClientScannerUi::slotEditHost()
+{
+    QVariantList ls = getValues(ui->lsHost);
+    if (m_dialogHost->getHosts(ls))
+        setValues(ui->lsHost, ls);
 }
 
 void mbClientScannerUi::slotEditBaudRate()
@@ -292,8 +307,8 @@ void mbClientScannerUi::slotStart()
     Modbus::setSettingType(s, type);
     Modbus::setSettingTimeout(s, ui->spTimeout->value());
     Modbus::setSettingTries(s, ui->spTries->value());
-    Modbus::setSettingHost(s, ui->lnTcpHost->text());
-    Modbus::setSettingPort(s, ui->spTcpPort->value());
+    mbClientScanner::setSettingHost(s, getValues(ui->lsHost));
+    Modbus::setSettingPort(s, ui->spNetPort->value());
     Modbus::setSettingSerialPortName(s, ui->cmbSerialPortName->currentText());
     mbClientScanner::setSettingBaudRate(s, getValues(ui->lsBaudRate));
     mbClientScanner::setSettingDataBits(s, getValues(ui->lsDataBits));
@@ -409,7 +424,7 @@ void mbClientScannerUi::setRequest(const mbClientScanner::Request_t &req)
         m_request.append(mbClientScanner::Defaults::instance().request);
     QString s;
     if (m_request.count() == 1)
-        s = mbClientScanner::toString(m_request.first());
+        s = QString("FC%1").arg(m_request.first().func, 2, 10, QLatin1Char('0'));
     else
         s = QString("%1 functions").arg(m_request.count());
     ui->lnRequest->setText(s);

@@ -44,6 +44,7 @@ set(MBTOOLS_HEADERS
     gui/sendmessage/client_sendmessageui.h
     gui/sendbytes/client_sendbyteslistmodel.h
     gui/sendbytes/client_sendbytesui.h
+    gui/scanner/client_dialogscannerhost.h
     gui/scanner/client_dialogscannerrequest.h
     gui/scanner/client_scanner.h
     gui/scanner/client_scannermodel.h
@@ -85,6 +86,7 @@ set(MBTOOLS_SOURCES
     gui/sendmessage/client_sendmessageui.cpp
     gui/sendbytes/client_sendbyteslistmodel.cpp
     gui/sendbytes/client_sendbytesui.cpp
+    gui/scanner/client_dialogscannerhost.cpp
     gui/scanner/client_dialogscannerrequest.cpp
     gui/scanner/client_scanner.cpp
     gui/scanner/client_scannermodel.cpp
