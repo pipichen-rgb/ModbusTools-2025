@@ -4,9 +4,9 @@
 mbClientDialogScannerHost::Strings::Strings() :
     title(QStringLiteral("Edit hosts")),
     cachePrefix(QStringLiteral("Ui.Dialogs.Scanner.Hosts")),
-    IPAddrStart(QStringLiteral("Ui.Dialogs.Scanner.IPAddrStart")),
-    IPAddrEnd  (QStringLiteral("Ui.Dialogs.Scanner.IPAddrEnd")),
-    SingleHost (QStringLiteral("Ui.Dialogs.Scanner.SingleHost"))
+    rangeStart (QStringLiteral("Ui.Dialogs.Scanner.IPAddrStart")),
+    rangeEnd   (QStringLiteral("Ui.Dialogs.Scanner.IPAddrEnd")),
+    single     (QStringLiteral("Ui.Dialogs.Scanner.SingleHost"))
 {
 }
 
@@ -28,12 +28,12 @@ mbClientDialogScannerHost::mbClientDialogScannerHost(QWidget *parent) :
     ui->lnIPAddrEnd  ->setText("192.168.1.2");
     ui->lnSingleHost ->setText(md.host);
 
-    connect(ui->btnAddIPAddrRange, &QPushButton::clicked, this, &mbClientDialogScannerHost::slotAddRange );
-    connect(ui->btnAddSingleHost , &QPushButton::clicked, this, &mbClientDialogScannerHost::slotAddSingle);
-    connect(ui->btnRemove        , &QPushButton::clicked, this, &mbClientDialogScannerHost::slotRemove   );
-    connect(ui->btnClear         , &QPushButton::clicked, this, &mbClientDialogScannerHost::slotClear    );
-    connect(ui->btnUp            , &QPushButton::clicked, this, &mbClientDialogScannerHost::slotMoveUp   );
-    connect(ui->btnDown          , &QPushButton::clicked, this, &mbClientDialogScannerHost::slotMoveDown );
+    connect(ui->btnAddRange , &QPushButton::clicked, this, &mbClientDialogScannerHost::slotAddRange );
+    connect(ui->btnAddSingle, &QPushButton::clicked, this, &mbClientDialogScannerHost::slotAddSingle);
+    connect(ui->btnRemove   , &QPushButton::clicked, this, &mbClientDialogScannerHost::slotRemove   );
+    connect(ui->btnClear    , &QPushButton::clicked, this, &mbClientDialogScannerHost::slotClear    );
+    connect(ui->btnUp       , &QPushButton::clicked, this, &mbClientDialogScannerHost::slotMoveUp   );
+    connect(ui->btnDown     , &QPushButton::clicked, this, &mbClientDialogScannerHost::slotMoveDown );
 
     connect(ui->buttonBox, &QDialogButtonBox::accepted, this, &mbClientDialogScannerHost::accept);
     connect(ui->buttonBox, &QDialogButtonBox::rejected, this, &mbClientDialogScannerHost::reject);
@@ -50,9 +50,9 @@ MBSETTINGS mbClientDialogScannerHost::cachedSettings() const
     const QString &prefix = Strings().cachePrefix;
 
     MBSETTINGS m = mbCoreDialogBase::cachedSettings();
-    m[prefix+vs.IPAddrStart] = ui->lnIPAddrStart->text();
-    m[prefix+vs.IPAddrEnd  ] = ui->lnIPAddrEnd  ->text();
-    m[prefix+vs.SingleHost ] = ui->lnSingleHost ->text();
+    m[prefix+vs.rangeStart] = ui->lnIPAddrStart->text();
+    m[prefix+vs.rangeEnd  ] = ui->lnIPAddrEnd  ->text();
+    m[prefix+vs.single    ] = ui->lnSingleHost ->text();
 
     return m;
 }
@@ -67,42 +67,42 @@ void mbClientDialogScannerHost::setCachedSettings(const MBSETTINGS &m)
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = m.end();
 
-    it = m.find(prefix+vs.IPAddrStart); if (it != end) ui->lnIPAddrStart->setText(it.value().toString());
-    it = m.find(prefix+vs.IPAddrEnd  ); if (it != end) ui->lnIPAddrEnd  ->setText(it.value().toString());
-    it = m.find(prefix+vs.SingleHost ); if (it != end) ui->lnSingleHost ->setText(it.value().toString());
+    it = m.find(prefix+vs.rangeStart); if (it != end) ui->lnIPAddrStart->setText(it.value().toString());
+    it = m.find(prefix+vs.rangeEnd  ); if (it != end) ui->lnIPAddrEnd  ->setText(it.value().toString());
+    it = m.find(prefix+vs.single    ); if (it != end) ui->lnSingleHost ->setText(it.value().toString());
 }
 
-bool mbClientDialogScannerHost::getHosts(QVariantList &hosts, const QString &title)
+bool mbClientDialogScannerHost::getValues(QVariantList &values, const QString &title)
 {
-    QStringList hostStrings;
-    Q_FOREACH (auto v, hosts)
+    QStringList valueStrings;
+    Q_FOREACH (auto v, values)
     {
-        hostStrings.append(v.toString());
+        valueStrings.append(v.toString());
     }
-    const bool result = getHosts(hostStrings, title);
+    const bool result = getValues(valueStrings, title);
     if (result)
     {
-        hosts.clear();
-        Q_FOREACH (auto v, hostStrings)
+        values.clear();
+        Q_FOREACH (auto v, valueStrings)
         {
-            hosts.append(QVariant(v));
+            values.append(QVariant(v));
         }
     }
     return result;
 }
 
-bool mbClientDialogScannerHost::getHosts(QStringList &hosts, const QString &title)
+bool mbClientDialogScannerHost::getValues(QStringList &values, const QString &title)
 {
     if (title.isEmpty())
         setWindowTitle(Strings::instance().title);
     else
         setWindowTitle(title);
-    fillForm(hosts);
+    fillForm(values);
     // ----------------------
     switch (QDialog::exec())
     {
     case QDialog::Accepted:
-        fillData(hosts);
+        fillData(values);
         return true;
     }
     return false;

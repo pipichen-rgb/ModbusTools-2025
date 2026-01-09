@@ -88,8 +88,10 @@ void mbClientScannerThread::setSettings(const Modbus::Settings &settings)
         break;
     default:
         QVariantList host = mbClientScanner::getSettingHost(settings);
-
+        QVariantList port = mbClientScanner::getSettingPort(settings);
+        
         DEFINE_COMBINATION_ELEMENT(host)
+        DEFINE_COMBINATION_ELEMENT(port)
 
         break;
     }

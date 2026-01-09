@@ -13,6 +13,7 @@
 #include "client_scannermodel.h"
 #include "client_dialogscannerrequest.h"
 #include "client_dialogscannerhost.h"
+#include "client_dialogscannerport.h"
 
 mbClientScannerUi::Strings::Strings() : mbCoreDialogBase::Strings(),
     prefix        (QStringLiteral("Ui.Scanner.")),
@@ -26,6 +27,7 @@ mbClientScannerUi::Strings::Strings() : mbCoreDialogBase::Strings(),
     port          (prefix+Modbus::Strings::instance().port),
     serialPortName(prefix+Modbus::Strings::instance().serialPortName),
     hostList      (QStringLiteral("hostList")),
+    portList      (QStringLiteral("portList")),
     baudRateList  (QStringLiteral("baudRateList")),
     dataBitsList  (QStringLiteral("dataBitsList")),
     parityList    (QStringLiteral("parityList")),
@@ -64,7 +66,7 @@ mbClientScannerUi::mbClientScannerUi(QWidget *parent) :
     connect(m_scanner, &mbClientScanner::statPercentChanged, this, &mbClientScannerUi::setStatPercent);
 
     QVariantList vls;
-    QLineEdit *ln;
+    //QLineEdit *ln;
     QSpinBox* sp;
     QComboBox* cmb;
 
@@ -106,10 +108,9 @@ mbClientScannerUi::mbClientScannerUi(QWidget *parent) :
     setValues(ui->lsHost, vls);
 
     // Port
-    sp = ui->spNetPort;
-    sp->setMinimum(0);
-    sp->setMaximum(USHRT_MAX);
-    sp->setValue(md.port);
+    vls.clear();
+    vls.append(md.port);
+    setValues(ui->lsPort, vls);
 
     //--------------------- SERIAL ---------------------
     // Serial Port
@@ -154,9 +155,11 @@ mbClientScannerUi::mbClientScannerUi(QWidget *parent) :
 
     m_dialogRequest = new mbClientDialogScannerRequest(this);
     m_dialogHost = new mbClientDialogScannerHost(this);
+    m_dialogPort = new mbClientDialogScannerPort(this);
 
     connect(ui->btnEditRequest , &QPushButton::clicked, this, &mbClientScannerUi::slotEditRequest );
     connect(ui->btnEditHost    , &QPushButton::clicked, this, &mbClientScannerUi::slotEditHost    );
+    connect(ui->btnEditPort    , &QPushButton::clicked, this, &mbClientScannerUi::slotEditPort    );
     connect(ui->btnEditBaudRate, &QPushButton::clicked, this, &mbClientScannerUi::slotEditBaudRate);
     connect(ui->btnEditDataBits, &QPushButton::clicked, this, &mbClientScannerUi::slotEditDataBits);
     connect(ui->btnEditParity  , &QPushButton::clicked, this, &mbClientScannerUi::slotEditParity  );
@@ -182,6 +185,7 @@ MBSETTINGS mbClientScannerUi::cachedSettings() const
     MBSETTINGS m = mbCoreDialogBase::cachedSettings();
     mb::unite(m, m_dialogRequest->cachedSettings());
     mb::unite(m, m_dialogHost   ->cachedSettings());
+    mb::unite(m, m_dialogPort   ->cachedSettings());
 
     const Strings &s = Strings::instance();
 
@@ -192,7 +196,7 @@ MBSETTINGS mbClientScannerUi::cachedSettings() const
     m[s.unitEnd       ] = ui->spUnitEnd        ->value      ();
     m[s.request       ] = mbClientScanner::toString(m_request);
     m[s.hostList      ] = getValues(ui->lsHost);
-    m[s.port          ] = ui->spNetPort        ->value      ();
+    m[s.portList      ] = getValues(ui->lsPort);
     m[s.serialPortName] = ui->cmbSerialPortName->currentText();
     m[s.baudRateList  ] = getValues(ui->lsBaudRate);
     m[s.dataBitsList  ] = getValues(ui->lsDataBits);
@@ -208,6 +212,7 @@ void mbClientScannerUi::setCachedSettings(const MBSETTINGS &m)
     mbCoreDialogBase::setCachedSettings(m);
     m_dialogRequest->setCachedSettings(m);
     m_dialogHost->setCachedSettings(m);
+    m_dialogPort->setCachedSettings(m);
 
     const Strings &s = Strings::instance();
 
@@ -221,7 +226,7 @@ void mbClientScannerUi::setCachedSettings(const MBSETTINGS &m)
     it = m.find(s.unitEnd       ); if (it != end) ui->spUnitEnd        ->setValue      (it.value().toInt()   );
     it = m.find(s.request       ); if (it != end) this                 ->setRequest    (it.value().toString());
     it = m.find(s.hostList      ); if (it != end) setValues(ui->lsHost, it.value().toList());
-    it = m.find(s.port          ); if (it != end) ui->spNetPort        ->setValue      (it.value().toInt()   );
+    it = m.find(s.portList      ); if (it != end) setValues(ui->lsPort, it.value().toList());
     it = m.find(s.serialPortName); if (it != end) ui->cmbSerialPortName->setCurrentText(it.value().toString());
     it = m.find(s.baudRateList  ); if (it != end) setValues(ui->lsBaudRate, it.value().toList());
     it = m.find(s.dataBitsList  ); if (it != end) setValues(ui->lsDataBits, it.value().toList());
@@ -240,8 +245,15 @@ void mbClientScannerUi::slotEditRequest()
 void mbClientScannerUi::slotEditHost()
 {
     QVariantList ls = getValues(ui->lsHost);
-    if (m_dialogHost->getHosts(ls))
+    if (m_dialogHost->getValues(ls))
         setValues(ui->lsHost, ls);
+}
+
+void mbClientScannerUi::slotEditPort()
+{
+    QVariantList ls = getValues(ui->lsPort);
+    if (m_dialogPort->getValues(ls))
+        setValues(ui->lsPort, ls);
 }
 
 void mbClientScannerUi::slotEditBaudRate()
@@ -308,7 +320,7 @@ void mbClientScannerUi::slotStart()
     Modbus::setSettingTimeout(s, ui->spTimeout->value());
     Modbus::setSettingTries(s, ui->spTries->value());
     mbClientScanner::setSettingHost(s, getValues(ui->lsHost));
-    Modbus::setSettingPort(s, ui->spNetPort->value());
+    mbClientScanner::setSettingPort(s, getValues(ui->lsPort));
     Modbus::setSettingSerialPortName(s, ui->cmbSerialPortName->currentText());
     mbClientScanner::setSettingBaudRate(s, getValues(ui->lsBaudRate));
     mbClientScanner::setSettingDataBits(s, getValues(ui->lsDataBits));

@@ -38,6 +38,7 @@ public:
     static uint8_t      getSettingUnitStart(const Modbus::Settings &s, bool *ok = nullptr);
     static uint8_t      getSettingUnitEnd  (const Modbus::Settings &s, bool *ok = nullptr);
     static QVariantList getSettingHost     (const Modbus::Settings &s, bool *ok = nullptr);
+    static QVariantList getSettingPort     (const Modbus::Settings &s, bool *ok = nullptr);
     static QVariantList getSettingBaudRate (const Modbus::Settings &s, bool *ok = nullptr);
     static QVariantList getSettingDataBits (const Modbus::Settings &s, bool *ok = nullptr);
     static QVariantList getSettingParity   (const Modbus::Settings &s, bool *ok = nullptr);
@@ -47,6 +48,7 @@ public:
     static void setSettingUnitStart(Modbus::Settings &s, uint8_t v            );
     static void setSettingUnitEnd  (Modbus::Settings &s, uint8_t v            );
     static void setSettingHost     (Modbus::Settings &s, const QVariantList &v);
+    static void setSettingPort     (Modbus::Settings &s, const QVariantList &v);
     static void setSettingBaudRate (Modbus::Settings &s, const QVariantList &v);
     static void setSettingDataBits (Modbus::Settings &s, const QVariantList &v);
     static void setSettingParity   (Modbus::Settings &s, const QVariantList &v);

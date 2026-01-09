@@ -37,6 +37,11 @@ QVariantList mbClientScanner::getSettingHost(const Modbus::Settings &s, bool *ok
     return s.value(Modbus::Strings::instance().host).toList();
 }
 
+QVariantList mbClientScanner::getSettingPort(const Modbus::Settings &s, bool *ok)
+{
+    return s.value(Modbus::Strings::instance().port).toList();
+}
+
 QVariantList mbClientScanner::getSettingBaudRate(const Modbus::Settings &s, bool */*ok*/)
 {
     return s.value(Modbus::Strings::instance().baudRate).toList();
@@ -75,6 +80,11 @@ void mbClientScanner::setSettingUnitEnd(Modbus::Settings &s, uint8_t v)
 void mbClientScanner::setSettingHost(Modbus::Settings &s, const QVariantList &v)
 {
     s[Modbus::Strings::instance().host] = v;
+}
+
+void mbClientScanner::setSettingPort(Modbus::Settings &s, const QVariantList &v)
+{
+    s[Modbus::Strings::instance().port] = v;
 }
 
 void mbClientScanner::setSettingBaudRate(Modbus::Settings &s, const QVariantList &v)

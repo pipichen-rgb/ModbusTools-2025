@@ -14,6 +14,7 @@ class QListWidget;
 class mbClientScannerModel;
 class mbClientDialogScannerRequest;
 class mbClientDialogScannerHost;
+class mbClientDialogScannerPort;
 
 class mbClientScannerUi : public mbCoreDialogBase
 {
@@ -33,6 +34,7 @@ public:
         const QString port          ;
         const QString serialPortName;
         const QString hostList      ;
+        const QString portList      ;
         const QString baudRateList  ;
         const QString dataBitsList  ;
         const QString parityList    ;
@@ -54,6 +56,7 @@ public:
 private Q_SLOTS:
     void slotEditRequest ();
     void slotEditHost    ();
+    void slotEditPort    ();
     void slotEditBaudRate();
     void slotEditDataBits();
     void slotEditParity  ();
@@ -94,6 +97,7 @@ private:
     mbClientScanner::Request_t m_request;
     mbClientDialogScannerRequest *m_dialogRequest;
     mbClientDialogScannerHost *m_dialogHost;
+    mbClientDialogScannerPort *m_dialogPort;
     mb::Timestamp_t m_timestampStart;
     int m_timerId;
 };

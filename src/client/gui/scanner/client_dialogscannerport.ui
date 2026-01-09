@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>mbClientDialogScannerHost</class>
- <widget class="QDialog" name="mbClientDialogScannerHost">
+ <class>mbClientDialogScannerPort</class>
+ <widget class="QDialog" name="mbClientDialogScannerPort">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Scanner Port</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
    <item>
@@ -27,7 +27,7 @@
           </size>
          </property>
          <property name="title">
-          <string>IP Address range</string>
+          <string>Port range</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_3">
           <property name="spacing">
@@ -53,7 +53,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lnIPAddrStart"/>
+           <widget class="QSpinBox" name="spPortStart"/>
           </item>
           <item>
            <widget class="QLabel" name="label_2">
@@ -63,7 +63,7 @@
            </widget>
           </item>
           <item>
-           <widget class="QLineEdit" name="lnIPAddrEnd"/>
+           <widget class="QSpinBox" name="spPortEnd"/>
           </item>
           <item>
            <widget class="QPushButton" name="btnAddRange">
@@ -84,7 +84,7 @@
           </size>
          </property>
          <property name="title">
-          <string>Single Host</string>
+          <string>Single Port</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="spacing">
@@ -103,7 +103,7 @@
            <number>4</number>
           </property>
           <item>
-           <widget class="QLineEdit" name="lnSingleHost"/>
+           <widget class="QSpinBox" name="spSinglePort"/>
           </item>
           <item>
            <widget class="QPushButton" name="btnAddSingle">
