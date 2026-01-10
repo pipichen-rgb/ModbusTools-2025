@@ -204,12 +204,13 @@ const mbClientScanner::Strings &mbClientScanner::Strings::instance()
 }
 
 mbClientScanner::Defaults::Defaults() :
-    type     (Modbus::Defaults::instance().type),
-    timeout  (1000),
-    tries    (Modbus::Defaults::instance().tries),
-    unitStart(Modbus::VALID_MODBUS_ADDRESS_BEGIN),
-    unitEnd  (Modbus::VALID_MODBUS_ADDRESS_END),
-    request  (mbClientScanner::createRequestParam2(MBF_READ_HOLDING_REGISTERS, 0, 1))
+    type            (Modbus::Defaults::instance().type),
+    timeout         (1000),
+    timeoutInterByte(Modbus::Defaults::instance().timeoutInterByte),
+    tries           (Modbus::Defaults::instance().tries),
+    unitStart       (Modbus::VALID_MODBUS_ADDRESS_BEGIN),
+    unitEnd         (Modbus::VALID_MODBUS_ADDRESS_END),
+    request         (mbClientScanner::createRequestParam2(MBF_READ_HOLDING_REGISTERS, 0, 1))
 {
 }
 

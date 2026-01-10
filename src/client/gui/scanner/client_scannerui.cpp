@@ -16,23 +16,24 @@
 #include "client_dialogscannerport.h"
 
 mbClientScannerUi::Strings::Strings() : mbCoreDialogBase::Strings(),
-    prefix        (QStringLiteral("Ui.Scanner.")),
-    type          (prefix+Modbus::Strings::instance().type),
-    timeout       (prefix+Modbus::Strings::instance().timeout),
-    tries         (prefix+mbClientScanner::Strings::instance().tries    ),
-    unitStart     (prefix+mbClientScanner::Strings::instance().unitStart),
-    unitEnd       (prefix+mbClientScanner::Strings::instance().unitEnd  ),
-    request       (prefix+mbClientScanner::Strings::instance().request  ),
-    host          (prefix+Modbus::Strings::instance().host),
-    port          (prefix+Modbus::Strings::instance().port),
-    serialPortName(prefix+Modbus::Strings::instance().serialPortName),
-    hostList      (QStringLiteral("hostList")),
-    portList      (QStringLiteral("portList")),
-    baudRateList  (QStringLiteral("baudRateList")),
-    dataBitsList  (QStringLiteral("dataBitsList")),
-    parityList    (QStringLiteral("parityList")),
-    stopBitsList  (QStringLiteral("stopBitsList")),
-    wSplitterState(QStringLiteral("splitterState"))
+    prefix          (QStringLiteral("Ui.Scanner.")),
+    type            (prefix+Modbus::Strings::instance().type),
+    timeout         (prefix+Modbus::Strings::instance().timeout),
+    tries           (prefix+mbClientScanner::Strings::instance().tries    ),
+    unitStart       (prefix+mbClientScanner::Strings::instance().unitStart),
+    unitEnd         (prefix+mbClientScanner::Strings::instance().unitEnd  ),
+    request         (prefix+mbClientScanner::Strings::instance().request  ),
+    host            (prefix+Modbus::Strings::instance().host),
+    port            (prefix+Modbus::Strings::instance().port),
+    serialPortName  (prefix+Modbus::Strings::instance().serialPortName),
+    timeoutInterByte(prefix+Modbus::Strings::instance().timeoutInterByte),
+    hostList        (QStringLiteral("hostList")),
+    portList        (QStringLiteral("portList")),
+    baudRateList    (QStringLiteral("baudRateList")),
+    dataBitsList    (QStringLiteral("dataBitsList")),
+    parityList      (QStringLiteral("parityList")),
+    stopBitsList    (QStringLiteral("stopBitsList")),
+    wSplitterState  (QStringLiteral("splitterState"))
 {
 
 }
@@ -120,6 +121,12 @@ mbClientScannerUi::mbClientScannerUi(QWidget *parent) :
         cmb->addItem(port);
     cmb->setEditable(true); // Note: Allow user right to enter port name if it's absent in list
 
+    // Timeout Inter Byte
+    sp = ui->spTimeoutIB;
+    sp->setMinimum(0);
+    sp->setMaximum(INT_MAX);
+    sp->setValue(d.timeoutInterByte);
+
     // Baud Rate List
     vls.clear();
     vls.append(QString::number(md.baudRate));
@@ -189,20 +196,21 @@ MBSETTINGS mbClientScannerUi::cachedSettings() const
 
     const Strings &s = Strings::instance();
 
-    m[s.type          ] = ui->cmbType          ->currentText();
-    m[s.timeout       ] = ui->spTimeout        ->value      ();
-    m[s.tries         ] = ui->spTries          ->value      ();
-    m[s.unitStart     ] = ui->spUnitStart      ->value      ();
-    m[s.unitEnd       ] = ui->spUnitEnd        ->value      ();
-    m[s.request       ] = mbClientScanner::toString(m_request);
-    m[s.hostList      ] = getValues(ui->lsHost);
-    m[s.portList      ] = getValues(ui->lsPort);
-    m[s.serialPortName] = ui->cmbSerialPortName->currentText();
-    m[s.baudRateList  ] = getValues(ui->lsBaudRate);
-    m[s.dataBitsList  ] = getValues(ui->lsDataBits);
-    m[s.parityList    ] = getValues(ui->lsParity  );
-    m[s.stopBitsList  ] = getValues(ui->lsStopBits);
-    m[s.wSplitterState] = ui->splitter->saveState();
+    m[s.type            ] = ui->cmbType          ->currentText();
+    m[s.timeout         ] = ui->spTimeout        ->value      ();
+    m[s.tries           ] = ui->spTries          ->value      ();
+    m[s.unitStart       ] = ui->spUnitStart      ->value      ();
+    m[s.unitEnd         ] = ui->spUnitEnd        ->value      ();
+    m[s.request         ] = mbClientScanner::toString(m_request);
+    m[s.hostList        ] = getValues(ui->lsHost);
+    m[s.portList        ] = getValues(ui->lsPort);
+    m[s.serialPortName  ] = ui->cmbSerialPortName->currentText();
+    m[s.timeoutInterByte] = ui->spTimeoutIB->value();
+    m[s.baudRateList    ] = getValues(ui->lsBaudRate);
+    m[s.dataBitsList    ] = getValues(ui->lsDataBits);
+    m[s.parityList      ] = getValues(ui->lsParity  );
+    m[s.stopBitsList    ] = getValues(ui->lsStopBits);
+    m[s.wSplitterState  ] = ui->splitter->saveState();
 
     return m;
 }
@@ -219,20 +227,21 @@ void mbClientScannerUi::setCachedSettings(const MBSETTINGS &m)
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = m.end();
 
-    it = m.find(s.type          ); if (it != end) ui->cmbType          ->setCurrentText(it.value().toString());
-    it = m.find(s.timeout       ); if (it != end) ui->spTimeout        ->setValue      (it.value().toInt()   );
-    it = m.find(s.tries         ); if (it != end) ui->spTries          ->setValue      (it.value().toInt()   );
-    it = m.find(s.unitStart     ); if (it != end) ui->spUnitStart      ->setValue      (it.value().toInt()   );
-    it = m.find(s.unitEnd       ); if (it != end) ui->spUnitEnd        ->setValue      (it.value().toInt()   );
-    it = m.find(s.request       ); if (it != end) this                 ->setRequest    (it.value().toString());
-    it = m.find(s.hostList      ); if (it != end) setValues(ui->lsHost, it.value().toList());
-    it = m.find(s.portList      ); if (it != end) setValues(ui->lsPort, it.value().toList());
-    it = m.find(s.serialPortName); if (it != end) ui->cmbSerialPortName->setCurrentText(it.value().toString());
-    it = m.find(s.baudRateList  ); if (it != end) setValues(ui->lsBaudRate, it.value().toList());
-    it = m.find(s.dataBitsList  ); if (it != end) setValues(ui->lsDataBits, it.value().toList());
-    it = m.find(s.parityList    ); if (it != end) setValues(ui->lsParity  , it.value().toList());
-    it = m.find(s.stopBitsList  ); if (it != end) setValues(ui->lsStopBits, it.value().toList());
-    it = m.find(s.wSplitterState); if (it != end) ui->splitter         ->restoreState   (it.value().toByteArray());
+    it = m.find(s.type            ); if (it != end) ui->cmbType          ->setCurrentText(it.value().toString());
+    it = m.find(s.timeout         ); if (it != end) ui->spTimeout        ->setValue      (it.value().toInt()   );
+    it = m.find(s.tries           ); if (it != end) ui->spTries          ->setValue      (it.value().toInt()   );
+    it = m.find(s.unitStart       ); if (it != end) ui->spUnitStart      ->setValue      (it.value().toInt()   );
+    it = m.find(s.unitEnd         ); if (it != end) ui->spUnitEnd        ->setValue      (it.value().toInt()   );
+    it = m.find(s.request         ); if (it != end) this                 ->setRequest    (it.value().toString());
+    it = m.find(s.hostList        ); if (it != end) setValues(ui->lsHost, it.value().toList());
+    it = m.find(s.portList        ); if (it != end) setValues(ui->lsPort, it.value().toList());
+    it = m.find(s.serialPortName  ); if (it != end) ui->cmbSerialPortName->setCurrentText(it.value().toString());
+    it = m.find(s.timeoutInterByte); if (it != end) ui->spTimeoutIB      ->setValue      (it.value().toInt()   );
+    it = m.find(s.baudRateList    ); if (it != end) setValues(ui->lsBaudRate, it.value().toList());
+    it = m.find(s.dataBitsList    ); if (it != end) setValues(ui->lsDataBits, it.value().toList());
+    it = m.find(s.parityList      ); if (it != end) setValues(ui->lsParity  , it.value().toList());
+    it = m.find(s.stopBitsList    ); if (it != end) setValues(ui->lsStopBits, it.value().toList());
+    it = m.find(s.wSplitterState  ); if (it != end) ui->splitter         ->restoreState   (it.value().toByteArray());
 }
 
 void mbClientScannerUi::slotEditRequest()
@@ -322,6 +331,7 @@ void mbClientScannerUi::slotStart()
     mbClientScanner::setSettingHost(s, getValues(ui->lsHost));
     mbClientScanner::setSettingPort(s, getValues(ui->lsPort));
     Modbus::setSettingSerialPortName(s, ui->cmbSerialPortName->currentText());
+    Modbus::setSettingTimeoutInterByte(s, ui->spTimeoutIB->value());
     mbClientScanner::setSettingBaudRate(s, getValues(ui->lsBaudRate));
     mbClientScanner::setSettingDataBits(s, getValues(ui->lsDataBits));
     mbClientScanner::setSettingParity  (s, getValues(ui->lsParity  ));

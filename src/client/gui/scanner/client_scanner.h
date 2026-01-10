@@ -79,6 +79,7 @@ public:
     {
         const Modbus::ProtocolType type     ;
         const uint32_t             timeout  ;
+        const uint32_t             timeoutInterByte;
         const uint32_t             tries    ;
         const uint8_t              unitStart;
         const uint8_t              unitEnd  ;

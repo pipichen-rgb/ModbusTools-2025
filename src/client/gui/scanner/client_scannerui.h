@@ -23,23 +23,24 @@ class mbClientScannerUi : public mbCoreDialogBase
 public:
     struct Strings : public mbCoreDialogBase::Strings
     {
-        const QString prefix        ;
-        const QString type          ;
-        const QString timeout       ;
-        const QString tries         ;
-        const QString unitStart     ;
-        const QString unitEnd       ;
-        const QString request       ;
-        const QString host          ;
-        const QString port          ;
-        const QString serialPortName;
-        const QString hostList      ;
-        const QString portList      ;
-        const QString baudRateList  ;
-        const QString dataBitsList  ;
-        const QString parityList    ;
-        const QString stopBitsList  ;
-        const QString wSplitterState;
+        const QString prefix          ;
+        const QString type            ;
+        const QString timeout         ;
+        const QString tries           ;
+        const QString unitStart       ;
+        const QString unitEnd         ;
+        const QString request         ;
+        const QString host            ;
+        const QString port            ;
+        const QString serialPortName  ;
+        const QString timeoutInterByte;
+        const QString hostList        ;
+        const QString portList        ;
+        const QString baudRateList    ;
+        const QString dataBitsList    ;
+        const QString parityList      ;
+        const QString stopBitsList    ;
+        const QString wSplitterState  ;
 
         Strings();
         static const Strings &instance();

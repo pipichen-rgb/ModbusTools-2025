@@ -168,7 +168,7 @@
           <item>
            <widget class="QStackedWidget" name="stackedWidget">
             <property name="currentIndex">
-             <number>1</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="pgSerialPort">
              <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -183,6 +183,16 @@
                 </item>
                 <item>
                  <widget class="QComboBox" name="cmbSerialPortName"/>
+                </item>
+                <item>
+                 <widget class="QLabel" name="label_10">
+                  <property name="text">
+                   <string>Timeout Inter Byte</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="spTimeoutIB"/>
                 </item>
                </layout>
               </item>
@@ -330,6 +340,9 @@
             </widget>
             <widget class="QWidget" name="pgTcpPort">
              <layout class="QHBoxLayout" name="horizontalLayout_8" stretch="0,1">
+              <property name="spacing">
+               <number>6</number>
+              </property>
               <item>
                <widget class="QGroupBox" name="grNetHost">
                 <property name="title">
