@@ -1,14 +1,14 @@
-#ifndef MBCLIENTSCANNERMODEL_H
-#define MBCLIENTSCANNERMODEL_H
+#ifndef MBCLIENTSCANNERUNITMODEL_H
+#define MBCLIENTSCANNERUNITMODEL_H
 
 #include <QAbstractTableModel>
 
 class mbClientScanner;
 
-class mbClientScannerModel : public QAbstractTableModel
+class mbClientScannerUnitModel : public QAbstractTableModel
 {
 public:
-    explicit mbClientScannerModel(mbClientScanner *scanner, QObject *parent = nullptr);
+    explicit mbClientScannerUnitModel(mbClientScanner *scanner, QObject *parent = nullptr);
 
 public: // table model interface
     int rowCount(const QModelIndex &parent = QModelIndex()) const;
@@ -24,4 +24,4 @@ private:
     QStringList m_devices;
 };
 
-#endif // MBCLIENTSCANNERMODEL_H
+#endif // MBCLIENTSCANNERUNITMODEL_H

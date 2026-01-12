@@ -73,6 +73,7 @@ struct mbClientMessageParams
     QString data;
 
 };
+Q_DECLARE_METATYPE(mbClientMessageParams)
 
 namespace mb {
 

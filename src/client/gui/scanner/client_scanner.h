@@ -144,6 +144,7 @@ public:
     void startScanning(const Modbus::Settings &settings);
     void stopScanning();
     void setStatDevice(const QString &device);
+    void setFunctionCompleted(const QString &port, quint8 unit, const mbClientMessageParams &params, int status);
     void setStatFound  (quint32 count);
     void setStatCountTx(quint32 count);
     void setStatCountRx(quint32 count);
@@ -154,6 +155,7 @@ Q_SIGNALS:
     void cleared();
     void stateChanged(bool run);
     void statDeviceChanged(const QString &name);
+    void statFunctionCompleted(const QString &port, quint8 unit, const mbClientMessageParams &params, int status);
     void statFoundChanged  (quint32 count);
     void statCountTxChanged(quint32 count);
     void statCountRxChanged(quint32 count);

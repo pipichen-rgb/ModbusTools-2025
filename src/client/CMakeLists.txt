@@ -48,7 +48,8 @@ set(MBTOOLS_HEADERS
     gui/scanner/client_dialogscannerhost.h
     gui/scanner/client_dialogscannerport.h
     gui/scanner/client_scanner.h
-    gui/scanner/client_scannermodel.h
+    gui/scanner/client_scannerunitmodel.h
+    gui/scanner/client_scannerfuncmodel.h
     gui/scanner/client_scannerthread.h
     gui/scanner/client_scannerui.h
     gui/client_windowmanager.h
@@ -91,7 +92,8 @@ set(MBTOOLS_SOURCES
     gui/scanner/client_dialogscannerhost.cpp
     gui/scanner/client_dialogscannerport.cpp
     gui/scanner/client_scanner.cpp
-    gui/scanner/client_scannermodel.cpp
+    gui/scanner/client_scannerunitmodel.cpp
+    gui/scanner/client_scannerfuncmodel.cpp
     gui/scanner/client_scannerthread.cpp
     gui/scanner/client_scannerui.cpp
     gui/client_windowmanager.cpp

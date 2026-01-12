@@ -168,7 +168,7 @@ void mbClientScannerThread::run()
             m_scanner->setStatDevice(sPortUnit);
             Modbus::StatusCode status = Modbus::Status_Bad;
             bool deviceIsFound = false;
-            Q_FOREACH (const auto &f, m_request)
+            Q_FOREACH (auto &f, m_request)
             {
                 while(1)
                 {
@@ -228,10 +228,12 @@ void mbClientScannerThread::run()
                         m_scanner->deviceAdd(settings);
                         m_scanner->setStatFound(++deviceFound);
                     }
+                    m_scanner->setFunctionCompleted(sPort, unit, f, status);
                 }
                 else if (Modbus::StatusIsBad(status))
                 {
                     mbClient::LogInfo(s.name, QString("%1 Error (%2): %3").arg(sPortUnit, QString::number(status, 16), clientPort->lastErrorText()));
+                    m_scanner->setFunctionCompleted(sPort, unit, f, status);
                 }
                 if (!m_ctrlRun)
                     break;

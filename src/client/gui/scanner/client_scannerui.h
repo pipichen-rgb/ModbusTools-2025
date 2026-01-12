@@ -11,7 +11,8 @@ class mbClientScannerUi;
 
 class QListWidget;
 
-class mbClientScannerModel;
+class mbClientScannerUnitModel;
+class mbClientScannerFuncModel;
 class mbClientDialogScannerRequest;
 class mbClientDialogScannerHost;
 class mbClientDialogScannerPort;
@@ -94,7 +95,8 @@ private:
 private:
     Ui::mbClientScannerUi *ui;
     mbClientScanner *m_scanner;
-    mbClientScannerModel *m_model;
+    mbClientScannerUnitModel *m_model;
+    mbClientScannerFuncModel *m_funcModel;
     mbClientScanner::Request_t m_request;
     mbClientDialogScannerRequest *m_dialogRequest;
     mbClientDialogScannerHost *m_dialogHost;

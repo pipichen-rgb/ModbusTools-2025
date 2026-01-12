@@ -1,5 +1,7 @@
 #include "client_global.h"
 
+int id_mbClientMessageParams = qRegisterMetaType<mbClientMessageParams>();
+
 namespace mb {
 
 QStringList saveClientMessages(const QList<mbClientMessageParams> messages)

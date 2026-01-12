@@ -10,7 +10,8 @@
 #include <gui/dialogs/client_dialogs.h>
 
 #include "client_scanner.h"
-#include "client_scannermodel.h"
+#include "client_scannerunitmodel.h"
+#include "client_scannerfuncmodel.h"
 #include "client_dialogscannerrequest.h"
 #include "client_dialogscannerhost.h"
 #include "client_dialogscannerport.h"
@@ -150,14 +151,23 @@ mbClientScannerUi::mbClientScannerUi(QWidget *parent) :
     //-------------------- OTHER --------------------
     setRequest(d.request);
 
-    m_model = new mbClientScannerModel(m_scanner, this);
-    ui->tableView->setModel(m_model);
+    m_model = new mbClientScannerUnitModel(m_scanner, this);
+    ui->tblUnits->setModel(m_model);
     QHeaderView *header;
-    header = ui->tableView->horizontalHeader();
+    header = ui->tblUnits->horizontalHeader();
     header->setStretchLastSection(true);
     header->setVisible(false);
     //header->setSectionResizeMode(QHeaderView::ResizeToContents);
-    header = ui->tableView->verticalHeader();
+    header = ui->tblUnits->verticalHeader();
+    header->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+    m_funcModel = new mbClientScannerFuncModel(m_scanner, this);
+    ui->tblFunctions->setModel(m_funcModel);
+    header = ui->tblFunctions->horizontalHeader();
+    header->setStretchLastSection(true);
+    header->setVisible(true);
+    //header->setSectionResizeMode(QHeaderView::ResizeToContents);
+    header = ui->tblFunctions->verticalHeader();
     header->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     m_dialogRequest = new mbClientDialogScannerRequest(this);
@@ -300,7 +310,7 @@ void mbClientScannerUi::slotEditStopBits()
 void mbClientScannerUi::slotAdd()
 {
     QList<int> indexes;
-    QModelIndexList rows = ui->tableView->selectionModel()->selectedRows();
+    QModelIndexList rows = ui->tblUnits->selectionModel()->selectedRows();
     Q_FOREACH(const QModelIndex &row, rows)
         indexes.append(row.row());
     if (indexes.count())

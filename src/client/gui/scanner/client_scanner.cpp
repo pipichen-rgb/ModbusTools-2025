@@ -370,6 +370,11 @@ void mbClientScanner::setStatDevice(const QString &device)
     }
 }
 
+void mbClientScanner::setFunctionCompleted(const QString &port, quint8 unit, const mbClientMessageParams &params, int status)
+{
+    Q_EMIT statFunctionCompleted(port, unit, params, status);
+}
+
 void mbClientScanner::setStatFound(quint32 count)
 {
     if (m_stat.found != count)
