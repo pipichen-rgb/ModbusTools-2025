@@ -109,6 +109,7 @@ void mbClientScannerThread::run()
 
     Modbus::Settings settings = m_settings;
     uint8_t dummy[MB_MAX_BYTES+1];
+    uint16_t *regdummy = reinterpret_cast<uint16_t*>(dummy);
     memset(dummy, 0, sizeof(dummy));
 
     quint32 deviceCount = 0;
@@ -170,6 +171,7 @@ void mbClientScannerThread::run()
             bool deviceIsFound = false;
             Q_FOREACH (auto &f, m_request)
             {
+                memset(dummy, 0, sizeof(dummy));
                 while(1)
                 {
                     if (!m_ctrlRun)
@@ -183,10 +185,10 @@ void mbClientScannerThread::run()
                         status = clientPort->readDiscreteInputs(static_cast<uint8_t>(unit), f.offset, f.count, dummy);
                         break;
                     case MBF_READ_HOLDING_REGISTERS:
-                        status = clientPort->readHoldingRegisters(static_cast<uint8_t>(unit), f.offset, f.count, reinterpret_cast<uint16_t*>(dummy));
+                        status = clientPort->readHoldingRegisters(static_cast<uint8_t>(unit), f.offset, f.count, regdummy);
                         break;
                     case MBF_READ_INPUT_REGISTERS:
-                        status = clientPort->readInputRegisters(static_cast<uint8_t>(unit), f.offset, f.count, reinterpret_cast<uint16_t*>(dummy));
+                        status = clientPort->readInputRegisters(static_cast<uint8_t>(unit), f.offset, f.count, regdummy);
                         break;
                     case MBF_WRITE_SINGLE_COIL:
                         status = clientPort->writeSingleCoil(static_cast<uint8_t>(unit), f.offset, 0);
@@ -197,11 +199,20 @@ void mbClientScannerThread::run()
                     case MBF_READ_EXCEPTION_STATUS:
                         status = clientPort->readExceptionStatus(static_cast<uint8_t>(unit), dummy);
                         break;
+                    case MBF_DIAGNOSTICS:
+                        status = clientPort->diagnostics(static_cast<uint8_t>(unit), f.subfunc, f.count, dummy, dummy, &dummy[1]);
+                        break;
+                    case MBF_GET_COMM_EVENT_COUNTER:
+                        status = clientPort->getCommEventCounter(static_cast<uint8_t>(unit), &regdummy[0], &regdummy[1]);
+                        break;
+                    case MBF_GET_COMM_EVENT_LOG:
+                        status = clientPort->getCommEventLog(static_cast<uint8_t>(unit), &regdummy[0], &regdummy[1], &regdummy[2], &dummy[6], &dummy[7]);
+                        break;
                     case MBF_WRITE_MULTIPLE_COILS:
                         status = clientPort->writeMultipleCoils(static_cast<uint8_t>(unit), f.offset, f.count, dummy);
                         break;
                     case MBF_WRITE_MULTIPLE_REGISTERS:
-                        status = clientPort->writeMultipleRegisters(static_cast<uint8_t>(unit), f.offset, f.count, reinterpret_cast<uint16_t*>(dummy));
+                        status = clientPort->writeMultipleRegisters(static_cast<uint8_t>(unit), f.offset, f.count, regdummy);
                         break;
                     case MBF_REPORT_SERVER_ID:
                         status = clientPort->reportServerID(static_cast<uint8_t>(unit), &dummy[0], &dummy[1]);
@@ -210,7 +221,10 @@ void mbClientScannerThread::run()
                         status = clientPort->maskWriteRegister(static_cast<uint8_t>(unit), f.offset, 0, 0);
                         break;
                     case MBF_READ_WRITE_MULTIPLE_REGISTERS:
-                        status = clientPort->readWriteMultipleRegisters(static_cast<uint8_t>(unit), f.offset, f.count, reinterpret_cast<uint16_t*>(dummy), f.offset, f.count, reinterpret_cast<uint16_t*>(dummy));
+                        status = clientPort->readWriteMultipleRegisters(static_cast<uint8_t>(unit), f.offset, f.count, regdummy, f.offset, f.count, regdummy);
+                        break;
+                    case MBF_READ_FIFO_QUEUE:
+                        status = clientPort->readFIFOQueue(static_cast<uint8_t>(unit), f.offset, &regdummy[0], &regdummy[1]);
                         break;
                     }
 

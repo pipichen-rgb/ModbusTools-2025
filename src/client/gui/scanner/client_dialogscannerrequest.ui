@@ -44,7 +44,7 @@
        <item>
         <widget class="QStackedWidget" name="swFuncParams">
          <property name="currentIndex">
-          <number>1</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="pgEmpty"/>
          <widget class="QWidget" name="pgOffset">
@@ -58,6 +58,38 @@
            </item>
            <item row="0" column="1">
             <widget class="QSpinBox" name="spOffset1"/>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="pgDiagn">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QComboBox" name="cmbDiagnSubfunction"/>
+           </item>
+           <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>204</height>
+              </size>
+             </property>
+            </spacer>
            </item>
           </layout>
          </widget>

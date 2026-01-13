@@ -21,6 +21,7 @@ public:
     {
         const QString prefix        ;
         const QString func          ;
+        const QString subfunc       ;
         const QString offset1       ;
         const QString offset2       ;
         const QString count2        ;
@@ -53,7 +54,9 @@ private:
     mbClientMessageParams getCurrentFunc() const;
     void setCurrentFunc(const mbClientMessageParams &f);
     uint8_t getCurrentFuncNum() const;
+    uint16_t getCurrentDiagnSubfuncNum() const;
     void setCurrentFuncNum(uint8_t funcNum);
+    void setCurrentDiagnSubfuncNum(uint16_t subfunc);
 
 private:
     class Model : public QAbstractListModel
@@ -83,6 +86,7 @@ private:
     Ui::mbClientDialogScannerRequest *ui;
     Model *m_model;
     QList<uint8_t> m_funcNums;
+    QList<uint16_t> m_diagnSubfuncNums;
 };
 
 #endif // CLIENT_DIALOGSCANNERREQUEST_H

@@ -6,6 +6,7 @@
 mbClientDialogScannerRequest::Strings::Strings() :
     prefix        (QStringLiteral("Ui.Scanner.Dialogs.Request.")),
     func          (prefix+QStringLiteral("func")),
+    subfunc       (prefix+QStringLiteral("subfunc")),
     offset1       (prefix+QStringLiteral("offset1")),
     offset2       (prefix+QStringLiteral("offset2")),
     count2        (prefix+QStringLiteral("count2")),
@@ -49,18 +50,38 @@ mbClientDialogScannerRequest::mbClientDialogScannerRequest(QWidget *parent) :
     sp->setMaximum(USHRT_MAX);
     sp->setValue(1);
 
-    m_funcNums.append(MBF_READ_COILS                    );
-    m_funcNums.append(MBF_READ_DISCRETE_INPUTS          );
-    m_funcNums.append(MBF_READ_HOLDING_REGISTERS        );
-    m_funcNums.append(MBF_READ_INPUT_REGISTERS          );
-    m_funcNums.append(MBF_WRITE_SINGLE_COIL             );
-    m_funcNums.append(MBF_WRITE_SINGLE_REGISTER         );
-    m_funcNums.append(MBF_READ_EXCEPTION_STATUS         );
-    m_funcNums.append(MBF_WRITE_MULTIPLE_COILS          );
-    m_funcNums.append(MBF_WRITE_MULTIPLE_REGISTERS      );
-    m_funcNums.append(MBF_REPORT_SERVER_ID              );
-    m_funcNums.append(MBF_MASK_WRITE_REGISTER           );
-    m_funcNums.append(MBF_READ_WRITE_MULTIPLE_REGISTERS );
+    m_funcNums.append(MBF_READ_COILS                   );
+    m_funcNums.append(MBF_READ_DISCRETE_INPUTS         );
+    m_funcNums.append(MBF_READ_HOLDING_REGISTERS       );
+    m_funcNums.append(MBF_READ_INPUT_REGISTERS         );
+    m_funcNums.append(MBF_WRITE_SINGLE_COIL            );
+    m_funcNums.append(MBF_WRITE_SINGLE_REGISTER        );
+    m_funcNums.append(MBF_READ_EXCEPTION_STATUS        );
+    m_funcNums.append(MBF_DIAGNOSTICS                  );
+    m_funcNums.append(MBF_GET_COMM_EVENT_COUNTER       );
+    m_funcNums.append(MBF_GET_COMM_EVENT_LOG           );
+    m_funcNums.append(MBF_WRITE_MULTIPLE_COILS         );
+    m_funcNums.append(MBF_WRITE_MULTIPLE_REGISTERS     );
+    m_funcNums.append(MBF_REPORT_SERVER_ID             );
+    m_funcNums.append(MBF_MASK_WRITE_REGISTER          );
+    m_funcNums.append(MBF_READ_WRITE_MULTIPLE_REGISTERS);
+    m_funcNums.append(MBF_READ_FIFO_QUEUE              );
+
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_QUERY_DATA                     );
+    m_diagnSubfuncNums.append(MBDIAGN_RESTART_COMMUNICATIONS_OPTION         );
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_DIAGNOSTIC_REGISTER            );
+    m_diagnSubfuncNums.append(MBDIAGN_CHANGE_ASCII_INPUT_DELIMITER          );
+    m_diagnSubfuncNums.append(MBDIAGN_FORCE_LISTEN_ONLY_MODE                );
+    m_diagnSubfuncNums.append(MBDIAGN_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER);
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_MESSAGE_COUNT              );
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_COMMUNICATION_ERROR_COUNT  );
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_EXCEPTION_ERROR_COUNT      );
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_MESSAGE_COUNT           );
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_NO_RESPONSE_COUNT       );
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_NAK_COUNT               );
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_BUSY_COUNT              );
+    m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_CHARACTER_OVERRUN_COUNT    );
+    m_diagnSubfuncNums.append(MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAGS       );
 
     cmb = ui->cmbFunction;
     connect(cmb, SIGNAL(currentIndexChanged(int)), this, SLOT(setCurrentFuncIndex(int)));
@@ -72,6 +93,17 @@ mbClientDialogScannerRequest::mbClientDialogScannerRequest(QWidget *parent) :
                     );
     }
     cmb->setCurrentIndex(2);
+
+    cmb = ui->cmbDiagnSubfunction;
+    connect(cmb, SIGNAL(currentIndexChanged(int)), this, SLOT(setCurrentDiagnSubfuncIndex(int)));
+    Q_FOREACH (auto funcNum, m_diagnSubfuncNums)
+    {
+        cmb->addItem(QString("%1 - %2")
+                         .arg(funcNum, 2, 10, QChar('0'))
+                         .arg(mb::ModbusDiagnSubfunctionString(funcNum))
+                     );
+    }
+    cmb->setCurrentIndex(0);
 
     connect(ui->lsRequest->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &mbClientDialogScannerRequest::selectionChanged);
     connect(ui->btnAdd   , &QPushButton::clicked, this, &mbClientDialogScannerRequest::addFunc   );
@@ -91,6 +123,7 @@ MBSETTINGS mbClientDialogScannerRequest::cachedSettings() const
     const Strings &s = Strings::instance();
 
     m[s.func          ] = getCurrentFuncNum();
+    m[s.subfunc       ] = getCurrentDiagnSubfuncNum();
     m[s.offset1       ] = ui->spOffset1        ->value      ();
     m[s.offset2       ] = ui->spOffset2        ->value      ();
     m[s.count2        ] = ui->spCount2         ->value      ();
@@ -109,6 +142,7 @@ void mbClientDialogScannerRequest::setCachedSettings(const MBSETTINGS &m)
     //bool ok;
 
     it = m.find(s.func          ); if (it != end) setCurrentFuncNum(static_cast<uint8_t>(it.value().toUInt()));
+    it = m.find(s.subfunc       ); if (it != end) setCurrentDiagnSubfuncNum(static_cast<uint16_t>(it.value().toUInt()));
     it = m.find(s.offset1       ); if (it != end) ui->spOffset1        ->setValue       (it.value().toInt()   );
     it = m.find(s.offset2       ); if (it != end) ui->spOffset2        ->setValue       (it.value().toInt()   );
     it = m.find(s.count2        ); if (it != end) ui->spCount2         ->setValue       (it.value().toInt()   );
@@ -187,13 +221,20 @@ mbClientMessageParams mbClientDialogScannerRequest::getCurrentFunc() const
     case MBF_WRITE_SINGLE_COIL:
     case MBF_WRITE_SINGLE_REGISTER:
     case MBF_MASK_WRITE_REGISTER:
+    case MBF_READ_FIFO_QUEUE:
         func.func   = funcNum;
         func.offset = static_cast<uint16_t>(ui->spOffset1->value());
         func.count  = 1;
         break;
     case MBF_READ_EXCEPTION_STATUS:
     case MBF_REPORT_SERVER_ID:
+    case MBF_GET_COMM_EVENT_COUNTER:
+    case MBF_GET_COMM_EVENT_LOG:
         func.func   = funcNum;
+        break;
+    case MBF_DIAGNOSTICS:
+        func.func   = funcNum;
+        func.subfunc= getCurrentDiagnSubfuncNum();
         break;
     }
     return func;
@@ -219,10 +260,16 @@ void mbClientDialogScannerRequest::setCurrentFunc(const mbClientMessageParams &f
     case MBF_WRITE_SINGLE_COIL:
     case MBF_WRITE_SINGLE_REGISTER:
     case MBF_MASK_WRITE_REGISTER:
+    case MBF_READ_FIFO_QUEUE:
         ui->spOffset1->setValue(f.offset);
         break;
     case MBF_READ_EXCEPTION_STATUS:
     case MBF_REPORT_SERVER_ID:
+    case MBF_GET_COMM_EVENT_COUNTER:
+    case MBF_GET_COMM_EVENT_LOG:
+        break;
+    case MBF_DIAGNOSTICS:
+        setCurrentDiagnSubfuncNum(f.subfunc);
         break;
     default:
         return;
@@ -233,6 +280,11 @@ void mbClientDialogScannerRequest::setCurrentFunc(const mbClientMessageParams &f
 uint8_t mbClientDialogScannerRequest::getCurrentFuncNum() const
 {
     return m_funcNums.value(ui->cmbFunction->currentIndex());
+}
+
+uint16_t mbClientDialogScannerRequest::getCurrentDiagnSubfuncNum() const
+{
+    return m_diagnSubfuncNums.value(ui->cmbDiagnSubfunction->currentIndex());
 }
 
 void mbClientDialogScannerRequest::setCurrentFuncNum(uint8_t funcNum)
@@ -251,11 +303,29 @@ void mbClientDialogScannerRequest::setCurrentFuncNum(uint8_t funcNum)
     case MBF_WRITE_SINGLE_COIL:
     case MBF_WRITE_SINGLE_REGISTER:
     case MBF_MASK_WRITE_REGISTER:
+    case MBF_READ_FIFO_QUEUE:
         ui->swFuncParams->setCurrentWidget(ui->pgOffset);
+        break;
+    case MBF_DIAGNOSTICS:
+        ui->swFuncParams->setCurrentWidget(ui->pgDiagn);
         break;
     default:
         ui->swFuncParams->setCurrentWidget(ui->pgEmpty);
         break;
+    }
+}
+
+void mbClientDialogScannerRequest::setCurrentDiagnSubfuncNum(uint16_t subfunc)
+{
+    int i = 0;
+    Q_FOREACH (int f, m_diagnSubfuncNums)
+    {
+        if (f == subfunc)
+        {
+            ui->cmbDiagnSubfunction->setCurrentIndex(i);
+            break;
+        }
+        ++i;
     }
 }
 
