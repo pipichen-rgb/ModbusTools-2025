@@ -67,7 +67,7 @@ QVariant mbClientScannerFuncModel::data(const QModelIndex &index, int role) cons
         auto s = m_func.at(index.row()).status;
         if (Modbus::StatusIsGood(s))
             return QBrush(QColor(0xCC, 0xFF, 0xCC));
-        if (Modbus::StatusIsGood(s))
+        if (Modbus::StatusIsBad(s))
             return QBrush(QColor(0xFF, 0xCC, 0xCC));
     }
         break;

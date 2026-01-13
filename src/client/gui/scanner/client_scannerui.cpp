@@ -151,8 +151,8 @@ mbClientScannerUi::mbClientScannerUi(QWidget *parent) :
     //-------------------- OTHER --------------------
     setRequest(d.request);
 
-    m_model = new mbClientScannerUnitModel(m_scanner, this);
-    ui->tblUnits->setModel(m_model);
+    m_unitModel = new mbClientScannerUnitModel(m_scanner, this);
+    ui->tblUnits->setModel(m_unitModel);
     QHeaderView *header;
     header = ui->tblUnits->horizontalHeader();
     header->setStretchLastSection(true);
@@ -166,7 +166,7 @@ mbClientScannerUi::mbClientScannerUi(QWidget *parent) :
     header = ui->tblFunctions->horizontalHeader();
     header->setStretchLastSection(true);
     header->setVisible(true);
-    //header->setSectionResizeMode(QHeaderView::ResizeToContents);
+    header->setSectionResizeMode(QHeaderView::ResizeToContents);
     header = ui->tblFunctions->verticalHeader();
     header->setSectionResizeMode(QHeaderView::ResizeToContents);
 
@@ -381,7 +381,7 @@ void mbClientScannerUi::stateChange(bool run)
     if (run)
     {
         m_timestampStart = mb::currentTimestamp();
-        ui->lbTmStart->setText(mb::toString(m_timestampStart));
+        //ui->lbTmStart->setText(mb::toString(m_timestampStart));
         m_timerId = this->startTimer(1000);
         refreshElapsedTime();
     }

@@ -95,7 +95,7 @@ private:
 private:
     Ui::mbClientScannerUi *ui;
     mbClientScanner *m_scanner;
-    mbClientScannerUnitModel *m_model;
+    mbClientScannerUnitModel *m_unitModel;
     mbClientScannerFuncModel *m_funcModel;
     mbClientScanner::Request_t m_request;
     mbClientDialogScannerRequest *m_dialogRequest;

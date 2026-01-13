@@ -44,7 +44,7 @@
        <item>
         <widget class="QStackedWidget" name="swFuncParams">
          <property name="currentIndex">
-          <number>2</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="pgEmpty"/>
          <widget class="QWidget" name="pgOffset">
