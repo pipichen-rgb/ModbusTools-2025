@@ -60,12 +60,14 @@ mbClientScannerUi::mbClientScannerUi(QWidget *parent) :
     setStatCountTx(m_scanner->statCountTx());
     setStatCountRx(m_scanner->statCountRx());
     setStatPercent(m_scanner->statPercent());
-    connect(m_scanner, &mbClientScanner::stateChanged, this, &mbClientScannerUi::stateChange);
-    connect(m_scanner, &mbClientScanner::statDeviceChanged , this, &mbClientScannerUi::setStatDevice );
-    connect(m_scanner, &mbClientScanner::statFoundChanged  , this, &mbClientScannerUi::setStatFound  );
-    connect(m_scanner, &mbClientScanner::statCountTxChanged, this, &mbClientScannerUi::setStatCountTx);
-    connect(m_scanner, &mbClientScanner::statCountRxChanged, this, &mbClientScannerUi::setStatCountRx);
-    connect(m_scanner, &mbClientScanner::statPercentChanged, this, &mbClientScannerUi::setStatPercent);
+    connect(m_scanner, &mbClientScanner::stateChanged        , this, &mbClientScannerUi::stateChange     );
+    connect(m_scanner, &mbClientScanner::statDeviceChanged   , this, &mbClientScannerUi::setStatDevice   );
+    connect(m_scanner, &mbClientScanner::statFoundChanged    , this, &mbClientScannerUi::setStatFound    );
+    connect(m_scanner, &mbClientScanner::statFuncChanged     , this, &mbClientScannerUi::setStatFunc     );
+    connect(m_scanner, &mbClientScanner::statFuncFoundChanged, this, &mbClientScannerUi::setStatFuncFound);
+    connect(m_scanner, &mbClientScanner::statCountTxChanged  , this, &mbClientScannerUi::setStatCountTx  );
+    connect(m_scanner, &mbClientScanner::statCountRxChanged  , this, &mbClientScannerUi::setStatCountRx  );
+    connect(m_scanner, &mbClientScanner::statPercentChanged  , this, &mbClientScannerUi::setStatPercent  );
 
     QVariantList vls;
     //QLineEdit *ln;
@@ -401,12 +403,22 @@ void mbClientScannerUi::stateChange(bool run)
 
 void mbClientScannerUi::setStatDevice(const QString &device)
 {
-    ui->lbStatDevice->setText(device);
+    ui->lbStatUnitCurrent->setText(device);
 }
 
 void mbClientScannerUi::setStatFound(quint32 count)
 {
-    ui->lbStatFound->setText(QString::number(count));
+    ui->lbStatUnitFound->setText(QString::number(count));
+}
+
+void mbClientScannerUi::setStatFunc(const QString &device)
+{
+    ui->lbStatFuncCurrent->setText(device);
+}
+
+void mbClientScannerUi::setStatFuncFound(quint32 count)
+{
+    ui->lbStatFuncFound->setText(QString::number(count));
 }
 
 void mbClientScannerUi::setStatCountTx(quint32 count)

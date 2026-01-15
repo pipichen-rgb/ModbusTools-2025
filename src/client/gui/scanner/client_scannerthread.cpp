@@ -95,7 +95,7 @@ void mbClientScannerThread::setSettings(const Modbus::Settings &settings)
 
         break;
     }
-    m_combinationCountAll = m_combinationCount * (m_unitEnd - m_unitStart + 1);
+    m_combinationCountAll = m_combinationCount * (m_unitEnd - m_unitStart + 1) * m_request.count();
     m_statTx = 0;
     m_statRx = 0;
 }
@@ -112,8 +112,8 @@ void mbClientScannerThread::run()
     uint16_t *regdummy = reinterpret_cast<uint16_t*>(dummy);
     memset(dummy, 0, sizeof(dummy));
 
-    quint32 deviceCount = 0;
     quint32 deviceFound = 0;
+    quint32 funcCount = 0;
     for (uint c = 0; m_ctrlRun && (c < m_combinationCount); c++)
     {
         // Get comibation number for each setting
@@ -172,6 +172,7 @@ void mbClientScannerThread::run()
             Q_FOREACH (auto &f, m_request)
             {
                 memset(dummy, 0, sizeof(dummy));
+                m_scanner->setFunctionBegin(sPort, static_cast<uint8_t>(unit), f);
                 while(1)
                 {
                     if (!m_ctrlRun)
@@ -249,10 +250,10 @@ void mbClientScannerThread::run()
                     mbClient::LogInfo(s.name, QString("%1 Error (%2): %3").arg(sPortUnit, QString::number(status, 16), clientPort->lastErrorText()));
                     m_scanner->setFunctionCompleted(sPort, unit, f, status);
                 }
+                m_scanner->setStatPercent(++funcCount*100/m_combinationCountAll);
                 if (!m_ctrlRun)
                     break;
             }
-            m_scanner->setStatPercent(++deviceCount*100/m_combinationCountAll);
         }
         clientPort->close();
         mbClient::LogInfo(s.name, QString("End scanning '%1'").arg(sPort));

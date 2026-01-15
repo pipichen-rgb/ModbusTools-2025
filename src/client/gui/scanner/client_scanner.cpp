@@ -340,7 +340,9 @@ void mbClientScanner::clear()
     QWriteLocker _(&m_lock);
     m_deviceInfoList.clear();
     setStatDevice(QString());
-    setStatFound  (0);
+    setStatFound(0);
+    setStatFunc(QString());
+    setStatFuncFound(0);
     setStatCountTx(0);
     setStatCountRx(0);
     setStatPercent(0);
@@ -372,6 +374,8 @@ void mbClientScanner::setStatDevice(const QString &device)
 
 void mbClientScanner::setFunctionCompleted(const QString &port, quint8 unit, const mbClientMessageParams &params, int status)
 {
+    if (Modbus::StatusIsGood(static_cast<Modbus::StatusCode>(status)))
+        setStatFuncFound(m_stat.foundFunc+1);
     Q_EMIT statFunctionCompleted(port, unit, params, status);
 }
 
@@ -382,6 +386,30 @@ void mbClientScanner::setStatFound(quint32 count)
         m_stat.found = count;
         Q_EMIT statFoundChanged(count);
     }
+}
+
+void mbClientScanner::setStatFunc(const QString &s)
+{
+    if (m_stat.func != s)
+    {
+        m_stat.func = s;
+        Q_EMIT statFuncChanged(s);
+    }
+}
+
+void mbClientScanner::setStatFuncFound(quint32 count)
+{
+    if (m_stat.foundFunc != count)
+    {
+        m_stat.foundFunc = count;
+        Q_EMIT statFuncFoundChanged(count);
+    }
+}
+
+void mbClientScanner::setFunctionBegin(const QString &port, quint8 unit, const mbClientMessageParams &params)
+{
+    QString s = QString("%1,Unit=%2,%3").arg(port, QString::number(unit), mb::saveClientMessageParams(params, true, false));
+    setStatFunc(s);
 }
 
 void mbClientScanner::setStatCountTx(quint32 count)

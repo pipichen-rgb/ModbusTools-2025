@@ -75,11 +75,13 @@ private Q_SLOTS:
 private Q_SLOTS:
     void setType(int type);
     void stateChange(bool run);
-    void setStatDevice(const QString &device);
-    void setStatFound  (quint32 count);
-    void setStatCountTx(quint32 count);
-    void setStatCountRx(quint32 count);
-    void setStatPercent(quint32 p);
+    void setStatDevice   (const QString &device);
+    void setStatFound    (quint32 count);
+    void setStatFunc     (const QString &device);
+    void setStatFuncFound(quint32 count);
+    void setStatCountTx  (quint32 count);
+    void setStatCountRx  (quint32 count);
+    void setStatPercent  (quint32 p);
 
 private:
     void closeEvent(QCloseEvent*) override;

@@ -144,8 +144,11 @@ public:
     void startScanning(const Modbus::Settings &settings);
     void stopScanning();
     void setStatDevice(const QString &device);
+    void setStatFound    (quint32 count);
+    void setStatFunc     (const QString &func);
+    void setStatFuncFound(quint32 count);
+    void setFunctionBegin(const QString &port, quint8 unit, const mbClientMessageParams &params);
     void setFunctionCompleted(const QString &port, quint8 unit, const mbClientMessageParams &params, int status);
-    void setStatFound  (quint32 count);
     void setStatCountTx(quint32 count);
     void setStatCountRx(quint32 count);
     void setStatPercent(quint32 percent);
@@ -154,9 +157,11 @@ Q_SIGNALS:
     void deviceAdded(int index);
     void cleared();
     void stateChanged(bool run);
-    void statDeviceChanged(const QString &name);
-    void statFunctionCompleted(const QString &port, quint8 unit, const mbClientMessageParams &params, int status);
+    void statDeviceChanged (const QString &name);
     void statFoundChanged  (quint32 count);
+    void statFuncChanged   (const QString &name);
+    void statFuncFoundChanged(quint32 count);
+    void statFunctionCompleted(const QString &port, quint8 unit, const mbClientMessageParams &params, int status);
     void statCountTxChanged(quint32 count);
     void statCountRxChanged(quint32 count);
     void statPercentChanged(quint32 percent);
@@ -183,14 +188,17 @@ private:
     {
         Statistics()
         {
-            found   = 0;
-            countTx = 0;
-            countRx = 0;
-            percent = 0;
+            found     = 0;
+            foundFunc = 0;
+            countTx   = 0;
+            countRx   = 0;
+            percent   = 0;
         }
 
         QString device ;
         quint32 found  ;
+        QString func   ;
+        quint32 foundFunc;
         quint32 countTx;
         quint32 countRx;
         quint32 percent;
