@@ -161,13 +161,6 @@ bool mbCorePort::setSettings(const MBSETTINGS &settings)
         setHost(var.toString());
     }
 
-    it = settings.find(s.ipaddr);
-    if (it != end)
-    {
-        QVariant var = it.value();
-        setIpaddr(var.toString());
-    }
-
     it = settings.find(s.port);
     if (it != end)
     {
