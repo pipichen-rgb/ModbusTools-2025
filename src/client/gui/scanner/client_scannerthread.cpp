@@ -201,7 +201,7 @@ void mbClientScannerThread::run()
                         status = clientPort->readExceptionStatus(static_cast<uint8_t>(unit), dummy);
                         break;
                     case MBF_DIAGNOSTICS:
-                        status = clientPort->diagnostics(static_cast<uint8_t>(unit), f.subfunc, f.count, dummy, dummy, &dummy[1]);
+                        status = clientPort->diagnostics(static_cast<uint8_t>(unit), f.subfunc, 2, dummy, dummy, &dummy[1]);
                         break;
                     case MBF_GET_COMM_EVENT_COUNTER:
                         status = clientPort->getCommEventCounter(static_cast<uint8_t>(unit), &regdummy[0], &regdummy[1]);
