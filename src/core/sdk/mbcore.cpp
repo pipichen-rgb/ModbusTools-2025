@@ -128,7 +128,7 @@ Strings::Strings() :
     DiagnReturnServerNAKCount              (QStringLiteral("ReturnServerNAKCount")),
     DiagnReturnServerBusyCount             (QStringLiteral("ReturnServerBusyCount")),
     DiagnReturnBusCharacterOverrunCount    (QStringLiteral("ReturnBusCharacterOverrunCount")),
-    DiagnClearOverrunCounterAndFlags       (QStringLiteral("ClearOverrunCounterAndFlags")),
+    DiagnClearOverrunCounterAndFlag       (QStringLiteral("ClearOverrunCounterAndFlags")),
     Address_Default                        (QStringLiteral("Default")),
     Address_Modbus                         (QStringLiteral("Modbus")),
     Address_IEC61131                       (QStringLiteral("IEC61131")),
@@ -579,7 +579,7 @@ uint16_t ModbusDiagnSubfunction(const QString &func)
     if (func == s.DiagnReturnServerNAKCount              ) return MBDIAGN_RETURN_SERVER_NAK_COUNT               ;
     if (func == s.DiagnReturnServerBusyCount             ) return MBDIAGN_RETURN_SERVER_BUSY_COUNT              ;
     if (func == s.DiagnReturnBusCharacterOverrunCount    ) return MBDIAGN_RETURN_BUS_CHARACTER_OVERRUN_COUNT    ;
-    if (func == s.DiagnClearOverrunCounterAndFlags       ) return MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAGS       ;
+    if (func == s.DiagnClearOverrunCounterAndFlag        ) return MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAG        ;
     return 0;
 }
 
@@ -602,7 +602,7 @@ QString ModbusDiagnSubfunctionString(uint16_t func)
     case MBDIAGN_RETURN_SERVER_NAK_COUNT               : return s.DiagnReturnServerNAKCount              ;
     case MBDIAGN_RETURN_SERVER_BUSY_COUNT              : return s.DiagnReturnServerBusyCount             ;
     case MBDIAGN_RETURN_BUS_CHARACTER_OVERRUN_COUNT    : return s.DiagnReturnBusCharacterOverrunCount    ;
-    case MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAGS       : return s.DiagnClearOverrunCounterAndFlags       ;
+    case MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAG        : return s.DiagnClearOverrunCounterAndFlag        ;
     default:
         return QString();
     }

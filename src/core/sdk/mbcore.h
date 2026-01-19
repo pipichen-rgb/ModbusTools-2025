@@ -472,7 +472,7 @@ struct MB_EXPORT Strings
     const QString DiagnReturnServerNAKCount              ;
     const QString DiagnReturnServerBusyCount             ;
     const QString DiagnReturnBusCharacterOverrunCount    ;
-    const QString DiagnClearOverrunCounterAndFlags       ;
+    const QString DiagnClearOverrunCounterAndFlag       ;
     const QString Address_Default                        ;
     const QString Address_Modbus                         ;
     const QString Address_IEC61131                       ;

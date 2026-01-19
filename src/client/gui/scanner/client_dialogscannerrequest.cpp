@@ -81,7 +81,7 @@ mbClientDialogScannerRequest::mbClientDialogScannerRequest(QWidget *parent) :
     m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_NAK_COUNT               );
     m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_BUSY_COUNT              );
     m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_CHARACTER_OVERRUN_COUNT    );
-    m_diagnSubfuncNums.append(MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAGS       );
+    m_diagnSubfuncNums.append(MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAG        );
 
     cmb = ui->cmbFunction;
     connect(cmb, SIGNAL(currentIndexChanged(int)), this, SLOT(setCurrentFuncIndex(int)));

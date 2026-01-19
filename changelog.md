@@ -212,3 +212,5 @@ List of changes of new v0.4 version of ModbusTools:
     * RTU over UDP
     * ASCII over UDP 
 * Added `SendBytes`-tool for Modbus client
+* Updated `Send Message` dialog for Modbus client
+* Updated `Scanner` dialog for Modbus client (added function support scanning)
