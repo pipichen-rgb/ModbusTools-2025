@@ -44,13 +44,13 @@ public: // project
     inline mbCoreProject *projectCore() const { return m_project; }
     inline QList<mbCorePortStatisticsUi*> portStatisticsUisCore() const { return m_portStatisticsUis; }
     inline mbCoreStatisticsUi *activeStatisticsUiCore() const { return m_activeStatisticsUi; }
+    virtual void removeStatisticsUi(mbCoreStatisticsUi *ui);
 
 public: // watch list ui
     inline bool hasPortStatisticsUi(const mbCorePort *port) const { return m_hashPortStatisticsUis.contains(port); }
     inline int portStatisticsCount() const { return m_hashPortStatisticsUis.count(); }
     inline mbCorePortStatisticsUi *portStatisticsUiCore(mbCorePort *port) const { return m_hashPortStatisticsUis.value(port, nullptr); }
     void addPortStatisticsUi(mbCorePort *port);
-    void removePortStatisticsUi(mbCorePortStatisticsUi *ui);
 
 Q_SIGNALS:
     void statisticsUiAdd(mbCoreStatisticsUi *ui);

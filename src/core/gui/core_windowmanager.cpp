@@ -347,8 +347,13 @@ void mbCoreWindowManager::showSubWindow(QMdiSubWindow *sw)
 
 void mbCoreWindowManager::closeSubWindow(QMdiSubWindow *sw)
 {
-    subWindowRemove(sw->widget());
-    sw->deleteLater();
+    if (mbCoreStatisticsUi *ui = qobject_cast<mbCoreStatisticsUi*>(sw->widget()))
+        m_statisticsManager->removeStatisticsUi(ui);
+    else
+    {
+        subWindowRemove(sw->widget());
+        sw->deleteLater();
+    }
 }
 
 bool mbCoreWindowManager::eventFilter(QObject *obj, QEvent *e)

@@ -41,6 +41,14 @@ mbCoreStatisticsManager::mbCoreStatisticsManager(QObject *parent) : QObject(pare
     connect(core, &mbCore::projectChanged, this, &mbCoreStatisticsManager::setProject);
 }
 
+void mbCoreStatisticsManager::removeStatisticsUi(mbCoreStatisticsUi *ui)
+{
+    if (mbCorePortStatisticsUi *portUi = qobject_cast<mbCorePortStatisticsUi*>(ui))
+    {
+        portStatisticsRemove(portUi->port());
+    }
+}
+
 void mbCoreStatisticsManager::addPortStatisticsUi(mbCorePort *port)
 {
     portStatisticsAdd(port);

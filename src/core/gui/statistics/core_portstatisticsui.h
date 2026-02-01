@@ -37,6 +37,7 @@ public:
     ~mbCorePortStatisticsUi();
 
 public:
+    inline mbCorePort *port() const { return m_port; }
 
 protected:
     mbCorePort *m_port;
