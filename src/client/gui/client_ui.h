@@ -40,6 +40,7 @@ class mbClientDialogs;
 class mbClientProjectUi;
 class mbClientWindowManager;
 class mbClientDataViewManager;
+class mbClientStatisticsManager;
 class mbClientSendMessageUi;
 class mbClientSendBytesUi;
 class mbClientScannerUi;
@@ -63,6 +64,7 @@ public:
     inline mbClientProjectUi* projectUi() const { return reinterpret_cast<mbClientProjectUi*>(projectUiCore()); }
     inline mbClientWindowManager *windowManager() const { return reinterpret_cast<mbClientWindowManager*>(windowManagerCore()); }
     inline mbClientDataViewManager *dataViewManager() const { return reinterpret_cast<mbClientDataViewManager*>(dataViewManagerCore()); }
+    inline mbClientStatisticsManager *statisticsManager() const { return reinterpret_cast<mbClientStatisticsManager*>(statisticsManagerCore()); }
     inline mbClientProject *project() const { return reinterpret_cast<mbClientProject*>(projectCore()); }
 
 public:

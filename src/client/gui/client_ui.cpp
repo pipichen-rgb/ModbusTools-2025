@@ -43,6 +43,7 @@
 
 #include "project/client_projectui.h"
 #include "dataview/client_dataviewmanager.h"
+#include "statistics/client_statisticsmanager.h"
 
 #include "client_windowmanager.h"
 
@@ -93,6 +94,7 @@ mbClientUi::mbClientUi(mbClient *core, QWidget *parent) :
     m_ui.actionPortDelete                = ui->actionPortDelete               ;
     m_ui.actionPortImport                = ui->actionPortImport               ;
     m_ui.actionPortExport                = ui->actionPortExport               ;
+    m_ui.actionPortStatistics            = ui->actionPortStatistics           ;
     m_ui.actionDeviceNew                 = ui->actionDeviceNew                ;
     m_ui.actionDeviceEdit                = ui->actionDeviceEdit               ;
     m_ui.actionDeviceDelete              = ui->actionDeviceDelete             ;
@@ -145,8 +147,11 @@ void mbClientUi::initialize()
     // DataView Manager
     m_dataViewManager = new mbClientDataViewManager(this);
 
+    // Statistics Manager
+    m_statisticsManager = new mbClientStatisticsManager(this);
+
     // Window Manager
-    m_windowManager = new mbClientWindowManager(this, dataViewManager());
+    m_windowManager = new mbClientWindowManager(this, dataViewManager(), statisticsManager());
 
     // Tools
     m_sendMessageUi = new mbClientSendMessageUi(this);

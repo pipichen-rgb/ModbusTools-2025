@@ -24,6 +24,7 @@
 #define CORE_PORT_H
 
 #include <QObject>
+#include <QReadWriteLock>
 
 #include <mbcore.h>
 
@@ -52,19 +53,34 @@ public:
         static const Defaults &instance();
     };
 
-    struct Statistic
+public:
+    struct MB_EXPORT Statistics
     {
-        Statistic()
-        {
-            countTx = 0;
-            countRx = 0;
-        }
-        quint32 countTx;
-        quint32 countRx;
+        Modbus::StatusCode  lastStatus          ;
+        mb::Timestamp_t     lastTimestamp       ;
+        mb::Timestamp_t     lastSuccessTimestamp;
+        Modbus::StatusCode  lastErrorStatus     ;
+        mb::Timestamp_t     lastErrorTimestamp  ;
+        QString             lastErrorText       ;
+        quint32             countTx             ;
+        quint32             countRx             ;
+        quint32             countGood           ;
+        quint32             countBad            ;
+        quint32             countBadTimeout     ;
+        quint32             countBadCRC         ;
+        quint64             cycleNumber         ;
+        quint64             cycleLastDuration   ;
+        quint64             cycleMinDuration    ;
+        quint64             cycleMaxDuration    ;
+        quint64             cycleAvgDuration    ;
+
+        Statistics();
+        virtual ~Statistics() = default;
     };
 
 public:
     explicit mbCorePort(QObject *parent = nullptr);
+    ~mbCorePort();
 
 public:
     inline mbCoreProject* projectCore() const { return m_project; }
@@ -116,12 +132,14 @@ public: // settings
     virtual bool setSettings(const MBSETTINGS &settings);
 
 public: // statistic
-    inline Statistic statistic() const { return m_stat; }
+    inline Statistics statistics() const { QReadLocker locker(&m_statLock); return *m_stat; }
+    inline void setStatistics(const Statistics &stat) { QWriteLocker locker(&m_statLock); *m_stat = stat; }
+    inline void resetStatistics() { QWriteLocker locker(&m_statLock); *m_stat = Statistics(); }
 
-    inline quint32 statGoodCount() const { return m_stat.countTx; }
+    inline quint32 statGoodCount() const { return m_stat->countTx; }
     void setStatCountTx(quint32 count);
 
-    inline quint32 statBadCount() const { return m_stat.countRx; }
+    inline quint32 statBadCount() const { return m_stat->countRx; }
     void setStatCountRx(quint32 count);
 
 Q_SIGNALS:
@@ -153,7 +171,9 @@ protected:
         bool                        isBroadcastEnabled;
     } m_settings;
 
-    Statistic m_stat;
+protected:
+    mutable QReadWriteLock m_statLock;
+    Statistics *m_stat;
 };
 
 #endif // CORE_PORT_H

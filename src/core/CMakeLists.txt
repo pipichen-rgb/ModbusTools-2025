@@ -5,7 +5,7 @@ project(core VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
 set(MBTOOLS_CORE_LIB_NAME core CACHE INTERNAL "Name of the ModbusTools core library")
 
-message("MBTOOLS: Start configure library '${MBTOOLS_CORE_LIB_NAME}'")
+message(STATUS "MBTOOLS: Start configure library '${MBTOOLS_CORE_LIB_NAME}'")
 
 configure_file(${CMAKE_CURRENT_LIST_DIR}/mbcore_config.h.in ${CMAKE_CURRENT_LIST_DIR}/sdk/mbcore_config.h)
 
@@ -63,6 +63,9 @@ set(HEADERS
     gui/dataview/core_dataviewmanager.h
     gui/dataview/core_dataviewmodel.h
     gui/dataview/core_dataviewui.h
+    gui/statistics/core_statisticsui.h
+    gui/statistics/core_portstatisticsui.h
+    gui/statistics/core_statisticsmanager.h
     gui/help/core_helpbrowser.h
     gui/help/core_helpui.h
     gui/logview/core_logview.h
@@ -112,6 +115,9 @@ set(SOURCES
     gui/dataview/core_dataviewmanager.cpp
     gui/dataview/core_dataviewmodel.cpp
     gui/dataview/core_dataviewui.cpp
+    gui/statistics/core_statisticsui.cpp
+    gui/statistics/core_portstatisticsui.cpp
+    gui/statistics/core_statisticsmanager.cpp
     gui/help/core_helpbrowser.cpp
     gui/help/core_helpui.cpp
     gui/logview/core_logview.cpp
@@ -133,7 +139,7 @@ include_directories(.
 
 if (WIN32)
     set(MBTOOLS_WIN_RESOURCE_FILE win_resource.rc)
-    message("${PROJECT_NAME} resource file for Windows: '${MBTOOLS_WIN_RESOURCE_FILE}'")
+    message(STATUS "${PROJECT_NAME} resource file for Windows: '${MBTOOLS_WIN_RESOURCE_FILE}'")
 
     set(MBTOOLS_WIN_ICON "")
     set(MBTOOLS_WIN_FILE "${PROJECT_NAME}")

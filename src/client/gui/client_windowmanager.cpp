@@ -26,9 +26,10 @@
 
 #include "client_ui.h"
 #include "dataview/client_dataviewmanager.h"
+#include "statistics/client_statisticsmanager.h"
 
-mbClientWindowManager::mbClientWindowManager(mbClientUi *ui, mbClientDataViewManager *dataViewManager) :
-    mbCoreWindowManager(ui, dataViewManager)
+mbClientWindowManager::mbClientWindowManager(mbClientUi *ui, mbClientDataViewManager *dataViewManager, mbClientStatisticsManager *statisticsManager) :
+    mbCoreWindowManager(ui, dataViewManager, statisticsManager)
 {
     connect(this->dataViewManager(), &mbClientDataViewManager::maximizeDataViewUi, this, &mbClientWindowManager::maximizeDataViewUi);
 }

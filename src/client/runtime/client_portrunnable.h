@@ -79,7 +79,7 @@ private:
     ModbusClientPort *m_modbusClientPort;
     uint8_t m_byteCount;
     QList<mbClientRunDevice*> m_devices;
-    mbClientPort::Statistic m_stat;
+    mbClientPort::Statistics m_stat;
     mbClientRunMessagePtr m_currentMessage;
 
 private:

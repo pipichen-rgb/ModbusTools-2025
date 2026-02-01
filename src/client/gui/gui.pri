@@ -4,6 +4,7 @@ include(dataview/dataview.pri)
 include(sendmessage/sendmessage.pri)
 include(sendbytes/sendbytes.pri)
 include(scanner/scanner.pri)
+include(statistics/statistics.pri)
 
 HEADERS += \
     $$PWD/client_windowmanager.h    \

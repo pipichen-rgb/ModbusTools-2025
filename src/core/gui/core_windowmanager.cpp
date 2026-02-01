@@ -36,6 +36,9 @@
 #include "dataview/core_dataviewmanager.h"
 #include "dataview/core_dataviewui.h"
 
+#include "statistics/core_statisticsmanager.h"
+#include "statistics/core_portstatisticsui.h"
+
 mbCoreWindowManager::Strings::Strings() :
     prefixDataView(QStringLiteral("dat:"))
 {
@@ -47,11 +50,12 @@ const mbCoreWindowManager::Strings &mbCoreWindowManager::Strings::instance()
     return s;
 }
 
-mbCoreWindowManager::mbCoreWindowManager(mbCoreUi *ui, mbCoreDataViewManager *dataViewManager) :
+mbCoreWindowManager::mbCoreWindowManager(mbCoreUi *ui, mbCoreDataViewManager *dataViewManager, mbCoreStatisticsManager *statisticsManager) :
     QObject(ui)
 {
     m_ui = ui;
     m_dataViewManager = dataViewManager;
+    m_statisticsManager = statisticsManager;
 
     m_area = new QMdiArea(ui);
     m_area->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
@@ -62,10 +66,14 @@ mbCoreWindowManager::mbCoreWindowManager(mbCoreUi *ui, mbCoreDataViewManager *da
     connect(m_area, &QMdiArea::subWindowActivated, this, &mbCoreWindowManager::subWindowActivated);
 
     connect(mbCore::globalCore(), &mbCore::projectChanged, this, &mbCoreWindowManager::setProject);
+
     connect(m_dataViewManager, &mbCoreDataViewManager::dataViewUiAdd, this, &mbCoreWindowManager::dataViewUiAdd);
     connect(m_dataViewManager, &mbCoreDataViewManager::dataViewUiRemove, this, &mbCoreWindowManager::dataViewUiRemove);
     Q_FOREACH (mbCoreDataViewUi *ui, m_dataViewManager->dataViewUisCore())
         dataViewUiAdd(ui);
+
+    connect(m_statisticsManager, &mbCoreStatisticsManager::statisticsUiAdd   , this, &mbCoreWindowManager::statisticsUiAdd   );
+    connect(m_statisticsManager, &mbCoreStatisticsManager::statisticsUiRemove, this, &mbCoreWindowManager::statisticsUiRemove);
 }
 
 mbCoreDataView *mbCoreWindowManager::activeDataViewCore() const
@@ -82,6 +90,18 @@ void mbCoreWindowManager::setActiveDataViewCore(mbCoreDataView *dataView)
         if (sw)
             m_area->setActiveSubWindow(sw);
     }
+}
+
+mbCoreStatisticsUi *mbCoreWindowManager::activeStatisticsUiCore() const
+{
+    return m_statisticsManager->activeStatisticsUiCore();
+}
+
+void mbCoreWindowManager::setActiveStatisticsUi(mbCoreStatisticsUi *ui)
+{
+    QMdiSubWindow *sw = m_hashWindows.value(ui);
+    if (sw)
+        m_area->setActiveSubWindow(sw);
 }
 
 QMdiSubWindow *mbCoreWindowManager::getMdiSubWindowForNameWithPrefix(const QString &nameWithPrefix) const
@@ -112,6 +132,15 @@ void mbCoreWindowManager::showDataViewUi(mbCoreDataViewUi *ui)
         showSubWindow(sw);
     else
         dataViewUiAdd(ui);
+}
+
+void mbCoreWindowManager::showPortStatistics(mbCorePort *port)
+{
+    mbCoreStatisticsUi *ui = m_statisticsManager->portStatisticsUiCore(port);
+    if (ui)
+        setActiveStatisticsUi(ui);
+    else
+        m_statisticsManager->addPortStatisticsUi(port);
 }
 
 void mbCoreWindowManager::actionWindowViewSubWindow()
@@ -268,6 +297,23 @@ void mbCoreWindowManager::dataViewUiAdd(mbCoreDataViewUi *ui)
 }
 
 void mbCoreWindowManager::dataViewUiRemove(mbCoreDataViewUi *ui)
+{
+    ui->disconnect(this);
+    QMdiSubWindow* sw = subWindowRemove(ui);
+    if (sw)
+    {
+        sw->deleteLater();
+    }
+}
+
+void mbCoreWindowManager::statisticsUiAdd(mbCoreStatisticsUi *ui)
+{
+    QMdiSubWindow* sw = subWindowAdd(ui);
+    //connect(ui, &mbCoreDataViewUi::nameChanged, sw, &QWidget::setWindowTitle);
+    //sw->setWindowTitle(ui->name());
+}
+
+void mbCoreWindowManager::statisticsUiRemove(mbCoreStatisticsUi *ui)
 {
     ui->disconnect(this);
     QMdiSubWindow* sw = subWindowRemove(ui);

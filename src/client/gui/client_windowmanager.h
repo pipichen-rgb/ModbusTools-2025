@@ -31,12 +31,13 @@ class mbClientDataView;
 class mbClientUi;
 class mbClientDataViewManager;
 class mbClientDataViewUi;
+class mbClientStatisticsManager;
 
 class mbClientWindowManager : public mbCoreWindowManager
 {
     Q_OBJECT
 public:
-    explicit mbClientWindowManager(mbClientUi *ui, mbClientDataViewManager *dataViewManager);
+    explicit mbClientWindowManager(mbClientUi *ui, mbClientDataViewManager *dataViewManager, mbClientStatisticsManager *statisticsManager);
 
 public:
     inline mbClientUi *ui() const { return reinterpret_cast<mbClientUi*>(uiCore()); }

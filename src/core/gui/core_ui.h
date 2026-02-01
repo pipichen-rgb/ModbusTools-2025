@@ -34,6 +34,7 @@ class mbCore;
 class mbCoreDialogs;
 class mbCoreWindowManager;
 class mbCoreDataViewManager;
+class mbCoreStatisticsManager;
 class mbCoreBuilder;
 class mbCoreDomProject;
 class mbCoreProject;
@@ -86,6 +87,7 @@ public:
     inline mbCoreProjectUi *projectUiCore() const { return m_projectUi; }
     inline mbCoreWindowManager *windowManagerCore() const { return m_windowManager; }
     inline mbCoreDataViewManager *dataViewManagerCore() const { return m_dataViewManager; }
+    inline mbCoreStatisticsManager *statisticsManagerCore() const { return m_statisticsManager; }
     inline mbCoreProject *projectCore() const { return m_project; }
 
 public:
@@ -135,11 +137,12 @@ protected Q_SLOTS:
     // ----------------------------
     // ------------PORT------------
     // ----------------------------
-    virtual void menuSlotPortNew   ();
-    virtual void menuSlotPortEdit  ();
-    virtual void menuSlotPortDelete();
-    virtual void menuSlotPortImport();
-    virtual void menuSlotPortExport();
+    virtual void menuSlotPortNew       ();
+    virtual void menuSlotPortEdit      ();
+    virtual void menuSlotPortDelete    ();
+    virtual void menuSlotPortImport    ();
+    virtual void menuSlotPortExport    ();
+    virtual void menuSlotPortStatistics();
     // ----------------------------
     // -----------DEVICE-----------
     // ----------------------------
@@ -240,6 +243,7 @@ protected:
     mbCoreProjectUi *m_projectUi;
     mbCoreWindowManager *m_windowManager;
     mbCoreDataViewManager *m_dataViewManager;
+    mbCoreStatisticsManager *m_statisticsManager;
     mbCorePort *m_currentPort;
 
 protected:
@@ -286,6 +290,7 @@ protected:
         QAction     *actionPortDelete               ;
         QAction     *actionPortImport               ;
         QAction     *actionPortExport               ;
+        QAction     *actionPortStatistics           ;
         QAction     *actionDeviceNew                ;
         QAction     *actionDeviceEdit               ;
         QAction     *actionDeviceDelete             ;

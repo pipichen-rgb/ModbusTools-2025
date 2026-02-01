@@ -48,7 +48,7 @@
      <x>0</x>
      <y>0</y>
      <width>1239</width>
-     <height>20</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -147,6 +147,8 @@
     <addaction name="separator"/>
     <addaction name="actionPortImport"/>
     <addaction name="actionPortExport"/>
+    <addaction name="separator"/>
+    <addaction name="actionPortStatistics"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="title">
@@ -624,6 +626,11 @@
    </property>
    <property name="text">
     <string>Send Bytes ...</string>
+   </property>
+  </action>
+  <action name="actionPortStatistics">
+   <property name="text">
+    <string>Statistics...</string>
    </property>
   </action>
  </widget>

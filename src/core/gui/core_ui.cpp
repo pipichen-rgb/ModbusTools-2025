@@ -47,6 +47,9 @@
 #include "project/core_projectui.h"
 #include "dataview/core_dataviewmanager.h"
 #include "dataview/core_dataviewui.h"
+
+#include "statistics/core_statisticsmanager.h"
+
 #include "help/core_helpui.h"
 
 #include "core_windowmanager.h"
@@ -91,6 +94,7 @@ mbCoreUi::mbCoreUi(mbCore *core, QWidget *parent) :
     m_dialogs = nullptr;
     m_windowManager = nullptr;
     m_dataViewManager = nullptr;
+    m_statisticsManager = nullptr;
     m_currentPort = nullptr;
     m_projectUi = nullptr;
     m_tray = nullptr;
@@ -126,6 +130,9 @@ void mbCoreUi::initialize()
     connect(m_dataViewManager, &mbCoreDataViewManager::dataViewUiContextMenu, this, &mbCoreUi::contextMenuDataViewUi);
     connect(m_dataViewManager, &mbCoreDataViewManager::dataViewUiAdd        , this, &mbCoreUi::dataViewWindowAdd    );
     connect(m_dataViewManager, &mbCoreDataViewManager::dataViewUiRemove     , this, &mbCoreUi::dataViewWindowRemove );
+
+    //connect(m_statisticsManager, &mbCoreStatisticsManager::statisticsUiAdd   , this, &mbCoreUi::statisticsUiAdd    );
+    //connect(m_statisticsManager, &mbCoreStatisticsManager::statisticsUiRemove, this, &mbCoreUi::statisticsUiRemove );
 
     m_ui.actionWindowViewSubWindow->setCheckable(true);
     m_ui.actionWindowViewTabbed->setCheckable(true);
@@ -185,6 +192,7 @@ void mbCoreUi::initialize()
     connect(m_ui.actionPortDelete         , &QAction::triggered, this, &mbCoreUi::menuSlotPortDelete        );
     connect(m_ui.actionPortImport         , &QAction::triggered, this, &mbCoreUi::menuSlotPortImport        );
     connect(m_ui.actionPortExport         , &QAction::triggered, this, &mbCoreUi::menuSlotPortExport        );
+    connect(m_ui.actionPortStatistics     , &QAction::triggered, this, &mbCoreUi::menuSlotPortStatistics    );
 
     // Menu Device
     m_ui.actionDeviceNew->setShortcut(QKeySequence(Qt::SHIFT | Qt::Key_N));
@@ -737,6 +745,14 @@ void mbCoreUi::menuSlotPortExport()
     }
 }
 
+void mbCoreUi::menuSlotPortStatistics()
+{
+    if (mbCorePort *port = m_projectUi->currentPortCore())
+    {
+        m_windowManager->showPortStatistics(port);
+    }
+}
+
 void mbCoreUi::menuSlotDeviceNew()
 {
 }
@@ -1186,13 +1202,13 @@ void mbCoreUi::currentPortChanged(mbCorePort *port)
         old->disconnect(this);
     m_currentPort = port;
     refreshCurrentPortName();
-    mbCorePort::Statistic stat;
+    mbCorePort::Statistics stat;
     if (port)
     {
         connect(port, &mbCorePort::changed           , this, &mbCoreUi::refreshCurrentPortName);
         connect(port, &mbCorePort::statCountTxChanged, this, &mbCoreUi::setStatTx             );
         connect(port, &mbCorePort::statCountRxChanged, this, &mbCoreUi::setStatRx             );
-        stat = port->statistic();
+        stat = port->statistics();
     }
     setStatTx(stat.countTx);
     setStatRx(stat.countRx);

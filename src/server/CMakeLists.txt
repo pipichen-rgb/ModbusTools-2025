@@ -5,7 +5,7 @@ project(server VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
 set(MBTOOLS_SERVER_APP_NAME server CACHE INTERNAL "Name of the ModbusTools server application")
 
-message("MBTOOLS: Start configure server '${MBTOOLS_SERVER_APP_NAME}'")
+message(STATUS "MBTOOLS: Start configure server '${MBTOOLS_SERVER_APP_NAME}'")
 
 configure_file(${CMAKE_CURRENT_LIST_DIR}/python/mbconfig.py.in ${CMAKE_CURRENT_LIST_DIR}/python/mbconfig.py)
 
@@ -143,7 +143,7 @@ set(RESOURCES
 
 if (WIN32)
     set(MBTOOLS_WIN_RESOURCE_FILE win_resource.rc)
-    message("${PROJECT_NAME} resource file for Windows: '${MBTOOLS_WIN_RESOURCE_FILE}'")
+    message(STATUS "${PROJECT_NAME} resource file for Windows: '${MBTOOLS_WIN_RESOURCE_FILE}'")
 
     set(MBTOOLS_WIN_ICON "IDI_ICON1\tICON\tDISCARDABLE\t\"gui\\\\icons\\\\${PROJECT_NAME}.ico\"")
     set(MBTOOLS_WIN_FILE "${PROJECT_NAME}")

@@ -8,7 +8,7 @@ project(
 
 set(MBTOOLS_CLIENT_APP_NAME client CACHE INTERNAL "Name of the ModbusTools client application")
 
-message("MBTOOLS: Start configure client '${MBTOOLS_CLIENT_APP_NAME}'")
+message(STATUS "MBTOOLS: Start configure client '${MBTOOLS_CLIENT_APP_NAME}'")
 
 # QT supporting turn ON
 set(CMAKE_AUTOUIC ON)
@@ -33,13 +33,15 @@ set(MBTOOLS_HEADERS
     gui/dialogs/client_dialogport.h
     gui/dialogs/client_dialogdataviewitem.h
     gui/dialogs/client_dialogs.h
+    gui/project/client_projectdelegate.h
+    gui/project/client_projectmodel.h
+    gui/project/client_projectui.h
     gui/dataview/client_dataviewdelegate.h
     gui/dataview/client_dataviewmanager.h
     gui/dataview/client_dataviewmodel.h
     gui/dataview/client_dataviewui.h
-    gui/project/client_projectdelegate.h
-    gui/project/client_projectmodel.h
-    gui/project/client_projectui.h
+    gui/statistics/client_portstatisticsui.h
+    gui/statistics/client_statisticsmanager.h
     gui/sendmessage/client_sendmessagelistmodel.h
     gui/sendmessage/client_sendmessageui.h
     gui/sendbytes/client_sendbyteslistmodel.h
@@ -77,13 +79,15 @@ set(MBTOOLS_SOURCES
     gui/dialogs/client_dialogport.cpp
     gui/dialogs/client_dialogdataviewitem.cpp
     gui/dialogs/client_dialogs.cpp
+    gui/project/client_projectdelegate.cpp
+    gui/project/client_projectmodel.cpp
+    gui/project/client_projectui.cpp
     gui/dataview/client_dataviewdelegate.cpp
     gui/dataview/client_dataviewmanager.cpp
     gui/dataview/client_dataviewmodel.cpp
     gui/dataview/client_dataviewui.cpp
-    gui/project/client_projectdelegate.cpp
-    gui/project/client_projectmodel.cpp
-    gui/project/client_projectui.cpp
+    gui/statistics/client_portstatisticsui.cpp
+    gui/statistics/client_statisticsmanager.cpp
     gui/sendmessage/client_sendmessagelistmodel.cpp
     gui/sendmessage/client_sendmessageui.cpp
     gui/sendbytes/client_sendbyteslistmodel.cpp

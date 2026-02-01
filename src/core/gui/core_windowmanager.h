@@ -34,12 +34,16 @@ class mbCoreBinaryReader;
 class mbCoreBinaryWriter;
 
 class mbCoreProject;
+class mbCorePort;
 class mbCoreDevice;
 class mbCoreDataView;
 
 class mbCoreUi;
 class mbCoreDataViewManager;
 class mbCoreDataViewUi;
+
+class mbCoreStatisticsManager;
+class mbCoreStatisticsUi;
 
 class MB_EXPORT mbCoreWindowManager : public QObject
 {
@@ -55,7 +59,7 @@ public:
     };
 
 public:
-    explicit mbCoreWindowManager(mbCoreUi *ui, mbCoreDataViewManager *dataViewManager);
+    explicit mbCoreWindowManager(mbCoreUi *ui, mbCoreDataViewManager *dataViewManager, mbCoreStatisticsManager *statisticsManager);
 
 public:
     inline QWidget *centralWidget() const { return m_area; }
@@ -63,15 +67,25 @@ public:
 
 public:
     inline mbCoreUi *uiCore() const { return m_ui; }
-    inline mbCoreDataViewManager *dataViewManagerCore() { return m_dataViewManager; }
+
+public:
+    inline mbCoreDataViewManager *dataViewManagerCore() const { return m_dataViewManager; }
     mbCoreDataView *activeDataViewCore() const;
     void setActiveDataViewCore(mbCoreDataView *dataView);
     inline void setActiveDataView(mbCoreDataView *dataView) { setActiveDataViewCore(dataView); }
+
+public:
+    inline mbCoreStatisticsManager *statisticsManagerCore() const { return m_statisticsManager; }
+    mbCoreStatisticsUi *activeStatisticsUiCore() const;
+    void setActiveStatisticsUi(mbCoreStatisticsUi *ui);
+
+public:
     virtual QMdiSubWindow *getMdiSubWindowForNameWithPrefix(const QString &name) const;
     virtual QString getMdiSubWindowNameWithPrefix(const QMdiSubWindow *sw) const;
 
 public Q_SLOTS:
     void showDataViewUi(mbCoreDataViewUi *ui);
+    void showPortStatistics(mbCorePort *port);
     void actionWindowViewSubWindow();
     void actionWindowViewTabbed();
     void actionWindowDataViewCloseAll();
@@ -97,6 +111,8 @@ protected Q_SLOTS:
     void setProject(mbCoreProject *p);
     void dataViewUiAdd(mbCoreDataViewUi *ui);
     void dataViewUiRemove(mbCoreDataViewUi *ui);
+    void statisticsUiAdd(mbCoreStatisticsUi *ui);
+    void statisticsUiRemove(mbCoreStatisticsUi *ui);
 
 protected Q_SLOTS:
     virtual void subWindowActivated(QMdiSubWindow *sw);
@@ -110,6 +126,8 @@ protected:
     QMdiArea *m_area;
     mbCoreUi *m_ui;
     mbCoreDataViewManager *m_dataViewManager;
+
+    mbCoreStatisticsManager *m_statisticsManager;
 
     // Windows
     typedef QHash<const QWidget*, QMdiSubWindow*> HashWindows_t;

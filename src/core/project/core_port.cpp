@@ -49,6 +49,27 @@ const mbCorePort::Defaults &mbCorePort::Defaults::instance()
     return d;
 }
 
+mbCorePort::Statistics::Statistics()
+{
+    lastStatus          = Modbus::Status_Uncertain;
+    lastTimestamp       = 0;
+    lastSuccessTimestamp= 0;
+    lastErrorStatus     = Modbus::Status_Uncertain;
+    lastErrorTimestamp  = 0;
+    //lastErrorText       = QString();
+    countTx             = 0;
+    countRx             = 0;
+    countGood           = 0;
+    countBad            = 0;
+    countBadTimeout     = 0;
+    countBadCRC         = 0;
+    cycleNumber         = 0;
+    cycleLastDuration   = 0;
+    cycleMinDuration    = 0;
+    cycleMaxDuration    = 0;
+    cycleAvgDuration    = 0;
+}
+
 mbCorePort::mbCorePort(QObject *parent)
     : QObject{parent}
 {
@@ -73,9 +94,13 @@ mbCorePort::mbCorePort(QObject *parent)
     m_settings.timeoutIB    = d.timeoutInterByte;
     // common
     m_settings.isBroadcastEnabled = d.isBroadcastEnabled;
+    m_stat = new Statistics;
 
-    m_stat.countTx = 0;
-    m_stat.countRx = 0;
+}
+
+mbCorePort::~mbCorePort()
+{
+    delete m_stat;
 }
 
 void mbCorePort::setProjectCore(mbCoreProject *project)
@@ -271,12 +296,12 @@ bool mbCorePort::setSettings(const MBSETTINGS &settings)
 
 void mbCorePort::setStatCountTx(quint32 count)
 {
-    m_stat.countTx = count;
+    m_stat->countTx = count;
     Q_EMIT statCountTxChanged(count);
 }
 
 void mbCorePort::setStatCountRx(quint32 count)
 {
-    m_stat.countRx = count;
+    m_stat->countRx = count;
     Q_EMIT statCountRxChanged(count);
 }
