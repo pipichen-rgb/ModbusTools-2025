@@ -23,6 +23,7 @@
 #include "client_portrunnable.h"
 
 #include <QEventLoop>
+#include <QElapsedTimer>
 
 #include <ModbusQt.h>
 #include <ModbusClientPort.h>
@@ -39,10 +40,11 @@
 mbClientPortRunnable::mbClientPortRunnable(mbClientRunPort *port, const Modbus::Settings &settings, QObject *parent)
     : QObject(parent)
 {
+    m_tmLastRequest = 0;
     m_state = STATE_PAUSE;
-    m_port = port;
-    m_stat = m_port->statistic();
-    m_devices = m_port->devices();
+    m_runPort = port;
+    m_port = m_runPort->port();
+    m_devices = m_runPort->devices();
     m_modbusClientPort = Modbus::createClientPort(settings);
     m_modbusClientPort->setBroadcastEnabled(port->isBroadcastEnabled());
     // Note: m_modbusClientPort can NOT be nullptr
@@ -79,13 +81,16 @@ mbClientPortRunnable::~mbClientPortRunnable()
 
 void mbClientPortRunnable::run()
 {
+    QElapsedTimer timer;
+    timer.start();
+
     switch (m_state)
     {
     default:
     case STATE_PAUSE:
-        if (m_port->hasExternalMessage())
+        if (m_runPort->hasExternalMessage())
         {
-            m_port->popExternalMessage(&m_currentMessage);
+            m_runPort->popExternalMessage(&m_currentMessage);
             m_currentMessage->prepareToSend();
         }
         else
@@ -104,6 +109,21 @@ void mbClientPortRunnable::run()
     }
     Q_FOREACH (mbClientDeviceRunnable *d, m_runnables)
         d->run();
+
+    //------------------------------------------
+    // Statistics
+    Modbus::Timestamp tm = m_modbusClientPort->lastStatusTimestamp();
+    if (m_tmLastRequest != tm)
+    {
+        Modbus::StatusCode s = m_modbusClientPort->lastStatus();
+        if (Modbus::StatusIsBad(s))
+            m_port->setStatStatus(s, tm, QString(m_modbusClientPort->lastErrorText()));
+        else
+            m_port->setStatStatus(s, tm);
+        m_tmLastRequest = tm;
+    }
+    qint64 microsElapsed = timer.nsecsElapsed() / 1000;
+    m_port->setStatCycleTime(microsElapsed);
 }
 
 void mbClientPortRunnable::close()
@@ -226,7 +246,7 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
     if (Modbus::StatusIsBad(res))
     {
         QString text = m_modbusClientPort->lastErrorText();
-        mbClient::LogError(m_port->name(), text);
+        mbClient::LogError(m_runPort->name(), text);
     }
     m_currentMessage->setComplete(res, mb::currentTimestamp());
     return res;
@@ -253,8 +273,7 @@ void mbClientPortRunnable::slotBytesTx(const Modbus::Char */*source*/, const uin
         mbClient::LogTx(name(), Modbus::bytesToString(buff, size).data());
         qDebug() << "mbClient::LogTx end";
     }
-    m_stat.countTx++;
-    m_port->setStatCountTx(m_stat.countTx);
+    m_port->incStatCountTx();
 }
 
 void mbClientPortRunnable::slotBytesRx(const Modbus::Char */*source*/, const uint8_t* buff, uint16_t size)
@@ -273,8 +292,7 @@ void mbClientPortRunnable::slotBytesRx(const Modbus::Char */*source*/, const uin
             m_currentMessage->setBytesRx(bytes);
         mbClient::LogRx(name(), Modbus::bytesToString(buff, size).data());
     }
-    m_stat.countRx++;
-    m_port->setStatCountRx(m_stat.countRx);
+    m_port->incStatCountRx();
 }
 
 void mbClientPortRunnable::slotAsciiTx(const Modbus::Char */*source*/, const uint8_t* buff, uint16_t size)
@@ -293,8 +311,7 @@ void mbClientPortRunnable::slotAsciiTx(const Modbus::Char */*source*/, const uin
             m_currentMessage->setAsciiTx(bytes);
         mbClient::LogTx(name(), Modbus::asciiToString(buff, size).data());
     }
-    m_stat.countTx++;
-    m_port->setStatCountTx(m_stat.countTx);
+    m_port->incStatCountTx();
 }
 
 void mbClientPortRunnable::slotAsciiRx(const Modbus::Char */*source*/, const uint8_t* buff, uint16_t size)
@@ -313,6 +330,5 @@ void mbClientPortRunnable::slotAsciiRx(const Modbus::Char */*source*/, const uin
             m_currentMessage->setAsciiRx(bytes);
         mbClient::LogRx(name(), Modbus::asciiToString(buff, size).data());
     }
-    m_stat.countRx++;
-    m_port->setStatCountRx(m_stat.countRx);
+    m_port->incStatCountRx();
 }

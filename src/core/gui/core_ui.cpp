@@ -1202,13 +1202,13 @@ void mbCoreUi::currentPortChanged(mbCorePort *port)
         old->disconnect(this);
     m_currentPort = port;
     refreshCurrentPortName();
-    mbCorePort::Statistics stat;
+    mbCorePort::CoreStatistics stat;
     if (port)
     {
         connect(port, &mbCorePort::changed           , this, &mbCoreUi::refreshCurrentPortName);
         connect(port, &mbCorePort::statCountTxChanged, this, &mbCoreUi::setStatTx             );
         connect(port, &mbCorePort::statCountRxChanged, this, &mbCoreUi::setStatRx             );
-        stat = port->statistics();
+        stat = port->statisticsCore();
     }
     setStatTx(stat.countTx);
     setStatRx(stat.countRx);

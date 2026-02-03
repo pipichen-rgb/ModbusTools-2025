@@ -309,6 +309,8 @@ void mbCoreWindowManager::dataViewUiRemove(mbCoreDataViewUi *ui)
 void mbCoreWindowManager::statisticsUiAdd(mbCoreStatisticsUi *ui)
 {
     QMdiSubWindow* sw = subWindowAdd(ui);
+    QString title = ui->windowTitle();
+    sw->setWindowTitle(title);
     //connect(ui, &mbCoreDataViewUi::nameChanged, sw, &QWidget::setWindowTitle);
     //sw->setWindowTitle(ui->name());
 }

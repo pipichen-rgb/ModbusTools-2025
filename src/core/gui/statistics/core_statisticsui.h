@@ -33,6 +33,9 @@ class MB_EXPORT mbCoreStatisticsUi : public QWidget
 public:
     explicit mbCoreStatisticsUi(QWidget *parent = nullptr);
 
+protected Q_SLOTS:
+    void setStatWindowTitle(const QString &name);
+
 };
 
 #endif // CORE_STATISTICSUI_H

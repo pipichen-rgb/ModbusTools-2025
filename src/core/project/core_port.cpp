@@ -49,23 +49,25 @@ const mbCorePort::Defaults &mbCorePort::Defaults::instance()
     return d;
 }
 
-mbCorePort::Statistics::Statistics()
+mbCorePort::CoreStatistics::CoreStatistics()
 {
+    sinceTimestamp      = mb::currentTimestamp();
     lastStatus          = Modbus::Status_Uncertain;
     lastTimestamp       = 0;
     lastSuccessTimestamp= 0;
     lastErrorStatus     = Modbus::Status_Uncertain;
     lastErrorTimestamp  = 0;
-    //lastErrorText       = QString();
+  //lastErrorText       = QString();
     countTx             = 0;
     countRx             = 0;
     countGood           = 0;
     countBad            = 0;
     countBadTimeout     = 0;
     countBadCRC         = 0;
-    cycleNumber         = 0;
+    cycleCount          = 0;
+    cycleSumDuration    = 0;
     cycleLastDuration   = 0;
-    cycleMinDuration    = 0;
+    cycleMinDuration    = UINT32_MAX;
     cycleMaxDuration    = 0;
     cycleAvgDuration    = 0;
 }
@@ -94,7 +96,6 @@ mbCorePort::mbCorePort(QObject *parent)
     m_settings.timeoutIB    = d.timeoutInterByte;
     // common
     m_settings.isBroadcastEnabled = d.isBroadcastEnabled;
-    m_stat = new Statistics;
 
 }
 
@@ -294,14 +295,93 @@ bool mbCorePort::setSettings(const MBSETTINGS &settings)
     return true;
 }
 
-void mbCorePort::setStatCountTx(quint32 count)
+void mbCorePort::resetStatistics()
 {
-    m_stat->countTx = count;
-    Q_EMIT statCountTxChanged(count);
+    m_statLock.lockForWrite();
+    const auto countTx = m_stat->countTx;
+    const auto countRx = m_stat->countRx;
+    resetStatisticsInner();
+    m_statLock.unlock();
+
+    if (countTx != m_stat->countTx)
+        Q_EMIT statCountTxChanged(m_stat->countTx);
+    if (countRx != m_stat->countRx)
+        Q_EMIT statCountRxChanged(m_stat->countRx);
+
 }
 
-void mbCorePort::setStatCountRx(quint32 count)
+void mbCorePort::incStatCountTx()
 {
-    m_stat->countRx = count;
-    Q_EMIT statCountRxChanged(count);
+    QWriteLocker locker(&m_statLock);
+    ++m_stat->countTx;
+    Q_EMIT statCountTxChanged(m_stat->countTx);
+}
+
+void mbCorePort::incStatCountRx()
+{
+    QWriteLocker locker(&m_statLock);
+    ++m_stat->countRx;
+    Q_EMIT statCountRxChanged(m_stat->countRx);
+}
+
+void mbCorePort::setStatCycleTime(quint64 time)
+{
+    QWriteLocker locker(&m_statLock);
+    m_stat->cycleCount++;
+    m_stat->cycleSumDuration += time;
+    m_stat->cycleAvgDuration = static_cast<uint32_t>(m_stat->cycleSumDuration / m_stat->cycleCount);
+    m_stat->cycleLastDuration = static_cast<uint32_t>(time);
+    if (time < m_stat->cycleMinDuration)
+        m_stat->cycleMinDuration = static_cast<uint32_t>(time);
+    if (time > m_stat->cycleMaxDuration)
+        m_stat->cycleMaxDuration = static_cast<uint32_t>(time);
+
+    setStatCycleTimeInner(time);
+}
+
+void mbCorePort::setStatStatus(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString &err)
+{
+    QWriteLocker locker(&m_statLock);
+    m_stat->lastStatus = status;
+    m_stat->lastTimestamp = timestamp;
+    if (Modbus::StatusIsGood(status))
+    {
+        m_stat->countGood++;
+        m_stat->lastSuccessTimestamp = timestamp;
+    }
+    else
+    {
+        m_stat->countBad++;
+        switch (status)
+        {
+        case Modbus::Status_BadSerialReadTimeout:
+        case Modbus::Status_BadTcpReadTimeout:
+        case Modbus::Status_BadUdpReadTimeout:
+            m_stat->countBadTimeout++;
+            break;
+        case Modbus::Status_BadCrc:
+        case Modbus::Status_BadLrc:
+            m_stat->countBadCRC++;
+            break;
+        }
+        m_stat->lastErrorStatus = status;
+        m_stat->lastErrorTimestamp = timestamp;
+        m_stat->lastErrorText = err;
+    }
+    setStatStatusInner(status, timestamp, err);
+}
+
+void mbCorePort::resetStatisticsInner()
+{
+    *m_stat = CoreStatistics();
+}
+
+void mbCorePort::setStatCycleTimeInner(quint64 time)
+{
+    // Note: Base implementation does nothing
+}
+
+void mbCorePort::setStatStatusInner(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString &err)
+{
+    // Note: Base implementation does nothing
 }

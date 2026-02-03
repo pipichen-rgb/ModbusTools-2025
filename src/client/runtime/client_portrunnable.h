@@ -75,12 +75,13 @@ private:
     State m_state;
 
 private:
-    mbClientRunPort *m_port;
+    mbClientRunPort *m_runPort;
+    mbClientPort *m_port;
     ModbusClientPort *m_modbusClientPort;
     uint8_t m_byteCount;
     QList<mbClientRunDevice*> m_devices;
-    mbClientPort::Statistics m_stat;
     mbClientRunMessagePtr m_currentMessage;
+    Modbus::Timestamp m_tmLastRequest;
 
 private:
     typedef QList<mbClientDeviceRunnable*> Runnables_t;

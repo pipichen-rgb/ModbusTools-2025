@@ -53,9 +53,10 @@ public:
         static const Defaults &instance();
     };
 
-public:
-    struct MB_EXPORT Statistics
+public: // statistics
+    struct MB_EXPORT CoreStatistics
     {
+        mb::Timestamp_t     sinceTimestamp      ;
         Modbus::StatusCode  lastStatus          ;
         mb::Timestamp_t     lastTimestamp       ;
         mb::Timestamp_t     lastSuccessTimestamp;
@@ -68,14 +69,15 @@ public:
         quint32             countBad            ;
         quint32             countBadTimeout     ;
         quint32             countBadCRC         ;
-        quint64             cycleNumber         ;
-        quint64             cycleLastDuration   ;
-        quint64             cycleMinDuration    ;
-        quint64             cycleMaxDuration    ;
-        quint64             cycleAvgDuration    ;
+        quint32             cycleCount          ;
+        quint64             cycleSumDuration    ;
+        quint32             cycleLastDuration   ;
+        quint32             cycleMinDuration    ;
+        quint32             cycleMaxDuration    ;
+        quint32             cycleAvgDuration    ;
 
-        Statistics();
-        virtual ~Statistics() = default;
+        CoreStatistics();
+        virtual ~CoreStatistics() = default;
     };
 
 public:
@@ -131,16 +133,24 @@ public: // settings
     virtual MBSETTINGS settings() const;
     virtual bool setSettings(const MBSETTINGS &settings);
 
-public: // statistic
-    inline Statistics statistics() const { QReadLocker locker(&m_statLock); return *m_stat; }
-    inline void setStatistics(const Statistics &stat) { QWriteLocker locker(&m_statLock); *m_stat = stat; }
-    inline void resetStatistics() { QWriteLocker locker(&m_statLock); *m_stat = Statistics(); }
+public: // statistics
+    inline CoreStatistics statisticsCore() const { QReadLocker locker(&m_statLock); return *m_stat; }
+    virtual void resetStatistics();
 
-    inline quint32 statGoodCount() const { return m_stat->countTx; }
-    void setStatCountTx(quint32 count);
+    inline quint32 statGoodCount() const { QReadLocker locker(&m_statLock); return m_stat->countTx; }
+    void incStatCountTx();
 
-    inline quint32 statBadCount() const { return m_stat->countRx; }
-    void setStatCountRx(quint32 count);
+    inline quint32 statBadCount() const { QReadLocker locker(&m_statLock); return m_stat->countRx; }
+    void incStatCountRx();
+
+    virtual void setStatCycleTime(quint64 time);
+
+    virtual void setStatStatus(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString& err = QString());
+
+protected:
+    virtual void resetStatisticsInner();
+    virtual void setStatCycleTimeInner(quint64 time);
+    virtual void setStatStatusInner(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString& err = QString());
 
 Q_SIGNALS:
     void nameChanged(const QString& newName);
@@ -173,7 +183,7 @@ protected:
 
 protected:
     mutable QReadWriteLock m_statLock;
-    Statistics *m_stat;
+    CoreStatistics *m_stat;
 };
 
 #endif // CORE_PORT_H

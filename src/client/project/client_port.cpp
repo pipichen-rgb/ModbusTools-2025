@@ -28,14 +28,23 @@
 
 #include "client_device.h"
 
+mbClientPort::Statistics::Statistics() :
+    CoreStatistics()
+{
+    countBadConnection = 0;
+}
+
 mbClientPort::mbClientPort(QObject *parent) :
     mbCorePort(parent)
 {
+    m_stat = new Statistics;
+
     m_settings.host = Modbus::Defaults::instance().host;
 }
 
 mbClientPort::~mbClientPort()
 {
+    // Note: m_stat is deleted in base class destructor
 }
 
 QString mbClientPort::extendedName() const
@@ -91,4 +100,22 @@ int mbClientPort::deviceRemove(int index)
         return index;
     }
     return -1;
+}
+
+void mbClientPort::resetStatisticsInner()
+{
+    *static_cast<Statistics*>(m_stat) = Statistics();
+}
+
+void mbClientPort::setStatStatusInner(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString &err)
+{
+    switch (status)
+    {
+    case Modbus::Status_BadTcpCreate:
+    case Modbus::Status_BadTcpConnect:
+    case Modbus::Status_BadUdpCreate:
+    case Modbus::Status_BadSerialOpen:
+        static_cast<Statistics*>(m_stat)->countBadConnection++;
+        break;
+    }
 }

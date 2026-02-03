@@ -46,8 +46,8 @@ protected:
     void setProject(mbCoreProject *project) override;
     mbCorePortStatisticsUi *createPortStatisticsUi(mbCorePort *port) override;
 
-Q_SIGNALS:
-    void maximizeDataViewUi();
+//Q_SIGNALS:
+//    void maximizeDataViewUi();
 };
 
 #endif // CLIENT_STATISTICSMANAGER_H

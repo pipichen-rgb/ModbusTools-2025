@@ -37,31 +37,51 @@ public:
     ~mbCorePortStatisticsUi();
 
 public:
-    inline mbCorePort *port() const { return m_port; }
+    inline mbCorePort *portCore() const { return m_port; }
+
+public:
+    virtual void syncStatistics();
+
+public Q_SLOTS:
+    virtual void resetStatistics();
+
+protected:
+    bool event(QEvent *event) override;
+
+protected:
+    void syncStatisticsCoreInner();
+    inline bool isScanning() const { return m_timerId > 0; }
+    void startScanning();
+    void stopScanning();
 
 protected:
     mbCorePort *m_port;
 
     struct 
     {
+        QLineEdit*      lnSinceTimestamp      ;
         QLineEdit*      lnLastStatus          ;
         QLineEdit*      lnLastTimestamp       ;
         QLineEdit*      lnLastSuccessTimestamp;
         QLineEdit*      lnLastErrorStatus     ;
         QLineEdit*      lnLastErrorTimestamp  ;
-        QPlainTextEdit* lnLastErrorText       ;
+        QPlainTextEdit* txtLastErrorText      ;
         QLineEdit*      lnCountTx             ;
         QLineEdit*      lnCountRx             ;
-        QLineEdit*      lnCountGood           ;
+        QLineEdit*      lnCountGood           ; 
         QLineEdit*      lnCountBad            ;
         QLineEdit*      lnCountBadTimeout     ;
         QLineEdit*      lnCountBadCRC         ;
-        QLineEdit*      lnCycleNumber         ;
+        QLineEdit*      lnCycleCount          ;
+        QLineEdit*      lnCycleSumDuration    ;
         QLineEdit*      lnCycleLastDuration   ;
         QLineEdit*      lnCycleMinDuration    ;
         QLineEdit*      lnCycleMaxDuration    ;
         QLineEdit*      lnCycleAvgDuration    ;
     } m_ui;
+
+protected:
+    int m_timerId;
 };
 
 #endif // CORE_PORTSTATISTICSUI_H

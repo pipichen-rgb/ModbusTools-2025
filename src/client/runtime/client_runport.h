@@ -22,9 +22,6 @@ public: // mbClientPort interface
     inline QString name() const { return m_port->name(); }
     inline MBSETTINGS settings() const { return m_port->settings(); }
     inline bool isBroadcastEnabled() const { return m_port->isBroadcastEnabled(); }
-    inline mbClientPort::Statistics statistic() const { return m_port->statistics(); }
-    inline void setStatCountTx(quint32 count) { m_port->setStatCountTx(count); }
-    inline void setStatCountRx(quint32 count) { m_port->setStatCountRx(count); }
 
 public:
     inline QList<mbClientRunDevice*> devices() const { return m_devices; }

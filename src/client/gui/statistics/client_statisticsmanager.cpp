@@ -35,8 +35,8 @@ mbClientStatisticsManager::mbClientStatisticsManager(QObject *parent) :
 void mbClientStatisticsManager::setProject(mbCoreProject *project)
 {
     mbCoreStatisticsManager::setProject(project);
-    if (this->project() && (this->project()->portCount() == 1))
-        Q_EMIT maximizeDataViewUi();
+    //if (this->project() && (this->project()->portCount() == 1))
+    //    Q_EMIT maximizeStatisticsUi();
 }
 
 mbCorePortStatisticsUi *mbClientStatisticsManager::createPortStatisticsUi(mbCorePort *port)

@@ -116,8 +116,7 @@ set(RESOURCES gui/client_rsc.qrc)
 
 if(WIN32)
   set(MBTOOLS_WIN_RESOURCE_FILE win_resource.rc)
-  message(
-    "${PROJECT_NAME} resource file for Windows: '${MBTOOLS_WIN_RESOURCE_FILE}'")
+  message(STATUS "${PROJECT_NAME} resource file for Windows: '${MBTOOLS_WIN_RESOURCE_FILE}'")
 
   set(MBTOOLS_WIN_ICON
       "IDI_ICON1\tICON\tDISCARDABLE\t\"gui\\\\icons\\\\${PROJECT_NAME}.ico\"")

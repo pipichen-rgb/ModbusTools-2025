@@ -38,6 +38,15 @@ class mbClientPort : public mbCorePort
 {
     Q_OBJECT
 
+public: // statistics
+    struct Statistics : public CoreStatistics
+    {
+        quint32 countBadConnection;
+
+        Statistics();
+        virtual ~Statistics() = default;
+    };
+
 public:
     explicit mbClientPort(QObject* parent = nullptr);
     virtual ~mbClientPort();
@@ -63,6 +72,13 @@ public: // devices
     int deviceRemove(int index);
     inline int deviceRemove(const QString& name) { return deviceRemove(deviceIndex(name)); }
     inline int deviceRemove(mbClientDevice* device) { return deviceRemove(deviceIndex(device)); }
+
+public: // statistics
+    inline Statistics statistics() const { QReadLocker locker(&m_statLock); return *static_cast<Statistics*>(m_stat); }
+
+private:
+    void resetStatisticsInner() override;
+    void setStatStatusInner(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString& err = QString()) override;
 
 Q_SIGNALS:
     void deviceAdded(mbClientDevice*);

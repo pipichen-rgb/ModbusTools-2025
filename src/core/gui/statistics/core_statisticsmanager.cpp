@@ -45,7 +45,7 @@ void mbCoreStatisticsManager::removeStatisticsUi(mbCoreStatisticsUi *ui)
 {
     if (mbCorePortStatisticsUi *portUi = qobject_cast<mbCorePortStatisticsUi*>(ui))
     {
-        portStatisticsRemove(portUi->port());
+        portStatisticsRemove(portUi->portCore());
     }
 }
 

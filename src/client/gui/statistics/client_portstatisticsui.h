@@ -17,6 +17,12 @@ public:
     explicit mbClientPortStatisticsUi(mbClientPort *port, QWidget *parent = nullptr);
     ~mbClientPortStatisticsUi();
 
+public:
+    inline mbClientPort *port() const { return reinterpret_cast<mbClientPort*>(m_port); }
+
+public:
+    void syncStatistics() override;
+
 private:
     Ui::mbClientPortStatisticsUi *ui;
 };
