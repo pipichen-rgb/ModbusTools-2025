@@ -4,6 +4,7 @@ include(device/device.pri)
 include(simactions/simactions.pri)
 include(scriptmodules//scriptmodules.pri)
 include(dataview/dataview.pri)
+include(statistics/statistics.pri)
 include(script/script.pri)
 
 HEADERS += \

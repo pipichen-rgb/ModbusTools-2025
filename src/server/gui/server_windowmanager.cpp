@@ -32,6 +32,7 @@
 #include "script/server_scriptmoduleeditor.h"
 #include "script/server_devicescripteditor.h"
 #include "dataview/server_dataviewmanager.h"
+#include "statistics/server_statisticsmanager.h"
 
 #include <project/server_project.h>
 
@@ -50,8 +51,12 @@ const mbServerWindowManager::Strings &mbServerWindowManager::Strings::instance()
     return s;
 }
 
-mbServerWindowManager::mbServerWindowManager(mbServerUi *ui, mbServerDeviceManager *deviceManager, mbServerScriptManager *scriptManager, mbServerDataViewManager *dataViewManager) :
-    mbCoreWindowManager(ui, dataViewManager)
+mbServerWindowManager::mbServerWindowManager(mbServerUi *ui,
+                                             mbServerDeviceManager *deviceManager,
+                                             mbServerScriptManager *scriptManager,
+                                             mbServerDataViewManager *dataViewManager,
+                                             mbServerStatisticsManager *statisticsManager) :
+    mbCoreWindowManager(ui, dataViewManager, statisticsManager)
 {
     m_deviceManager = deviceManager;
     connect(m_deviceManager, &mbServerDeviceManager::deviceUiAdd, this, &mbServerWindowManager::deviceUiAdd);

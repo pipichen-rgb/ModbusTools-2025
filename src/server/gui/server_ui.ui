@@ -207,6 +207,8 @@
     <addaction name="separator"/>
     <addaction name="actionPortImport"/>
     <addaction name="actionPortExport"/>
+    <addaction name="separator"/>
+    <addaction name="actionPortStatistics"/>
    </widget>
    <widget class="QMenu" name="menuTools">
     <property name="title">
@@ -805,6 +807,11 @@
   <action name="actionFileImportProject">
    <property name="text">
     <string>Import Project ...</string>
+   </property>
+  </action>
+  <action name="actionPortStatistics">
+   <property name="text">
+    <string>Statistics...</string>
    </property>
   </action>
  </widget>

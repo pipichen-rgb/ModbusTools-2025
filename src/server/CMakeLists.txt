@@ -46,6 +46,8 @@ set(HEADERS
     gui/dataview/server_dataviewmanager.h
     gui/dataview/server_dataviewmodel.h
     gui/dataview/server_dataviewui.h
+    gui/statistics/server_portstatisticsui.h
+    gui/statistics/server_statisticsmanager.h
     gui/project/server_projectdelegate.h
     gui/project/server_projectmodel.h
     gui/project/server_projectui.h
@@ -104,6 +106,8 @@ set(SOURCES
     gui/dataview/server_dataviewmanager.cpp
     gui/dataview/server_dataviewmodel.cpp
     gui/dataview/server_dataviewui.cpp
+    gui/statistics/server_portstatisticsui.cpp
+    gui/statistics/server_statisticsmanager.cpp
     gui/project/server_projectdelegate.cpp
     gui/project/server_projectmodel.cpp
     gui/project/server_projectui.cpp

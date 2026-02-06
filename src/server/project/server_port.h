@@ -37,6 +37,13 @@ class mbServerPort : public mbCorePort
 {
     Q_OBJECT
 
+public: // statistics
+    struct Statistics : public CoreStatistics
+    {
+        Statistics();
+        virtual ~Statistics() = default;
+    };
+
 public:
     explicit mbServerPort(QObject* parent = nullptr);
     virtual ~mbServerPort();
@@ -68,6 +75,13 @@ public: // devices
 
 public:
     inline mbServerDevice *device(uint8_t unit) const;
+
+public: // statistics
+    inline Statistics statistics() const { QReadLocker locker(&m_statLock); return *static_cast<Statistics*>(m_stat); }
+
+private:
+    void resetStatisticsInner() override;
+    void setStatStatusInner(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString& err = QString()) override;
 
 Q_SIGNALS:
     void deviceAdded(mbServerDeviceRef*);

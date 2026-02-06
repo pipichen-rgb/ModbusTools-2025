@@ -35,7 +35,6 @@ mbServerPortRunnable::mbServerPortRunnable(mbServerPort *serverPort, const Modbu
     : QObject(parent)
 {
     m_serverPort = serverPort;
-    m_stat = m_serverPort->statistic();
     m_device = device;
     m_modbusPort = Modbus::createServerPort(device, settings);
     m_modbusPort->setBroadcastEnabled(serverPort->isBroadcastEnabled());
@@ -111,29 +110,25 @@ void mbServerPortRunnable::close()
 void mbServerPortRunnable::slotBytesTx(const Modbus::Char *source, const uint8_t* buff, uint16_t size)
 {
     mbServer::LogTx(source, Modbus::bytesToString(buff, size).data());
-    m_stat.countTx++;
-    m_serverPort->setStatCountTx(m_stat.countTx);
+    m_serverPort->incStatCountTx();
 }
 
 void mbServerPortRunnable::slotBytesRx(const Modbus::Char *source, const uint8_t* buff, uint16_t size)
 {
     mbServer::LogRx(source, Modbus::bytesToString(buff, size).data());
-    m_stat.countRx++;
-    m_serverPort->setStatCountRx(m_stat.countRx);
+    m_serverPort->incStatCountRx();
 }
 
 void mbServerPortRunnable::slotAsciiTx(const Modbus::Char *source, const uint8_t* buff, uint16_t size)
 {
     mbServer::LogTx(source, Modbus::asciiToString(buff, size).data());
-    m_stat.countTx++;
-    m_serverPort->setStatCountTx(m_stat.countTx);
+    m_serverPort->incStatCountTx();
 }
 
 void mbServerPortRunnable::slotAsciiRx(const Modbus::Char *source, const uint8_t* buff, uint16_t size)
 {
     mbServer::LogRx(source, Modbus::asciiToString(buff, size).data());
-    m_stat.countRx++;
-    m_serverPort->setStatCountRx(m_stat.countRx);
+    m_serverPort->incStatCountRx();
 }
 
 void mbServerPortRunnable::slotError(const Modbus::Char *source, Modbus::StatusCode status, const Modbus::Char *text)

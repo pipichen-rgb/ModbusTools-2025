@@ -52,6 +52,7 @@ class mbServerScriptModulesUi;
 class mbServerScriptModule;
 class mbServerBaseScriptEditor;
 class mbServerDataViewManager;
+class mbServerStatisticsManager;
 class mbServerDeviceUi;
 class mbServerDataViewUi;
 
@@ -92,6 +93,7 @@ public:
     inline mbServerDeviceManager *deviceManager() const { return m_deviceManager; }
     inline mbServerScriptManager *scriptManager() const { return m_scriptManager; }
     inline mbServerDataViewManager *dataViewManager() const { return reinterpret_cast<mbServerDataViewManager*>(dataViewManagerCore()); }
+    inline mbServerStatisticsManager *statisticsManager() const { return reinterpret_cast<mbServerStatisticsManager*>(statisticsManagerCore()); }
     inline mbServerProject *project() const { return reinterpret_cast<mbServerProject*>(projectCore()); }
 
 public:

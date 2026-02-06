@@ -35,6 +35,7 @@ class mbServerScriptManager;
 class mbServerScriptModule;
 class mbServerDeviceUi;
 class mbServerDataViewManager;
+class mbServerStatisticsManager;
 class mbServerDataViewUi;
 class mbServerBaseScriptEditor;
 
@@ -58,7 +59,8 @@ public:
 public:
     explicit mbServerWindowManager(mbServerUi *ui, mbServerDeviceManager *deviceManager,
                                                    mbServerScriptManager *scriptManager,
-                                                   mbServerDataViewManager *dataViewManager);
+                                                   mbServerDataViewManager *dataViewManager,
+                                                   mbServerStatisticsManager *statisticsManager);
 
 public: // 'mbCoreWindowManager'-interface
     inline mbServerUi *ui() const { return reinterpret_cast<mbServerUi*>(uiCore()); }

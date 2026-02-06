@@ -55,6 +55,7 @@
 
 #include "device/server_deviceui.h"
 #include "dataview/server_dataviewmanager.h"
+#include "statistics/server_statisticsmanager.h"
 #include "simactions/server_simactionsui.h"
 #include "scriptmodules/server_scriptmodulesui.h"
 #include "server_outputview.h"
@@ -134,6 +135,7 @@ mbServerUi::mbServerUi(mbServer *core, QWidget *parent) :
     m_ui.actionPortDelete                = ui->actionPortDelete               ;
     m_ui.actionPortImport                = ui->actionPortImport               ;
     m_ui.actionPortExport                = ui->actionPortExport               ;
+    m_ui.actionPortStatistics            = ui->actionPortStatistics           ;
     m_ui.actionDeviceNew                 = ui->actionDeviceNew                ;
     m_ui.actionDeviceEdit                = ui->actionDeviceEdit               ;
     m_ui.actionDeviceDelete              = ui->actionDeviceDelete             ;
@@ -205,7 +207,10 @@ void mbServerUi::initialize()
 
     m_dataViewManager = new mbServerDataViewManager(this);
 
-    m_windowManager = new mbServerWindowManager(this, m_deviceManager, m_scriptManager, dataViewManager());
+    // Statistics Manager
+    m_statisticsManager = new mbServerStatisticsManager(this);
+
+    m_windowManager = new mbServerWindowManager(this, m_deviceManager, m_scriptManager, dataViewManager(), statisticsManager());
 
     // Project Inspector
     m_projectUi = new mbServerProjectUi(ui->dockProject);

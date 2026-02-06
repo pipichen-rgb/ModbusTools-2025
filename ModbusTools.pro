@@ -17,4 +17,4 @@ CONFIG += ordered
 SUBDIRS += modbus/src/modbus.pro
 SUBDIRS += src/core
 SUBDIRS += src/client
-#SUBDIRS += src/server
+SUBDIRS += src/server

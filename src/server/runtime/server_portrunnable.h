@@ -59,7 +59,6 @@ private:
     mbServerPort      *m_serverPort;
     mbServerRunDevice *m_device;
     ModbusServerPort  *m_modbusPort;
-    mbServerPort::Statistic m_stat;
 };
 
 #endif // SERVER_PORTRUNNABLE_H

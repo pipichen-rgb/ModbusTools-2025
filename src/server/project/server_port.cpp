@@ -31,15 +31,23 @@
 #define MAX_DISCRETS 1600
 #define MAX_REGISTERS 100
 
+mbServerPort::Statistics::Statistics() :
+    CoreStatistics()
+{
+}
+
 mbServerPort::mbServerPort(QObject *parent) :
     mbCorePort(parent)
 {
+    m_stat = new Statistics;
+
     m_settings.host = Modbus::Defaults::instance().ipaddr;
     memset(m_units, 0, sizeof(m_units));
 }
 
 mbServerPort::~mbServerPort()
 {
+    // Note: m_stat is deleted in base class destructor
 }
 
 QString mbServerPort::extendedName() const
@@ -191,4 +199,14 @@ void mbServerPort::deviceRemoveUnits(mbServerDeviceRef *device)
         if (d == device)
             m_units[unit] = nullptr;
     }
+}
+
+void mbServerPort::resetStatisticsInner()
+{
+    *static_cast<Statistics*>(m_stat) = Statistics();
+}
+
+void mbServerPort::setStatStatusInner(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString &err)
+{
+    // Note: Base implementation does nothing
 }
