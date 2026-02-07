@@ -52,11 +52,12 @@ private Q_SLOTS:
     void slotAsciiTx(const Modbus::Char *source, const uint8_t* buff, uint16_t size);
     void slotAsciiRx(const Modbus::Char *source, const uint8_t* buff, uint16_t size);
     void slotError(const Modbus::Char *source, Modbus::StatusCode status, const Modbus::Char *text);
+    void slotCompleted(const Modbus::Char *source, Modbus::StatusCode status);
     void slotNewConnection(const Modbus::Char *source);
     void slotCloseConnection(const Modbus::Char *source);
 
 private:
-    mbServerPort      *m_serverPort;
+    mbServerPort      *m_port;
     mbServerRunDevice *m_device;
     ModbusServerPort  *m_modbusPort;
 };

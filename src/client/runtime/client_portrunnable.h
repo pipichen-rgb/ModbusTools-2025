@@ -77,7 +77,7 @@ private:
 private:
     mbClientRunPort *m_runPort;
     mbClientPort *m_port;
-    ModbusClientPort *m_modbusClientPort;
+    ModbusClientPort *m_modbusPort;
     uint8_t m_byteCount;
     QList<mbClientRunDevice*> m_devices;
     mbClientRunMessagePtr m_currentMessage;

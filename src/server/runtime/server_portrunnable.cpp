@@ -34,7 +34,7 @@
 mbServerPortRunnable::mbServerPortRunnable(mbServerPort *serverPort, const Modbus::Settings &settings, mbServerRunDevice *device, QObject *parent)
     : QObject(parent)
 {
-    m_serverPort = serverPort;
+    m_port = serverPort;
     m_device = device;
     m_modbusPort = Modbus::createServerPort(device, settings);
     m_modbusPort->setBroadcastEnabled(serverPort->isBroadcastEnabled());
@@ -74,7 +74,8 @@ mbServerPortRunnable::mbServerPortRunnable(mbServerPort *serverPort, const Modbu
         break;
     }
 
-    m_modbusPort->connect(&ModbusServerPort::signalError, this, &mbServerPortRunnable::slotError);
+    m_modbusPort->connect(&ModbusServerPort::signalError    , this, &mbServerPortRunnable::slotError    );
+    m_modbusPort->connect(&ModbusServerPort::signalCompleted, this, &mbServerPortRunnable::slotCompleted);
 
     QString name = settings.value(mbServerPort::Strings::instance().name).toString();
     m_modbusPort->setObjectName(name.toUtf8().constData());
@@ -94,7 +95,14 @@ void mbServerPortRunnable::setName(const QString &name)
 
 void mbServerPortRunnable::run()
 {
+    QElapsedTimer timer;
+    timer.start();
+    // Main server cycle
     m_modbusPort->process();
+    //------------------------------------------
+    // Statistics
+    qint64 microsElapsed = timer.nsecsElapsed() / 1000;
+    m_port->setStatCycleTime(microsElapsed);
 }
 
 void mbServerPortRunnable::close()
@@ -110,25 +118,25 @@ void mbServerPortRunnable::close()
 void mbServerPortRunnable::slotBytesTx(const Modbus::Char *source, const uint8_t* buff, uint16_t size)
 {
     mbServer::LogTx(source, Modbus::bytesToString(buff, size).data());
-    m_serverPort->incStatCountTx();
+    m_port->incStatCountTx();
 }
 
 void mbServerPortRunnable::slotBytesRx(const Modbus::Char *source, const uint8_t* buff, uint16_t size)
 {
     mbServer::LogRx(source, Modbus::bytesToString(buff, size).data());
-    m_serverPort->incStatCountRx();
+    m_port->incStatCountRx();
 }
 
 void mbServerPortRunnable::slotAsciiTx(const Modbus::Char *source, const uint8_t* buff, uint16_t size)
 {
     mbServer::LogTx(source, Modbus::asciiToString(buff, size).data());
-    m_serverPort->incStatCountTx();
+    m_port->incStatCountTx();
 }
 
 void mbServerPortRunnable::slotAsciiRx(const Modbus::Char *source, const uint8_t* buff, uint16_t size)
 {
     mbServer::LogRx(source, Modbus::asciiToString(buff, size).data());
-    m_serverPort->incStatCountRx();
+    m_port->incStatCountRx();
 }
 
 void mbServerPortRunnable::slotError(const Modbus::Char *source, Modbus::StatusCode status, const Modbus::Char *text)
@@ -139,8 +147,21 @@ void mbServerPortRunnable::slotError(const Modbus::Char *source, Modbus::StatusC
     case Modbus::Status_BadUdpReadTimeout:
         break;
     default:
+    {
+        Modbus::Timestamp tm = Modbus::currentTimestamp();
+        m_port->setStatStatus(status, tm, QString(text));
         mbServer::LogError(source, QString("Error(0x%1): %2").arg(QString::number(status, 16), text));
+    }
         break;
+    }
+}
+
+void mbServerPortRunnable::slotCompleted(const Modbus::Char *, Modbus::StatusCode status)
+{
+    if (Modbus::StatusIsGood(status))
+    {
+        Modbus::Timestamp tm = Modbus::currentTimestamp();
+        m_port->setStatStatus(status, tm);
     }
 }
 

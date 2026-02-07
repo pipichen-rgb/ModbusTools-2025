@@ -45,26 +45,26 @@ mbClientPortRunnable::mbClientPortRunnable(mbClientRunPort *port, const Modbus::
     m_runPort = port;
     m_port = m_runPort->port();
     m_devices = m_runPort->devices();
-    m_modbusClientPort = Modbus::createClientPort(settings);
-    m_modbusClientPort->setBroadcastEnabled(port->isBroadcastEnabled());
-    // Note: m_modbusClientPort can NOT be nullptr
-    switch (m_modbusClientPort->type())
+    m_modbusPort = Modbus::createClientPort(settings);
+    m_modbusPort->setBroadcastEnabled(port->isBroadcastEnabled());
+    // Note: m_modbusPort can NOT be nullptr
+    switch (m_modbusPort->type())
     {
     case Modbus::ASC:
     case Modbus::ASCvTCP:
     case Modbus::ASCvUDP:
-        m_modbusClientPort->connect(&ModbusClientPort::signalTx, this, &mbClientPortRunnable::slotAsciiTx);
-        m_modbusClientPort->connect(&ModbusClientPort::signalRx, this, &mbClientPortRunnable::slotAsciiRx);
+        m_modbusPort->connect(&ModbusClientPort::signalTx, this, &mbClientPortRunnable::slotAsciiTx);
+        m_modbusPort->connect(&ModbusClientPort::signalRx, this, &mbClientPortRunnable::slotAsciiRx);
         break;
     default:
-        m_modbusClientPort->connect(&ModbusClientPort::signalTx, this, &mbClientPortRunnable::slotBytesTx);
-        m_modbusClientPort->connect(&ModbusClientPort::signalRx, this, &mbClientPortRunnable::slotBytesRx);
+        m_modbusPort->connect(&ModbusClientPort::signalTx, this, &mbClientPortRunnable::slotBytesTx);
+        m_modbusPort->connect(&ModbusClientPort::signalRx, this, &mbClientPortRunnable::slotBytesRx);
         break;
     }
 
     Q_FOREACH (mbClientRunDevice *device, m_devices)
     {
-        mbClientDeviceRunnable *d = new mbClientDeviceRunnable(device, m_modbusClientPort);
+        mbClientDeviceRunnable *d = new mbClientDeviceRunnable(device, m_modbusPort);
         m_runnables.append(d);
         m_hashRunnables.insert(d->modbusClient(), d);
     }
@@ -76,7 +76,7 @@ mbClientPortRunnable::~mbClientPortRunnable()
     m_hashRunnables.clear();
     qDeleteAll(m_runnables);
     m_runnables.clear();
-    delete m_modbusClientPort;
+    delete m_modbusPort;
 }
 
 void mbClientPortRunnable::run()
@@ -112,12 +112,12 @@ void mbClientPortRunnable::run()
 
     //------------------------------------------
     // Statistics
-    Modbus::Timestamp tm = m_modbusClientPort->lastStatusTimestamp();
+    Modbus::Timestamp tm = m_modbusPort->lastStatusTimestamp();
     if (m_tmLastRequest != tm)
     {
-        Modbus::StatusCode s = m_modbusClientPort->lastStatus();
+        Modbus::StatusCode s = m_modbusPort->lastStatus();
         if (Modbus::StatusIsBad(s))
-            m_port->setStatStatus(s, tm, QString(m_modbusClientPort->lastErrorText()));
+            m_port->setStatStatus(s, tm, QString(m_modbusPort->lastErrorText()));
         else
             m_port->setStatStatus(s, tm);
         m_tmLastRequest = tm;
@@ -128,7 +128,7 @@ void mbClientPortRunnable::run()
 
 void mbClientPortRunnable::close()
 {
-    m_modbusClientPort->close();
+    m_modbusPort->close();
 }
 
 Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
@@ -140,36 +140,36 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
     case 0: // mbClientRunMessageRaw
     {
         mbClientRunMessageRaw *m = static_cast<mbClientRunMessageRaw *>(m_currentMessage.data());
-        res = m_modbusClientPort->rawRequest(m->inputBuffer(),
-                                             m->inputCount(),
-                                             m->outputBuffer(),
-                                             m->outputMaxCount(),
-                                             m->outputCountPtr());
+        res = m_modbusPort->rawRequest(m->inputBuffer(),
+                                       m->inputCount(),
+                                       m->outputBuffer(),
+                                       m->outputMaxCount(),
+                                       m->outputCountPtr());
     }
         break;
     case MBF_READ_COILS:
-        res = m_modbusClientPort->readCoils(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBuffer());
+        res = m_modbusPort->readCoils(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBuffer());
         break;
     case MBF_READ_DISCRETE_INPUTS:
-        res = m_modbusClientPort->readDiscreteInputs(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBuffer());
+        res = m_modbusPort->readDiscreteInputs(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBuffer());
         break;
     case MBF_READ_INPUT_REGISTERS:
-        res = m_modbusClientPort->readInputRegisters(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+        res = m_modbusPort->readInputRegisters(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
         break;
     case MBF_READ_HOLDING_REGISTERS:
-        res = m_modbusClientPort->readHoldingRegisters(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+        res = m_modbusPort->readHoldingRegisters(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
         break;
     case MBF_WRITE_SINGLE_COIL:
-        res = m_modbusClientPort->writeSingleCoil(m_currentMessage->unit(), m_currentMessage->offset(), *reinterpret_cast<const bool*>(m_currentMessage->innerBuffer()));
+        res = m_modbusPort->writeSingleCoil(m_currentMessage->unit(), m_currentMessage->offset(), *reinterpret_cast<const bool*>(m_currentMessage->innerBuffer()));
         break;
     case MBF_WRITE_SINGLE_REGISTER:
-        res = m_modbusClientPort->writeSingleRegister(m_currentMessage->unit(), m_currentMessage->offset(), *reinterpret_cast<const uint16_t*>(m_currentMessage->innerBuffer()));
+        res = m_modbusPort->writeSingleRegister(m_currentMessage->unit(), m_currentMessage->offset(), *reinterpret_cast<const uint16_t*>(m_currentMessage->innerBuffer()));
         break;
     case MBF_READ_EXCEPTION_STATUS:
-        res = m_modbusClientPort->readExceptionStatus(m_currentMessage->unit(), reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
+        res = m_modbusPort->readExceptionStatus(m_currentMessage->unit(), reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
         break;
     case MBF_DIAGNOSTICS:
-        res = m_modbusClientPort->diagnostics(m_currentMessage->unit(),
+        res = m_modbusPort->diagnostics(m_currentMessage->unit(),
                                               static_cast<mbClientRunMessageDiagnostics*>(m_currentMessage.data())->subFunction(),
                                               static_cast<uint8_t>(m_currentMessage->count()),
                                               m_currentMessage->innerBuffer(),
@@ -181,7 +181,7 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
     case MBF_GET_COMM_EVENT_COUNTER:
     {
         uint16_t status, eventCount;
-        res = m_modbusClientPort->getCommEventCounter(m_currentMessage->unit(),
+        res = m_modbusPort->getCommEventCounter(m_currentMessage->unit(),
                                                       &status,
                                                       &eventCount);
         if (Modbus::StatusIsGood(res))
@@ -196,7 +196,7 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
     {
         uint16_t status, eventCount, messageCount;
         uint8_t byteCount;
-        res = m_modbusClientPort->getCommEventLog(m_currentMessage->unit(),
+        res = m_modbusPort->getCommEventLog(m_currentMessage->unit(),
                                                   &status,
                                                   &eventCount,
                                                   &messageCount,
@@ -213,27 +213,27 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
     }
         break;
     case MBF_WRITE_MULTIPLE_COILS:
-        res = m_modbusClientPort->writeMultipleCoils(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBuffer());
+        res = m_modbusPort->writeMultipleCoils(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBuffer());
         break;
     case MBF_WRITE_MULTIPLE_REGISTERS:
-        res = m_modbusClientPort->writeMultipleRegisters(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBufferReg());
+        res = m_modbusPort->writeMultipleRegisters(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBufferReg());
         break;
     case MBF_REPORT_SERVER_ID:
-        res = m_modbusClientPort->reportServerID(m_currentMessage->unit(), &m_byteCount, reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
+        res = m_modbusPort->reportServerID(m_currentMessage->unit(), &m_byteCount, reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
         if (Modbus::StatusIsGood(res))
             static_cast<mbClientRunMessageReportServerID*>(m_currentMessage.data())->setCount(m_byteCount);
         break;
     case MBF_MASK_WRITE_REGISTER:
-        res = m_modbusClientPort->maskWriteRegister(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->innerBufferReg()[0], m_currentMessage->innerBufferReg()[1]);
+        res = m_modbusPort->maskWriteRegister(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->innerBufferReg()[0], m_currentMessage->innerBufferReg()[1]);
         break;
     case MBF_READ_WRITE_MULTIPLE_REGISTERS:
-        res = m_modbusClientPort->readWriteMultipleRegisters(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBufferReg(),
+        res = m_modbusPort->readWriteMultipleRegisters(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBufferReg(),
                                                          m_currentMessage->writeOffset(), m_currentMessage->writeCount(), m_currentMessage->innerBufferReg());
         break;
     case MBF_READ_FIFO_QUEUE:
     {
         uint16_t count;
-        res = m_modbusClientPort->readFIFOQueue(m_currentMessage->unit(), m_currentMessage->offset(), &count, reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+        res = m_modbusPort->readFIFOQueue(m_currentMessage->unit(), m_currentMessage->offset(), &count, reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
         if (Modbus::StatusIsGood(res))
             static_cast<mbClientRunMessageReadFIFOQueue*>(m_currentMessage.data())->setCount(count);
     }
@@ -245,7 +245,7 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
         return res;
     if (Modbus::StatusIsBad(res))
     {
-        QString text = m_modbusClientPort->lastErrorText();
+        QString text = m_modbusPort->lastErrorText();
         mbClient::LogError(m_runPort->name(), text);
     }
     m_currentMessage->setComplete(res, mb::currentTimestamp());
@@ -254,7 +254,7 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
 #include <QDebug>
 void mbClientPortRunnable::slotBytesTx(const Modbus::Char */*source*/, const uint8_t* buff, uint16_t size)
 {
-    const ModbusClient *c = reinterpret_cast<const ModbusClient*>(m_modbusClientPort->currentClient());
+    const ModbusClient *c = reinterpret_cast<const ModbusClient*>(m_modbusPort->currentClient());
     mbClientDeviceRunnable *r = deviceRunnable(c);
     QByteArray bytes(reinterpret_cast<const char*>(buff), size);
     if (r)
@@ -264,7 +264,7 @@ void mbClientPortRunnable::slotBytesTx(const Modbus::Char */*source*/, const uin
     }
     else
     {
-        if (m_modbusClientPort->currentClient() == m_modbusClientPort)
+        if (m_modbusPort->currentClient() == m_modbusPort)
         {
             qDebug() << "mbClientPortRunnable::slotBytesTx begin:" << name() << Modbus::bytesToString(buff, size).data();
             m_currentMessage->setBytesTx(bytes);
@@ -278,7 +278,7 @@ void mbClientPortRunnable::slotBytesTx(const Modbus::Char */*source*/, const uin
 
 void mbClientPortRunnable::slotBytesRx(const Modbus::Char */*source*/, const uint8_t* buff, uint16_t size)
 {
-    const ModbusClient *c = reinterpret_cast<const ModbusClient*>(m_modbusClientPort->currentClient());
+    const ModbusClient *c = reinterpret_cast<const ModbusClient*>(m_modbusPort->currentClient());
     mbClientDeviceRunnable *r = deviceRunnable(c);
     QByteArray bytes(reinterpret_cast<const char*>(buff), size);
     if (r)
@@ -288,7 +288,7 @@ void mbClientPortRunnable::slotBytesRx(const Modbus::Char */*source*/, const uin
     }
     else
     {
-        if (m_modbusClientPort->currentClient() == m_modbusClientPort)
+        if (m_modbusPort->currentClient() == m_modbusPort)
             m_currentMessage->setBytesRx(bytes);
         mbClient::LogRx(name(), Modbus::bytesToString(buff, size).data());
     }
@@ -297,7 +297,7 @@ void mbClientPortRunnable::slotBytesRx(const Modbus::Char */*source*/, const uin
 
 void mbClientPortRunnable::slotAsciiTx(const Modbus::Char */*source*/, const uint8_t* buff, uint16_t size)
 {
-    const ModbusClient *c = reinterpret_cast<const ModbusClient*>(m_modbusClientPort->currentClient());
+    const ModbusClient *c = reinterpret_cast<const ModbusClient*>(m_modbusPort->currentClient());
     mbClientDeviceRunnable *r = deviceRunnable(c);
     QByteArray bytes(reinterpret_cast<const char*>(buff), size);
     if (r)
@@ -307,7 +307,7 @@ void mbClientPortRunnable::slotAsciiTx(const Modbus::Char */*source*/, const uin
     }
     else
     {
-        if (m_modbusClientPort->currentClient() == m_modbusClientPort)
+        if (m_modbusPort->currentClient() == m_modbusPort)
             m_currentMessage->setAsciiTx(bytes);
         mbClient::LogTx(name(), Modbus::asciiToString(buff, size).data());
     }
@@ -316,7 +316,7 @@ void mbClientPortRunnable::slotAsciiTx(const Modbus::Char */*source*/, const uin
 
 void mbClientPortRunnable::slotAsciiRx(const Modbus::Char */*source*/, const uint8_t* buff, uint16_t size)
 {
-    const ModbusClient *c = reinterpret_cast<const ModbusClient*>(m_modbusClientPort->currentClient());
+    const ModbusClient *c = reinterpret_cast<const ModbusClient*>(m_modbusPort->currentClient());
     mbClientDeviceRunnable *r = deviceRunnable(c);
     QByteArray bytes(reinterpret_cast<const char*>(buff), size);
     if (r)
@@ -326,7 +326,7 @@ void mbClientPortRunnable::slotAsciiRx(const Modbus::Char */*source*/, const uin
     }
     else
     {
-        if (m_modbusClientPort->currentClient() == m_modbusClientPort)
+        if (m_modbusPort->currentClient() == m_modbusPort)
             m_currentMessage->setAsciiRx(bytes);
         mbClient::LogRx(name(), Modbus::asciiToString(buff, size).data());
     }
