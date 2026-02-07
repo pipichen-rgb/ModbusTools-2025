@@ -45,6 +45,7 @@ public: // statistics ui
 protected:
     void setProject(mbCoreProject *project) override;
     mbCorePortStatisticsUi *createPortStatisticsUi(mbCorePort *port) override;
+    mbCoreDeviceStatisticsUi *createDeviceStatisticsUi(mbCoreDevice *device) override;
 
 //Q_SIGNALS:
 //    void maximizeDataViewUi();

@@ -147,6 +147,19 @@ const Strings &Strings::instance()
     return d;
 }
 
+BaseStatistics::BaseStatistics()
+{
+    sinceTimestamp      = mb::currentTimestamp();
+    lastStatus          = Modbus::Status_Uncertain;
+    lastTimestamp       = 0;
+    lastSuccessTimestamp= 0;
+    lastErrorStatus     = Modbus::Status_Uncertain;
+    lastErrorTimestamp  = 0;
+    //lastErrorText       = QString();
+    countGood           = 0;
+    countBad            = 0;
+}
+
 void processMinMax(DataType dataType, QVariant &min, QVariant &max)
 {
 #define CHECK_MIN_MAX(datatype, method, typeMin, typeMax)           \

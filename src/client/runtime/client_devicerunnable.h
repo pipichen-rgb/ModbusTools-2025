@@ -81,7 +81,7 @@ private:
 
 private:
     mbClientRunDevice *m_device;
-    ModbusClientPort *m_modbusClientPort;
+    ModbusClientPort *m_modbusPort;
     ModbusClient *m_modbusClient;
     uint8_t m_byteCount;
 

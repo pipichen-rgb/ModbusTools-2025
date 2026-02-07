@@ -23,8 +23,6 @@
 #ifndef CLIENT_DEVICE_H
 #define CLIENT_DEVICE_H
 
-#include <QMutex>
-
 #include <Modbus.h>
 #include <client.h>
 
@@ -56,6 +54,18 @@ public:
         static const Defaults &instance();
     };
 
+public: // statistics
+    struct Statistics : public CoreStatistics
+    {
+        quint32 countTx           ;
+        quint32 countRx           ;
+        quint32 countBadConnection;
+        quint32 countBadTimeout   ;
+        quint32 countBadCRC       ;
+
+        Statistics();
+    };
+
 public:
     mbClientDevice(QObject* parent = nullptr);
     ~mbClientDevice();
@@ -77,6 +87,21 @@ public: // settings
 
     MBSETTINGS settings() const override;
     bool setSettings(const MBSETTINGS &settings) override;
+
+public: // statistics
+    inline Statistics statistics() const { QReadLocker locker(&m_statLock); return *static_cast<Statistics*>(m_stat); }
+    inline quint32 statGoodCount() const { QReadLocker locker(&m_statLock); return static_cast<Statistics*>(m_stat)->countTx; }
+    void incStatCountTx();
+    inline quint32 statBadCount() const { QReadLocker locker(&m_statLock); return static_cast<Statistics*>(m_stat)->countRx; }
+    void incStatCountRx();
+
+private:
+    void resetStatisticsInner() override;
+    void setStatStatusInner(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString& err = QString()) override;
+
+Q_SIGNALS:
+    void statCountTxChanged(quint32 count);
+    void statCountRxChanged(quint32 count);
 
 private:
     mbClientPort* m_port;

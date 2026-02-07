@@ -24,6 +24,7 @@
 #define CORE_DEVICE_H
 
 #include <QObject>
+#include <QReadWriteLock>
 
 #include <mbcore.h>
 
@@ -74,8 +75,15 @@ public:
         static const Defaults &instance();
     };
 
+public: // statistics
+    struct MB_EXPORT CoreStatistics : public mb::BaseStatistics
+    {
+        CoreStatistics();
+    };
+
 public:
     explicit mbCoreDevice(QObject *parent = nullptr);
+    ~mbCoreDevice();
 
 public:
     inline mbCoreProject* projectCore() const { return m_project; }
@@ -116,6 +124,15 @@ public: // settings
     virtual MBSETTINGS settings() const;
     virtual bool setSettings(const MBSETTINGS& settings);
 
+public: // statistics
+    inline CoreStatistics statisticsCore() const { QReadLocker locker(&m_statLock); return *m_stat; }
+    virtual void resetStatistics();
+    virtual void setStatStatus(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString& err = QString());
+
+protected:
+    virtual void resetStatisticsInner();
+    virtual void setStatStatusInner(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString& err = QString());
+
 Q_SIGNALS:
     void nameChanged(const QString& newName);
     void changed();
@@ -139,6 +156,10 @@ protected: // settings
         mb::StringLengthType stringLengthType         ;
         mb::StringEncoding   stringEncoding           ;
     } m_settingsCore;
+
+protected: // statistics
+    mutable QReadWriteLock m_statLock;
+    CoreStatistics *m_stat;
 };
 
 #endif // CORE_DEVICE_H

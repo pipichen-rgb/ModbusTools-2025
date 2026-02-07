@@ -24,8 +24,10 @@
 
 #include <project/client_project.h>
 #include <project/client_port.h>
+#include <project/client_device.h>
 
 #include "client_portstatisticsui.h"
+#include "client_devicestatisticsui.h"
 
 mbClientStatisticsManager::mbClientStatisticsManager(QObject *parent) :
     mbCoreStatisticsManager(parent)
@@ -42,4 +44,9 @@ void mbClientStatisticsManager::setProject(mbCoreProject *project)
 mbCorePortStatisticsUi *mbClientStatisticsManager::createPortStatisticsUi(mbCorePort *port)
 {
     return new mbClientPortStatisticsUi(static_cast<mbClientPort*>(port), nullptr);
+}
+
+mbCoreDeviceStatisticsUi *mbClientStatisticsManager::createDeviceStatisticsUi(mbCoreDevice *device)
+{
+    return new mbClientDeviceStatisticsUi(static_cast<mbClientDevice*>(device), nullptr);
 }

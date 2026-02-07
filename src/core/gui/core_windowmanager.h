@@ -86,6 +86,7 @@ public:
 public Q_SLOTS:
     void showDataViewUi(mbCoreDataViewUi *ui);
     void showPortStatistics(mbCorePort *port);
+    void showDeviceStatistics(mbCoreDevice *device);
     void actionWindowViewSubWindow();
     void actionWindowViewTabbed();
     void actionWindowDataViewCloseAll();

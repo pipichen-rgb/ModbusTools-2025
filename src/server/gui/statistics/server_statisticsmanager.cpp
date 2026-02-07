@@ -43,3 +43,8 @@ mbCorePortStatisticsUi *mbServerStatisticsManager::createPortStatisticsUi(mbCore
 {
     return new mbServerPortStatisticsUi(static_cast<mbServerPort*>(port), nullptr);
 }
+
+mbCoreDeviceStatisticsUi *mbServerStatisticsManager::createDeviceStatisticsUi(mbCoreDevice *device)
+{
+    return nullptr;
+}

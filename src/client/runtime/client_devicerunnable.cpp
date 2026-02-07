@@ -31,12 +31,13 @@
 #include "client_runmessage.h"
 #include "client_runitem.h"
 
-mbClientDeviceRunnable::mbClientDeviceRunnable(mbClientRunDevice *device, ModbusClientPort *modbusClientPort)
+mbClientDeviceRunnable::mbClientDeviceRunnable(mbClientRunDevice *device, ModbusClientPort *modbusPort)
 {
     m_state = STATE_PAUSE;
     m_device = device;
-    m_modbusClientPort = modbusClientPort;
-    m_modbusClient = new ModbusClient(m_device->unit(), m_modbusClientPort);
+    m_modbusPort = modbusPort;
+    m_modbusClient = new ModbusClient(m_device->unit(), m_modbusPort);
+    m_modbusClient->setContext(device->device());
     createReadMessages();
 }
 
@@ -339,7 +340,7 @@ Modbus::StatusCode mbClientDeviceRunnable::execExternalMessage()
         return res;
     if (Modbus::StatusIsBad(res))
     {
-        QString text = m_modbusClientPort->lastErrorText();
+        QString text = m_modbusPort->lastErrorText();
         mbClient::LogError(m_device->name(), text);
     }
     m_currentMessage->setComplete(res, QDateTime::currentMSecsSinceEpoch());
@@ -371,7 +372,7 @@ Modbus::StatusCode mbClientDeviceRunnable::execWriteMessage()
         return res;
     if (Modbus::StatusIsBad(res))
     {
-        QString text = m_modbusClientPort->lastErrorText();
+        QString text = m_modbusPort->lastErrorText();
         mbClient::LogError(m_device->name(), text);
     }
     m_currentMessage->setComplete(res, QDateTime::currentMSecsSinceEpoch());
@@ -406,7 +407,7 @@ Modbus::StatusCode mbClientDeviceRunnable::execReadMessage()
         return res;
     if (Modbus::StatusIsBad(res))
     {
-        QString text = m_modbusClientPort->lastErrorText();
+        QString text = m_modbusPort->lastErrorText();
         mbClient::LogError(m_device->name(), text);
     }
     m_currentMessage->setComplete(res, QDateTime::currentMSecsSinceEpoch());

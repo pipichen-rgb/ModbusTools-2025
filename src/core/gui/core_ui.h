@@ -146,11 +146,12 @@ protected Q_SLOTS:
     // ----------------------------
     // -----------DEVICE-----------
     // ----------------------------
-    virtual void menuSlotDeviceNew   ();
-    virtual void menuSlotDeviceEdit  ();
-    virtual void menuSlotDeviceDelete();
-    virtual void menuSlotDeviceImport();
-    virtual void menuSlotDeviceExport();
+    virtual void menuSlotDeviceNew       ();
+    virtual void menuSlotDeviceEdit      ();
+    virtual void menuSlotDeviceDelete    ();
+    virtual void menuSlotDeviceImport    ();
+    virtual void menuSlotDeviceExport    ();
+    virtual void menuSlotDeviceStatistics();
     // ----------------------------
     // --------- DATA VIEW --------
     // ----------------------------
@@ -296,6 +297,7 @@ protected:
         QAction     *actionDeviceDelete             ;
         QAction     *actionDeviceImport             ;
         QAction     *actionDeviceExport             ;
+        QAction     *actionDeviceStatistics         ;
         QAction     *actionDataViewItemNew          ;
         QAction     *actionDataViewItemEdit         ;
         QAction     *actionDataViewItemInsert       ;

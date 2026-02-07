@@ -52,12 +52,23 @@ const mbClientDevice::Defaults &mbClientDevice::Defaults::instance()
     return d;
 }
 
+mbClientDevice::Statistics::Statistics()
+{
+    countTx            = 0;
+    countRx            = 0;
+    countBadConnection = 0;
+    countBadTimeout    = 0;
+    countBadCRC        = 0;
+}
+
 mbClientDevice::mbClientDevice(QObject *parent) :
     mbCoreDevice(parent)
 {
     Defaults d = Defaults();
 
     m_port = nullptr;
+
+    m_stat = new Statistics;
 
     m_settings.unit = d.unit;
 }
@@ -127,4 +138,51 @@ bool mbClientDevice::setSettings(const MBSETTINGS &settings)
 
     mbCoreDevice::setSettings(settings); // Q_EMIT changed() within
     return true;
+}
+#include <QDebug>
+void mbClientDevice::incStatCountTx()
+{
+    m_statLock.lockForWrite();
+    auto v = ++static_cast<Statistics*>(m_stat)->countTx;
+    m_statLock.unlock();
+    Q_EMIT statCountTxChanged(v);
+    qDebug() << "mbClientDevice::Tx:" << v;
+}
+
+void mbClientDevice::incStatCountRx()
+{
+    m_statLock.lockForWrite();
+    auto v = ++static_cast<Statistics*>(m_stat)->countRx;
+    m_statLock.unlock();
+    Q_EMIT statCountRxChanged(v);
+}
+
+void mbClientDevice::resetStatisticsInner()
+{
+    *static_cast<Statistics*>(m_stat) = Statistics();
+}
+
+void mbClientDevice::setStatStatusInner(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString &err)
+{
+    qDebug() << "mbClientDevice::Bad:" << m_stat->countBad;
+    switch (status)
+    {
+    case Modbus::Status_BadTcpCreate:
+    case Modbus::Status_BadTcpConnect:
+    case Modbus::Status_BadUdpCreate:
+    case Modbus::Status_BadSerialOpen:
+        static_cast<Statistics*>(m_stat)->countBadConnection++;
+        break;
+    case Modbus::Status_BadSerialReadTimeout:
+    case Modbus::Status_BadTcpReadTimeout:
+    case Modbus::Status_BadUdpReadTimeout:
+        static_cast<Statistics*>(m_stat)->countBadTimeout++;
+        break;
+    case Modbus::Status_BadCrc:
+    case Modbus::Status_BadLrc:
+        static_cast<Statistics*>(m_stat)->countBadCRC++;
+        break;
+    default:
+        break;
+    }
 }

@@ -203,7 +203,7 @@ mbClientRunPort *mbClientRuntime::createRunPort(mbClientPort *port)
 
 mbClientRunDevice *mbClientRuntime::createRunDevice(mbClientDevice *device)
 {
-    mbClientRunDevice *t = new mbClientRunDevice(device->settings());
+    mbClientRunDevice *t = new mbClientRunDevice(device);
     m_devices.insert(device, t);
     return t;
 }

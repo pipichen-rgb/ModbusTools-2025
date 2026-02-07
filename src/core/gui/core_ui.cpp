@@ -197,11 +197,12 @@ void mbCoreUi::initialize()
     // Menu Device
     m_ui.actionDeviceNew->setShortcut(QKeySequence(Qt::SHIFT | Qt::Key_N));
 
-    connect(m_ui.actionDeviceNew   , &QAction::triggered, this, &mbCoreUi::menuSlotDeviceNew   );
-    connect(m_ui.actionDeviceEdit  , &QAction::triggered, this, &mbCoreUi::menuSlotDeviceEdit  );
-    connect(m_ui.actionDeviceDelete, &QAction::triggered, this, &mbCoreUi::menuSlotDeviceDelete);
-    connect(m_ui.actionDeviceImport, &QAction::triggered, this, &mbCoreUi::menuSlotDeviceImport);
-    connect(m_ui.actionDeviceExport, &QAction::triggered, this, &mbCoreUi::menuSlotDeviceExport);
+    connect(m_ui.actionDeviceNew       , &QAction::triggered, this, &mbCoreUi::menuSlotDeviceNew       );
+    connect(m_ui.actionDeviceEdit      , &QAction::triggered, this, &mbCoreUi::menuSlotDeviceEdit      );
+    connect(m_ui.actionDeviceDelete    , &QAction::triggered, this, &mbCoreUi::menuSlotDeviceDelete    );
+    connect(m_ui.actionDeviceImport    , &QAction::triggered, this, &mbCoreUi::menuSlotDeviceImport    );
+    connect(m_ui.actionDeviceExport    , &QAction::triggered, this, &mbCoreUi::menuSlotDeviceExport    );
+    connect(m_ui.actionDeviceStatistics, &QAction::triggered, this, &mbCoreUi::menuSlotDeviceStatistics);
 
     // Menu DataView
     connect(m_ui.actionDataViewItemNew    , &QAction::triggered, this, &mbCoreUi::menuSlotDataViewItemNew    );
@@ -771,6 +772,14 @@ void mbCoreUi::menuSlotDeviceImport()
 
 void mbCoreUi::menuSlotDeviceExport()
 {
+}
+
+void mbCoreUi::menuSlotDeviceStatistics()
+{
+    if (mbCoreDevice *device = m_projectUi->currentDeviceCore())
+    {
+        m_windowManager->showDeviceStatistics(device);
+    }
 }
 
 void mbCoreUi::menuSlotDataViewItemNew()

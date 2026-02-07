@@ -85,6 +85,8 @@
     <addaction name="separator"/>
     <addaction name="actionDeviceImport"/>
     <addaction name="actionDeviceExport"/>
+    <addaction name="separator"/>
+    <addaction name="actionDeviceStatistics"/>
    </widget>
    <widget class="QMenu" name="menuDataView">
     <property name="title">
@@ -629,6 +631,11 @@
    </property>
   </action>
   <action name="actionPortStatistics">
+   <property name="text">
+    <string>Statistics...</string>
+   </property>
+  </action>
+  <action name="actionDeviceStatistics">
    <property name="text">
     <string>Statistics...</string>
    </property>

@@ -28,23 +28,27 @@
 
 #include <client_global.h>
 
+class mbClientDevice;
 class mbClientRunItem;
 
 class mbClientRunDevice
 {
 public:
-    mbClientRunDevice(const Modbus::Settings &settings);
+    mbClientRunDevice(mbClientDevice* device);
     virtual ~mbClientRunDevice();
 
+public:
+    mbClientDevice* device() const { return m_device; }
+
 public: // settings
-    inline QString  name                       () const { QReadLocker _(&m_lock); return m_settings.name                     ; }
-    inline uint8_t  unit                       () const { QReadLocker _(&m_lock); return m_settings.unit                     ; }
-    inline uint16_t maxReadCoils               () const { QReadLocker _(&m_lock); return m_settings.maxReadCoils             ; }
-    inline uint16_t maxReadDiscreteInputs      () const { QReadLocker _(&m_lock); return m_settings.maxReadDiscreteInputs    ; }
-    inline uint16_t maxReadInputRegisters      () const { QReadLocker _(&m_lock); return m_settings.maxReadInputRegisters    ; }
-    inline uint16_t maxReadHoldingRegisters    () const { QReadLocker _(&m_lock); return m_settings.maxReadHoldingRegisters  ; }
-    inline uint16_t maxWriteMultipleCoils      () const { QReadLocker _(&m_lock); return m_settings.maxWriteMultipleCoils    ; }
-    inline uint16_t maxWriteMultipleRegisters  () const { QReadLocker _(&m_lock); return m_settings.maxWriteMultipleRegisters; }
+    inline QString  name                       () const { return m_settings.name                     ; }
+    inline uint8_t  unit                       () const { return m_settings.unit                     ; }
+    inline uint16_t maxReadCoils               () const { return m_settings.maxReadCoils             ; }
+    inline uint16_t maxReadDiscreteInputs      () const { return m_settings.maxReadDiscreteInputs    ; }
+    inline uint16_t maxReadInputRegisters      () const { return m_settings.maxReadInputRegisters    ; }
+    inline uint16_t maxReadHoldingRegisters    () const { return m_settings.maxReadHoldingRegisters  ; }
+    inline uint16_t maxWriteMultipleCoils      () const { return m_settings.maxWriteMultipleCoils    ; }
+    inline uint16_t maxWriteMultipleRegisters  () const { return m_settings.maxWriteMultipleRegisters; }
 
 public:
     void pushItemsToRead(const QList<mbClientRunItem*> &itemsToRead);
@@ -61,10 +65,8 @@ public:
     bool popExternalMessage(mbClientRunMessagePtr *message);
 
 private:
-    void setSettings(const Modbus::Settings &settings);
-
-private:
     mutable QReadWriteLock m_lock;
+    mbClientDevice* m_device;
 
 private:
     struct

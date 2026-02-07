@@ -65,6 +65,7 @@ set(HEADERS
     gui/dataview/core_dataviewui.h
     gui/statistics/core_statisticsui.h
     gui/statistics/core_portstatisticsui.h
+    gui/statistics/core_devicestatisticsui.h
     gui/statistics/core_statisticsmanager.h
     gui/help/core_helpbrowser.h
     gui/help/core_helpui.h
@@ -117,6 +118,7 @@ set(SOURCES
     gui/dataview/core_dataviewui.cpp
     gui/statistics/core_statisticsui.cpp
     gui/statistics/core_portstatisticsui.cpp
+    gui/statistics/core_devicestatisticsui.cpp
     gui/statistics/core_statisticsmanager.cpp
     gui/help/core_helpbrowser.cpp
     gui/help/core_helpui.cpp

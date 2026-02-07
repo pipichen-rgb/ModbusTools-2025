@@ -100,6 +100,7 @@ mbClientUi::mbClientUi(mbClient *core, QWidget *parent) :
     m_ui.actionDeviceDelete              = ui->actionDeviceDelete             ;
     m_ui.actionDeviceImport              = ui->actionDeviceImport             ;
     m_ui.actionDeviceExport              = ui->actionDeviceExport             ;
+    m_ui.actionDeviceStatistics          = ui->actionDeviceStatistics         ;
     m_ui.actionDataViewItemNew           = ui->actionDataViewItemNew          ;
     m_ui.actionDataViewItemEdit          = ui->actionDataViewItemEdit         ;
     m_ui.actionDataViewItemInsert        = ui->actionDataViewItemInsert       ;

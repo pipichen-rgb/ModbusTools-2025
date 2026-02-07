@@ -70,6 +70,12 @@ const mbCoreDevice::Defaults &mbCoreDevice::Defaults::instance()
     return d;
 }
 
+mbCoreDevice::CoreStatistics::CoreStatistics() :
+    mb::BaseStatistics()
+{
+
+}
+
 mbCoreDevice::mbCoreDevice(QObject *parent)
     : QObject{parent}
 {
@@ -89,6 +95,11 @@ mbCoreDevice::mbCoreDevice(QObject *parent)
     m_settingsCore.byteArraySeparator           = d.byteArraySeparator       ;
     m_settingsCore.stringLengthType             = d.stringLengthType         ;
     m_settingsCore.stringEncoding               = d.stringEncoding           ;
+}
+
+mbCoreDevice::~mbCoreDevice()
+{
+    delete m_stat;
 }
 
 void mbCoreDevice::setProjectCore(mbCoreProject *project)
@@ -276,4 +287,41 @@ bool mbCoreDevice::setSettings(const MBSETTINGS &settings)
 
     Q_EMIT changed();
     return true;
+}
+
+void mbCoreDevice::resetStatistics()
+{
+    m_statLock.lockForWrite();
+    resetStatisticsInner();
+    m_statLock.unlock();
+}
+
+void mbCoreDevice::setStatStatus(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString &err)
+{
+    QWriteLocker locker(&m_statLock);
+    m_stat->lastStatus = status;
+    m_stat->lastTimestamp = timestamp;
+    if (Modbus::StatusIsGood(status))
+    {
+        m_stat->countGood++;
+        m_stat->lastSuccessTimestamp = timestamp;
+    }
+    else
+    {
+        m_stat->countBad++;
+        m_stat->lastErrorStatus = status;
+        m_stat->lastErrorTimestamp = timestamp;
+        m_stat->lastErrorText = err;
+    }
+    setStatStatusInner(status, timestamp, err);
+}
+
+void mbCoreDevice::resetStatisticsInner()
+{
+    *m_stat = CoreStatistics();
+}
+
+void mbCoreDevice::setStatStatusInner(Modbus::StatusCode /*status*/, mb::Timestamp_t /*timestamp*/, const QString &/*err*/)
+{
+    // Note: Base implementation does nothing
 }

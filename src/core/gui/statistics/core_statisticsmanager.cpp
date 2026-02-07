@@ -27,10 +27,12 @@
 
 #include <core.h>
 
-#include "core_portstatisticsui.h"
 #include <project/core_project.h>
 #include <project/core_port.h>
 #include <project/core_dataview.h>
+
+#include "core_portstatisticsui.h"
+#include "core_devicestatisticsui.h"
 
 mbCoreStatisticsManager::mbCoreStatisticsManager(QObject *parent) : QObject(parent)
 {
@@ -54,6 +56,11 @@ void mbCoreStatisticsManager::addPortStatisticsUi(mbCorePort *port)
     portStatisticsAdd(port);
 }
 
+void mbCoreStatisticsManager::addDeviceStatisticsUi(mbCoreDevice *device)
+{
+    deviceStatisticsAdd(device);
+}
+
 void mbCoreStatisticsManager::setActiveStatisticsUi(mbCoreStatisticsUi *ui)
 {
     // TODO: ASSERT m_hashStatisticsUis.contains(ui->statistics())
@@ -73,6 +80,8 @@ void mbCoreStatisticsManager::setProject(mbCoreProject *p)
         {
             Q_FOREACH (mbCorePort* p, m_project->portsCore())
                 portStatisticsRemove(p);
+            Q_FOREACH (mbCoreDevice* d, m_project->devicesCore())
+                deviceStatisticsRemove(d);
             m_project->disconnect(this);
             m_activeStatisticsUi = nullptr;
         }
@@ -86,7 +95,6 @@ void mbCoreStatisticsManager::setProject(mbCoreProject *p)
 
 void mbCoreStatisticsManager::portStatisticsAdd(mbCorePort *port)
 {
-    // TODO: ASSERT !m_hashPortStatisticsUis.contains(port)
     mbCorePortStatisticsUi *ui = createPortStatisticsUi(port);
     m_portStatisticsUis.append(ui);
     m_hashPortStatisticsUis.insert(port, ui);
@@ -95,7 +103,6 @@ void mbCoreStatisticsManager::portStatisticsAdd(mbCorePort *port)
 
 void mbCoreStatisticsManager::portStatisticsRemove(mbCorePort *port)
 {
-    // TODO: ASSERT ui != nullptr && m_hashPortStatisticsUis.contains(ui->portStatistics())
     mbCorePortStatisticsUi *ui = portStatisticsUiCore(port);
     if (!ui)
         return;
@@ -105,5 +112,27 @@ void mbCoreStatisticsManager::portStatisticsRemove(mbCorePort *port)
     Q_EMIT statisticsUiRemove(ui);
     m_portStatisticsUis.removeOne(ui);
     m_hashPortStatisticsUis.remove(port);
+    ui->deleteLater(); // Note: need because 'ui' can have 'QMenu'-children located in stack which is trying to delete
+}
+
+void mbCoreStatisticsManager::deviceStatisticsAdd(mbCoreDevice *device)
+{
+    mbCoreDeviceStatisticsUi *ui = createDeviceStatisticsUi(device);
+    m_deviceStatisticsUis.append(ui);
+    m_hashDeviceStatisticsUis.insert(device, ui);
+    Q_EMIT statisticsUiAdd(ui);
+}
+
+void mbCoreStatisticsManager::deviceStatisticsRemove(mbCoreDevice *device)
+{
+    mbCoreDeviceStatisticsUi *ui = deviceStatisticsUiCore(device);
+    if (!ui)
+        return;
+    if (m_activeStatisticsUi == ui)
+        m_activeStatisticsUi = nullptr;
+    ui->disconnect(this);
+    Q_EMIT statisticsUiRemove(ui);
+    m_deviceStatisticsUis.removeOne(ui);
+    m_hashDeviceStatisticsUis.remove(device);
     ui->deleteLater(); // Note: need because 'ui' can have 'QMenu'-children located in stack which is trying to delete
 }

@@ -38,6 +38,7 @@
 
 #include "statistics/core_statisticsmanager.h"
 #include "statistics/core_portstatisticsui.h"
+#include "statistics/core_devicestatisticsui.h"
 
 mbCoreWindowManager::Strings::Strings() :
     prefixDataView(QStringLiteral("dat:"))
@@ -141,6 +142,15 @@ void mbCoreWindowManager::showPortStatistics(mbCorePort *port)
         setActiveStatisticsUi(ui);
     else
         m_statisticsManager->addPortStatisticsUi(port);
+}
+
+void mbCoreWindowManager::showDeviceStatistics(mbCoreDevice *device)
+{
+    mbCoreStatisticsUi *ui = m_statisticsManager->deviceStatisticsUiCore(device);
+    if (ui)
+        setActiveStatisticsUi(ui);
+    else
+        m_statisticsManager->addDeviceStatisticsUi(device);
 }
 
 void mbCoreWindowManager::actionWindowViewSubWindow()

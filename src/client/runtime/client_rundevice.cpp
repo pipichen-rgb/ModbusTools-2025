@@ -26,10 +26,17 @@
 #include "client_runitem.h"
 #include "client_runmessage.h"
 
-mbClientRunDevice::mbClientRunDevice(const Modbus::Settings &settings)
+mbClientRunDevice::mbClientRunDevice(mbClientDevice *device)
 {
-    // TODO: make default settings values
-    setSettings(settings);
+    m_device = device;
+    m_settings.name                      = m_device->name                     ();
+    m_settings.unit                      = m_device->unit                     ();
+    m_settings.maxReadCoils              = m_device->maxReadCoils             ();
+    m_settings.maxReadDiscreteInputs     = m_device->maxReadDiscreteInputs    ();
+    m_settings.maxReadInputRegisters     = m_device->maxReadInputRegisters    ();
+    m_settings.maxReadHoldingRegisters   = m_device->maxReadHoldingRegisters  ();
+    m_settings.maxWriteMultipleCoils     = m_device->maxWriteMultipleCoils    ();
+    m_settings.maxWriteMultipleRegisters = m_device->maxWriteMultipleRegisters();
 }
 
 mbClientRunDevice::~mbClientRunDevice()
@@ -100,69 +107,4 @@ bool mbClientRunDevice::popExternalMessage(mbClientRunMessagePtr *message)
         return true;
     }
     return false;
-}
-
-void mbClientRunDevice::setSettings(const Modbus::Settings &settings)
-{
-    QWriteLocker _(&m_lock);
-    const mbClientDevice::Strings &s = mbClientDevice::Strings::instance();
-
-    Modbus::Settings::const_iterator it;
-    Modbus::Settings::const_iterator end = settings.end();
-
-    it = settings.find(s.name);
-    if (it != end)
-    {
-        QVariant var = it.value();
-        m_settings.name = var.toString();
-    }
-
-    it = settings.find(s.unit);
-    if (it != end)
-    {
-        QVariant var = it.value();
-        m_settings.unit = static_cast<uint8_t>(var.toUInt());
-    }
-
-    it = settings.find(s.maxReadCoils);
-    if (it != end)
-    {
-        QVariant var = it.value();
-        m_settings.maxReadCoils = static_cast<uint16_t>(var.toUInt());
-    }
-
-    it = settings.find(s.maxReadDiscreteInputs);
-    if (it != end)
-    {
-        QVariant var = it.value();
-        m_settings.maxReadDiscreteInputs = static_cast<uint16_t>(var.toUInt());
-    }
-
-    it = settings.find(s.maxReadHoldingRegisters);
-    if (it != end)
-    {
-        QVariant var = it.value();
-        m_settings.maxReadHoldingRegisters = static_cast<uint16_t>(var.toUInt());
-    }
-
-    it = settings.find(s.maxReadInputRegisters);
-    if (it != end)
-    {
-        QVariant var = it.value();
-        m_settings.maxReadInputRegisters = static_cast<uint16_t>(var.toUInt());
-    }
-
-    it = settings.find(s.maxWriteMultipleCoils);
-    if (it != end)
-    {
-        QVariant var = it.value();
-        m_settings.maxWriteMultipleCoils = static_cast<uint16_t>(var.toUInt());
-    }
-
-    it = settings.find(s.maxWriteMultipleRegisters);
-    if (it != end)
-    {
-        QVariant var = it.value();
-        m_settings.maxWriteMultipleRegisters = static_cast<uint16_t>(var.toUInt());
-    }
 }

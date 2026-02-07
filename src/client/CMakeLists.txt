@@ -41,6 +41,7 @@ set(MBTOOLS_HEADERS
     gui/dataview/client_dataviewmodel.h
     gui/dataview/client_dataviewui.h
     gui/statistics/client_portstatisticsui.h
+    gui/statistics/client_devicestatisticsui.h
     gui/statistics/client_statisticsmanager.h
     gui/sendmessage/client_sendmessagelistmodel.h
     gui/sendmessage/client_sendmessageui.h
@@ -87,6 +88,7 @@ set(MBTOOLS_SOURCES
     gui/dataview/client_dataviewmodel.cpp
     gui/dataview/client_dataviewui.cpp
     gui/statistics/client_portstatisticsui.cpp
+    gui/statistics/client_devicestatisticsui.cpp
     gui/statistics/client_statisticsmanager.cpp
     gui/sendmessage/client_sendmessagelistmodel.cpp
     gui/sendmessage/client_sendmessageui.cpp

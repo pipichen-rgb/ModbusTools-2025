@@ -1,0 +1,40 @@
+#include "client_devicestatisticsui.h"
+#include "ui_client_devicestatisticsui.h"
+
+#include <project/client_device.h>
+
+mbClientDeviceStatisticsUi::mbClientDeviceStatisticsUi(mbClientDevice *device, QWidget *parent) :
+    mbCoreDeviceStatisticsUi(device, parent),
+    ui(new Ui::mbClientDeviceStatisticsUi)
+{
+    ui->setupUi(this);
+
+    m_ui.lnSinceTimestamp       = ui->lnSinceTimestamp      ;
+    m_ui.lnLastStatus           = ui->lnLastStatus          ;
+    m_ui.lnLastTimestamp        = ui->lnLastTimestamp       ;
+    m_ui.lnLastSuccessTimestamp = ui->lnLastSuccessTimestamp;
+    m_ui.lnLastErrorStatus      = ui->lnLastErrorStatus     ;
+    m_ui.lnLastErrorTimestamp   = ui->lnLastErrorTimestamp  ;
+    m_ui.txtLastErrorText       = ui->txtLastErrorText      ;
+    m_ui.lnCountGood            = ui->lnCountGood           ;
+    m_ui.lnCountBad             = ui->lnCountBad            ;
+
+    connect(ui->btnReset, &QPushButton::clicked, this, &mbClientDeviceStatisticsUi::resetStatistics);
+}
+
+mbClientDeviceStatisticsUi::~mbClientDeviceStatisticsUi()
+{
+    delete ui;
+}
+
+void mbClientDeviceStatisticsUi::syncStatistics()
+{
+    mbCoreDeviceStatisticsUi::syncStatistics();
+    auto s = device()->statistics();
+
+    ui->lnCountTx           ->setText(QString::number(s.countTx           ));
+    ui->lnCountRx           ->setText(QString::number(s.countRx           ));
+    ui->lnCountBadConnection->setText(QString::number(s.countBadConnection));
+    ui->lnCountBadTimeout   ->setText(QString::number(s.countBadTimeout   ));
+    ui->lnCountBadCRC       ->setText(QString::number(s.countBadCRC       ));
+}

@@ -27,7 +27,9 @@
 
 class mbClientProject;
 class mbClientPort;
+class mbClientDevice;
 class mbClientPortStatisticsUi;
+class mbClientDeviceStatisticsUi;
 
 class mbClientStatisticsManager : public mbCoreStatisticsManager
 {
@@ -41,10 +43,12 @@ public: // project
 
 public: // statistics ui
     inline mbClientPortStatisticsUi *portStatisticsUi(mbClientPort *port) const { return reinterpret_cast<mbClientPortStatisticsUi*>(portStatisticsUiCore(reinterpret_cast<mbCorePort*>(port))); }
+    inline mbClientDeviceStatisticsUi *deviceStatisticsUi(mbClientDevice *device) const { return reinterpret_cast<mbClientDeviceStatisticsUi*>(deviceStatisticsUiCore(reinterpret_cast<mbCoreDevice*>(device))); }
 
 protected:
     void setProject(mbCoreProject *project) override;
     mbCorePortStatisticsUi *createPortStatisticsUi(mbCorePort *port) override;
+    mbCoreDeviceStatisticsUi *createDeviceStatisticsUi(mbCoreDevice *device) override;
 
 //Q_SIGNALS:
 //    void maximizeDataViewUi();
