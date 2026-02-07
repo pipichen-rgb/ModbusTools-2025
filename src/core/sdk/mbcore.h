@@ -487,6 +487,22 @@ struct MB_EXPORT Strings
     static const Strings &instance();
 };
 
+struct MB_EXPORT BaseStatistics
+{
+    mb::Timestamp_t     sinceTimestamp      ;
+    Modbus::StatusCode  lastStatus          ;
+    mb::Timestamp_t     lastTimestamp       ;
+    mb::Timestamp_t     lastSuccessTimestamp;
+    Modbus::StatusCode  lastErrorStatus     ;
+    mb::Timestamp_t     lastErrorTimestamp  ;
+    QString             lastErrorText       ;
+    quint32             countGood           ;
+    quint32             countBad            ;
+
+    BaseStatistics();
+    virtual ~BaseStatistics() = default;
+};
+
 MB_EXPORT StringEncoding toStringEncoding(const QString &s);
 inline StringEncoding toStringEncoding(const QString &s, bool *ok) { *ok = true; return toStringEncoding(s); }
 inline StringEncoding toStringEncoding(const QVariant &v, bool *ok) { return toStringEncoding(v.toString(), ok); }

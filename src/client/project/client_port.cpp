@@ -117,5 +117,7 @@ void mbClientPort::setStatStatusInner(Modbus::StatusCode status, mb::Timestamp_t
     case Modbus::Status_BadSerialOpen:
         static_cast<Statistics*>(m_stat)->countBadConnection++;
         break;
+    default:
+        break;
     }
 }

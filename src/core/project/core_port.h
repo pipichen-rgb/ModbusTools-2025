@@ -54,30 +54,20 @@ public:
     };
 
 public: // statistics
-    struct MB_EXPORT CoreStatistics
+    struct MB_EXPORT CoreStatistics : public mb::BaseStatistics
     {
-        mb::Timestamp_t     sinceTimestamp      ;
-        Modbus::StatusCode  lastStatus          ;
-        mb::Timestamp_t     lastTimestamp       ;
-        mb::Timestamp_t     lastSuccessTimestamp;
-        Modbus::StatusCode  lastErrorStatus     ;
-        mb::Timestamp_t     lastErrorTimestamp  ;
-        QString             lastErrorText       ;
-        quint32             countTx             ;
-        quint32             countRx             ;
-        quint32             countGood           ;
-        quint32             countBad            ;
-        quint32             countBadTimeout     ;
-        quint32             countBadCRC         ;
-        quint32             cycleCount          ;
-        quint64             cycleSumDuration    ;
-        quint32             cycleLastDuration   ;
-        quint32             cycleMinDuration    ;
-        quint32             cycleMaxDuration    ;
-        quint32             cycleAvgDuration    ;
+        quint32 countTx          ;
+        quint32 countRx          ;
+        quint32 countBadTimeout  ;
+        quint32 countBadCRC      ;
+        quint32 cycleCount       ;
+        quint64 cycleSumDuration ;
+        quint32 cycleLastDuration;
+        quint32 cycleMinDuration ;
+        quint32 cycleMaxDuration ;
+        quint32 cycleAvgDuration ;
 
         CoreStatistics();
-        virtual ~CoreStatistics() = default;
     };
 
 public:
@@ -156,7 +146,7 @@ Q_SIGNALS:
     void nameChanged(const QString& newName);
     void changed();
     void statCountTxChanged(quint32 count);
-    void statCountRxChanged (quint32 count);
+    void statCountRxChanged(quint32 count);
 
 protected:
     mbCoreProject* m_project;
@@ -181,7 +171,7 @@ protected:
         bool                        isBroadcastEnabled;
     } m_settings;
 
-protected:
+protected: // statistics
     mutable QReadWriteLock m_statLock;
     CoreStatistics *m_stat;
 };

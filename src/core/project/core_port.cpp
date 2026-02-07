@@ -49,19 +49,11 @@ const mbCorePort::Defaults &mbCorePort::Defaults::instance()
     return d;
 }
 
-mbCorePort::CoreStatistics::CoreStatistics()
+mbCorePort::CoreStatistics::CoreStatistics() :
+    mb::BaseStatistics()
 {
-    sinceTimestamp      = mb::currentTimestamp();
-    lastStatus          = Modbus::Status_Uncertain;
-    lastTimestamp       = 0;
-    lastSuccessTimestamp= 0;
-    lastErrorStatus     = Modbus::Status_Uncertain;
-    lastErrorTimestamp  = 0;
-  //lastErrorText       = QString();
     countTx             = 0;
     countRx             = 0;
-    countGood           = 0;
-    countBad            = 0;
     countBadTimeout     = 0;
     countBadCRC         = 0;
     cycleCount          = 0;
@@ -298,30 +290,34 @@ bool mbCorePort::setSettings(const MBSETTINGS &settings)
 void mbCorePort::resetStatistics()
 {
     m_statLock.lockForWrite();
-    const auto countTx = m_stat->countTx;
-    const auto countRx = m_stat->countRx;
+    const auto countTxOld = m_stat->countTx;
+    const auto countRxOld = m_stat->countRx;
     resetStatisticsInner();
+    const auto countTxNew = m_stat->countTx;
+    const auto countRxNew = m_stat->countRx;
     m_statLock.unlock();
 
-    if (countTx != m_stat->countTx)
-        Q_EMIT statCountTxChanged(m_stat->countTx);
-    if (countRx != m_stat->countRx)
-        Q_EMIT statCountRxChanged(m_stat->countRx);
+    if (countTxOld != countTxNew)
+        Q_EMIT statCountTxChanged(countTxNew);
+    if (countRxOld != countRxNew)
+        Q_EMIT statCountRxChanged(countRxNew);
 
 }
 
 void mbCorePort::incStatCountTx()
 {
-    QWriteLocker locker(&m_statLock);
-    ++m_stat->countTx;
-    Q_EMIT statCountTxChanged(m_stat->countTx);
+    m_statLock.lockForWrite();
+    auto v = ++m_stat->countTx;
+    m_statLock.unlock();
+    Q_EMIT statCountTxChanged(v);
 }
 
 void mbCorePort::incStatCountRx()
 {
-    QWriteLocker locker(&m_statLock);
-    ++m_stat->countRx;
-    Q_EMIT statCountRxChanged(m_stat->countRx);
+    m_statLock.lockForWrite();
+    auto v = ++m_stat->countRx;
+    m_statLock.unlock();
+    Q_EMIT statCountRxChanged(v);
 }
 
 void mbCorePort::setStatCycleTime(quint64 time)
@@ -363,6 +359,8 @@ void mbCorePort::setStatStatus(Modbus::StatusCode status, mb::Timestamp_t timest
         case Modbus::Status_BadLrc:
             m_stat->countBadCRC++;
             break;
+        default:
+            break;
         }
         m_stat->lastErrorStatus = status;
         m_stat->lastErrorTimestamp = timestamp;
@@ -376,12 +374,12 @@ void mbCorePort::resetStatisticsInner()
     *m_stat = CoreStatistics();
 }
 
-void mbCorePort::setStatCycleTimeInner(quint64 time)
+void mbCorePort::setStatCycleTimeInner(quint64 /*time*/)
 {
     // Note: Base implementation does nothing
 }
 
-void mbCorePort::setStatStatusInner(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString &err)
+void mbCorePort::setStatStatusInner(Modbus::StatusCode /*status*/, mb::Timestamp_t /*timestamp*/, const QString &/*err*/)
 {
     // Note: Base implementation does nothing
 }

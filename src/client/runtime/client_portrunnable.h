@@ -70,6 +70,8 @@ private Q_SLOTS:
     void slotBytesRx(const Modbus::Char *source, const uint8_t* buff, uint16_t size);
     void slotAsciiTx(const Modbus::Char *source, const uint8_t* buff, uint16_t size);
     void slotAsciiRx(const Modbus::Char *source, const uint8_t* buff, uint16_t size);
+    void slotError(const Modbus::Char *source, Modbus::StatusCode status, const Modbus::Char *text);
+    void slotCompleted(const Modbus::Char *source, Modbus::StatusCode status);
 
 private:
     State m_state;
@@ -81,7 +83,6 @@ private:
     uint8_t m_byteCount;
     QList<mbClientRunDevice*> m_devices;
     mbClientRunMessagePtr m_currentMessage;
-    Modbus::Timestamp m_tmLastRequest;
 
 private:
     typedef QList<mbClientDeviceRunnable*> Runnables_t;
