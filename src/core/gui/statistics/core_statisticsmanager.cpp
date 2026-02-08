@@ -51,14 +51,78 @@ void mbCoreStatisticsManager::removeStatisticsUi(mbCoreStatisticsUi *ui)
     }
 }
 
+mbCorePortStatisticsUi *mbCoreStatisticsManager::portStatisticsUiCore(const QString &name) const
+{
+    if (m_project)
+    {
+        mbCorePort *p = m_project->portCore(name);
+        return m_hashPortStatisticsUis.value(p, nullptr);
+    }
+    return nullptr;
+}
+
 void mbCoreStatisticsManager::addPortStatisticsUi(mbCorePort *port)
 {
     portStatisticsAdd(port);
 }
 
+mbCorePortStatisticsUi *mbCoreStatisticsManager::getOrCreatePortStatisticsUiCore(mbCorePort *port)
+{
+    mbCorePortStatisticsUi* ui = portStatisticsUiCore(port);
+    if (!ui)
+    {
+        portStatisticsAdd(port);
+        ui = portStatisticsUiCore(port);
+    }
+    return ui;
+}
+    
+mbCorePortStatisticsUi *mbCoreStatisticsManager::getOrCreatePortStatisticsUiCore(const QString &name)
+{
+    if (m_project)
+    {
+        mbCorePort *p = m_project->portCore(name);
+        if (p)
+            return getOrCreatePortStatisticsUiCore(p);
+    }
+    return nullptr;
+}
+
 void mbCoreStatisticsManager::addDeviceStatisticsUi(mbCoreDevice *device)
 {
     deviceStatisticsAdd(device);
+}
+
+mbCoreDeviceStatisticsUi *mbCoreStatisticsManager::getOrCreateDeviceStatisticsUiCore(mbCoreDevice *device)
+{
+    mbCoreDeviceStatisticsUi* ui = deviceStatisticsUiCore(device);
+    if (!ui)
+    {
+        deviceStatisticsAdd(device);
+        ui = deviceStatisticsUiCore(device);
+    }
+    return ui;
+}
+    
+mbCoreDeviceStatisticsUi *mbCoreStatisticsManager::getOrCreateDeviceStatisticsUiCore(const QString &name)
+{
+    if (m_project)
+    {
+        mbCoreDevice *d = m_project->deviceCore(name);
+        if (d)
+            return getOrCreateDeviceStatisticsUiCore(d);
+    }
+    return nullptr;
+}
+
+mbCoreDeviceStatisticsUi *mbCoreStatisticsManager::deviceStatisticsUiCore(const QString &name) const
+{
+    if (m_project)
+    {
+        mbCoreDevice *d = m_project->deviceCore(name);
+        return m_hashDeviceStatisticsUis.value(d, nullptr);
+    }
+    return nullptr;
 }
 
 void mbCoreStatisticsManager::setActiveStatisticsUi(mbCoreStatisticsUi *ui)

@@ -53,13 +53,19 @@ public: // port statistics
     inline bool hasPortStatisticsUi(const mbCorePort *port) const { return m_hashPortStatisticsUis.contains(port); }
     inline int portStatisticsCount() const { return m_hashPortStatisticsUis.count(); }
     inline mbCorePortStatisticsUi *portStatisticsUiCore(mbCorePort *port) const { return m_hashPortStatisticsUis.value(port, nullptr); }
+    mbCorePortStatisticsUi *portStatisticsUiCore(const QString &name) const;
     void addPortStatisticsUi(mbCorePort *port);
+    mbCorePortStatisticsUi *getOrCreatePortStatisticsUiCore(mbCorePort *port);
+    mbCorePortStatisticsUi *getOrCreatePortStatisticsUiCore(const QString &name);
 
 public: // device statistics
     inline bool hasDeviceStatisticsUi(const mbCoreDevice *device) const { return m_hashDeviceStatisticsUis.contains(device); }
     inline int deviceStatisticsCount() const { return m_hashDeviceStatisticsUis.count(); }
     inline mbCoreDeviceStatisticsUi *deviceStatisticsUiCore(mbCoreDevice *device) const { return m_hashDeviceStatisticsUis.value(device, nullptr); }
+    mbCoreDeviceStatisticsUi *deviceStatisticsUiCore(const QString &name) const;
     void addDeviceStatisticsUi(mbCoreDevice *device);
+    mbCoreDeviceStatisticsUi *getOrCreateDeviceStatisticsUiCore(mbCoreDevice *device);
+    mbCoreDeviceStatisticsUi *getOrCreateDeviceStatisticsUiCore(const QString &name);
 
 Q_SIGNALS:
     void statisticsUiAdd(mbCoreStatisticsUi *ui);

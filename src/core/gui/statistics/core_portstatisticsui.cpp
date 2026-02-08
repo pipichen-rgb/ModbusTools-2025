@@ -18,6 +18,11 @@ mbCorePortStatisticsUi::~mbCorePortStatisticsUi()
 {
 }
 
+QString mbCorePortStatisticsUi::name() const
+{
+    return m_port ? m_port->name() : QString();
+}
+
 void mbCorePortStatisticsUi::syncStatistics()
 {
     syncStatisticsCoreInner();

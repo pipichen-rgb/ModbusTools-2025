@@ -38,6 +38,7 @@ public:
 
 public:
     inline mbCorePort *portCore() const { return m_port; }
+    QString name() const;
 
 public:
     virtual void syncStatistics();

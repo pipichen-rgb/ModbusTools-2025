@@ -18,6 +18,11 @@ mbCoreDeviceStatisticsUi::~mbCoreDeviceStatisticsUi()
 {
 }
 
+QString mbCoreDeviceStatisticsUi::name() const
+{
+    return m_device ? m_device->name() : QString();
+}
+
 void mbCoreDeviceStatisticsUi::syncStatistics()
 {
     syncStatisticsCoreInner();

@@ -53,6 +53,8 @@ public:
     struct MB_EXPORT Strings
     {
         const QString prefixDataView;
+        const QString prefixPortStatistics;
+        const QString prefixDeviceStatistics;
 
         Strings();
         static const Strings &instance();

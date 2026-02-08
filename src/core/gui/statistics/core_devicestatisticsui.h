@@ -38,6 +38,7 @@ public:
 
 public:
     inline mbCoreDevice *deviceCore() const { return m_device; }
+    QString name() const;
 
 public:
     virtual void syncStatistics();

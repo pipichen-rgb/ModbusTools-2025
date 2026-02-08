@@ -41,7 +41,9 @@
 #include "statistics/core_devicestatisticsui.h"
 
 mbCoreWindowManager::Strings::Strings() :
-    prefixDataView(QStringLiteral("dat:"))
+    prefixDataView(QStringLiteral("dat:")),
+    prefixPortStatistics(QStringLiteral("pstat:")),
+    prefixDeviceStatistics(QStringLiteral("dstat:"))
 {
 }
 
@@ -113,6 +115,16 @@ QMdiSubWindow *mbCoreWindowManager::getMdiSubWindowForNameWithPrefix(const QStri
         mbCoreDataViewUi *ui = m_dataViewManager->dataViewUiCore(nameWithPrefix.mid(s.prefixDataView.size()));
         return m_hashWindows.value(ui);
     }
+    else if (nameWithPrefix.startsWith(Strings::instance().prefixPortStatistics))
+    {
+        mbCorePortStatisticsUi *ui = m_statisticsManager->getOrCreatePortStatisticsUiCore(nameWithPrefix.mid(s.prefixPortStatistics.size()));
+        return m_hashWindows.value(ui);
+    }
+    else if (nameWithPrefix.startsWith(Strings::instance().prefixDeviceStatistics))
+    {
+        mbCoreDeviceStatisticsUi *ui = m_statisticsManager->getOrCreateDeviceStatisticsUiCore(nameWithPrefix.mid(s.prefixDeviceStatistics.size()));
+        return m_hashWindows.value(ui);
+    }
     return nullptr;
 }
 
@@ -122,6 +134,16 @@ QString mbCoreWindowManager::getMdiSubWindowNameWithPrefix(const QMdiSubWindow *
     {
         const Strings &s = Strings::instance();
         return s.prefixDataView+ui->name();
+    }
+    else if (mbCorePortStatisticsUi *ui = qobject_cast<mbCorePortStatisticsUi *>(sw->widget()))
+    {
+        const Strings &s = Strings::instance();
+        return s.prefixPortStatistics+ui->name();
+    }
+    else if (mbCoreDeviceStatisticsUi *ui = qobject_cast<mbCoreDeviceStatisticsUi *>(sw->widget()))
+    {
+        const Strings &s = Strings::instance();
+        return s.prefixDeviceStatistics+ui->name();
     }
     return QString();
 }
@@ -199,6 +221,13 @@ void mbCoreWindowManager::actionWindowTile()
 
 QByteArray mbCoreWindowManager::saveWindowsState()
 {
+    /*
+    record := nameWithPrefix + windowState + geometry
+
+    nameWithPrefix := int32 byteCount + byte[byteCount]  // UTF-8
+    windowState    := int32                               // Qt::WindowState flags
+    geometry       := int32 x + int32 y + int32 w + int32 h    
+    */
     mbCoreBinaryWriter writer;
     Q_FOREACH (QMdiSubWindow *sw, m_area->subWindowList(QMdiArea::StackingOrder))
     {
@@ -216,6 +245,13 @@ void mbCoreWindowManager::saveWindowStateInner(mbCoreBinaryWriter &writer, const
 
 bool mbCoreWindowManager::restoreWindowsState(const QByteArray &v)
 {
+    /*
+    record := nameWithPrefix + windowState + geometry
+
+    nameWithPrefix := int32 byteCount + byte[byteCount]  // UTF-8
+    windowState    := int32                               // Qt::WindowState flags
+    geometry       := int32 x + int32 y + int32 w + int32 h    
+    */
     mbCoreProject *p = mbCore::globalCore()->projectCore();
     if (p)
     {
@@ -227,6 +263,27 @@ bool mbCoreWindowManager::restoreWindowsState(const QByteArray &v)
         }
     }
     return false;
+}
+
+bool mbCoreWindowManager::restoreWindowStateInner(mbCoreBinaryReader &reader)
+{
+    QString nameWithPrefix;
+    int windowState;
+    QRect geometry;
+    if (reader.read(nameWithPrefix) && reader.read(windowState) && reader.read(geometry))
+    {
+        QMdiSubWindow* sw = getMdiSubWindowForNameWithPrefix(nameWithPrefix);
+        if (sw)
+        {
+            windowState &= ~Qt::WindowActive;
+            sw->setWindowState(static_cast<Qt::WindowState>(windowState));
+            sw->raise();
+            sw->setGeometry(geometry);
+        }
+    }
+    else
+        return false;
+    return true;
 }
 
 void mbCoreWindowManager::setViewMode(QMdiArea::ViewMode viewMode)
@@ -270,27 +327,6 @@ QMdiSubWindow *mbCoreWindowManager::subWindowRemove(QWidget *ui)
         ui->setParent(nullptr);
     }
     return sw;
-}
-
-bool mbCoreWindowManager::restoreWindowStateInner(mbCoreBinaryReader &reader)
-{
-    QString nameWithPrefix;
-    int windowState;
-    QRect geometry;
-    if (reader.read(nameWithPrefix) && reader.read(windowState) && reader.read(geometry))
-    {
-        QMdiSubWindow* sw = getMdiSubWindowForNameWithPrefix(nameWithPrefix);
-        if (sw)
-        {
-            windowState &= ~Qt::WindowActive;
-            sw->setWindowState(static_cast<Qt::WindowState>(windowState));
-            sw->raise();
-            sw->setGeometry(geometry);
-        }
-    }
-    else
-        return false;
-    return true;
 }
 
 void mbCoreWindowManager::setProject(mbCoreProject *p)
