@@ -165,14 +165,8 @@ void mbClientDialogScannerHost::slotAddRange()
         return;
     if (!parseIPv4(ipend, end))
         return;
-    if (start > end)
-    {
-        auto t = start;
-        start = end;
-        end = t;
-    }
-
-    for (quint32 ip = start;; ++ip)
+    quint32 inc = (start > end) ? static_cast<quint32>(-1) : 1;
+    for (quint32 ip = start;; ip += inc)
     {
         ui->lsCurrent->addItem(ipv4ToString(ip));
         if (ip == end)

@@ -139,14 +139,8 @@ void mbClientDialogScannerPort::slotAddRange()
     uint16_t start = static_cast<uint16_t>(ui->spPortStart->value());
     uint16_t end = static_cast<uint16_t>(ui->spPortEnd->value());
 
-    if (start > end)
-    {
-        auto t = start;
-        start = end;
-        end = t;
-    }
-
-    for (uint16_t p = start;; ++p)
+    quint32 inc = (start > end) ? static_cast<quint32>(-1) : 1;
+    for (uint16_t p = start;; p += inc)
     {
         ui->lsCurrent->addItem(QString::number(p));
         if (p == end)
