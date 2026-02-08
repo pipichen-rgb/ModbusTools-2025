@@ -496,6 +496,8 @@ struct MB_EXPORT BaseStatistics
     Modbus::StatusCode  lastErrorStatus     ;
     mb::Timestamp_t     lastErrorTimestamp  ;
     QString             lastErrorText       ;
+    quint32             countTx             ;
+    quint32             countRx             ;
     quint32             countGood           ;
     quint32             countBad            ;
 

@@ -160,6 +160,7 @@ private Q_SLOTS:
     void menuSlotDeviceScriptInit    ();
     void menuSlotDeviceScriptLoop    ();
     void menuSlotDeviceScriptFinal   ();
+    void menuSlotDeviceStatistics    () override;
     // ----------------------------
     // ----------SIMACTION---------
     // ----------------------------

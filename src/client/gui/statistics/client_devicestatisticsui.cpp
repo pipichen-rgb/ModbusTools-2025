@@ -16,6 +16,8 @@ mbClientDeviceStatisticsUi::mbClientDeviceStatisticsUi(mbClientDevice *device, Q
     m_ui.lnLastErrorStatus      = ui->lnLastErrorStatus     ;
     m_ui.lnLastErrorTimestamp   = ui->lnLastErrorTimestamp  ;
     m_ui.txtLastErrorText       = ui->txtLastErrorText      ;
+    m_ui.lnCountTx              = ui->lnCountTx             ;
+    m_ui.lnCountRx              = ui->lnCountRx             ;
     m_ui.lnCountGood            = ui->lnCountGood           ;
     m_ui.lnCountBad             = ui->lnCountBad            ;
 
@@ -32,8 +34,6 @@ void mbClientDeviceStatisticsUi::syncStatistics()
     mbCoreDeviceStatisticsUi::syncStatistics();
     auto s = device()->statistics();
 
-    ui->lnCountTx           ->setText(QString::number(s.countTx           ));
-    ui->lnCountRx           ->setText(QString::number(s.countRx           ));
     ui->lnCountBadConnection->setText(QString::number(s.countBadConnection));
     ui->lnCountBadTimeout   ->setText(QString::number(s.countBadTimeout   ));
     ui->lnCountBadCRC       ->setText(QString::number(s.countBadCRC       ));

@@ -66,7 +66,9 @@ protected:
         QLineEdit*      lnLastErrorStatus     ;
         QLineEdit*      lnLastErrorTimestamp  ;
         QPlainTextEdit* txtLastErrorText      ;
-        QLineEdit*      lnCountGood           ; 
+        QLineEdit*      lnCountTx             ;
+        QLineEdit*      lnCountRx             ;
+        QLineEdit*      lnCountGood           ;
         QLineEdit*      lnCountBad            ;
     } m_ui;
 

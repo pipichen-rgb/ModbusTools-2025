@@ -75,6 +75,11 @@ const mbServerDevice::Defaults &mbServerDevice::Defaults::instance()
     return d;
 }
 
+mbServerDevice::Statistics::Statistics() :
+    CoreStatistics()
+{
+}
+
 mbServerDevice::MemoryBlock::MemoryBlock()
 {
     m_sizeBits = 0;
@@ -485,6 +490,7 @@ mbServerDevice::mbServerDevice(QObject * /*parent*/)
 {
     Defaults d = Defaults::instance();
     m_project = nullptr;
+    m_stat = new Statistics();
     setName(d.name);
     this->realloc_0x(d.count0x);
     this->realloc_1x(d.count1x);
@@ -680,139 +686,356 @@ void mbServerDevice::writeData(const mb::Address &address, quint16 count, const 
 
 Modbus::StatusCode mbServerDevice::readCoils(uint16_t offset, uint16_t count, void *values)
 {
-    QReadLocker _(&m_lock);
-    if (count > maxReadCoils())
-        return Modbus::Status_BadIllegalDataAddress;
-    if ((offset+count) > this->count_0x())
-        return Modbus::Status_BadIllegalDataAddress;
-    return this->read_0x(offset, count, values);
+    Modbus::StatusCode r;
+    QString err;
+    beginRequest();
+    {
+        QReadLocker _(&m_lock);
+        if (count > maxReadCoils())
+        {
+            err = QStringLiteral("Count of coils to read is too big: %1 > %2").arg(count).arg(maxReadCoils());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else if ((offset+count) > this->count_0x())
+        {
+            err = QStringLiteral("Read coils out of range: %1 + %2 > %3").arg(offset).arg(count).arg(this->count_0x());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else
+        {
+            r = this->read_0x(offset, count, values);
+            if (Modbus::StatusIsBad(r))
+                err = QStringLiteral("Failed to read coils: %1").arg(mb::toString(r));
+        }
+    }
+    endRequest(r, err);
+    return r;
 }
 
 Modbus::StatusCode mbServerDevice::readDiscreteInputs(uint16_t offset, uint16_t count, void *values)
 {
-    QReadLocker _(&m_lock);
-    if (count > maxReadDiscreteInputs())
-        return Modbus::Status_BadIllegalDataAddress;
-    if ((offset+count) > this->count_1x())
-        return Modbus::Status_BadIllegalDataAddress;
-    return this->read_1x(offset, count, values);
+    Modbus::StatusCode r;
+    QString err;
+    beginRequest();
+    {
+        QReadLocker _(&m_lock);
+        if (count > maxReadDiscreteInputs())
+        {
+            err = QStringLiteral("Count of discrete inputs to read is too big: %1 > %2").arg(count).arg(maxReadDiscreteInputs());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else if ((offset+count) > this->count_1x())
+        {
+            err = QStringLiteral("Read discrete inputs out of range: %1 + %2 > %3").arg(offset).arg(count).arg(this->count_1x());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else
+        {
+            r = this->read_1x(offset, count, values);
+            if (Modbus::StatusIsBad(r))
+                err = QStringLiteral("Failed to read discrete inputs: %1").arg(mb::toString(r));
+        }
+    }
+    endRequest(r, err);
+    return r;
 }
 
 Modbus::StatusCode mbServerDevice::readHoldingRegisters(uint16_t offset, uint16_t count, uint16_t *values)
 {
-    QReadLocker _(&m_lock);
-    if (count > maxReadHoldingRegisters())
-        return Modbus::Status_BadIllegalDataAddress;
-    if ((offset+count) > this->count_4x())
-        return Modbus::Status_BadIllegalDataAddress;
-    return this->read_4x(offset, count, values);
+    Modbus::StatusCode r;
+    QString err;
+    beginRequest();
+    {
+        QReadLocker _(&m_lock);
+        if (count > maxReadHoldingRegisters())
+        {
+            err = QStringLiteral("Count of holding registers to read is too big: %1 > %2").arg(count).arg(maxReadHoldingRegisters());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else if ((offset+count) > this->count_4x())
+        {
+            err = QStringLiteral("Read holding registers out of range: %1 + %2 > %3").arg(offset).arg(count).arg(this->count_4x());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else
+        {
+            r = this->read_4x(offset, count, values);
+            if (Modbus::StatusIsBad(r))
+                err = QStringLiteral("Failed to read holding registers: %1").arg(mb::toString(r));
+        }
+    }
+    endRequest(r, err);
+    return r;
 }
 
 Modbus::StatusCode mbServerDevice::readInputRegisters(uint16_t offset, uint16_t count, uint16_t *values)
 {
-    QReadLocker _(&m_lock);
-    if (count > maxReadInputRegisters())
-        return Modbus::Status_BadIllegalDataAddress;
-    if ((offset+count) > this->count_3x())
-        return Modbus::Status_BadIllegalDataAddress;
-    return this->read_3x(offset, count, values);
+    Modbus::StatusCode r;
+    QString err;
+    beginRequest();
+    {
+        QReadLocker _(&m_lock);
+        if (count > maxReadInputRegisters())
+        {
+            err = QStringLiteral("Count of input registers to read is too big: %1 > %2").arg(count).arg(maxReadInputRegisters());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else if ((offset+count) > this->count_3x())
+        {
+            err = QStringLiteral("Read input registers out of range: %1 + %2 > %3").arg(offset).arg(count).arg(this->count_3x());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else
+        {
+            r = this->read_3x(offset, count, values);
+            if (Modbus::StatusIsBad(r))
+                err = QStringLiteral("Failed to read input registers: %1").arg(mb::toString(r));
+        }
+    }
+    endRequest(r, err);
+    return r;
 }
 
 Modbus::StatusCode mbServerDevice::writeSingleCoil(uint16_t offset, bool value)
 {
-    QWriteLocker _(&m_lock);
-    if (isReadOnly())
-        return Modbus::Status_BadIllegalFunction;
-    if (offset >= this->count_0x())
-        return Modbus::Status_BadIllegalDataAddress;
-    this->setBool_0x(offset, value);
-    return Modbus::Status_Good;
+    Modbus::StatusCode r;
+    QString err;
+    beginRequest();
+    {
+        QWriteLocker _(&m_lock);
+        if (isReadOnly())
+        {
+            err = QStringLiteral("Device is read-only");
+            r = Modbus::Status_BadIllegalFunction;
+        }
+        else if (offset >= this->count_0x())
+        {
+            err = QStringLiteral("Write single coil out of range: %1 >= %2").arg(offset).arg(this->count_0x());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else
+        {
+            this->setBool_0x(offset, value);
+            r = Modbus::Status_Good;
+        }
+    }
+    endRequest(r, err);
+    return r;
 }
 
 Modbus::StatusCode mbServerDevice::writeSingleRegister(uint16_t offset, uint16_t value)
 {
-    QWriteLocker _(&m_lock);
-    if (isReadOnly())
-        return Modbus::Status_BadIllegalFunction;
-    if (offset >= this->count_4x())
-        return Modbus::Status_BadIllegalDataAddress;
-    this->setUInt16_4x(offset, value);
-    return Modbus::Status_Good;
+    Modbus::StatusCode r;
+    QString err;
+    beginRequest();
+    {
+        QWriteLocker _(&m_lock);
+        if (isReadOnly())
+        {
+            err = QStringLiteral("Device is read-only");
+            r = Modbus::Status_BadIllegalFunction;
+        }
+        else if (offset >= this->count_4x())
+        {
+            err = QStringLiteral("Write single register out of range: %1 >= %2").arg(offset).arg(this->count_4x());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else
+        {
+            this->setUInt16_4x(offset, value);
+            r = Modbus::Status_Good;
+        }
+    }
+    endRequest(r, err);
+    return r;
 }
 
 Modbus::StatusCode mbServerDevice::readExceptionStatus(uint8_t *status)
 {
-    QReadLocker _(&m_lock);
-    *status = this->exceptionStatus();
-    return Modbus::Status_Good;
+    Modbus::StatusCode r;
+    beginRequest();
+    {
+        QReadLocker _(&m_lock);
+        *status = this->exceptionStatus();
+        r = Modbus::Status_Good;
+    }
+    endRequest(r);
+    return r;
 }
 
 Modbus::StatusCode mbServerDevice::writeMultipleCoils(uint16_t offset, uint16_t count, const void *values)
 {
-    QWriteLocker _(&m_lock);
-    if (isReadOnly())
-        return Modbus::Status_BadIllegalFunction;
-    if (count > maxWriteMultipleCoils())
-        return Modbus::Status_BadIllegalDataAddress;
-    if ((offset+count) > this->count_0x())
-        return Modbus::Status_BadIllegalDataAddress;
-    return this->write_0x(offset, count, values);
+    Modbus::StatusCode r;
+    QString err;
+    beginRequest();
+    {
+        QWriteLocker _(&m_lock);
+        if (isReadOnly())
+        {
+            err = QStringLiteral("Device is read-only");
+            r = Modbus::Status_BadIllegalFunction;
+        }
+        else if (count > maxWriteMultipleCoils())
+        {
+            err = QStringLiteral("Count of coils to write is too big: %1 > %2").arg(count).arg(maxWriteMultipleCoils());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else if ((offset+count) > this->count_0x())
+        {
+            err = QStringLiteral("Write coils out of range: %1 + %2 > %3").arg(offset).arg(count).arg(this->count_0x());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else
+        {
+            r = this->write_0x(offset, count, values);
+            if (Modbus::StatusIsBad(r))
+                err = QStringLiteral("Failed to write coils: %1").arg(mb::toString(r));
+        }
+    }
+    endRequest(r, err);
+    return r;
 }
 
 Modbus::StatusCode mbServerDevice::writeMultipleRegisters(uint16_t offset, uint16_t count, const uint16_t *values)
 {
-    QWriteLocker _(&m_lock);
-    if (isReadOnly())
-        return Modbus::Status_BadIllegalFunction;
-    if (count > maxWriteMultipleRegisters())
-        return Modbus::Status_BadIllegalDataAddress;
-    if ((offset+count) > this->count_4x())
-        return Modbus::Status_BadIllegalDataAddress;
-    return this->write_4x(offset, count, values);
+    Modbus::StatusCode r;
+    QString err;
+    beginRequest();
+    {
+        QWriteLocker _(&m_lock);
+        if (isReadOnly())
+        {
+            err = QStringLiteral("Device is read-only");
+            r = Modbus::Status_BadIllegalFunction;
+        }
+        else if (count > maxWriteMultipleRegisters())
+        {
+            err = QStringLiteral("Count of registers to write is too big: %1 > %2").arg(count).arg(maxWriteMultipleRegisters());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else if ((offset+count) > this->count_4x())
+        {
+            err = QStringLiteral("Write registers out of range: %1 + %2 > %3").arg(offset).arg(count).arg(this->count_4x());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else
+        {
+            r = this->write_4x(offset, count, values);
+            if (Modbus::StatusIsBad(r))
+                err = QStringLiteral("Failed to write registers: %1").arg(mb::toString(r));
+        }
+    }
+    endRequest(r, err);
+    return r;
 }
 
 Modbus::StatusCode mbServerDevice::reportServerID(uint8_t *count, uint8_t *data)
 {
+    Modbus::StatusCode r;
+    beginRequest();
     QByteArray utf8 = name().toUtf8();
     if (utf8.size() > MB_MAX_BYTES)
         *count = MB_MAX_BYTES;
     else
         *count = static_cast<uint8_t>(utf8.size());
     memcpy(data, utf8.constData(), *count);
-    return Modbus::Status_Good;
+    r = Modbus::Status_Good;
+    endRequest(r);
+    return r;
 }
 
 
 Modbus::StatusCode mbServerDevice::maskWriteRegister(uint16_t offset, uint16_t andMask, uint16_t orMask)
 {
-    QWriteLocker _(&m_lock);
-    if (isReadOnly())
-        return Modbus::Status_BadIllegalFunction;
-    if (offset > this->count_4x())
-        return Modbus::Status_BadIllegalDataAddress;
-    uint16_t c = this->uint16_4x(offset);
-    uint16_t r = (c & andMask) | (orMask & ~andMask);
-    this->setUInt16_4x(offset, r);
-    return Modbus::Status_Good;
+    Modbus::StatusCode r;
+    QString err;
+    beginRequest();
+    {
+        QWriteLocker _(&m_lock);
+        if (isReadOnly())
+        {
+            err = QStringLiteral("Device is read-only");
+            r = Modbus::Status_BadIllegalFunction;
+        }
+        else if (offset > this->count_4x())
+        {
+            err = QStringLiteral("Write register out of range: %1 > %2").arg(offset).arg(this->count_4x());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else
+        {
+            uint16_t c = this->uint16_4x(offset);
+            uint16_t result = (c & andMask) | (orMask & ~andMask);
+            this->setUInt16_4x(offset, result);
+            r = Modbus::Status_Good;
+        }
+    }
+    endRequest(r, err);
+    return r;
 }
 
 Modbus::StatusCode mbServerDevice::readWriteMultipleRegisters(uint16_t readOffset, uint16_t readCount, uint16_t *readValues, uint16_t writeOffset, uint16_t writeCount, const uint16_t *writeValues)
 {
-    QWriteLocker _(&m_lock);
-    if (isReadOnly())
-        return Modbus::Status_BadIllegalFunction;
-    if (writeCount > maxWriteMultipleRegisters())
-        return Modbus::Status_BadIllegalDataAddress;
-    if ((writeOffset+writeCount) > this->count_4x())
-        return Modbus::Status_BadIllegalDataAddress;
-    if (readCount > maxWriteMultipleRegisters())
-        return Modbus::Status_BadIllegalDataAddress;
-    if ((readOffset+readCount) > this->count_4x())
-        return Modbus::Status_BadIllegalDataAddress;
-    Modbus::StatusCode s = this->write_4x(writeOffset, writeCount, writeValues);
-    if (!Modbus::StatusIsGood(s))
-        return s;
-    return this->read_4x(readOffset, readCount, readValues);
+    Modbus::StatusCode r;
+    QString err;
+    beginRequest();
+    {
+        QWriteLocker _(&m_lock);
+        if (isReadOnly())
+        {
+            err = QStringLiteral("Device is read-only");
+            r = Modbus::Status_BadIllegalFunction;
+        }
+        else if (writeCount > maxWriteMultipleRegisters())
+        {
+            err = QStringLiteral("Count of registers to write is too big: %1 > %2").arg(writeCount).arg(maxWriteMultipleRegisters());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else if ((writeOffset+writeCount) > this->count_4x())
+        {
+            err = QStringLiteral("Write registers out of range: %1 + %2 > %3").arg(writeOffset).arg(writeCount).arg(this->count_4x());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else if (readCount > maxWriteMultipleRegisters())
+        {
+            err = QStringLiteral("Count of registers to read is too big: %1 > %2").arg(readCount).arg(maxWriteMultipleRegisters());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else if ((readOffset+readCount) > this->count_4x())
+        {
+            err = QStringLiteral("Read registers out of range: %1 + %2 > %3").arg(readOffset).arg(readCount).arg(this->count_4x());
+            r = Modbus::Status_BadIllegalDataAddress;
+        }
+        else
+        {
+            Modbus::StatusCode s = this->write_4x(writeOffset, writeCount, writeValues);
+            if (!Modbus::StatusIsGood(s))
+            {
+                err = QStringLiteral("Failed to write registers: %1").arg(mb::toString(s));
+                r = s;
+            }
+            else
+            {
+                r = this->read_4x(readOffset, readCount, readValues);
+                if (Modbus::StatusIsBad(r))
+                    err = QStringLiteral("Failed to read registers: %1").arg(mb::toString(r));
+            }
+        }
+    }
+    endRequest(r, err);
+    return r;
+}
+
+void mbServerDevice::beginRequest()
+{
+    incStatCountRx();
+}
+
+void mbServerDevice::endRequest(Modbus::StatusCode status, const QString &err)
+{
+    incStatCountTx();
+    mb::Timestamp_t time = mb::currentTimestamp();
+    setStatStatus(status, time, err);
 }
 
 void mbServerDevice::realloc_0x(int count)

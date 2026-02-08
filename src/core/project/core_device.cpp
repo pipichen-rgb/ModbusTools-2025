@@ -289,6 +289,22 @@ bool mbCoreDevice::setSettings(const MBSETTINGS &settings)
     return true;
 }
 
+void mbCoreDevice::incStatCountTx()
+{
+    m_statLock.lockForWrite();
+    auto v = ++m_stat->countTx;
+    m_statLock.unlock();
+    Q_EMIT statCountTxChanged(v);
+}
+
+void mbCoreDevice::incStatCountRx()
+{
+    m_statLock.lockForWrite();
+    auto v = ++m_stat->countRx;
+    m_statLock.unlock();
+    Q_EMIT statCountRxChanged(v);
+}
+
 void mbCoreDevice::resetStatistics()
 {
     m_statLock.lockForWrite();

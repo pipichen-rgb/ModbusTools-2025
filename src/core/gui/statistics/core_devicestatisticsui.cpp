@@ -57,6 +57,8 @@ void mbCoreDeviceStatisticsUi::syncStatisticsCoreInner()
     m_ui.lnLastErrorStatus     ->setText(mb::toString(s.lastErrorStatus     ));
     m_ui.lnLastErrorTimestamp  ->setText(mb::toString(s.lastErrorTimestamp  ));
     m_ui.txtLastErrorText      ->setPlainText(s.lastErrorText                );
+    m_ui.lnCountTx             ->setText(QString::number(s.countTx          ));
+    m_ui.lnCountRx             ->setText(QString::number(s.countRx          ));
     m_ui.lnCountGood           ->setText(QString::number(s.countGood        ));
     m_ui.lnCountBad            ->setText(QString::number(s.countBad         ));
 }

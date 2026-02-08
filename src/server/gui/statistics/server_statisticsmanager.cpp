@@ -24,8 +24,10 @@
 
 #include <project/server_project.h>
 #include <project/server_port.h>
+#include <project/server_device.h>
 
 #include "server_portstatisticsui.h"
+#include "server_devicestatisticsui.h"
 
 mbServerStatisticsManager::mbServerStatisticsManager(QObject *parent) :
     mbCoreStatisticsManager(parent)
@@ -46,5 +48,5 @@ mbCorePortStatisticsUi *mbServerStatisticsManager::createPortStatisticsUi(mbCore
 
 mbCoreDeviceStatisticsUi *mbServerStatisticsManager::createDeviceStatisticsUi(mbCoreDevice *device)
 {
-    return nullptr;
+    return new mbServerDeviceStatisticsUi(static_cast<mbServerDevice*>(device), nullptr);
 }

@@ -52,10 +52,9 @@ const mbClientDevice::Defaults &mbClientDevice::Defaults::instance()
     return d;
 }
 
-mbClientDevice::Statistics::Statistics()
+mbClientDevice::Statistics::Statistics() :
+    CoreStatistics()
 {
-    countTx            = 0;
-    countRx            = 0;
     countBadConnection = 0;
     countBadTimeout    = 0;
     countBadCRC        = 0;
@@ -139,23 +138,6 @@ bool mbClientDevice::setSettings(const MBSETTINGS &settings)
     mbCoreDevice::setSettings(settings); // Q_EMIT changed() within
     return true;
 }
-#include <QDebug>
-void mbClientDevice::incStatCountTx()
-{
-    m_statLock.lockForWrite();
-    auto v = ++static_cast<Statistics*>(m_stat)->countTx;
-    m_statLock.unlock();
-    Q_EMIT statCountTxChanged(v);
-    qDebug() << "mbClientDevice::Tx:" << v;
-}
-
-void mbClientDevice::incStatCountRx()
-{
-    m_statLock.lockForWrite();
-    auto v = ++static_cast<Statistics*>(m_stat)->countRx;
-    m_statLock.unlock();
-    Q_EMIT statCountRxChanged(v);
-}
 
 void mbClientDevice::resetStatisticsInner()
 {
@@ -164,7 +146,6 @@ void mbClientDevice::resetStatisticsInner()
 
 void mbClientDevice::setStatStatusInner(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString &err)
 {
-    qDebug() << "mbClientDevice::Bad:" << m_stat->countBad;
     switch (status)
     {
     case Modbus::Status_BadTcpCreate:

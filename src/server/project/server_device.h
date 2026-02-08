@@ -74,6 +74,13 @@ public:
         static const Defaults &instance();
     };
 
+public: // statistics
+    struct Statistics : public CoreStatistics
+    {
+        Statistics();
+    };
+
+public: // memory block
     class MemoryBlock
     {
     public:
@@ -169,6 +176,10 @@ public: // 'Modbus'-like Interface
     Modbus::StatusCode reportServerID(uint8_t *count, uint8_t *data);
     Modbus::StatusCode maskWriteRegister(uint16_t offset, uint16_t andMask, uint16_t orMask);
     Modbus::StatusCode readWriteMultipleRegisters(uint16_t readOffset, uint16_t readCount, uint16_t *readValues, uint16_t writeOffset, uint16_t writeCount, const uint16_t *writeValues);
+
+private:
+    void beginRequest();
+    void endRequest(Modbus::StatusCode status, const QString &err = QString());
 
 public: // memory-0x management functions
     inline uint changeCounter_0x() const { return m_mem_0x.changeCounter(); }

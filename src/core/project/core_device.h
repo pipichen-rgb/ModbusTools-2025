@@ -126,6 +126,10 @@ public: // settings
 
 public: // statistics
     inline CoreStatistics statisticsCore() const { QReadLocker locker(&m_statLock); return *m_stat; }
+    inline quint32 statGoodCount() const { QReadLocker locker(&m_statLock); return m_stat->countTx; }
+    void incStatCountTx();
+    inline quint32 statBadCount() const { QReadLocker locker(&m_statLock); return m_stat->countRx; }
+    void incStatCountRx();
     virtual void resetStatistics();
     virtual void setStatStatus(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString& err = QString());
 
@@ -136,6 +140,9 @@ protected:
 Q_SIGNALS:
     void nameChanged(const QString& newName);
     void changed();
+    void statCountTxChanged(quint32 count);
+    void statCountRxChanged(quint32 count);
+
 
 protected:
     mbCoreProject* m_project;

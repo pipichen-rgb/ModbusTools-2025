@@ -106,6 +106,8 @@
     <addaction name="actionDeviceScriptInit"/>
     <addaction name="actionDeviceScriptLoop"/>
     <addaction name="actionDeviceScriptFinal"/>
+    <addaction name="separator"/>
+    <addaction name="actionDeviceStatistics"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -810,6 +812,11 @@
    </property>
   </action>
   <action name="actionPortStatistics">
+   <property name="text">
+    <string>Statistics...</string>
+   </property>
+  </action>
+  <action name="actionDeviceStatistics">
    <property name="text">
     <string>Statistics...</string>
    </property>

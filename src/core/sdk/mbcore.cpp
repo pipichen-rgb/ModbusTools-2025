@@ -156,6 +156,8 @@ BaseStatistics::BaseStatistics()
     lastErrorStatus     = Modbus::Status_Uncertain;
     lastErrorTimestamp  = 0;
     //lastErrorText       = QString();
+    countTx             = 0;
+    countRx             = 0;
     countGood           = 0;
     countBad            = 0;
 }
