@@ -26,6 +26,7 @@ public:
     {
         const QString prefix          ;
         const QString type            ;
+        const QString period          ;
         const QString timeout         ;
         const QString tries           ;
         const QString unitStart       ;

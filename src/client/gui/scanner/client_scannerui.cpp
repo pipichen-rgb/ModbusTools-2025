@@ -19,6 +19,7 @@
 mbClientScannerUi::Strings::Strings() : mbCoreDialogBase::Strings(),
     prefix          (QStringLiteral("Ui.Scanner.")),
     type            (prefix+Modbus::Strings::instance().type),
+    period          (prefix+mbClientScanner::Strings::instance().period   ),
     timeout         (prefix+Modbus::Strings::instance().timeout),
     tries           (prefix+mbClientScanner::Strings::instance().tries    ),
     unitStart       (prefix+mbClientScanner::Strings::instance().unitStart),
@@ -80,6 +81,12 @@ mbClientScannerUi::mbClientScannerUi(QWidget *parent) :
     cmb->setCurrentText(Modbus::toString(Modbus::TCP));
     ui->stackedWidget->setCurrentWidget(ui->pgTcpPort);
     connect(cmb, SIGNAL(currentIndexChanged(int)), this, SLOT(setType(int)));
+
+    // Period
+    sp = ui->spPeriod;
+    sp->setMinimum(0);
+    sp->setMaximum(INT_MAX);
+    sp->setValue(d.period);
 
     // Timeout
     sp = ui->spTimeout;
@@ -209,6 +216,7 @@ MBSETTINGS mbClientScannerUi::cachedSettings() const
     const Strings &s = Strings::instance();
 
     m[s.type            ] = ui->cmbType          ->currentText();
+    m[s.period          ] = ui->spPeriod         ->value      ();
     m[s.timeout         ] = ui->spTimeout        ->value      ();
     m[s.tries           ] = ui->spTries          ->value      ();
     m[s.unitStart       ] = ui->spUnitStart      ->value      ();
@@ -240,6 +248,7 @@ void mbClientScannerUi::setCachedSettings(const MBSETTINGS &m)
     MBSETTINGS::const_iterator end = m.end();
 
     it = m.find(s.type            ); if (it != end) ui->cmbType          ->setCurrentText(it.value().toString());
+    it = m.find(s.period          ); if (it != end) ui->spPeriod         ->setValue      (it.value().toInt()   );
     it = m.find(s.timeout         ); if (it != end) ui->spTimeout        ->setValue      (it.value().toInt()   );
     it = m.find(s.tries           ); if (it != end) ui->spTries          ->setValue      (it.value().toInt()   );
     it = m.find(s.unitStart       ); if (it != end) ui->spUnitStart      ->setValue      (it.value().toInt()   );
@@ -335,6 +344,7 @@ void mbClientScannerUi::slotStart()
 
     Modbus::Settings s;
     Modbus::ProtocolType type = static_cast<Modbus::ProtocolType>(ui->cmbType->currentIndex());
+    mbClientScanner::setSettingPeriod(s, ui->spPeriod->value());
     mbClientScanner::setSettingUnitStart(s, ui->spUnitStart->value());
     mbClientScanner::setSettingUnitEnd(s, ui->spUnitEnd->value());
     Modbus::setSettingType(s, type);

@@ -48,9 +48,10 @@ void mbClientScannerThread::setSettings(const Modbus::Settings &settings)
     const Modbus::Strings &s = Modbus::Strings::instance();
 
     m_settings = settings;
+    m_period    = mbClientScanner::getSettingPeriod   (settings);
     m_unitStart = mbClientScanner::getSettingUnitStart(settings);
-    m_unitEnd   = mbClientScanner::getSettingUnitEnd(settings)  ;
-    m_request   = mbClientScanner::getSettingRequest(settings)  ;
+    m_unitEnd   = mbClientScanner::getSettingUnitEnd  (settings);
+    m_request   = mbClientScanner::getSettingRequest  (settings);
     m_combinationCount = 1;
 
     m_divMods   .clear();
@@ -173,10 +174,9 @@ void mbClientScannerThread::run()
             {
                 memset(dummy, 0, sizeof(dummy));
                 m_scanner->setFunctionBegin(sPort, static_cast<uint8_t>(unit), f);
-                while(1)
+                auto tmend = mb::currentTimestamp() + m_period;
+                while (m_ctrlRun)
                 {
-                    if (!m_ctrlRun)
-                        break;
                     switch (f.func)
                     {
                     case MBF_READ_COILS:
@@ -250,9 +250,17 @@ void mbClientScannerThread::run()
                     mbClient::LogInfo(s.name, QString("%1 Error (%2): %3").arg(sPortUnit, QString::number(status, 16), clientPort->lastErrorText()));
                     m_scanner->setFunctionCompleted(sPort, unit, f, status);
                 }
-                m_scanner->setStatPercent(++funcCount*100/m_combinationCountAll);
-                if (!m_ctrlRun)
+                auto percent = ++funcCount*100/m_combinationCountAll;
+                m_scanner->setStatPercent(percent);
+                if (percent >= 100)
                     break;
+                while (m_ctrlRun)
+                {
+                    auto tm = mb::currentTimestamp();
+                    if (tm >= tmend)
+                        break;
+                    Modbus::msleep(1);
+                }
             }
         }
         clientPort->close();

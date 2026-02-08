@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>570</width>
-    <height>516</height>
+    <height>514</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -48,61 +48,61 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Type:</string>
+             <string>Type</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
            <widget class="QComboBox" name="cmbType"/>
           </item>
-          <item row="1" column="0">
+          <item row="2" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Timeout:</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QSpinBox" name="spTimeout"/>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="label_3">
-            <property name="text">
-             <string>Tries:</string>
+             <string>Timeout</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
-           <widget class="QSpinBox" name="spTries"/>
+           <widget class="QSpinBox" name="spTimeout"/>
           </item>
           <item row="3" column="0">
-           <widget class="QLabel" name="label_5">
+           <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Unit Start: </string>
+             <string>Tries</string>
             </property>
            </widget>
           </item>
           <item row="3" column="1">
-           <widget class="QSpinBox" name="spUnitStart"/>
+           <widget class="QSpinBox" name="spTries"/>
           </item>
           <item row="4" column="0">
-           <widget class="QLabel" name="label_6">
+           <widget class="QLabel" name="label_5">
             <property name="text">
-             <string>Unit End: </string>
+             <string>Unit Start </string>
             </property>
            </widget>
           </item>
           <item row="4" column="1">
-           <widget class="QSpinBox" name="spUnitEnd"/>
+           <widget class="QSpinBox" name="spUnitStart"/>
           </item>
           <item row="5" column="0">
-           <widget class="QLabel" name="label_7">
+           <widget class="QLabel" name="label_6">
             <property name="text">
-             <string>Request:</string>
+             <string>Unit End </string>
             </property>
            </widget>
           </item>
           <item row="5" column="1">
+           <widget class="QSpinBox" name="spUnitEnd"/>
+          </item>
+          <item row="6" column="0">
+           <widget class="QLabel" name="label_7">
+            <property name="text">
+             <string>Request</string>
+            </property>
+           </widget>
+          </item>
+          <item row="6" column="1">
            <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,0">
             <property name="spacing">
              <number>1</number>
@@ -140,6 +140,16 @@
              </widget>
             </item>
            </layout>
+          </item>
+          <item row="1" column="1">
+           <widget class="QSpinBox" name="spPeriod"/>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_8">
+            <property name="text">
+             <string>Period</string>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>

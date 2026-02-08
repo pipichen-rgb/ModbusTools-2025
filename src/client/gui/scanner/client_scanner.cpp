@@ -22,6 +22,11 @@
         return v;                                                                            \
     return mbClientScanner::Defaults::instance().name;
 
+uint32_t mbClientScanner::getSettingPeriod(const Modbus::Settings &s, bool *ok)
+{
+    MBCLIENTSCANNER_GET_SETTING_MACRO(uint32_t, period, v = static_cast<uint32_t>(var.toUInt(&okInner)))
+}
+
 uint8_t mbClientScanner::getSettingUnitStart(const Modbus::Settings &s, bool *ok)
 {
     MBCLIENTSCANNER_GET_SETTING_MACRO(uint8_t, unitStart, v = static_cast<uint8_t>(var.toUInt(&okInner)))
@@ -65,6 +70,11 @@ QVariantList mbClientScanner::getSettingStopBits(const Modbus::Settings &s, bool
 mbClientScanner::Request_t mbClientScanner::getSettingRequest(const Modbus::Settings &s, bool *ok)
 {
     return toRequest(s.value(mbClientScanner::Strings::instance().request).toString(), ok);
+}
+
+void mbClientScanner::setSettingPeriod(Modbus::Settings &s, uint32_t v)
+{
+    s[mbClientScanner::Strings::instance().period] = v;
 }
 
 void mbClientScanner::setSettingUnitStart(Modbus::Settings &s, uint8_t v)
@@ -205,6 +215,7 @@ const mbClientScanner::Strings &mbClientScanner::Strings::instance()
 
 mbClientScanner::Defaults::Defaults() :
     type            (Modbus::Defaults::instance().type),
+    period          (200),
     timeout         (1000),
     timeoutInterByte(Modbus::Defaults::instance().timeoutInterByte),
     tries           (Modbus::Defaults::instance().tries),

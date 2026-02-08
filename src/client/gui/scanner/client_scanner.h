@@ -35,6 +35,7 @@ public:
     typedef QList<mbClientMessageParams> Request_t;
 
 public:
+    static uint32_t     getSettingPeriod   (const Modbus::Settings &s, bool *ok = nullptr);
     static uint8_t      getSettingUnitStart(const Modbus::Settings &s, bool *ok = nullptr);
     static uint8_t      getSettingUnitEnd  (const Modbus::Settings &s, bool *ok = nullptr);
     static QVariantList getSettingHost     (const Modbus::Settings &s, bool *ok = nullptr);
@@ -45,6 +46,7 @@ public:
     static QVariantList getSettingStopBits (const Modbus::Settings &s, bool *ok = nullptr);
     static Request_t    getSettingRequest  (const Modbus::Settings &s, bool *ok = nullptr);
 
+    static void setSettingPeriod   (Modbus::Settings &s, uint32_t v           );
     static void setSettingUnitStart(Modbus::Settings &s, uint8_t v            );
     static void setSettingUnitEnd  (Modbus::Settings &s, uint8_t v            );
     static void setSettingHost     (Modbus::Settings &s, const QVariantList &v);
@@ -63,6 +65,7 @@ public:
     {
         const QString name          ;
         const QString type          ;
+        const QString period        ;
         const QString timeout       ;
         const QString tries         ;
         const QString unitStart     ;
@@ -78,6 +81,7 @@ public:
     struct Defaults
     {
         const Modbus::ProtocolType type     ;
+        const uint32_t             period   ;
         const uint32_t             timeout  ;
         const uint32_t             timeoutInterByte;
         const uint32_t             tries    ;
