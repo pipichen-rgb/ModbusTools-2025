@@ -7,5 +7,7 @@ mbCoreStatisticsUi::mbCoreStatisticsUi(QWidget *parent) :
 
 void mbCoreStatisticsUi::setStatWindowTitle(const QString &name)
 {
-    setWindowTitle(QString("%1 [Stat]").arg(name));
+    QString title = QString("%1 [Stat]").arg(name);
+    setWindowTitle(title);
+    Q_EMIT statWindowTitleChanged(title);
 }

@@ -43,11 +43,25 @@ mbCoreStatisticsManager::mbCoreStatisticsManager(QObject *parent) : QObject(pare
     connect(core, &mbCore::projectChanged, this, &mbCoreStatisticsManager::setProject);
 }
 
+QList<mbCoreStatisticsUi *> mbCoreStatisticsManager::statisticsUisCore() const
+{
+    QList<mbCoreStatisticsUi*> list;
+    Q_FOREACH (mbCorePortStatisticsUi* ui, m_portStatisticsUis)
+        list.append(ui);
+    Q_FOREACH (mbCoreDeviceStatisticsUi* ui, m_deviceStatisticsUis)
+        list.append(ui);
+    return list;
+}
+
 void mbCoreStatisticsManager::removeStatisticsUi(mbCoreStatisticsUi *ui)
 {
     if (mbCorePortStatisticsUi *portUi = qobject_cast<mbCorePortStatisticsUi*>(ui))
     {
         portStatisticsRemove(portUi->portCore());
+    }
+    else if (mbCoreDeviceStatisticsUi *deviceUi = qobject_cast<mbCoreDeviceStatisticsUi*>(ui))
+    {
+        deviceStatisticsRemove(deviceUi->deviceCore());
     }
 }
 

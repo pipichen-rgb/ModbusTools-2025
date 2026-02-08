@@ -33,6 +33,12 @@ class MB_EXPORT mbCoreStatisticsUi : public QWidget
 public:
     explicit mbCoreStatisticsUi(QWidget *parent = nullptr);
 
+public:
+    inline QString statWindowTitle() const { return this->windowTitle(); }
+
+Q_SIGNALS:
+    void statWindowTitleChanged(const QString &name);
+
 protected Q_SLOTS:
     void setStatWindowTitle(const QString &name);
 

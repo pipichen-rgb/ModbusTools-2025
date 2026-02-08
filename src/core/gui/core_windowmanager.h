@@ -92,6 +92,7 @@ public Q_SLOTS:
     void actionWindowViewSubWindow();
     void actionWindowViewTabbed();
     void actionWindowDataViewCloseAll();
+    void actionWindowStatisticsCloseAll();
     virtual void actionWindowCloseAll();
     void actionWindowCascade();
     void actionWindowTile();

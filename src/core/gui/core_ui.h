@@ -42,6 +42,7 @@ class mbCorePort;
 class mbCoreDevice;
 class mbCoreDataView;
 class mbCoreDataViewUi;
+class mbCoreStatisticsUi;
 class mbCoreProjectUi;
 class mbCoreLogView;
 class mbCoreOutputView;
@@ -178,12 +179,13 @@ protected Q_SLOTS:
     // ----------------------------
     // -----------WINDOW-----------
     // ----------------------------
-    virtual void menuSlotWindowViewSubWindow   ();
-    virtual void menuSlotWindowViewTabbed      ();
-    virtual void menuSlotWindowDataViewCloseAll();
-    virtual void menuSlotWindowCloseAll        ();
-    virtual void menuSlotWindowCascade         ();
-    virtual void menuSlotWindowTile            ();
+    virtual void menuSlotWindowViewSubWindow     ();
+    virtual void menuSlotWindowViewTabbed        ();
+    virtual void menuSlotWindowDataViewCloseAll  ();
+    virtual void menuSlotWindowStatisticsCloseAll();
+    virtual void menuSlotWindowCloseAll          ();
+    virtual void menuSlotWindowCascade           ();
+    virtual void menuSlotWindowTile              ();
     // ----------------------------
     // ------------HELP------------
     // ----------------------------
@@ -216,6 +218,10 @@ protected Q_SLOTS:
     void dataViewWindowRemove(mbCoreDataViewUi *ui);
     void dataViewWindowRename(const QString &name);
     void dataViewWindowShow();
+    void statisticsWindowAdd(mbCoreStatisticsUi *ui);
+    void statisticsWindowRemove(mbCoreStatisticsUi *ui);
+    void statisticsWindowRename(const QString &name);
+    void statisticsWindowShow();
 
 protected:
     QMessageBox::StandardButton checkProjectModifiedAndSave(const QString &title,
@@ -266,6 +272,7 @@ protected:
         QMenu       *menuRuntime                    ;
         QMenu       *menuWindow                     ;
         QMenu       *menuWindowDataViews            ;
+        QMenu       *menuWindowStatistics           ;
         QMenu       *menuHelp                       ;
         QAction     *actionFileNew                  ;
         QAction     *actionFileOpen                 ;
@@ -314,6 +321,7 @@ protected:
         QAction     *actionWindowViewTabbed         ;
         QAction     *actionWindowDataViewShowAll    ;
         QAction     *actionWindowDataViewCloseAll   ;
+        QAction     *actionWindowStatisticsCloseAll ;
         QAction     *actionWindowCloseAll           ;
         QAction     *actionWindowCascade            ;
         QAction     *actionWindowTile               ;
@@ -343,6 +351,9 @@ protected:
 
     typedef QHash<mbCoreDataViewUi*, QAction*> DataViewActions_t;
     DataViewActions_t m_dataViewActions;
+
+    typedef QHash<mbCoreStatisticsUi*, QAction*> StatisticsActions_t;
+    StatisticsActions_t m_statisticsActions;
 
 };
 

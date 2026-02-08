@@ -45,11 +45,12 @@ public:
 
 public: // project
     inline mbCoreProject *projectCore() const { return m_project; }
-    inline QList<mbCorePortStatisticsUi*> portStatisticsUisCore() const { return m_portStatisticsUis; }
+    QList<mbCoreStatisticsUi*> statisticsUisCore() const;
     inline mbCoreStatisticsUi *activeStatisticsUiCore() const { return m_activeStatisticsUi; }
     virtual void removeStatisticsUi(mbCoreStatisticsUi *ui);
 
 public: // port statistics
+    inline QList<mbCorePortStatisticsUi*> portStatisticsUisCore() const { return m_portStatisticsUis; }
     inline bool hasPortStatisticsUi(const mbCorePort *port) const { return m_hashPortStatisticsUis.contains(port); }
     inline int portStatisticsCount() const { return m_hashPortStatisticsUis.count(); }
     inline mbCorePortStatisticsUi *portStatisticsUiCore(mbCorePort *port) const { return m_hashPortStatisticsUis.value(port, nullptr); }
@@ -59,6 +60,7 @@ public: // port statistics
     mbCorePortStatisticsUi *getOrCreatePortStatisticsUiCore(const QString &name);
 
 public: // device statistics
+    inline QList<mbCoreDeviceStatisticsUi*> deviceStatisticsUisCore() const { return m_deviceStatisticsUis; }
     inline bool hasDeviceStatisticsUi(const mbCoreDevice *device) const { return m_hashDeviceStatisticsUis.contains(device); }
     inline int deviceStatisticsCount() const { return m_hashDeviceStatisticsUis.count(); }
     inline mbCoreDeviceStatisticsUi *deviceStatisticsUiCore(mbCoreDevice *device) const { return m_hashDeviceStatisticsUis.value(device, nullptr); }

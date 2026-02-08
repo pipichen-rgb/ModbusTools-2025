@@ -67,8 +67,9 @@ mbClientUi::mbClientUi(mbClient *core, QWidget *parent) :
     m_ui.menuDataView                    = ui->menuDataView                   ;
     m_ui.menuTools                       = ui->menuTools                      ;
     m_ui.menuRuntime                     = ui->menuRuntime                    ;
-    m_ui.menuWindow                      = ui->menuWindow                     ;
+    m_ui.menuWindow                      = ui->menuWindowStatistics           ;
     m_ui.menuWindowDataViews             = ui->menuWindowDataViews            ;
+    m_ui.menuWindowStatistics            = ui->menuWindowStatistics           ;
     m_ui.menuHelp                        = ui->menuHelp                       ;
     m_ui.actionFileNew                   = ui->actionFileNew                  ;
     m_ui.actionFileOpen                  = ui->actionFileOpen                 ;
@@ -117,6 +118,7 @@ mbClientUi::mbClientUi(mbClient *core, QWidget *parent) :
     m_ui.actionWindowViewTabbed          = ui->actionWindowViewTabbed         ;
     m_ui.actionWindowDataViewShowAll     = ui->actionWindowDataViewShowAll    ;
     m_ui.actionWindowDataViewCloseAll    = ui->actionWindowDataViewCloseAll   ;
+    m_ui.actionWindowStatisticsCloseAll  = ui->actionWindowStatisticsCloseAll ;
     m_ui.actionWindowCloseAll            = ui->actionWindowCloseAll           ;
     m_ui.actionWindowCascade             = ui->actionWindowCascade            ;
     m_ui.actionWindowTile                = ui->actionWindowTile               ;

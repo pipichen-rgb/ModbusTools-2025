@@ -195,9 +195,20 @@ void mbCoreWindowManager::actionWindowDataViewCloseAll()
     }
 }
 
+void mbCoreWindowManager::actionWindowStatisticsCloseAll()
+{
+    Q_FOREACH(mbCoreStatisticsUi *ui, m_statisticsManager->statisticsUisCore())
+    {
+        QMdiSubWindow *sw = m_hashWindows.value(ui);
+        if (sw)
+            closeSubWindow(sw);
+    }
+}
+
 void mbCoreWindowManager::actionWindowCloseAll()
 {
     actionWindowDataViewCloseAll();
+    actionWindowStatisticsCloseAll();
 }
 
 void mbCoreWindowManager::actionWindowCascade()

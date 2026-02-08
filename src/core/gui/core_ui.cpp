@@ -49,6 +49,7 @@
 #include "dataview/core_dataviewui.h"
 
 #include "statistics/core_statisticsmanager.h"
+#include "statistics/core_statisticsui.h"
 
 #include "help/core_helpui.h"
 
@@ -131,8 +132,8 @@ void mbCoreUi::initialize()
     connect(m_dataViewManager, &mbCoreDataViewManager::dataViewUiAdd        , this, &mbCoreUi::dataViewWindowAdd    );
     connect(m_dataViewManager, &mbCoreDataViewManager::dataViewUiRemove     , this, &mbCoreUi::dataViewWindowRemove );
 
-    //connect(m_statisticsManager, &mbCoreStatisticsManager::statisticsUiAdd   , this, &mbCoreUi::statisticsUiAdd    );
-    //connect(m_statisticsManager, &mbCoreStatisticsManager::statisticsUiRemove, this, &mbCoreUi::statisticsUiRemove );
+    connect(m_statisticsManager, &mbCoreStatisticsManager::statisticsUiAdd   , this, &mbCoreUi::statisticsWindowAdd   );
+    connect(m_statisticsManager, &mbCoreStatisticsManager::statisticsUiRemove, this, &mbCoreUi::statisticsWindowRemove);
 
     m_ui.actionWindowViewSubWindow->setCheckable(true);
     m_ui.actionWindowViewTabbed->setCheckable(true);
@@ -226,12 +227,13 @@ void mbCoreUi::initialize()
     connect(m_ui.actionRuntimeStartStop , &QAction::triggered, this, &mbCoreUi::menuSlotRuntimeStartStop);
 
     // Menu Window
-    connect(m_ui.actionWindowViewSubWindow   , &QAction::triggered, this, &mbCoreUi::menuSlotWindowViewSubWindow   );
-    connect(m_ui.actionWindowViewTabbed      , &QAction::triggered, this, &mbCoreUi::menuSlotWindowViewTabbed      );
-    connect(m_ui.actionWindowDataViewCloseAll, &QAction::triggered, this, &mbCoreUi::menuSlotWindowDataViewCloseAll);
-    connect(m_ui.actionWindowCloseAll        , &QAction::triggered, this, &mbCoreUi::menuSlotWindowCloseAll        );
-    connect(m_ui.actionWindowCascade         , &QAction::triggered, this, &mbCoreUi::menuSlotWindowCascade         );
-    connect(m_ui.actionWindowTile            , &QAction::triggered, this, &mbCoreUi::menuSlotWindowTile            );
+    connect(m_ui.actionWindowViewSubWindow     , &QAction::triggered, this, &mbCoreUi::menuSlotWindowViewSubWindow     );
+    connect(m_ui.actionWindowViewTabbed        , &QAction::triggered, this, &mbCoreUi::menuSlotWindowViewTabbed        );
+    connect(m_ui.actionWindowDataViewCloseAll  , &QAction::triggered, this, &mbCoreUi::menuSlotWindowDataViewCloseAll  );
+    connect(m_ui.actionWindowStatisticsCloseAll, &QAction::triggered, this, &mbCoreUi::menuSlotWindowStatisticsCloseAll);
+    connect(m_ui.actionWindowCloseAll          , &QAction::triggered, this, &mbCoreUi::menuSlotWindowCloseAll          );
+    connect(m_ui.actionWindowCascade           , &QAction::triggered, this, &mbCoreUi::menuSlotWindowCascade           );
+    connect(m_ui.actionWindowTile              , &QAction::triggered, this, &mbCoreUi::menuSlotWindowTile              );
 
     // Menu Help
     m_ui.actionHelpContents->setShortcuts(QKeySequence::HelpContents);
@@ -1046,6 +1048,11 @@ void mbCoreUi::menuSlotWindowDataViewCloseAll()
     m_windowManager->actionWindowDataViewCloseAll();
 }
 
+void mbCoreUi::menuSlotWindowStatisticsCloseAll()
+{
+    m_windowManager->actionWindowStatisticsCloseAll();
+}
+
 void mbCoreUi::menuSlotWindowCloseAll()
 {
     m_windowManager->actionWindowCloseAll();
@@ -1322,7 +1329,7 @@ void mbCoreUi::dataViewWindowRemove(mbCoreDataViewUi *ui)
     const auto it = m_dataViewActions.find(ui);
     if (it != m_dataViewActions.end())
     {
-        ui->disconnect();
+        ui->disconnect(this);
         QAction *a = it.value();
         m_dataViewActions.erase(it);
         delete a;
@@ -1346,6 +1353,48 @@ void mbCoreUi::dataViewWindowShow()
     {
         mbCoreDataViewUi *ui = reinterpret_cast<mbCoreDataViewUi*>(a->data().value<void*>());
         m_windowManager->showDataViewUi(ui);
+    }
+}
+
+void mbCoreUi::statisticsWindowAdd(mbCoreStatisticsUi *ui)
+{
+    QAction *a = new QAction(ui->statWindowTitle());
+    a->setData(QVariant::fromValue<void*>(ui));
+    m_statisticsActions.insert(ui, a);
+    m_ui.menuWindowStatistics->addAction(a);
+    connect(ui, &mbCoreStatisticsUi::statWindowTitleChanged, this, &mbCoreUi::statisticsWindowRename);
+    connect(a, &QAction::triggered, this, &mbCoreUi::statisticsWindowShow);
+}
+
+void mbCoreUi::statisticsWindowRemove(mbCoreStatisticsUi *ui)
+{
+    const auto it = m_statisticsActions.find(ui);
+    if (it != m_statisticsActions.end())
+    {
+        ui->disconnect(this);
+        QAction *a = it.value();
+        m_statisticsActions.erase(it);
+        delete a;
+    }
+}
+
+void mbCoreUi::statisticsWindowRename(const QString &name)
+{
+    mbCoreStatisticsUi *ui = qobject_cast<mbCoreStatisticsUi*>(sender());
+    QAction *a = m_statisticsActions.value(ui);
+    if (a)
+    {
+        a->setText(name);
+    }
+}
+
+void mbCoreUi::statisticsWindowShow()
+{
+    QAction *a = qobject_cast<QAction*>(sender());
+    if (a)
+    {
+        mbCoreStatisticsUi *ui = reinterpret_cast<mbCoreStatisticsUi*>(a->data().value<void*>());
+        m_windowManager->setActiveStatisticsUi(ui);
     }
 }
 

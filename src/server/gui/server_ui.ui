@@ -182,10 +182,18 @@
      <addaction name="actionWindowScriptCloseAll"/>
      <addaction name="separator"/>
     </widget>
+    <widget class="QMenu" name="menuWindowStatistics">
+     <property name="title">
+      <string>Statistics</string>
+     </property>
+     <addaction name="actionWindowStatisticsCloseAll"/>
+     <addaction name="separator"/>
+    </widget>
     <addaction name="actionWindowViewSubWindow"/>
     <addaction name="actionWindowViewTabbed"/>
     <addaction name="separator"/>
     <addaction name="menuWindowDataViews"/>
+    <addaction name="menuWindowStatistics"/>
     <addaction name="menuWindowDevices"/>
     <addaction name="menuWindowScripts"/>
     <addaction name="separator"/>
@@ -819,6 +827,11 @@
   <action name="actionDeviceStatistics">
    <property name="text">
     <string>Statistics...</string>
+   </property>
+  </action>
+  <action name="actionWindowStatisticsCloseAll">
+   <property name="text">
+    <string>Close All</string>
    </property>
   </action>
  </widget>
