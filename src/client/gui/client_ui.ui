@@ -152,7 +152,7 @@
     <addaction name="separator"/>
     <addaction name="actionPortStatistics"/>
    </widget>
-   <widget class="QMenu" name="menuWindowStatistics">
+   <widget class="QMenu" name="menuWindow">
     <property name="title">
      <string>Window</string>
     </property>
@@ -163,7 +163,7 @@
      <addaction name="actionWindowDataViewCloseAll"/>
      <addaction name="separator"/>
     </widget>
-    <widget class="QMenu" name="menuStatistics">
+    <widget class="QMenu" name="menuWindowStatistics">
      <property name="title">
       <string>Statistics</string>
      </property>
@@ -174,7 +174,7 @@
     <addaction name="actionWindowViewTabbed"/>
     <addaction name="separator"/>
     <addaction name="menuWindowDataViews"/>
-    <addaction name="menuStatistics"/>
+    <addaction name="menuWindowStatistics"/>
     <addaction name="separator"/>
     <addaction name="actionWindowCloseAll"/>
     <addaction name="separator"/>
@@ -198,7 +198,7 @@
    <addaction name="menuDataView"/>
    <addaction name="menuTools"/>
    <addaction name="menuRuntime"/>
-   <addaction name="menuWindowStatistics"/>
+   <addaction name="menuWindow"/>
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>

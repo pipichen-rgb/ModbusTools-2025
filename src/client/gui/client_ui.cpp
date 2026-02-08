@@ -67,7 +67,7 @@ mbClientUi::mbClientUi(mbClient *core, QWidget *parent) :
     m_ui.menuDataView                    = ui->menuDataView                   ;
     m_ui.menuTools                       = ui->menuTools                      ;
     m_ui.menuRuntime                     = ui->menuRuntime                    ;
-    m_ui.menuWindow                      = ui->menuWindowStatistics           ;
+    m_ui.menuWindow                      = ui->menuWindow                     ;
     m_ui.menuWindowDataViews             = ui->menuWindowDataViews            ;
     m_ui.menuWindowStatistics            = ui->menuWindowStatistics           ;
     m_ui.menuHelp                        = ui->menuHelp                       ;
