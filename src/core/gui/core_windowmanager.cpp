@@ -41,6 +41,7 @@
 #include "statistics/core_devicestatisticsui.h"
 
 mbCoreWindowManager::Strings::Strings() :
+    prefixViewMode(QStringLiteral("view:")),
     prefixDataView(QStringLiteral("dat:")),
     prefixPortStatistics(QStringLiteral("pstat:")),
     prefixDeviceStatistics(QStringLiteral("dstat:"))
@@ -239,7 +240,17 @@ QByteArray mbCoreWindowManager::saveWindowsState()
     windowState    := int32                               // Qt::WindowState flags
     geometry       := int32 x + int32 y + int32 w + int32 h    
     */
+    const Strings &s = Strings::instance();
+
     mbCoreBinaryWriter writer;
+    QString name = s.prefixViewMode;
+    int windowViewMode = this->viewMode();
+    QRect dummyGeometry;
+
+    writer.write(name);
+    writer.write(windowViewMode);
+    writer.write(dummyGeometry);
+
     Q_FOREACH (QMdiSubWindow *sw, m_area->subWindowList(QMdiArea::StackingOrder))
     {
         saveWindowStateInner(writer, getMdiSubWindowNameWithPrefix(sw), sw);
@@ -267,6 +278,29 @@ bool mbCoreWindowManager::restoreWindowsState(const QByteArray &v)
     if (p)
     {
         mbCoreBinaryReader reader(v);
+        QString name;
+        int windowViewMode;
+        QRect dummyGeometry;
+        // Try to retrieve view mode
+        if (reader.read(name) && reader.read(windowViewMode) && reader.read(dummyGeometry))
+        {
+            const Strings &s = Strings::instance();
+
+            if (name == s.prefixViewMode)
+            {
+                switch (windowViewMode)
+                {
+                case QMdiArea::TabbedView:
+                    this->setViewMode(QMdiArea::TabbedView);
+                    break;
+                default:
+                    this->setViewMode(QMdiArea::SubWindowView);
+                    break;
+                }
+            }
+            else // For backward compatibility with v0.4 and older
+                reader.reset();
+        }
         while (reader.isProcessing())
         {
             if (!restoreWindowStateInner(reader))
