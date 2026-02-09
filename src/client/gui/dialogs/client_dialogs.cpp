@@ -35,7 +35,7 @@
 mbClientDialogs::mbClientDialogs(QWidget *parent) :
     mbCoreDialogs (parent)
 {
-    m_projectFilter = QStringLiteral("Client Project (*.pjc)");
+    m_projectFilter = QStringLiteral("Client Project (*.mbc)");
     m_settings = new mbClientDialogSettings(parent);
     m_port = new mbClientDialogPort(parent);
     m_device = new mbClientDialogDevice(parent);

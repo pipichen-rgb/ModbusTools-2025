@@ -191,11 +191,11 @@ Main menu provides access to all the features of the program. It consists of:
 The `File` menu is intended for working with the project file and includes submenus:
 * `New...` - open `Project`-dialog to create new project;
 * `Open...` - open project from file that defined with standard open dialog. 
-Standard file extension for client project is `.pjc`;
+Standard file extension for client project is `.mbc`;
 * `Recent` - contain list of recent opened projects and `Clear` button to clear the list. 
-* `Save` - save project in previously defined file. Standard file extension for client project is `.pjc`;
+* `Save` - save project in previously defined file. Standard file extension for client project is `.mbc`;
 * `Save As...` - save project in file that defined with standard save dialog. 
-Standard file extension for client project is `.pjc`;
+Standard file extension for client project is `.mbc`;
 * `Edit...` - open `Project`-dialog to edit current project parameters;
 * `Import Project...` - unites current project with the imported one;
 * `Quit` - ends current application;

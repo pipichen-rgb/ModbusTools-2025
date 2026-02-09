@@ -341,11 +341,11 @@ Main menu provides access to all the features of the program. It consists of:
 The `File` menu is intended for working with the project file and includes submenus:
 * `New...` - open `Project`-dialog to create new project;
 * `Open...` - open project from file that defined with standard open dialog. 
-Standard file extension for server project is `.pjc`;
+Standard file extension for server project is `.mbs`;
 * `Recent` - contain list of recent opened projects and `Clear` button to clear the list. 
-* `Save` - save project in previously defined file. Standard file extension for server project is `.pjc`;
+* `Save` - save project in previously defined file. Standard file extension for server project is `.mbs`;
 * `Save As...` - save project in file that defined with standard save dialog.
-Standard file extension for server project is `.pjc`;
+Standard file extension for server project is `.mbs`;
 * `Edit...` - open `Project`-dialog to edit current project parameters;
 * `Import Project...` - unites current project with the imported one;
 * `Info...` - open `ProjectInfo`-dialog;
@@ -845,7 +845,7 @@ single project or for different projects.
 
 By default server add directory `<your_bin_folder>/script/server` into import path.
 
-Also current folder (where `*.pjs` project file is located) is added into import path.
+Also current folder (where `*.mbs` project file is located) is added into import path.
 
 ## Script Modules (v0.4.3)
 

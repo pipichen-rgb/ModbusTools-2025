@@ -38,7 +38,7 @@
 
 mbServerDialogs::mbServerDialogs(QWidget *parent) : mbCoreDialogs (parent)
 {
-    m_projectFilter = QStringLiteral("Server Project (*.pjs)");
+    m_projectFilter = QStringLiteral("Server Project (*.mbs)");
     m_settings = new mbServerDialogSettings(parent);
     m_port = new mbServerDialogPort(parent);
     m_device = new mbServerDialogDevice(parent);
