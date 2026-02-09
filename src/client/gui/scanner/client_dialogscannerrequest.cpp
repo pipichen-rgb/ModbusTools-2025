@@ -95,7 +95,7 @@ mbClientDialogScannerRequest::mbClientDialogScannerRequest(QWidget *parent) :
     cmb->setCurrentIndex(2);
 
     cmb = ui->cmbDiagnSubfunction;
-    connect(cmb, SIGNAL(currentIndexChanged(int)), this, SLOT(setCurrentDiagnSubfuncIndex(int)));
+    //connect(cmb, SIGNAL(currentIndexChanged(int)), this, SLOT(setCurrentDiagnSubfuncNum(int)));
     Q_FOREACH (auto funcNum, m_diagnSubfuncNums)
     {
         cmb->addItem(QString("%1 - %2")
@@ -289,6 +289,13 @@ uint16_t mbClientDialogScannerRequest::getCurrentDiagnSubfuncNum() const
 
 void mbClientDialogScannerRequest::setCurrentFuncNum(uint8_t funcNum)
 {
+    if (getCurrentFuncNum() != funcNum)
+    {
+        int index = m_funcNums.indexOf(funcNum);
+        if (index < 0)
+            return;
+        ui->cmbFunction->setCurrentIndex(index);
+    }
     switch(funcNum)
     {
     case MBF_READ_COILS:
