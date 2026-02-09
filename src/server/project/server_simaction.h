@@ -49,7 +49,7 @@ public:
         const QString period           ;
         const QString comment          ;
         const QString actionType       ;
-        const QString byteOrder        ;
+        const QString swapBytes        ;
         const QString registerOrder    ;
         const QString extended         ;
         const QString incrementValue   ;
@@ -75,7 +75,7 @@ public:
         const int               period           ;
         const QString           comment          ;
         const ActionType        actionType       ;
-        const mb::DataOrder     byteOrder        ;
+        const mb::SwapData     swapBytes        ;
         const mb::RegisterOrder registerOrder    ;
         const int               incrementValue   ;
         const int               incrementMin     ;
@@ -130,10 +130,10 @@ public:
     int length() const;
     inline int count() const { return length(); }
 
-    inline mb::DataOrder byteOrder() const { return m_byteOrder; }
-    inline void setByteOrder(mb::DataOrder order) { m_byteOrder = order; }
-    QString byteOrderStr() const;
-    void setByteOrderStr(const QString& order);
+    inline mb::SwapData swapBytes() const { return m_swapBytes; }
+    inline void setSwapBytes(mb::SwapData order) { m_swapBytes = order; }
+    QString swapBytesStr() const;
+    void setSwapBytesStr(const QString& order);
 
     inline mb::RegisterOrder registerOrder() const { return m_registerOrder; }
     inline void setRegisterOrder(mb::RegisterOrder registerOrder) { m_registerOrder = registerOrder; }
@@ -250,7 +250,7 @@ private:
     mb::DataType m_dataType;
     int m_period;
     QString m_comment;
-    mb::DataOrder m_byteOrder;
+    mb::SwapData m_swapBytes;
     mb::RegisterOrder m_registerOrder;
 };
 

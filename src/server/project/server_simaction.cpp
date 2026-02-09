@@ -32,7 +32,7 @@ mbServerSimAction::Strings::Strings() :
     period           (QStringLiteral("period")),
     comment          (QStringLiteral("comment")),
     actionType       (QStringLiteral("actionType")),
-    byteOrder        (QStringLiteral("byteOrder")),
+    swapBytes        (QStringLiteral("swapBytes")),
     registerOrder    (QStringLiteral("registerOrder")),
     extended         (QStringLiteral("extended")),
     incrementValue   (QStringLiteral("incrementValue")),
@@ -61,7 +61,7 @@ mbServerSimAction::Defaults::Defaults() :
     period           (1000),
     comment          (QString()),
     actionType       (Increment),
-    byteOrder        (mb::LessSignifiedFirst),
+    swapBytes        (mb::SwapNo),
     registerOrder    (mb::R0R1R2R3),
     incrementValue   (1),
     incrementMin     (0),
@@ -92,7 +92,7 @@ mbServerSimAction::mbServerSimAction(QObject *parent) : QObject(parent)
     m_period = d.period;
     m_dataType = d.dataType;
     setNewActionExtended(d.actionType);
-    m_byteOrder = d.byteOrder;
+    m_swapBytes = d.swapBytes;
     m_registerOrder = d.registerOrder;
 
 }
@@ -153,7 +153,7 @@ MBSETTINGS mbServerSimAction::commonSettings() const
     p[s.period       ] = period();
     p[s.comment      ] = comment();
     p[s.actionType   ] = mb::enumKey(actionType());
-    p[s.byteOrder    ] = mb::enumDataOrderKey(byteOrder());
+    p[s.swapBytes    ] = mb::enumSwapDataKey(swapBytes());
     p[s.registerOrder] = mb::toString(registerOrder());
     p[s.extended     ] = extendedSettingsStr();
     return p;
@@ -213,12 +213,12 @@ void mbServerSimAction::setCommonSettings(const MBSETTINGS &settings)
             setActionType(v);
     }
 
-    it = settings.find(s.byteOrder);
+    it = settings.find(s.swapBytes);
     if (it != end)
     {
-        mb::DataOrder v = mb::enumDataOrderValue(it.value(), &ok);
+        mb::SwapData v = mb::enumSwapDataValue(it.value(), &ok);
         if (ok)
-            setByteOrder(v);
+            setSwapBytes(v);
     }
 
     it = settings.find(s.registerOrder);
@@ -300,17 +300,17 @@ int mbServerSimAction::length() const
     }
 }
 
-QString mbServerSimAction::byteOrderStr() const
+QString mbServerSimAction::swapBytesStr() const
 {
-    return mb::enumDataOrderKey(m_byteOrder);
+    return mb::enumSwapDataKey(m_swapBytes);
 }
 
-void mbServerSimAction::setByteOrderStr(const QString &order)
+void mbServerSimAction::setSwapBytesStr(const QString &order)
 {
     bool ok;
-    mb::DataOrder k = mb::enumDataOrderValue(order, &ok);
+    mb::SwapData k = mb::enumSwapDataValue(order, &ok);
     if (ok)
-        m_byteOrder = k;
+        m_swapBytes = k;
 }
 
 QString mbServerSimAction::registerOrderStr() const

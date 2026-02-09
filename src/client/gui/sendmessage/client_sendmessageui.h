@@ -210,7 +210,7 @@ private:
         uint16_t             maxReadInputRegisters    ;
         uint16_t             maxWriteMultipleCoils    ;
         uint16_t             maxWriteMultipleRegisters;
-        mb::DataOrder        byteOrder                ;
+        mb::SwapData         swapBytes                ;
         mb::RegisterOrder    registerOrder            ;
         mb::DigitalFormat    byteArrayFormat          ;
         mb::StringEncoding   stringEncoding           ;

@@ -64,12 +64,12 @@ public:
 private:
     void fillForm(const MBSETTINGS &settings);
     void fillFormActionType(const MBSETTINGS &settings);
-    void fillFormByteOrder(mb::DataOrder e, mbServerDevice *dev = nullptr);
+    void fillFormSwapBytes(mb::SwapData e, mbServerDevice *dev = nullptr);
     void fillFormRegisterOrder(mb::RegisterOrder e, mbServerDevice *dev = nullptr);
 
     void fillData(MBSETTINGS &settings);
     void fillDataActionType(MBSETTINGS &settings);
-    void fillDataByteOrder(MBSETTINGS &settings);
+    void fillDataSwapBytes(MBSETTINGS &settings);
     void fillDataRegisterOrder(MBSETTINGS &settings);
 
 private:

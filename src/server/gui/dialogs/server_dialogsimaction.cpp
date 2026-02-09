@@ -120,8 +120,8 @@ mbServerDialogSimAction::mbServerDialogSimAction(QWidget *parent) :
 
     //--------------------- ADVANCED ---------------------
     // Byte Order
-    cmb = ui->cmbByteOrder;
-    ls = mb::enumDataOrderKeyList();
+    cmb = ui->cmbSwapBytes;
+    ls = mb::enumSwapDataKeyList();
     Q_FOREACH (const QString &s, ls)
         cmb->addItem(s);
     cmb->setCurrentIndex(0);
@@ -170,7 +170,7 @@ MBSETTINGS mbServerDialogSimAction::cachedSettings() const
     m[prefix+vs.copySourceAddress] = mb::toInt(adrCopy);
     m[prefix+vs.copySize         ] = ui->spCopySize->value();
     m[prefix+vs.actionType       ] = ui->cmbActionType->currentText();
-    m[prefix+vs.byteOrder        ] = ui->cmbByteOrder->currentText();
+    m[prefix+vs.swapBytes        ] = ui->cmbSwapBytes->currentText();
     m[prefix+vs.registerOrder    ] = ui->cmbRegisterOrder->currentText();
     m[prefix+ds.count            ] = ui->spCount->value();
 
@@ -213,7 +213,7 @@ void mbServerDialogSimAction::setCachedSettings(const MBSETTINGS &m)
     it = m.find(prefix+vs.randomMax        ); if (it != end) ui->lnActionRandomMax->setText(it.value().toString());
     it = m.find(prefix+vs.copySize         ); if (it != end) ui->spCopySize->setValue(it.value().toInt());
     it = m.find(prefix+vs.actionType       ); if (it != end) ui->cmbActionType->setCurrentText(mb::enumKey(mb::enumValue<mbServerSimAction::ActionType>(it.value())));
-    it = m.find(prefix+vs.byteOrder        ); if (it != end) fillFormByteOrder(mb::enumDataOrderValue(it.value()));
+    it = m.find(prefix+vs.swapBytes        ); if (it != end) fillFormSwapBytes(mb::enumSwapDataValue(it.value()));
     it = m.find(prefix+vs.registerOrder    ); if (it != end) fillFormRegisterOrder(mb::toRegisterOrder(it.value()));
 
     it = m.find(prefix+ds.count            ); if (it != end) ui->spCount->setValue    (it.value().toInt());
@@ -291,11 +291,11 @@ void mbServerDialogSimAction::fillForm(const MBSETTINGS &settings)
 
         fillFormActionType(settings);
 
-        it = settings.find(sItem.byteOrder);
+        it = settings.find(sItem.swapBytes);
         if (it != end)
         {
-            mb::DataOrder byteOrder = mb::enumDataOrderValue(it.value());
-            fillFormByteOrder(byteOrder);
+            mb::SwapData swapBytes = mb::enumSwapDataValue(it.value());
+            fillFormSwapBytes(swapBytes);
         }
 
         it = settings.find(sItem.registerOrder);
@@ -352,9 +352,9 @@ void mbServerDialogSimAction::fillFormActionType(const MBSETTINGS &settings)
     ui->cmbActionType->setCurrentText(mb::enumKey<mbServerSimAction::ActionType>(t));
 }
 
-void mbServerDialogSimAction::fillFormByteOrder(mb::DataOrder e, mbServerDevice *dev)
+void mbServerDialogSimAction::fillFormSwapBytes(mb::SwapData e, mbServerDevice *dev)
 {
-    QComboBox* cmb = ui->cmbByteOrder;
+    QComboBox* cmb = ui->cmbSwapBytes;
     if (!dev)
     {
         mbServerProject *project = mbServer::global()->project();
@@ -363,15 +363,15 @@ void mbServerDialogSimAction::fillFormByteOrder(mb::DataOrder e, mbServerDevice 
     }
     if (dev)
     {
-        QString s = QString("Default(%1)").arg(mb::toString(dev->byteOrder()));
+        QString s = QString("Default(%1)").arg(mb::toString(dev->swapBytes()));
         cmb->setItemText(0, s);
     }
     else
-        cmb->setItemText(0, mb::enumDataOrderKey(mb::DefaultOrder));
-    if (e == mb::DefaultOrder)
+        cmb->setItemText(0, mb::enumSwapDataKey(mb::DefaultSwapData));
+    if (e == mb::DefaultSwapData)
         cmb->setCurrentIndex(0);
     else
-        cmb->setCurrentText(mb::enumDataOrderKey(e));
+        cmb->setCurrentText(mb::enumSwapDataKey(e));
 }
 
 void mbServerDialogSimAction::fillFormRegisterOrder(mb::RegisterOrder e, mbServerDevice *dev)
@@ -413,7 +413,7 @@ void mbServerDialogSimAction::fillData(MBSETTINGS &settings)
     settings[Strings::instance().count] = ui->spCount->value();
 
     fillDataActionType   (settings);
-    fillDataByteOrder    (settings);
+    fillDataSwapBytes    (settings);
     fillDataRegisterOrder(settings);
 }
 
@@ -449,9 +449,9 @@ void mbServerDialogSimAction::fillDataActionType(MBSETTINGS &settings)
     settings[sItem.actionType] = t;
 }
 
-void mbServerDialogSimAction::fillDataByteOrder(MBSETTINGS &settings)
+void mbServerDialogSimAction::fillDataSwapBytes(MBSETTINGS &settings)
 {
-    settings[mbServerSimAction::Strings::instance().byteOrder] = mb::enumDataOrderValue(ui->cmbByteOrder->currentText());
+    settings[mbServerSimAction::Strings::instance().swapBytes] = mb::enumSwapDataValue(ui->cmbSwapBytes->currentText());
 }
 
 void mbServerDialogSimAction::fillDataRegisterOrder(MBSETTINGS &settings)
@@ -493,9 +493,9 @@ void mbServerDialogSimAction::deviceChanged(int i)
         return;
     mbServerDevice *dev = project->device(i);
 
-    mb::DataOrder bo = mb::enumDataOrderValueByIndex(ui->cmbRegisterOrder->currentIndex());
+    mb::SwapData bo = mb::enumSwapDataValueByIndex(ui->cmbRegisterOrder->currentIndex());
     mb::RegisterOrder ro = mb::enumRegisterOrderValueByIndex(ui->cmbRegisterOrder->currentIndex());
-    fillFormByteOrder(bo, dev);
+    fillFormSwapBytes(bo, dev);
     fillFormRegisterOrder(ro, dev);
 }
 

@@ -392,16 +392,16 @@ enum Format
 Q_ENUM_NS(Format)
 MB_ENUM_DECL_EXPORT(Format)
 
-enum DataOrder
+enum SwapData
 {
-    DefaultOrder = -1,
-    LessSignifiedFirst,
-    MostSignifiedFirst
+    DefaultSwapData = -1,
+    SwapNo,
+    SwapYes
 };
-Q_ENUM_NS(DataOrder)
-MB_ENUM_DECL_EXPORT(DataOrder)
+Q_ENUM_NS(SwapData)
+MB_ENUM_DECL_EXPORT(SwapData)
 
-inline QString toString(DataOrder order) { return enumDataOrderKey(order); }
+inline QString toString(SwapData order) { return enumSwapDataKey(order); }
 
 enum RegisterOrder
 {
@@ -418,7 +418,7 @@ MB_EXPORT RegisterOrder toRegisterOrder(const QString &s, bool *ok = nullptr);
 MB_EXPORT RegisterOrder toRegisterOrder(const QVariant &v, bool *ok = nullptr);
 MB_EXPORT RegisterOrder toRegisterOrder(const QVariant &v, RegisterOrder defaultValue);
 inline QString toString(RegisterOrder order) { return enumRegisterOrderKey(order); }
-inline DataOrder toDataOrder(RegisterOrder order) { if (order == R3R2R1R0 || order == R1R0R3R2) return MostSignifiedFirst; return LessSignifiedFirst; }
+inline SwapData toSwapData(RegisterOrder order) { if (order == R3R2R1R0 || order == R1R0R3R2) return SwapYes; return SwapNo; }
 
 enum StringLengthType
 {
@@ -659,7 +659,7 @@ inline void swapRegisters64(void *buff, RegisterOrder order)
 MB_EXPORT QByteArray toByteArray(const QVariant &v,
                                  mb::Format format,
                                  Modbus::MemoryType memoryType,
-                                 mb::DataOrder byteOrder,
+                                 mb::SwapData swapBytes,
                                  mb::RegisterOrder registerOrder,
                                  mb::DigitalFormat byteArrayFormat,
                                  const mb::StringEncoding &stringEncoding,
@@ -670,7 +670,7 @@ MB_EXPORT QByteArray toByteArray(const QVariant &v,
 MB_EXPORT QVariant toVariant(const QByteArray &v,
                              mb::Format format,
                              Modbus::MemoryType memoryType,
-                             mb::DataOrder byteOrder,
+                             mb::SwapData swapBytes,
                              mb::RegisterOrder registerOrder,
                              mb::DigitalFormat byteArrayFormat,
                              const mb::StringEncoding &stringEncoding,

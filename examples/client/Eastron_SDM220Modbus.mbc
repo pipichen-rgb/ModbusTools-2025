@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="0.5.0" editnum="1">
+<project version="0.5.0" editnum="3">
     <name>Eastron SDM220Modbus</name>
     <author>serhmarch</author>
     <comment>Project to work with energy meter Eastron SDM220Modbus.
@@ -11,28 +11,27 @@ So this setting was defined in Device Settings (Advanced&gt;Register Order).
 All register read requests and data write requests must specify an even number of registers. Attempts to read/write an odd number of registers prompt the SDM220Modbus smart meter to return a Modbus Protocol exception message.</comment>
     <ports>
         <port>
-            <timeout>3000</timeout>
-            <name>Port</name>
-            <host>localhost</host>
-            <type>RTU</type>
-            <dataBits>8</dataBits>
-            <timeoutInterByte>50</timeoutInterByte>
-            <serialPortName>COM3</serialPortName>
-            <parity>No</parity>
-            <port>502</port>
             <flowControl>No</flowControl>
+            <port>502</port>
+            <name>Port</name>
             <maxconn>10</maxconn>
-            <isBroadcastEnabled>true</isBroadcastEnabled>
-            <baudRate>9600</baudRate>
+            <type>RTU</type>
+            <serialPortName>COM3</serialPortName>
             <stopBits>1</stopBits>
+            <isBroadcastEnabled>true</isBroadcastEnabled>
+            <host>localhost</host>
             <timeoutFirstByte>1000</timeoutFirstByte>
+            <baudRate>9600</baudRate>
+            <timeoutInterByte>50</timeoutInterByte>
+            <dataBits>8</dataBits>
+            <parity>No</parity>
+            <timeout>3000</timeout>
         </port>
     </ports>
     <devices>
         <device>
             <byteArrayFormat>Hex</byteArrayFormat>
             <byteArraySeparator>\s</byteArraySeparator>
-            <byteOrder>LessSignifiedFirst</byteOrder>
             <maxReadCoils>2040</maxReadCoils>
             <maxReadDiscreteInputs>2040</maxReadDiscreteInputs>
             <maxReadHoldingRegisters>127</maxReadHoldingRegisters>
@@ -44,6 +43,7 @@ All register read requests and data write requests must specify an even number o
             <registerOrder>R3R2R1R0</registerOrder>
             <stringEncoding>UTF-8</stringEncoding>
             <stringLengthType>ZerroEnded</stringLengthType>
+            <swapBytes>SwapNo</swapBytes>
             <unit>1</unit>
         </device>
     </devices>
@@ -58,13 +58,13 @@ All register read requests and data write requests must specify an even number o
                 <address>300001</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Voltage (Volts)</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -73,13 +73,13 @@ All register read requests and data write requests must specify an even number o
                 <address>300007</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Current (Amps)</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -88,13 +88,13 @@ All register read requests and data write requests must specify an even number o
                 <address>300013</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Active Power (Watts)</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -103,13 +103,13 @@ All register read requests and data write requests must specify an even number o
                 <address>300019</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Apparent Power (VoltAmps)</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -118,13 +118,13 @@ All register read requests and data write requests must specify an even number o
                 <address>300025</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Reactive Power (VAr)</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -133,13 +133,13 @@ All register read requests and data write requests must specify an even number o
                 <address>300031</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>PF (Power Factor)</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -148,13 +148,13 @@ All register read requests and data write requests must specify an even number o
                 <address>300037</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Phase Angle (Degree)</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -163,13 +163,13 @@ All register read requests and data write requests must specify an even number o
                 <address>300071</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Frequency (Hz)</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -178,13 +178,13 @@ All register read requests and data write requests must specify an even number o
                 <address>300073</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Import Active Energy (kWh)</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -193,13 +193,13 @@ All register read requests and data write requests must specify an even number o
                 <address>300075</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Export Active Energy (kWh)</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -208,13 +208,13 @@ All register read requests and data write requests must specify an even number o
                 <address>300077</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Import Reactive Energy (rVArh)</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -223,13 +223,13 @@ All register read requests and data write requests must specify an even number o
                 <address>300079</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Export Reactive Energy (rVArh)</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -238,13 +238,13 @@ All register read requests and data write requests must specify an even number o
                 <address>300343</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Total Active Energy (kWh)</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -253,13 +253,13 @@ All register read requests and data write requests must specify an even number o
                 <address>300345</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Total Reactive Energy (kWh)</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -268,13 +268,13 @@ All register read requests and data write requests must specify an even number o
                 <address>400013</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Relay Pulse Width:60;100;200 ms</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -283,13 +283,13 @@ All register read requests and data write requests must specify an even number o
                 <address>400019</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Parity+Stop:0=N1;1=E1;2=O1;3=N2</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -298,13 +298,13 @@ All register read requests and data write requests must specify an even number o
                 <address>400021</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Unit:1-247</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -313,13 +313,13 @@ All register read requests and data write requests must specify an even number o
                 <address>400029</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Baud:0=2400;1=4800;2=9600;5=19200</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -328,13 +328,13 @@ All register read requests and data write requests must specify an even number o
                 <address>400087</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Pulse1 output (look ref for details)</comment>
                 <format>Float</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -343,13 +343,13 @@ All register read requests and data write requests must specify an even number o
                 <address>462721</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Interal-Slide-Scroll-Backlight: BCD (look ref)</comment>
                 <format>Hex32</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>00000000</value>
                 <variableLength>20</variableLength>
             </item>
@@ -358,13 +358,13 @@ All register read requests and data write requests must specify an even number o
                 <address>463761</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Pulse1 const (kVArh/imp):0=0.001;1=0.01;2=0.1;3=1</comment>
                 <format>Hex32</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>00000000</value>
                 <variableLength>20</variableLength>
             </item>
@@ -373,13 +373,13 @@ All register read requests and data write requests must specify an even number o
                 <address>463776</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Measure (total):1=import;2=imp+exp;3=imp-exp</comment>
                 <format>Hex32</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>00000000</value>
                 <variableLength>20</variableLength>
             </item>

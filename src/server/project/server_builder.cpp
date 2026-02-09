@@ -66,7 +66,7 @@ QStringList mbServerBuilder::csvSimActionAttributes() const
                          << s.period
                          << s.comment
                          << s.actionType
-                         << s.byteOrder
+                         << s.swapBytes
                          << s.registerOrder
                          << s.extended
         ;
@@ -281,7 +281,7 @@ mbServerSimAction *mbServerBuilder::toSimAction(mbServerDomSimAction *dom)
     action->setPeriod(dom->period());
     action->setComment(dom->comment());
     action->setActionTypeStr(dom->actionType());
-    action->setByteOrderStr(dom->byteOrder());
+    action->setSwapBytesStr(dom->swapBytes());
     action->setRegisterOrderStr(dom->registerOrder());
     action->setExtendedSettingsStr(dom->extended());
     return action;
@@ -329,7 +329,7 @@ mbServerDomSimAction *mbServerBuilder::toDomSimAction(mbServerSimAction *action)
     dom->setPeriod(action->period());
     dom->setComment(action->comment());
     dom->setActionType(action->actionTypeStr());
-    dom->setByteOrder(action->byteOrderStr());
+    dom->setSwapBytes(action->swapBytesStr());
     dom->setRegisterOrder(action->registerOrderStr());
     dom->setExtended(action->extendedSettingsStr());
     return dom;

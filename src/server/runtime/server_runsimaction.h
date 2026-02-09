@@ -56,7 +56,7 @@ protected:
     mb::Address m_address;
     int m_period;
     qint64 m_last;
-    mb::DataOrder m_byteOrder;
+    mb::SwapData m_swapBytes;
     mb::RegisterOrder m_registerOrder;
 };
 

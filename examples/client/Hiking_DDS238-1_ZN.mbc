@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="0.5.0" editnum="1">
+<project version="0.5.0" editnum="2">
     <name>Hiking_DDS238-1_ZN</name>
     <author>serhmarch</author>
     <comment>Project to work with energy meter Hiking DDS238-1 ZN. 
@@ -8,28 +8,27 @@ So this setting was defined in Device Settings (Advanced&gt;Register Order)
 </comment>
     <ports>
         <port>
-            <timeout>3000</timeout>
-            <name>Port</name>
-            <host>localhost</host>
-            <type>RTU</type>
-            <dataBits>8</dataBits>
-            <timeoutInterByte>50</timeoutInterByte>
-            <serialPortName>COM3</serialPortName>
-            <parity>No</parity>
-            <port>502</port>
             <flowControl>No</flowControl>
+            <port>502</port>
+            <name>Port</name>
             <maxconn>10</maxconn>
-            <isBroadcastEnabled>true</isBroadcastEnabled>
-            <baudRate>9600</baudRate>
+            <type>RTU</type>
+            <serialPortName>COM3</serialPortName>
             <stopBits>1</stopBits>
+            <isBroadcastEnabled>true</isBroadcastEnabled>
+            <host>localhost</host>
             <timeoutFirstByte>1000</timeoutFirstByte>
+            <baudRate>9600</baudRate>
+            <timeoutInterByte>50</timeoutInterByte>
+            <dataBits>8</dataBits>
+            <parity>No</parity>
+            <timeout>3000</timeout>
         </port>
     </ports>
     <devices>
         <device>
             <byteArrayFormat>Hex</byteArrayFormat>
             <byteArraySeparator>\s</byteArraySeparator>
-            <byteOrder>LessSignifiedFirst</byteOrder>
             <maxReadCoils>2040</maxReadCoils>
             <maxReadDiscreteInputs>2040</maxReadDiscreteInputs>
             <maxReadHoldingRegisters>127</maxReadHoldingRegisters>
@@ -41,6 +40,7 @@ So this setting was defined in Device Settings (Advanced&gt;Register Order)
             <registerOrder>R3R2R1R0</registerOrder>
             <stringEncoding>UTF-8</stringEncoding>
             <stringLengthType>ZerroEnded</stringLengthType>
+            <swapBytes>SwapNo</swapBytes>
             <unit>1</unit>
         </device>
     </devices>
@@ -55,13 +55,13 @@ So this setting was defined in Device Settings (Advanced&gt;Register Order)
                 <address>400001</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Total Energy (daW*h, W*h*10)</comment>
                 <format>UDec32</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>48224</value>
                 <variableLength>20</variableLength>
             </item>
@@ -70,13 +70,13 @@ So this setting was defined in Device Settings (Advanced&gt;Register Order)
                 <address>400009</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Export Energy (daW*h, W*h*10)</comment>
                 <format>UDec32</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -85,13 +85,13 @@ So this setting was defined in Device Settings (Advanced&gt;Register Order)
                 <address>400011</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Import Energy (daW*h, W*h*10)</comment>
                 <format>UDec32</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>48223</value>
                 <variableLength>20</variableLength>
             </item>
@@ -100,13 +100,13 @@ So this setting was defined in Device Settings (Advanced&gt;Register Order)
                 <address>400013</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Voltage (dV, V*10)</comment>
                 <format>UDec16</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>2257</value>
                 <variableLength>20</variableLength>
             </item>
@@ -115,13 +115,13 @@ So this setting was defined in Device Settings (Advanced&gt;Register Order)
                 <address>400014</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Current (cA, A*100)</comment>
                 <format>UDec16</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -130,13 +130,13 @@ So this setting was defined in Device Settings (Advanced&gt;Register Order)
                 <address>400015</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Active power (W)</comment>
                 <format>UDec16</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -145,13 +145,13 @@ So this setting was defined in Device Settings (Advanced&gt;Register Order)
                 <address>400016</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Reactive Power (W)</comment>
                 <format>UDec16</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -160,13 +160,13 @@ So this setting was defined in Device Settings (Advanced&gt;Register Order)
                 <address>400017</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>PF (power factor)</comment>
                 <format>UDec16</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>1000</value>
                 <variableLength>20</variableLength>
             </item>
@@ -175,13 +175,13 @@ So this setting was defined in Device Settings (Advanced&gt;Register Order)
                 <address>400018</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Frequency (cHz, Hz*100)</comment>
                 <format>UDec16</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>4999</value>
                 <variableLength>20</variableLength>
             </item>
@@ -190,13 +190,13 @@ So this setting was defined in Device Settings (Advanced&gt;Register Order)
                 <address>400022</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Octet:Hi-Unit,Lo-Baud:1=9600,2=4800,3=2400,4=1200</comment>
                 <format>Hex16</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0101</value>
                 <variableLength>20</variableLength>
             </item>
@@ -205,13 +205,13 @@ So this setting was defined in Device Settings (Advanced&gt;Register Order)
                 <address>400023</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Trip Energy (daW*h, W*h*10)</comment>
                 <format>UDec32</format>
                 <period>1000</period>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>

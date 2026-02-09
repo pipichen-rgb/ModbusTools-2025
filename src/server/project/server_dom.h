@@ -42,7 +42,7 @@ public:
         const QString comment           ;
         const QString actionType        ;
         const QString extended          ;
-        const QString byteOrder         ;
+        const QString swapBytes         ;
         const QString registerOrder     ;
 
         Strings();
@@ -79,8 +79,8 @@ public:
     inline QString extended() const { return m_extended; }
     inline void setExtended(const QString& extended) { m_extended = extended; }
 
-    inline QString byteOrder() const { return m_byte_order; }
-    inline void setByteOrder(const QString& v) { m_byte_order = v; }
+    inline QString swapBytes() const { return m_byte_order; }
+    inline void setSwapBytes(const QString& v) { m_byte_order = v; }
 
     inline QString registerOrder() const { return m_register_order; }
     inline void setRegisterOrder(const QString& v) { m_register_order = v; }

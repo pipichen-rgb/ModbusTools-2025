@@ -44,7 +44,7 @@ public:
         const QString format            ;
         const QString comment           ;
         const QString variableLength    ;
-        const QString byteOrder         ;
+        const QString swapBytes         ;
         const QString registerOrder     ;
         const QString byteArrayFormat   ;
         const QString byteArraySeparator;
@@ -62,7 +62,7 @@ public:
         const mb::Format            format                      ;
         const QString               comment                     ;
         const int                   variableLength              ;
-        const mb::DataOrder         byteOrder                   ;
+        const mb::SwapData         swapBytes                   ;
         const mb::RegisterOrder     registerOrder               ;
         const mb::DigitalFormat     byteArrayFormat             ;
         const QString               byteArraySeparator          ;
@@ -116,10 +116,10 @@ public:
     inline int variableLength() const { return m_variableLength; }
     inline void setVariableLength(int len) { m_variableLength = len; }
 
-    inline mb::DataOrder byteOrder() const { return m_byteOrder; }
-    inline void setByteOrder(mb::DataOrder order) { m_byteOrder = order; }
-    QString byteOrderStr() const;
-    void setByteOrderStr(const QString& order);
+    inline mb::SwapData swapBytes() const { return m_swapBytes; }
+    inline void setSwapBytes(mb::SwapData order) { m_swapBytes = order; }
+    QString swapBytesStr() const;
+    void setSwapBytesStr(const QString& order);
 
     inline mb::RegisterOrder registerOrder() const { return m_registerOrder; }
     inline void setRegisterOrder(mb::RegisterOrder registerOrder) { m_registerOrder = registerOrder; }
@@ -163,7 +163,7 @@ Q_SIGNALS:
     void valueChanged();
 
 protected:
-    mb::DataOrder getByteOrder() const;
+    mb::SwapData getSwapBytes() const;
     mb::RegisterOrder getRegisterOrder() const;
     mb::StringEncoding getStringEncoding() const;
     mb::StringLengthType getStringLengthType() const;
@@ -175,7 +175,7 @@ protected:
     mb::Format m_format;
     QString m_comment;
     int m_variableLength;
-    mb::DataOrder m_byteOrder;
+    mb::SwapData m_swapBytes;
     mb::RegisterOrder m_registerOrder;
     mb::DigitalFormat m_byteArrayFormat;
     QString m_byteArraySeparator;

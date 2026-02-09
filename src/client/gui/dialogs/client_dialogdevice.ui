@@ -360,12 +360,12 @@
          <item>
           <widget class="QLabel" name="label_28">
            <property name="text">
-            <string>Byte order</string>
+            <string>Swap bytes</string>
            </property>
           </widget>
          </item>
          <item>
-          <widget class="QComboBox" name="cmbByteOrder"/>
+          <widget class="QComboBox" name="cmbSwapBytes"/>
          </item>
         </layout>
        </item>

@@ -86,15 +86,15 @@ QVariantList availableFlowControl()
     return ls;
 }
 
-DataOrder getByteOrder(mbCoreDevice *device, DataOrder byteOrder)
+SwapData getSwapBytes(mbCoreDevice *device, SwapData swapBytes)
 {
-    if (byteOrder == mb::DefaultOrder)
+    if (swapBytes == mb::DefaultSwapData)
     {
-        if (device && (device->byteOrder() != mb::DefaultOrder))
-            return device->byteOrder();
-        return mbCoreDevice::Defaults::instance().byteOrder;
+        if (device && (device->swapBytes() != mb::DefaultSwapData))
+            return device->swapBytes();
+        return mbCoreDevice::Defaults::instance().swapBytes;
     }
-    return byteOrder;
+    return swapBytes;
 }
 
 RegisterOrder getRegisterOrder(mbCoreDevice *device, RegisterOrder registerOrder)

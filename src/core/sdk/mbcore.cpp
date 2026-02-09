@@ -80,7 +80,7 @@ type enum##type##ValueByIndex(int index)                                    \
 MB_ENUM_DEF(DataType)
 MB_ENUM_DEF(DigitalFormat)
 MB_ENUM_DEF(Format)
-MB_ENUM_DEF(DataOrder)
+MB_ENUM_DEF(SwapData)
 MB_ENUM_DEF(RegisterOrder)
 MB_ENUM_DEF(StringLengthType)
 
@@ -731,7 +731,7 @@ void changeByteOrder(void *data, int len)
     }
 }
 
-QByteArray toByteArray(const QVariant &value, Format format, Modbus::MemoryType memoryType, DataOrder byteOrder, RegisterOrder registerOrder, DigitalFormat byteArrayFormat, const StringEncoding &stringEncoding, StringLengthType stringLengthType, const QString &byteArraySeparator, int variableLength)
+QByteArray toByteArray(const QVariant &value, Format format, Modbus::MemoryType memoryType, SwapData swapBytes, RegisterOrder registerOrder, DigitalFormat byteArrayFormat, const StringEncoding &stringEncoding, StringLengthType stringLengthType, const QString &byteArraySeparator, int variableLength)
 {
     bool ok;
     char v[sizeof(qint64)];
@@ -775,37 +775,37 @@ QByteArray toByteArray(const QVariant &value, Format format, Modbus::MemoryType 
         break;
     case Bin32:
         *reinterpret_cast<quint32*>(v) = static_cast<quint32>(value.toString().toULong(&ok, 2));
-        if (toDataOrder(registerOrder) == MostSignifiedFirst)
+        if (toSwapData(registerOrder) == SwapYes)
             swapRegisters32(v);
         sz = sizeof(quint32);
         break;
     case Oct32:
         *reinterpret_cast<quint32*>(v) = static_cast<quint32>(value.toString().toULong(&ok, 8));
-        if (toDataOrder(registerOrder) == MostSignifiedFirst)
+        if (toSwapData(registerOrder) == SwapYes)
             swapRegisters32(v);
         sz = sizeof(quint32);
         break;
     case Dec32:
         *reinterpret_cast<qint32*>(v) = static_cast<qint32>(value.toInt());
-        if (toDataOrder(registerOrder) == MostSignifiedFirst)
+        if (toSwapData(registerOrder) == SwapYes)
             swapRegisters32(v);
         sz = sizeof(qint32);
         break;
     case UDec32:
         *reinterpret_cast<quint32*>(v) = static_cast<quint32>(value.toUInt());
-        if (toDataOrder(registerOrder) == MostSignifiedFirst)
+        if (toSwapData(registerOrder) == SwapYes)
             swapRegisters32(v);
         sz = sizeof(quint32);
         break;
     case Hex32:
         *reinterpret_cast<quint32*>(v) = static_cast<quint32>(value.toString().toULong(&ok, 16));
-        if (toDataOrder(registerOrder) == MostSignifiedFirst)
+        if (toSwapData(registerOrder) == SwapYes)
             swapRegisters32(v);
         sz = sizeof(quint32);
         break;
     case Float:
         *reinterpret_cast<float*>(v) = value.toFloat();
-        if (toDataOrder(registerOrder) == MostSignifiedFirst)
+        if (toSwapData(registerOrder) == SwapYes)
             swapRegisters32(v);
         sz = sizeof(float);
         break;
@@ -934,19 +934,19 @@ QByteArray toByteArray(const QVariant &value, Format format, Modbus::MemoryType 
 
     if (data.length() > 0)
     {
-        if (byteOrder == MostSignifiedFirst)
+        if (swapBytes == SwapYes)
             changeByteOrder(data.data(), data.length());
     }
     return data;
 }
 
-// TODO: byteOrder count
-QVariant toVariant(const QByteArray &data, Format format, Modbus::MemoryType memoryType, DataOrder byteOrder, RegisterOrder registerOrder, DigitalFormat byteArrayFormat, const StringEncoding &stringEncoding, StringLengthType stringLengthType, const QString &byteArraySeparator, int variableLength)
+// TODO: swapBytes count
+QVariant toVariant(const QByteArray &data, Format format, Modbus::MemoryType memoryType, SwapData swapBytes, RegisterOrder registerOrder, DigitalFormat byteArrayFormat, const StringEncoding &stringEncoding, StringLengthType stringLengthType, const QString &byteArraySeparator, int variableLength)
 {
     QVariant value;
     const void *buff = data.constData();
     QByteArray newData = data;
-    if (byteOrder == MostSignifiedFirst)
+    if (swapBytes == SwapYes)
     {
         newData = QByteArray(reinterpret_cast<const char*>(buff), data.length()); // TODO:
         changeByteOrder(newData.data(), newData.length());
@@ -984,7 +984,7 @@ QVariant toVariant(const QByteArray &data, Format format, Modbus::MemoryType mem
     case Bin32:
     {
         quint32 v = *reinterpret_cast<const quint32*>(buff);
-        if (toDataOrder(registerOrder) == MostSignifiedFirst)
+        if (toSwapData(registerOrder) == SwapYes)
             swapRegisters32(&v);
         value = toBinString(v);
     }
@@ -992,7 +992,7 @@ QVariant toVariant(const QByteArray &data, Format format, Modbus::MemoryType mem
     case Oct32:
     {
         quint32 v = *reinterpret_cast<const quint32*>(buff);
-        if (toDataOrder(registerOrder) == MostSignifiedFirst)
+        if (toSwapData(registerOrder) == SwapYes)
             swapRegisters32(&v);
         value = toOctString(v);
     }
@@ -1000,7 +1000,7 @@ QVariant toVariant(const QByteArray &data, Format format, Modbus::MemoryType mem
     case Dec32:
     {
         qint32 v = *reinterpret_cast<const qint32*>(buff);
-        if (toDataOrder(registerOrder) == MostSignifiedFirst)
+        if (toSwapData(registerOrder) == SwapYes)
             swapRegisters32(&v);
         value = QVariant(v);
     }
@@ -1008,7 +1008,7 @@ QVariant toVariant(const QByteArray &data, Format format, Modbus::MemoryType mem
     case UDec32:
     {
         quint32 v = *reinterpret_cast<const quint32*>(buff);
-        if (toDataOrder(registerOrder) == MostSignifiedFirst)
+        if (toSwapData(registerOrder) == SwapYes)
             swapRegisters32(&v);
         value = QVariant(v);
     }
@@ -1016,7 +1016,7 @@ QVariant toVariant(const QByteArray &data, Format format, Modbus::MemoryType mem
     case Hex32:
     {
         quint32 v = *reinterpret_cast<const quint32*>(buff);
-        if (toDataOrder(registerOrder) == MostSignifiedFirst)
+        if (toSwapData(registerOrder) == SwapYes)
             swapRegisters32(&v);
         value = toHexString(v);
     }
@@ -1024,7 +1024,7 @@ QVariant toVariant(const QByteArray &data, Format format, Modbus::MemoryType mem
     case Float:
     {
         float v = *reinterpret_cast<const float*>(buff);
-        if (toDataOrder(registerOrder) == MostSignifiedFirst)
+        if (toSwapData(registerOrder) == SwapYes)
             swapRegisters32(&v);
         value = QVariant(v);
     }
@@ -1287,17 +1287,17 @@ RegisterOrder toRegisterOrder(const QString &s, bool *ok)
     RegisterOrder ro = enumRegisterOrderValue(s, &okInner);
     if (!okInner)
     {
-        if (s == QStringLiteral("DefaultOrder"))
+        if (s == QStringLiteral("DefaultSwapData"))
         {
             ro = DefaultRegisterOrder;
             okInner = true;
         }
-        else if (s == QStringLiteral("LessSignifiedFirst"))
+        else if (s == QStringLiteral("SwapNo"))
         {
             ro = R0R1R2R3;
             okInner = true;
         }
-        else if (s == QStringLiteral("MostSignifiedFirst"))
+        else if (s == QStringLiteral("SwapYes"))
         {
             ro = R3R2R1R0;
             okInner = true;

@@ -33,7 +33,7 @@ mbCoreDataViewItem::Strings::Strings() :
     format            (QStringLiteral("format")),
     comment           (QStringLiteral("comment")),
     variableLength    (QStringLiteral("variableLength")),
-    byteOrder         (QStringLiteral("byteOrder")),
+    swapBytes         (QStringLiteral("swapBytes")),
     registerOrder     (QStringLiteral("registerOrder")),
     byteArrayFormat   (QStringLiteral("byteArrayFormat")),
     byteArraySeparator(QStringLiteral("byteArraySeparator")),
@@ -54,7 +54,7 @@ mbCoreDataViewItem::Defaults::Defaults() :
     format                      (mb::Dec16),
     comment                     (QString()),
     variableLength              (20),
-    byteOrder                   (mb::LessSignifiedFirst),
+    swapBytes                   (mb::SwapNo),
     registerOrder               (mb::R0R1R2R3),
     byteArrayFormat             (mb::Hex),
     byteArraySeparator          (QStringLiteral(" ")),
@@ -81,7 +81,7 @@ mbCoreDataViewItem::mbCoreDataViewItem(QObject *parent) : QObject(parent)
     m_address                     = mb::toAddress(d.address);
     m_format                      = d.format;
     m_variableLength              = d.variableLength;
-    m_byteOrder                   = d.byteOrder;
+    m_swapBytes                   = d.swapBytes;
     m_registerOrder               = d.registerOrder;
     m_byteArrayFormat             = d.byteArrayFormat;
     m_byteArraySeparator          = d.byteArraySeparator;
@@ -174,17 +174,17 @@ void mbCoreDataViewItem::setFormatStr(const QString &formatStr)
         setFormat(v);
 }
 
-QString mbCoreDataViewItem::byteOrderStr() const
+QString mbCoreDataViewItem::swapBytesStr() const
 {
-    return mb::enumDataOrderKey(m_byteOrder);
+    return mb::enumSwapDataKey(m_swapBytes);
 }
 
-void mbCoreDataViewItem::setByteOrderStr(const QString &order)
+void mbCoreDataViewItem::setSwapBytesStr(const QString &order)
 {
     bool ok;
-    mb::DataOrder v = mb::enumDataOrderValue(order, &ok);
+    mb::SwapData v = mb::enumSwapDataValue(order, &ok);
     if (ok)
-        m_byteOrder = v;
+        m_swapBytes = v;
 }
 
 QString mbCoreDataViewItem::registerOrderStr() const
@@ -284,7 +284,7 @@ MBSETTINGS mbCoreDataViewItem::settings() const
     p[s.format            ] = mb::enumKey(format());
     p[s.comment           ] = comment();
     p[s.variableLength    ] = variableLength();
-    p[s.byteOrder         ] = mb::enumKey(byteOrder());
+    p[s.swapBytes         ] = mb::enumKey(swapBytes());
     p[s.registerOrder     ] = mb::enumKey(registerOrder());
     p[s.byteArrayFormat   ] = mb::enumKey(byteArrayFormat());
     p[s.byteArraySeparator] = byteArraySeparatorStr();
@@ -333,12 +333,12 @@ bool mbCoreDataViewItem::setSettings(const MBSETTINGS &settings)
         setVariableLength(var.toInt());
     }
 
-    it = settings.find(s.byteOrder);
+    it = settings.find(s.swapBytes);
     if (it != end)
     {
-        mb::DataOrder v = mb::enumDataOrderValue(it.value(), &ok);
+        mb::SwapData v = mb::enumSwapDataValue(it.value(), &ok);
         if (ok)
-            setByteOrder(v);
+            setSwapBytes(v);
     }
 
     it = settings.find(s.registerOrder);
@@ -387,6 +387,19 @@ bool mbCoreDataViewItem::setSettings(const MBSETTINGS &settings)
             setFormat(v);
     }
 
+    // Support for version 0.4 and older
+    it = settings.find(QStringLiteral("byteOrder"));
+    if (it != end)
+    {
+        auto v = mb::DefaultSwapData;
+        QString sByteOrder = it.value().toString();
+        if (sByteOrder == QStringLiteral("LessSignifiedFirst"))
+            v = mb::SwapNo;
+        else if (sByteOrder == QStringLiteral("MostSignifiedFirst"))
+            v = mb::SwapYes;
+        setSwapBytes(v);
+    }
+
     blockSignals(false);
     Q_EMIT changed();
     return true;
@@ -397,7 +410,7 @@ QByteArray mbCoreDataViewItem::toByteArray(const QVariant &value) const
     return mb::toByteArray(value,
                            m_format,
                            m_address.type(),
-                           getByteOrder(),
+                           getSwapBytes(),
                            getRegisterOrder(),
                            m_byteArrayFormat,
                            getStringEncoding(),
@@ -415,7 +428,7 @@ QVariant mbCoreDataViewItem::toVariant(const QByteArray &v) const
     return mb::toVariant(data,
                          m_format,
                          m_address.type(),
-                         getByteOrder(),
+                         getSwapBytes(),
                          getRegisterOrder(),
                          m_byteArrayFormat,
                          getStringEncoding(),
@@ -424,9 +437,9 @@ QVariant mbCoreDataViewItem::toVariant(const QByteArray &v) const
                          m_variableLength);
 }
 
-mb::DataOrder mbCoreDataViewItem::getByteOrder() const
+mb::SwapData mbCoreDataViewItem::getSwapBytes() const
 {
-    return mb::getByteOrder(m_device, m_byteOrder);
+    return mb::getSwapBytes(m_device, m_swapBytes);
 }
 
 mb::RegisterOrder mbCoreDataViewItem::getRegisterOrder() const

@@ -1,23 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="0.4.0" editnum="12">
+<project version="0.5.0" editnum="14">
     <name>TestScript</name>
     <author>serhmarch</author>
     <comment>Server project for script testing</comment>
     <ports>
         <port>
-            <baudRate>9600</baudRate>
-            <timeoutFirstByte>1000</timeoutFirstByte>
-            <timeoutInterByte>50</timeoutInterByte>
-            <dataBits>8</dataBits>
             <flowControl>No</flowControl>
-            <serialPortName>#TEST</serialPortName>
-            <port>502</port>
-            <type>RTU</type>
-            <host>localhost</host>
             <name>PORT</name>
-            <timeout>3000</timeout>
-            <parity>No</parity>
+            <baudRate>9600</baudRate>
             <stopBits>1</stopBits>
+            <timeout>3000</timeout>
+            <dataBits>8</dataBits>
+            <port>502</port>
+            <serialPortName>#TEST</serialPortName>
+            <parity>No</parity>
+            <host>localhost</host>
+            <timeoutFirstByte>1000</timeoutFirstByte>
+            <maxconn>10</maxconn>
+            <isBroadcastEnabled>true</isBroadcastEnabled>
+            <type>RTU</type>
+            <timeoutInterByte>50</timeoutInterByte>
             <deviceref>
                 <deviceref name="PLC">1</deviceref>
             </deviceref>
@@ -27,13 +29,13 @@
         <device>
             <byteArrayFormat>Hex</byteArrayFormat>
             <byteArraySeparator>\s</byteArraySeparator>
-            <byteOrder>LessSignifiedFirst</byteOrder>
             <count0x>65535</count0x>
             <count1x>65534</count1x>
             <count3x>65533</count3x>
             <count4x>65532</count4x>
             <delay>0</delay>
             <exceptionStatusAddress>300001</exceptionStatusAddress>
+            <isEnableScript>true</isEnableScript>
             <isReadOnly>false</isReadOnly>
             <isSaveData>false</isSaveData>
             <maxReadCoils>2040</maxReadCoils>
@@ -75,7 +77,8 @@ for mem in mems:
     print(&quot;Hello from Python&quot;)</scriptLoop>
             <stringEncoding>UTF-8</stringEncoding>
             <stringLengthType>ZerroEnded</stringLengthType>
+            <swapBytes>SwapNo</swapBytes>
         </device>
     </devices>
-    <windows>080000006c6f6f703a504c430000000000000000f2000000b3010000f000000008000000696e69743a504c4300000000b301000000000000b1010000f20000000900000066696e616c3a504c43000000000000000000000000b3010000f2000000070000006465763a504c4308000000b3010000f2000000b1010000f0000000</windows>
+    <windows>080000006c6f6f703a504c430000000000000000f2000000b3010000f000000008000000696e69743a504c4300000000b301000000000000b1010000f20000000900000066696e616c3a504c43080000000000000000000000b3010000f2000000070000006465763a504c4300000000b3010000f2000000b1010000f0000000</windows>
 </project>

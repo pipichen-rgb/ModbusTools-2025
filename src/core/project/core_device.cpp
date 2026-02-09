@@ -32,7 +32,7 @@ mbCoreDevice::Strings::Strings() :
     maxReadInputRegisters    (QStringLiteral("maxReadInputRegisters")),
     maxWriteMultipleCoils    (QStringLiteral("maxWriteMultipleCoils")),
     maxWriteMultipleRegisters(QStringLiteral("maxWriteMultipleRegisters")),
-    byteOrder                (QStringLiteral("byteOrder")),
+    swapBytes                (QStringLiteral("swapBytes")),
     registerOrder            (QStringLiteral("registerOrder")),
     byteArrayFormat          (QStringLiteral("byteArrayFormat")),
     byteArraySeparator       (QStringLiteral("byteArraySeparator")),
@@ -55,7 +55,7 @@ mbCoreDevice::Defaults::Defaults() :
     maxReadInputRegisters(125),
     maxWriteMultipleCoils(1968),
     maxWriteMultipleRegisters(123),
-    byteOrder(mb::LessSignifiedFirst),
+    swapBytes(mb::SwapNo),
     registerOrder(mb::R0R1R2R3),
     byteArrayFormat(mb::Hex),
     byteArraySeparator(QStringLiteral(" ")),
@@ -89,7 +89,7 @@ mbCoreDevice::mbCoreDevice(QObject *parent)
     m_settingsCore.maxReadInputRegisters        = d.maxReadInputRegisters    ;
     m_settingsCore.maxWriteMultipleCoils        = d.maxWriteMultipleCoils    ;
     m_settingsCore.maxWriteMultipleRegisters    = d.maxWriteMultipleRegisters;
-    m_settingsCore.byteOrder                    = d.byteOrder                ;
+    m_settingsCore.swapBytes                    = d.swapBytes                ;
     m_settingsCore.registerOrder                = d.registerOrder            ;
     m_settingsCore.byteArrayFormat              = d.byteArrayFormat          ;
     m_settingsCore.byteArraySeparator           = d.byteArraySeparator       ;
@@ -156,7 +156,7 @@ MBSETTINGS mbCoreDevice::settings() const
     r.insert(s.maxReadInputRegisters    , maxReadInputRegisters     ());
     r.insert(s.maxWriteMultipleCoils    , maxWriteMultipleCoils     ());
     r.insert(s.maxWriteMultipleRegisters, maxWriteMultipleRegisters ());
-    r.insert(s.byteOrder                , mb::enumDataOrderKey(byteOrder()));
+    r.insert(s.swapBytes                , mb::enumSwapDataKey(swapBytes()));
     r.insert(s.registerOrder            , mb::toString(registerOrder()));
     r.insert(s.byteArrayFormat          , mb::enumDigitalFormatKey(byteArrayFormat()));
     r.insert(s.byteArraySeparator       , byteArraySeparatorStr());
@@ -235,13 +235,13 @@ bool mbCoreDevice::setSettings(const MBSETTINGS &settings)
             setMaxWriteMultipleRegisters(v);
     }
 
-    it = settings.find(s.byteOrder);
+    it = settings.find(s.swapBytes);
     if (it != end)
     {
         QVariant var = it.value();
-        mb::DataOrder v = mb::enumDataOrderValue(var.toString(), &ok);
+        mb::SwapData v = mb::enumSwapDataValue(var.toString(), &ok);
         if (ok)
-            setByteOrder(v);
+            setSwapBytes(v);
     }
 
     it = settings.find(s.registerOrder);
@@ -283,6 +283,17 @@ bool mbCoreDevice::setSettings(const MBSETTINGS &settings)
     {
         QVariant var = it.value();
         setStringEncodingStr(var.toString());
+    }
+
+    // Support for version 0.4 and older
+    it = settings.find(QStringLiteral("byteOrder"));
+    if (it != end)
+    {
+        auto v = mb::SwapNo;
+        QString sByteOrder = it.value().toString();
+        if (sByteOrder == QStringLiteral("MostSignifiedFirst"))
+            v = mb::SwapYes;
+        setSwapBytes(v);
     }
 
     Q_EMIT changed();

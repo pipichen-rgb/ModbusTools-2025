@@ -769,7 +769,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
             data = mb::toByteArray(params.data,
                                    params.format,
                                    Modbus::Memory_4x,
-                                   m_dataParams.byteOrder,
+                                   m_dataParams.swapBytes,
                                    m_dataParams.registerOrder,
                                    m_dataParams.byteArrayFormat,
                                    m_dataParams.stringEncoding,
@@ -805,7 +805,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
                 data = mb::toByteArray(params.data,
                                        params.format,
                                        Modbus::Memory_0x,
-                                       m_dataParams.byteOrder,
+                                       m_dataParams.swapBytes,
                                        m_dataParams.registerOrder,
                                        m_dataParams.byteArrayFormat,
                                        m_dataParams.stringEncoding,
@@ -869,7 +869,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
             data = mb::toByteArray(params.data,
                                    params.format,
                                    Modbus::Memory_0x,
-                                   m_dataParams.byteOrder,
+                                   m_dataParams.swapBytes,
                                    m_dataParams.registerOrder,
                                    m_dataParams.byteArrayFormat,
                                    m_dataParams.stringEncoding,
@@ -907,7 +907,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
             data = mb::toByteArray(params.data,
                                    params.format,
                                    Modbus::Memory_4x,
-                                   m_dataParams.byteOrder,
+                                   m_dataParams.swapBytes,
                                    m_dataParams.registerOrder,
                                    m_dataParams.byteArrayFormat,
                                    m_dataParams.stringEncoding,
@@ -959,7 +959,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
             data = mb::toByteArray(params.data,
                                    params.format,
                                    Modbus::Memory_4x,
-                                   m_dataParams.byteOrder,
+                                   m_dataParams.swapBytes,
                                    m_dataParams.registerOrder,
                                    m_dataParams.byteArrayFormat,
                                    m_dataParams.stringEncoding,
@@ -1174,7 +1174,7 @@ bool mbClientSendMessageUi::prepareSendParams()
             m_dataParams.maxReadInputRegisters      = def.maxReadInputRegisters    ;
             m_dataParams.maxWriteMultipleCoils      = def.maxWriteMultipleCoils    ;
             m_dataParams.maxWriteMultipleRegisters  = def.maxWriteMultipleRegisters;
-            m_dataParams.byteOrder                  = def.byteOrder                ;
+            m_dataParams.swapBytes                  = def.swapBytes                ;
             m_dataParams.registerOrder              = def.registerOrder            ;
             m_dataParams.byteArrayFormat            = def.byteArrayFormat          ;
             m_dataParams.stringEncoding             = def.stringEncoding           ;
@@ -1195,7 +1195,7 @@ bool mbClientSendMessageUi::prepareSendParams()
             m_dataParams.maxReadInputRegisters      = m_device->maxReadInputRegisters    ();
             m_dataParams.maxWriteMultipleCoils      = m_device->maxWriteMultipleCoils    ();
             m_dataParams.maxWriteMultipleRegisters  = m_device->maxWriteMultipleRegisters();
-            m_dataParams.byteOrder                  = m_device->byteOrder                ();
+            m_dataParams.swapBytes                  = m_device->swapBytes                ();
             m_dataParams.registerOrder              = m_device->registerOrder            ();
             m_dataParams.byteArrayFormat            = m_device->byteArrayFormat          ();
             m_dataParams.stringEncoding             = m_device->stringEncoding           ();
@@ -1355,7 +1355,7 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
             ls.append(mb::toVariant(data,
                                     format,
                                     Modbus::Memory_0x,
-                                    m_dataParams.byteOrder,
+                                    m_dataParams.swapBytes,
                                     m_dataParams.registerOrder,
                                     m_dataParams.byteArrayFormat,
                                     m_dataParams.stringEncoding,
@@ -1386,7 +1386,7 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
             ls.append(mb::toVariant(data,
                                     format,
                                     Modbus::Memory_0x,
-                                    m_dataParams.byteOrder,
+                                    m_dataParams.swapBytes,
                                     m_dataParams.registerOrder,
                                     m_dataParams.byteArrayFormat,
                                     m_dataParams.stringEncoding,
@@ -1420,7 +1420,7 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
             ls.append(mb::toVariant(data,
                                     format,
                                     Modbus::Memory_0x,
-                                    m_dataParams.byteOrder,
+                                    m_dataParams.swapBytes,
                                     m_dataParams.registerOrder,
                                     m_dataParams.byteArrayFormat,
                                     m_dataParams.stringEncoding,
@@ -1450,7 +1450,7 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
             ls.append(mb::toVariant(data,
                                     format,
                                     Modbus::Memory_0x,
-                                    m_dataParams.byteOrder,
+                                    m_dataParams.swapBytes,
                                     m_dataParams.registerOrder,
                                     m_dataParams.byteArrayFormat,
                                     m_dataParams.stringEncoding,
@@ -1506,7 +1506,7 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
             ls.append(mb::toVariant(data,
                                     format,
                                     Modbus::Memory_0x,
-                                    m_dataParams.byteOrder,
+                                    m_dataParams.swapBytes,
                                     m_dataParams.registerOrder,
                                     m_dataParams.byteArrayFormat,
                                     m_dataParams.stringEncoding,
@@ -1535,7 +1535,7 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
             ls.append(mb::toVariant(data,
                                     format,
                                     Modbus::Memory_0x,
-                                    m_dataParams.byteOrder,
+                                    m_dataParams.swapBytes,
                                     m_dataParams.registerOrder,
                                     m_dataParams.byteArrayFormat,
                                     m_dataParams.stringEncoding,
@@ -1586,7 +1586,7 @@ QStringList mbClientSendMessageUi::toStringListNumbers(const QByteArray &data, m
         QString s = mb::toVariant(numData,
                                   format,
                                   Modbus::Memory_4x,
-                                  m_dataParams.byteOrder,
+                                  m_dataParams.swapBytes,
                                   m_dataParams.registerOrder,
                                   m_dataParams.byteArrayFormat,
                                   m_dataParams.stringEncoding,
@@ -1604,7 +1604,7 @@ QStringList mbClientSendMessageUi::toStringListNumbers(const QByteArray &data, m
         QString s = mb::toVariant(numData,
                                   format,
                                   Modbus::Memory_4x,
-                                  m_dataParams.byteOrder,
+                                  m_dataParams.swapBytes,
                                   m_dataParams.registerOrder,
                                   m_dataParams.byteArrayFormat,
                                   m_dataParams.stringEncoding,
@@ -1636,7 +1636,7 @@ QByteArray mbClientSendMessageUi::fromStringListNumbers(const QStringList &ls, m
         data.append(mb::toByteArray(s,
                                     format,
                                     Modbus::Memory_4x,
-                                    m_dataParams.byteOrder,
+                                    m_dataParams.swapBytes,
                                     m_dataParams.registerOrder,
                                     m_dataParams.byteArrayFormat,
                                     m_dataParams.stringEncoding,

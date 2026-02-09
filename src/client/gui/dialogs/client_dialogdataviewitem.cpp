@@ -64,7 +64,7 @@ mbClientDialogDataViewItem::mbClientDialogDataViewItem(QWidget *parent) :
     m_ui.spCount                           = ui->spCount                          ;
     m_ui.cmbFormat                         = ui->cmbFormat                        ;
     m_ui.spLength                          = ui->spLength                         ;
-    m_ui.cmbByteOrder                      = ui->cmbByteOrder                     ;
+    m_ui.cmbSwapBytes                      = ui->cmbSwapBytes                     ;
     m_ui.cmbRegisterOrder                  = ui->cmbRegisterOrder                 ;
     m_ui.cmbByteArrayFormat                = ui->cmbByteArrayFormat               ;
     m_ui.lnByteArraySeparator              = ui->lnByteArraySeparator             ;

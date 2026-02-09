@@ -63,7 +63,7 @@ class CDeviceBlock(Structure):
                 ("count3x"           , c_uint),
                 ("count4x"           , c_uint),
                 ("exceptionStatusRef", c_uint),
-                ("byteOrder"         , c_int ),
+                ("swapBytes"         , c_int ),
                 ("registerOrder"     , c_int ),
                 ("stoDeviceName"     , c_uint),
                 ("stringTableSize"   , c_uint)]
@@ -1416,7 +1416,7 @@ class _MbDevice:
         self._count3x       = int(self._control.count3x)
         self._count4x       = int(self._control.count4x)
         self._excstatusref  = int(self._control.exceptionStatusRef)
-        self._byteorder     = int(self._control.byteOrder)
+        self._byteorder     = int(self._control.swapBytes)
         self._registerorder = int(self._control.registerOrder)
         self._strtablesize  = int(self._control.stringTableSize)
         stoDeviceName = int(self._control.stoDeviceName)

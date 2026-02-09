@@ -247,7 +247,7 @@ QStringList mbCoreBuilder::csvDataViewItemAttributes() const
                          << s.format            
                          << s.comment           
                          << s.variableLength    
-                         << s.byteOrder         
+                         << s.swapBytes         
                          << s.registerOrder     
                          << s.byteArrayFormat   
                          << s.byteArraySeparator

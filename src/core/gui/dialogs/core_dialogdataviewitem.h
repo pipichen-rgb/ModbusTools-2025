@@ -64,7 +64,7 @@ public:
 protected:
     void fillForm(const MBSETTINGS &settings);
     void fillFormFormat(const QVariant &v);
-    void fillFormByteOrder(const QVariant &v, mbCoreDevice *dev = nullptr);
+    void fillFormSwapBytes(const QVariant &v, mbCoreDevice *dev = nullptr);
     void fillFormRegisterOrder(const QVariant &v, mbCoreDevice *dev = nullptr);
     void fillFormByteArrayFormat(const QVariant &v, mbCoreDevice *dev = nullptr);
     void fillFormByteArraySeparator(const QVariant &v, mbCoreDevice *dev = nullptr);
@@ -73,7 +73,7 @@ protected:
 
     void fillData(MBSETTINGS &settings) const;
     void fillDataFormat(MBSETTINGS &settings, const QString &key) const;
-    void fillDataByteOrder(MBSETTINGS &settings, const QString &key) const;
+    void fillDataSwapBytes(MBSETTINGS &settings, const QString &key) const;
     void fillDataRegisterOrder(MBSETTINGS &settings, const QString &key) const;
     void fillDataByteArrayFormat(MBSETTINGS &settings, const QString &key) const;
     void fillDataByteArraySeparator(MBSETTINGS &settings, const QString &key) const;
@@ -114,7 +114,7 @@ protected:
         QSpinBox         *spCount                          ;
         QComboBox        *cmbFormat                        ;
         QSpinBox         *spLength                         ;
-        QComboBox        *cmbByteOrder                     ;
+        QComboBox        *cmbSwapBytes                     ;
         QComboBox        *cmbRegisterOrder                 ;
         QComboBox        *cmbByteArrayFormat               ;
         QLineEdit        *lnByteArraySeparator             ;

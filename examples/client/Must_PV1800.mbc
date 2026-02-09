@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="0.5.0" editnum="1">
+<project version="0.5.0" editnum="2">
     <name>MUST PV1800 Inverter</name>
     <author>serhmarch</author>
     <comment>MUST PV1800 is a multifunctional inverter/charger that combines functions of an inverter, MPPT 60A/80A solar charger and battery charger to provide uninterrupted power.</comment>
     <ports>
         <port>
-            <timeout>3000</timeout>
-            <name>Port</name>
-            <host>localhost</host>
-            <type>RTU</type>
-            <dataBits>8</dataBits>
-            <timeoutInterByte>50</timeoutInterByte>
-            <serialPortName>COM1</serialPortName>
-            <parity>No</parity>
-            <port>502</port>
             <flowControl>No</flowControl>
+            <port>502</port>
+            <name>Port</name>
             <maxconn>10</maxconn>
-            <isBroadcastEnabled>true</isBroadcastEnabled>
-            <baudRate>19200</baudRate>
+            <type>RTU</type>
+            <serialPortName>COM1</serialPortName>
             <stopBits>1</stopBits>
+            <isBroadcastEnabled>true</isBroadcastEnabled>
+            <host>localhost</host>
             <timeoutFirstByte>1000</timeoutFirstByte>
+            <baudRate>19200</baudRate>
+            <timeoutInterByte>50</timeoutInterByte>
+            <dataBits>8</dataBits>
+            <parity>No</parity>
+            <timeout>3000</timeout>
         </port>
     </ports>
     <devices>
         <device>
             <byteArrayFormat>Hex</byteArrayFormat>
             <byteArraySeparator>\s</byteArraySeparator>
-            <byteOrder>LessSignifiedFirst</byteOrder>
             <maxReadCoils>2040</maxReadCoils>
             <maxReadDiscreteInputs>2040</maxReadDiscreteInputs>
             <maxReadHoldingRegisters>100</maxReadHoldingRegisters>
@@ -38,6 +37,7 @@
             <registerOrder>R3R2R1R0</registerOrder>
             <stringEncoding>UTF-8</stringEncoding>
             <stringLengthType>ZerroEnded</stringLengthType>
+            <swapBytes>SwapNo</swapBytes>
             <unit>4</unit>
         </device>
     </devices>
@@ -52,13 +52,13 @@
                 <address>420001</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>MostSignifiedFirst</byteOrder>
                 <comment>Type Hi (PH/EP/PV)</comment>
                 <format>String</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>FullLength</stringLengthType>
+                <swapBytes>SwapYes</swapBytes>
                 <value>PV</value>
                 <variableLength>2</variableLength>
             </item>
@@ -67,13 +67,13 @@
                 <address>420002</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Type Lo (1800/3000)</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>1800</value>
                 <variableLength>20</variableLength>
             </item>
@@ -82,13 +82,13 @@
                 <address>420003</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Serial number Hi</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>-1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -97,13 +97,13 @@
                 <address>420004</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Serial number Lo</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>-1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -112,13 +112,13 @@
                 <address>420005</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Hardware version</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>10101</value>
                 <variableLength>20</variableLength>
             </item>
@@ -127,13 +127,13 @@
                 <address>420006</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Software version</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>22535</value>
                 <variableLength>20</variableLength>
             </item>
@@ -142,13 +142,13 @@
                 <address>420007</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>CommProtocol Edition</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>10414</value>
                 <variableLength>20</variableLength>
             </item>
@@ -157,13 +157,13 @@
                 <address>420010</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Battery voltage calibration coefficient</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>-1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -172,13 +172,13 @@
                 <address>420011</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Inverter voltage calibration coefficient</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>-1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -187,13 +187,13 @@
                 <address>420012</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Grid voltage calibration coefficient</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>-1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -202,13 +202,13 @@
                 <address>420013</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Bus voltage calibration coefficient</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>FullLength</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>-1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -217,13 +217,13 @@
                 <address>420014</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Control Current calibration coefficient</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>-1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -232,13 +232,13 @@
                 <address>420015</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Inverter Current calibration coefficient</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>-1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -247,13 +247,13 @@
                 <address>420016</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Grid Current calibration coefficient</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>-1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -262,13 +262,13 @@
                 <address>420017</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Load Current calibration coefficient</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>-1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -277,13 +277,13 @@
                 <address>420102</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Inverter offgrid work enable:0=OFF,1=ON </comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -292,13 +292,13 @@
                 <address>420103</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Inverter output voltage Set (V*10)</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>2300</value>
                 <variableLength>20</variableLength>
             </item>
@@ -307,13 +307,13 @@
                 <address>420104</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Inverter output frequency Set (Hz*100)</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>5000</value>
                 <variableLength>20</variableLength>
             </item>
@@ -322,13 +322,13 @@
                 <address>420105</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Inverter search mode enable:0=OFF,1=ON</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -337,13 +337,13 @@
                 <address>420109</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Inverter discharger to grid enable</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -352,13 +352,13 @@
                 <address>420110</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Energy use mode:0=VDE4105,1=UPS,2=home,3=GEN</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>3</value>
                 <variableLength>20</variableLength>
             </item>
@@ -367,13 +367,13 @@
                 <address>420112</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Grid protect standard</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>2</value>
                 <variableLength>20</variableLength>
             </item>
@@ -382,13 +382,13 @@
                 <address>420113</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>SolarUse Aim</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -397,13 +397,13 @@
                 <address>420114</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Inverter max discharger current</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>130</value>
                 <variableLength>20</variableLength>
             </item>
@@ -412,13 +412,13 @@
                 <address>420119</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Battery stop discharging voltage</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>230</value>
                 <variableLength>20</variableLength>
             </item>
@@ -427,13 +427,13 @@
                 <address>420120</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Battery stop charging voltage</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>270</value>
                 <variableLength>20</variableLength>
             </item>
@@ -442,13 +442,13 @@
                 <address>420126</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Grid max charger current set</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>300</value>
                 <variableLength>20</variableLength>
             </item>
@@ -457,13 +457,13 @@
                 <address>420128</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Battery low voltage</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>220</value>
                 <variableLength>20</variableLength>
             </item>
@@ -472,13 +472,13 @@
                 <address>420129</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Battery high voltage</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>300</value>
                 <variableLength>20</variableLength>
             </item>
@@ -487,13 +487,13 @@
                 <address>420133</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Max Combine charger current</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>800</value>
                 <variableLength>20</variableLength>
             </item>
@@ -502,13 +502,13 @@
                 <address>420143</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>System setting</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>3</value>
                 <variableLength>20</variableLength>
             </item>
@@ -517,13 +517,13 @@
                 <address>420144</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Charger source priority</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>2</value>
                 <variableLength>20</variableLength>
             </item>
@@ -532,13 +532,13 @@
                 <address>420145</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Solar power balance</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -547,13 +547,13 @@
                 <address>420214</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Remove the accumulated data</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -562,13 +562,13 @@
                 <address>420215</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Reset the parameter</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -583,13 +583,13 @@
                 <address>425202</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>work state</comment>
                 <format>Hex16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0006</value>
                 <variableLength>2</variableLength>
             </item>
@@ -598,13 +598,13 @@
                 <address>425203</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>AC voltage grade</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>230</value>
                 <variableLength>20</variableLength>
             </item>
@@ -613,13 +613,13 @@
                 <address>425204</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Rated power(VA)</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>3000</value>
                 <variableLength>20</variableLength>
             </item>
@@ -628,13 +628,13 @@
                 <address>425206</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Battery voltage</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>275</value>
                 <variableLength>20</variableLength>
             </item>
@@ -643,13 +643,13 @@
                 <address>425207</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Inverter voltage</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -658,13 +658,13 @@
                 <address>425208</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Grid voltage</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>2234</value>
                 <variableLength>20</variableLength>
             </item>
@@ -673,13 +673,13 @@
                 <address>425209</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>BUS voltage</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>4428</value>
                 <variableLength>20</variableLength>
             </item>
@@ -688,13 +688,13 @@
                 <address>425210</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Control current</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -703,13 +703,13 @@
                 <address>425211</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Inverter current</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -718,13 +718,13 @@
                 <address>425212</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Grid current</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>FullLength</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>12</value>
                 <variableLength>20</variableLength>
             </item>
@@ -733,13 +733,13 @@
                 <address>425213</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Load current</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>12</value>
                 <variableLength>20</variableLength>
             </item>
@@ -748,13 +748,13 @@
                 <address>425214</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>PInverter</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -763,13 +763,13 @@
                 <address>425215</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>PGrid</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>243</value>
                 <variableLength>20</variableLength>
             </item>
@@ -778,13 +778,13 @@
                 <address>425216</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>PLoad</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>242</value>
                 <variableLength>20</variableLength>
             </item>
@@ -793,13 +793,13 @@
                 <address>425217</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Load percent</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>8</value>
                 <variableLength>20</variableLength>
             </item>
@@ -808,13 +808,13 @@
                 <address>425218</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>SInverter</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -823,13 +823,13 @@
                 <address>425219</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>SGrid</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>267</value>
                 <variableLength>20</variableLength>
             </item>
@@ -838,13 +838,13 @@
                 <address>425220</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Sload</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>263</value>
                 <variableLength>20</variableLength>
             </item>
@@ -853,13 +853,13 @@
                 <address>425222</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Qinverter</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -868,13 +868,13 @@
                 <address>425223</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Qgrid</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>112</value>
                 <variableLength>20</variableLength>
             </item>
@@ -883,13 +883,13 @@
                 <address>425224</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Qload</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>112</value>
                 <variableLength>20</variableLength>
             </item>
@@ -898,13 +898,13 @@
                 <address>425226</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Inverter frequency</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>5001</value>
                 <variableLength>20</variableLength>
             </item>
@@ -913,13 +913,13 @@
                 <address>425227</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Grid frequency</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>5001</value>
                 <variableLength>20</variableLength>
             </item>
@@ -928,13 +928,13 @@
                 <address>425230</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Inverter max number</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -943,13 +943,13 @@
                 <address>425231</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Combine type</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -958,13 +958,13 @@
                 <address>425232</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Inverter number</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -973,13 +973,13 @@
                 <address>425234</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>AC radiator temperature</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>45</value>
                 <variableLength>20</variableLength>
             </item>
@@ -988,13 +988,13 @@
                 <address>425235</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Transformer temperature</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1003,13 +1003,13 @@
                 <address>425236</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>DC radiator temperature</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1018,13 +1018,13 @@
                 <address>425238</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Inverter relay state</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1033,13 +1033,13 @@
                 <address>425239</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Grid relay state</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1048,13 +1048,13 @@
                 <address>425240</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Load relay state</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1063,13 +1063,13 @@
                 <address>425241</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>N_Line relay state</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1078,13 +1078,13 @@
                 <address>425242</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>DC relay state</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1093,13 +1093,13 @@
                 <address>425243</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Earth relay state</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1108,13 +1108,13 @@
                 <address>425246</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated charger power high</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1123,13 +1123,13 @@
                 <address>425247</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated charger power low</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>4</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1138,13 +1138,13 @@
                 <address>425248</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated discharger power high</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1153,13 +1153,13 @@
                 <address>425249</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated discharger power low</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>1212</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1168,13 +1168,13 @@
                 <address>425250</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated buy power high</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1183,13 +1183,13 @@
                 <address>425251</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated buy power low</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>20</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1198,13 +1198,13 @@
                 <address>425252</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated sell power high</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1213,13 +1213,13 @@
                 <address>425253</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated sell power low</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1228,13 +1228,13 @@
                 <address>425254</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated load power high</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1243,13 +1243,13 @@
                 <address>425255</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated load power low</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>8277</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1258,13 +1258,13 @@
                 <address>425256</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated self_use power high</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1273,13 +1273,13 @@
                 <address>425257</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated self_use power low</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>1209</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1288,13 +1288,13 @@
                 <address>425258</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated PV_sell power high</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1303,13 +1303,13 @@
                 <address>425259</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated PV_sell power low</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1318,13 +1318,13 @@
                 <address>425260</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated grid_charger power high</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1333,13 +1333,13 @@
                 <address>425261</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated  grid_charger power low</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1348,13 +1348,13 @@
                 <address>425262</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Error message 1</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1363,13 +1363,13 @@
                 <address>425263</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Error message 2</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1378,13 +1378,13 @@
                 <address>425264</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Error message 3</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1393,13 +1393,13 @@
                 <address>425266</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Warning message 1</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1408,13 +1408,13 @@
                 <address>425267</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Warning message 2</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1423,13 +1423,13 @@
                 <address>425270</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Serial number High</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>-1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1438,13 +1438,13 @@
                 <address>425271</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Serial number Low</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>-1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1453,13 +1453,13 @@
                 <address>425272</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Hardware version</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>10101</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1468,13 +1468,13 @@
                 <address>425273</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Software version</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>22535</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1483,13 +1483,13 @@
                 <address>425274</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Batt power</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1498,13 +1498,13 @@
                 <address>425275</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Batt current</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1513,13 +1513,13 @@
                 <address>425276</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Batt voltage grade</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>24</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1528,13 +1528,13 @@
                 <address>425278</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Rated power(W)</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>3000</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1543,13 +1543,13 @@
                 <address>425279</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Communication Protocal Edition</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>10414</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1558,13 +1558,13 @@
                 <address>425280</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Arrow Flag</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>622</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1579,13 +1579,13 @@
                 <address>410002</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>The type of machine</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>1800</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1594,13 +1594,13 @@
                 <address>410003</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Serial number High</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1609,13 +1609,13 @@
                 <address>410004</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Serial number Low</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1624,13 +1624,13 @@
                 <address>410005</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Hardware version</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>10102</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1639,13 +1639,13 @@
                 <address>410006</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Software version</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>10109</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1654,13 +1654,13 @@
                 <address>410007</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>PV voltage calibration coefficient</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1669,13 +1669,13 @@
                 <address>410008</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Battery voltage calibration coefficient</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1684,13 +1684,13 @@
                 <address>410009</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Charger current calibration coefficient</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1699,13 +1699,13 @@
                 <address>410104</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Float voltage</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>275</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1714,13 +1714,13 @@
                 <address>410105</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Absorption voltage</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>280</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1729,13 +1729,13 @@
                 <address>410106</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>Hex</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>&quot;Battery low voltage(for PV</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringLengthType</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>170</value>
                 <variableLength>0</variableLength>
             </item>
@@ -1744,13 +1744,13 @@
                 <address>410108</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>Hex</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>&quot;Battery High voltage(for PV</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringLengthType</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>300</value>
                 <variableLength>0</variableLength>
             </item>
@@ -1759,13 +1759,13 @@
                 <address>410109</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>Hex</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>&quot;PV max charger current(for PV</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringLengthType</stringEncoding>
                 <stringLengthType>ZerroEnded</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>600</value>
                 <variableLength>0</variableLength>
             </item>
@@ -1774,13 +1774,13 @@
                 <address>410111</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Battery type</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1789,13 +1789,13 @@
                 <address>410112</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Battery AH</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>200</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1804,13 +1804,13 @@
                 <address>410113</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Remove the accumulated data</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1819,13 +1819,13 @@
                 <address>410119</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Battery equalization enable</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1834,13 +1834,13 @@
                 <address>410120</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Battery Equalization voltage</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>288</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1849,13 +1849,13 @@
                 <address>410122</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Battery equalized time</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>60</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1864,13 +1864,13 @@
                 <address>410123</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Battery Equalized timeout</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>120</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1879,13 +1879,13 @@
                 <address>410124</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Equalization interval</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>30</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1894,13 +1894,13 @@
                 <address>410125</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Equalization actived immediately</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1915,13 +1915,13 @@
                 <address>415202</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Charger workstate</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>1</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1930,13 +1930,13 @@
                 <address>415203</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Mppt state</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1945,13 +1945,13 @@
                 <address>415204</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>charging state</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1960,13 +1960,13 @@
                 <address>415206</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>PV voltage</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1975,13 +1975,13 @@
                 <address>415207</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Battery voltage</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>271</value>
                 <variableLength>20</variableLength>
             </item>
@@ -1990,13 +1990,13 @@
                 <address>415208</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Charger current</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -2005,13 +2005,13 @@
                 <address>415209</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Charger power</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -2020,13 +2020,13 @@
                 <address>415210</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Radiator temperature</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>28</value>
                 <variableLength>20</variableLength>
             </item>
@@ -2035,13 +2035,13 @@
                 <address>415211</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>External temperature</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -2050,13 +2050,13 @@
                 <address>415212</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Battery Relay</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -2065,13 +2065,13 @@
                 <address>415213</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>PV Relay</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -2080,13 +2080,13 @@
                 <address>415214</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Error message</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>32</value>
                 <variableLength>20</variableLength>
             </item>
@@ -2095,13 +2095,13 @@
                 <address>415215</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Warning message</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -2110,13 +2110,13 @@
                 <address>415216</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>BattVol Grade</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>24</value>
                 <variableLength>20</variableLength>
             </item>
@@ -2125,13 +2125,13 @@
                 <address>415217</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Rated Current</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>600</value>
                 <variableLength>20</variableLength>
             </item>
@@ -2140,13 +2140,13 @@
                 <address>415218</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated PV power high</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -2155,13 +2155,13 @@
                 <address>415219</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated PV power low</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>5</value>
                 <variableLength>20</variableLength>
             </item>
@@ -2170,13 +2170,13 @@
                 <address>415220</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated day</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -2185,13 +2185,13 @@
                 <address>415221</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated hour</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>
@@ -2200,13 +2200,13 @@
                 <address>415222</address>
                 <byteArrayFormat>Hex</byteArrayFormat>
                 <byteArraySeparator>[default]</byteArraySeparator>
-                <byteOrder>LessSignifiedFirst</byteOrder>
                 <comment>Accumulated minute</comment>
                 <format>Dec16</format>
                 <period>1000</period>
                 <registerOrder>R0R1R2R3</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>SwapNo</swapBytes>
                 <value>0</value>
                 <variableLength>20</variableLength>
             </item>

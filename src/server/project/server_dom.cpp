@@ -37,7 +37,7 @@ mbServerDomSimAction::Strings::Strings() :
     comment      (QStringLiteral("comment")),
     actionType   (QStringLiteral("actionType")),
     extended     (QStringLiteral("extended")),
-    byteOrder    (QStringLiteral("byteOrder")),
+    swapBytes    (QStringLiteral("swapBytes")),
     registerOrder(QStringLiteral("registerOrder"))
 {
 }
@@ -109,9 +109,9 @@ void mbServerDomSimAction::read(mbCoreXmlStreamReader &reader)
                 setExtended(reader.readElementText());
                 continue;
             }
-            if (tag == s.byteOrder)
+            if (tag == s.swapBytes)
             {
-                setByteOrder(reader.readElementText());
+                setSwapBytes(reader.readElementText());
                 continue;
             }
             if (tag == s.registerOrder)
@@ -148,7 +148,7 @@ void mbServerDomSimAction::write(mbCoreXmlStreamWriter &writer, const QString &t
     writer.writeTextElement(s.comment       , comment());
     writer.writeTextElement(s.actionType    , actionType());
     writer.writeTextElement(s.extended      , extended());
-    writer.writeTextElement(s.byteOrder     , byteOrder());
+    writer.writeTextElement(s.swapBytes     , swapBytes());
     writer.writeTextElement(s.registerOrder , registerOrder());
 
     if (!m_text.isEmpty())

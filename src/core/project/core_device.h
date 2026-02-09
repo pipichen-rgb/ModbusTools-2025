@@ -44,7 +44,7 @@ public:
         const QString maxReadInputRegisters    ;
         const QString maxWriteMultipleCoils    ;
         const QString maxWriteMultipleRegisters;
-        const QString byteOrder                ;
+        const QString swapBytes                ;
         const QString registerOrder            ;
         const QString byteArrayFormat          ;
         const QString byteArraySeparator       ;
@@ -64,7 +64,7 @@ public:
         const uint16_t             maxReadInputRegisters    ;
         const uint16_t             maxWriteMultipleCoils    ;
         const uint16_t             maxWriteMultipleRegisters;
-        const mb::DataOrder        byteOrder                ;
+        const mb::SwapData         swapBytes                ;
         const mb::RegisterOrder    registerOrder            ;
         const mb::DigitalFormat    byteArrayFormat          ;
         const QString              byteArraySeparator       ;
@@ -104,8 +104,8 @@ public: // settings
     inline void setMaxWriteMultipleCoils(uint16_t max) { m_settingsCore.maxWriteMultipleCoils = max; }
     inline uint16_t maxWriteMultipleRegisters() const { return m_settingsCore.maxWriteMultipleRegisters; }
     inline void setMaxWriteMultipleRegisters(uint16_t max) { m_settingsCore.maxWriteMultipleRegisters = max; }
-    inline mb::DataOrder byteOrder() const { return m_settingsCore.byteOrder; }
-    inline void setByteOrder(mb::DataOrder byteOrder) { m_settingsCore.byteOrder = byteOrder; }
+    inline mb::SwapData swapBytes() const { return m_settingsCore.swapBytes; }
+    inline void setSwapBytes(mb::SwapData swapBytes) { m_settingsCore.swapBytes = swapBytes; }
     inline mb::RegisterOrder registerOrder() const { return m_settingsCore.registerOrder; }
     inline void setRegisterOrder(mb::RegisterOrder registerOrder) { m_settingsCore.registerOrder = registerOrder; }
     inline mb::DigitalFormat byteArrayFormat() const { return m_settingsCore.byteArrayFormat; }
@@ -156,7 +156,7 @@ protected: // settings
         uint16_t             maxReadHoldingRegisters  ;
         uint16_t             maxWriteMultipleCoils    ;
         uint16_t             maxWriteMultipleRegisters;
-        mb::DataOrder        byteOrder                ;
+        mb::SwapData         swapBytes                ;
         mb::RegisterOrder    registerOrder            ;
         mb::DigitalFormat    byteArrayFormat          ;
         QString              byteArraySeparator       ;

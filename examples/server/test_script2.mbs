@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="0.4.5" editnum="43">
+<project version="0.5.0" editnum="44">
     <name>TEST_SCRIPT</name>
     <author>march</author>
     <comment></comment>
     <ports>
         <port>
-            <isBroadcastEnabled>true</isBroadcastEnabled>
+            <flowControl>No</flowControl>
             <name>PORT</name>
-            <serialPortName>#TEST</serialPortName>
             <baudRate>9600</baudRate>
-            <parity>No</parity>
-            <timeoutFirstByte>1000</timeoutFirstByte>
-            <maxconn>10</maxconn>
-            <host>localhost</host>
-            <port>502</port>
-            <timeoutInterByte>1</timeoutInterByte>
+            <stopBits>1</stopBits>
             <timeout>3000</timeout>
             <dataBits>8</dataBits>
-            <flowControl>No</flowControl>
+            <port>502</port>
+            <serialPortName>#TEST</serialPortName>
+            <parity>No</parity>
+            <host>localhost</host>
+            <timeoutFirstByte>1000</timeoutFirstByte>
+            <maxconn>10</maxconn>
+            <isBroadcastEnabled>true</isBroadcastEnabled>
             <type>RTU</type>
-            <stopBits>1</stopBits>
+            <timeoutInterByte>1</timeoutInterByte>
             <deviceref>
                 <deviceref name="PLC1">1</deviceref>
             </deviceref>
@@ -29,7 +29,6 @@
         <device>
             <byteArrayFormat>Hex</byteArrayFormat>
             <byteArraySeparator>\s</byteArraySeparator>
-            <byteOrder>MostSignifiedFirst</byteOrder>
             <count0x>65535</count0x>
             <count1x>65535</count1x>
             <count3x>65535</count3x>
@@ -109,6 +108,7 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
     print(&quot;Hello from Python&quot;)</scriptLoop>
             <stringEncoding>UTF-8</stringEncoding>
             <stringLengthType>FullLength</stringLengthType>
+            <swapBytes>SwapYes</swapBytes>
         </device>
     </devices>
     <dataviews>
@@ -116,17 +116,18 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
             <addressNotation>Default</addressNotation>
             <useDefaultColumns>1</useDefaultColumns>
             <columns>Device;Address;Format;Comment;Value</columns>
+            <enableProcessing>1</enableProcessing>
             <item>
                 <device>PLC1</device>
                 <address>1</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Dec16</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -134,12 +135,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>1</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>UDec16</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -147,12 +148,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>1</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Dec32</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -160,12 +161,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>1</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>UDec32</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -173,12 +174,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>1</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Dec64</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -186,12 +187,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>1</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>UDec64</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -199,12 +200,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>1</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Float</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -212,12 +213,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>1</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Double</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -225,12 +226,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400001</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Dec16</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -238,12 +239,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400001</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>UDec16</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -251,12 +252,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400001</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Dec32</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -264,12 +265,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400001</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>UDec32</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -277,12 +278,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400001</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Dec64</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -290,12 +291,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400001</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>UDec64</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -303,12 +304,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400001</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Float</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -316,12 +317,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400001</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Double</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -329,12 +330,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>101</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Dec16</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -342,12 +343,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>201</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>UDec16</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -355,12 +356,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>301</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Dec32</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -368,12 +369,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>401</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>UDec32</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -381,12 +382,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>501</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Dec64</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -394,12 +395,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>601</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Hex64</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -407,12 +408,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>701</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Float</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -420,12 +421,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>801</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Double</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -433,12 +434,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>901</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>String</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -446,12 +447,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400011</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Dec16</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -459,12 +460,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400021</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>UDec16</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -472,12 +473,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400031</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Dec32</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -485,12 +486,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400041</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>UDec32</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -498,12 +499,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400051</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Dec64</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -511,12 +512,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400061</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Hex64</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -524,12 +525,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400071</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Float</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -537,12 +538,12 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400081</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>Double</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
             <item>
@@ -550,15 +551,15 @@ mem4x.setstring(90, &quot;Hello world&quot;)</scriptInit>
                 <address>400091</address>
                 <byteArrayFormat>DefaultDigitalFormat</byteArrayFormat>
                 <byteArraySeparator>\s</byteArraySeparator>
-                <byteOrder>DefaultOrder</byteOrder>
                 <comment></comment>
                 <format>String</format>
                 <registerOrder>DefaultRegisterOrder</registerOrder>
                 <stringEncoding>DefaultStringEncoding</stringEncoding>
                 <stringLengthType>DefaultStringLengthType</stringLengthType>
+                <swapBytes>DefaultSwapData</swapBytes>
                 <variableLength>20</variableLength>
             </item>
         </dataview>
     </dataviews>
-    <windows>0c0000006461743a646174615669657700000000000000007c0100003f0300007a010000090000006c6f6f703a504c43310000000000000000000000003f0300007c01000009000000696e69743a504c4331000000003f030000000000003d0300007c010000080000006465763a504c4331080000003f0300007c0100003d0300007a010000</windows>
+    <windows>0c0000006461743a646174615669657700000000000000007c0100003f0300007a010000090000006c6f6f703a504c43310000000000000000000000003f0300007c01000009000000696e69743a504c4331080000003f030000000000003d0300007c010000080000006465763a504c4331000000003f0300007c0100003d0300007a010000</windows>
 </project>

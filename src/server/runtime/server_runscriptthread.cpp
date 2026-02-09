@@ -22,7 +22,7 @@ typedef struct
     uint32_t count3x;
     uint32_t count4x;
     uint32_t exceptionStatusRef;
-    uint32_t byteOrder;
+    uint32_t swapBytes;
     uint32_t registerOrder;
     uint32_t stoDeviceName;
     uint32_t stringTableSize;
@@ -137,7 +137,7 @@ void mbServerRunScriptThread::run()
     devMem->count3x = m_device->count_3x();
     devMem->count4x = m_device->count_4x();
     devMem->exceptionStatusRef = m_device->exceptionStatusAddressInt();
-    devMem->byteOrder = m_device->byteOrder();
+    devMem->swapBytes = m_device->swapBytes();
     devMem->registerOrder = m_device->registerOrder();
     devMem->stoDeviceName = 0;
     devMem->stringTableSize = szMemDevStringTable;
