@@ -6,6 +6,9 @@ project(ModbusTools VERSION 0.5.0 LANGUAGES CXX)
 set(MBTOOLS_VERSION ${PROJECT_VERSION})
 set(MBTOOLS_ROOT_DIR ${CMAKE_SOURCE_DIR})
 
+option(MBTOOLS_CLIENT_ENABLED "Enable client application build" ON)
+option(MBTOOLS_SERVER_ENABLED "Enable server application build" ON)
+
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
@@ -33,22 +36,31 @@ add_subdirectory(modbus/src EXCLUDE_FROM_ALL)
 
 add_subdirectory(src/core)
 
-add_subdirectory(src/client)
+if (MBTOOLS_CLIENT_ENABLED)
+    add_subdirectory(src/client)
+endif()
 
-add_subdirectory(src/server)
+if (MBTOOLS_SERVER_ENABLED)
+    add_subdirectory(src/server)
+endif()
 
 add_subdirectory("doc")
 
 install(TARGETS ${MB_LIBRARY_NAME}         DESTINATION .)
 install(TARGETS ${MBTOOLS_CORE_LIB_NAME}   DESTINATION .)
-install(TARGETS ${MBTOOLS_CLIENT_APP_NAME} DESTINATION .)
-install(TARGETS ${MBTOOLS_SERVER_APP_NAME} DESTINATION .)
 
-# Install scripts
-# Collect Python files using GLOB
-file(GLOB MBTOOLS_SCRIPT_FILES "${CMAKE_SOURCE_DIR}/src/server/python/*.py")
-# Install Python files
-install(FILES ${MBTOOLS_SCRIPT_FILES} DESTINATION "./script/server")
+if (MBTOOLS_CLIENT_ENABLED)
+    install(TARGETS ${MBTOOLS_CLIENT_APP_NAME} DESTINATION .)
+endif()
+
+if (MBTOOLS_SERVER_ENABLED)
+    install(TARGETS ${MBTOOLS_SERVER_APP_NAME} DESTINATION .)
+    # Install scripts
+    # Collect Python files using GLOB
+    file(GLOB MBTOOLS_SCRIPT_FILES "${CMAKE_SOURCE_DIR}/src/server/python/*.py")
+    # Install Python files
+    install(FILES ${MBTOOLS_SCRIPT_FILES} DESTINATION "./script/server")
+endif()
 
 # Install help files
 # Collect help files using GLOB

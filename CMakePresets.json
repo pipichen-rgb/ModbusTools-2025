@@ -12,6 +12,11 @@
             "inherits": "Config-Base",
             "hidden": true,
             "binaryDir": "$env{USERPROFILE}/tmp/cmake/ModbusTools/bin",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl.exe",
+                "CMAKE_CXX_COMPILER": "cl.exe",
+                "CMAKE_CXX_FLAGS": "/MP"
+            },
             "condition": {
                 "type": "equals",
                 "lhs": "${hostSystemName}",
@@ -28,9 +33,27 @@
             "architecture": "x64",
             "binaryDir": "$env{USERPROFILE}/tmp/cmake/ModbusTools/bin/Win64",
             "cacheVariables": {
-                "CMAKE_PREFIX_PATH": "C:/Qt/5.15.2/msvc2019_64",
-                "CMAKE_C_COMPILER": "cl.exe",
-                "CMAKE_CXX_COMPILER": "cl.exe"
+                "CMAKE_PREFIX_PATH": "C:/Qt/5.15.2/msvc2019_64"
+            }
+        },
+        {
+            "name": "Win64-MSVC-Client",
+            "description": "Win64 Config for Client Only build using compilers for Visual Studio 17 2022 (x64 architecture)",
+            "inherits": "Win64-MSVC",
+            "binaryDir": "$env{USERPROFILE}/tmp/cmake/ModbusTools/bin/Win64-Client",
+            "cacheVariables": {
+                "MBTOOLS_CLIENT_ENABLED": "ON",
+                "MBTOOLS_SERVER_ENABLED": "OFF"
+            }
+        },
+        {
+            "name": "Win64-MSVC-Server",
+            "description": "Win64 Config for Server Only build using compilers for Visual Studio 17 2022 (x64 architecture)",
+            "inherits": "Win64-MSVC",
+            "binaryDir": "$env{USERPROFILE}/tmp/cmake/ModbusTools/bin/Win64-Server",
+            "cacheVariables": {
+                "MBTOOLS_CLIENT_ENABLED": "OFF",
+                "MBTOOLS_SERVER_ENABLED": "ON"
             }
         },
         {
@@ -43,9 +66,7 @@
             "architecture": "win32",
             "binaryDir": "$env{USERPROFILE}/tmp/cmake/ModbusTools/bin/Win32",
             "cacheVariables": {
-                "CMAKE_PREFIX_PATH": "C:/Qt/5.15.2/msvc2019",
-                "CMAKE_C_COMPILER": "cl.exe",
-                "CMAKE_CXX_COMPILER": "cl.exe"
+                "CMAKE_PREFIX_PATH": "C:/Qt/5.15.2/msvc2019"
             }
         },
         {
@@ -79,6 +100,26 @@
             "cacheVariables": {
                 "CMAKE_BUILD_TYPE": "Release"
             }
+        },
+        {
+            "name": "Linux-Client-Debug",
+            "inherits": "Linux-Debug",
+            "binaryDir": "$env{HOME}/tmp/cmake/ModbusTools/Linux/Client/Debug"
+        },
+        {
+            "name": "Linux-Client-Release",
+            "inherits": "Linux-Release",
+            "binaryDir": "$env{HOME}/tmp/cmake/ModbusTools/Linux/Client/Release"
+        },
+        {
+            "name": "Linux-Server-Debug",
+            "inherits": "Linux-Debug",
+            "binaryDir": "$env{HOME}/tmp/cmake/ModbusTools/Linux/Server/Debug"
+        },
+        {
+            "name": "Linux-Server-Release",
+            "inherits": "Linux-Release",
+            "binaryDir": "$env{HOME}/tmp/cmake/ModbusTools/Linux/Server/Release"
         }
     ],
     "buildPresets": [
@@ -98,6 +139,30 @@
             "name": "Win64-MSVC-Release",
             "inherits": "Build-Base",
             "configurePreset": "Win64-MSVC",
+            "configuration": "Release"
+        },
+        {
+            "name": "Win64-MSVC-Client-Debug",
+            "inherits": "Build-Base",
+            "configurePreset": "Win64-MSVC-Client",
+            "configuration": "Debug"
+        },
+        {
+            "name": "Win64-MSVC-Client-Release",
+            "inherits": "Build-Base",
+            "configurePreset": "Win64-MSVC-Client",
+            "configuration": "Release"
+        },
+        {
+            "name": "Win64-MSVC-Server-Debug",
+            "inherits": "Build-Base",
+            "configurePreset": "Win64-MSVC-Server",
+            "configuration": "Debug"
+        },
+        {
+            "name": "Win64-MSVC-Server-Release",
+            "inherits": "Build-Base",
+            "configurePreset": "Win64-MSVC-Server",
             "configuration": "Release"
         },
         {
@@ -123,6 +188,26 @@
             "inherits": "Build-Base",
             "configurePreset": "Linux-Release",
             "configuration": "Release"
+        },
+        {
+            "name": "Linux-Client-Debug",
+            "inherits": "Linux-Debug",
+            "configurePreset": "Linux-Client-Debug"
+        },
+        {
+            "name": "Linux-Client-Release",
+            "inherits": "Linux-Release",
+            "configurePreset": "Linux-Client-Release"
+        },
+        {
+            "name": "Linux-Server-Debug",
+            "inherits": "Linux-Debug",
+            "configurePreset": "Linux-Server-Debug"
+        },
+        {
+            "name": "Linux-Server-Release",
+            "inherits": "Linux-Release",
+            "configurePreset": "Linux-Server-Release"
         }
     ]
 }
