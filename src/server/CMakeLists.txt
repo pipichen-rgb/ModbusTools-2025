@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.13) # 2.2 - case insensitive syntax
                                      # 3.13 included policy CMP0077
 
-project(server VERSION ${PROJECT_VERSION} LANGUAGES CXX)
+project(mbserver VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
-set(MBTOOLS_SERVER_APP_NAME server CACHE INTERNAL "Name of the ModbusTools server application")
+set(MBTOOLS_SERVER_APP_NAME ${PROJECT_NAME} CACHE INTERNAL "Name of the ModbusTools server application")
 
 message(STATUS "MBTOOLS: Start configure server '${MBTOOLS_SERVER_APP_NAME}'")
 
@@ -187,7 +187,7 @@ target_link_libraries(${MBTOOLS_SERVER_APP_NAME} PRIVATE
                       Qt${QT_VERSION_MAJOR}::Core
                       Qt${QT_VERSION_MAJOR}::Gui
                       Qt${QT_VERSION_MAJOR}::Widgets
-                      modbus
-                      core
+                      ${MB_LIBRARY_NAME}
+                      ${MBTOOLS_CORE_LIB_NAME}
 )
 

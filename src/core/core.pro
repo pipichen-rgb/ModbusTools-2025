@@ -2,6 +2,8 @@ TEMPLATE = lib
 
 include(../version.pri)
 
+TARGET = mbcore
+
 CONFIG += no_keywords
 
 DESTDIR = ../../bin

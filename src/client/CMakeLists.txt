@@ -1,12 +1,9 @@
 cmake_minimum_required(VERSION 3.13) # 2.2 - case insensitive syntax 3.13
                                      # included policy CMP0077
 
-project(
-  client
-  VERSION ${PROJECT_VERSION}
-  LANGUAGES CXX)
+project(mbclient VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
-set(MBTOOLS_CLIENT_APP_NAME client CACHE INTERNAL "Name of the ModbusTools client application")
+set(MBTOOLS_CLIENT_APP_NAME ${PROJECT_NAME} CACHE INTERNAL "Name of the ModbusTools client application")
 
 message(STATUS "MBTOOLS: Start configure client '${MBTOOLS_CLIENT_APP_NAME}'")
 
@@ -150,7 +147,9 @@ set_target_properties(
              SOVERSION ${PROJECT_VERSION_MAJOR}
              WIN32_EXECUTABLE true)
 
-target_link_libraries(
-  ${MBTOOLS_CLIENT_APP_NAME}
-  PRIVATE Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Gui
-          Qt${QT_VERSION_MAJOR}::Widgets modbus core)
+target_link_libraries(${MBTOOLS_CLIENT_APP_NAME} PRIVATE
+                      Qt${QT_VERSION_MAJOR}::Core
+                      Qt${QT_VERSION_MAJOR}::Gui
+                      Qt${QT_VERSION_MAJOR}::Widgets
+                      ${MB_LIBRARY_NAME}
+                      ${MBTOOLS_CORE_LIB_NAME})

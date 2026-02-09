@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.13) # 2.2 - case insensitive syntax
                                      # 3.13 included policy CMP0077
 
-project(core VERSION ${PROJECT_VERSION} LANGUAGES CXX)
+project(mbcore VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
-set(MBTOOLS_CORE_LIB_NAME core CACHE INTERNAL "Name of the ModbusTools core library")
+set(MBTOOLS_CORE_LIB_NAME ${PROJECT_NAME} CACHE INTERNAL "Name of the ModbusTools core library")
 
 message(STATUS "MBTOOLS: Start configure library '${MBTOOLS_CORE_LIB_NAME}'")
 
@@ -165,10 +165,10 @@ set_target_properties(
 )
 
 target_link_libraries(${MBTOOLS_CORE_LIB_NAME} PRIVATE 
-                        Qt${QT_VERSION_MAJOR}::Core
-                        Qt${QT_VERSION_MAJOR}::Gui
-                        Qt${QT_VERSION_MAJOR}::Widgets
-                        Qt${QT_VERSION_MAJOR}::Help
-                        modbus
+                      Qt${QT_VERSION_MAJOR}::Core
+                      Qt${QT_VERSION_MAJOR}::Gui
+                      Qt${QT_VERSION_MAJOR}::Widgets
+                      Qt${QT_VERSION_MAJOR}::Help
+                      ${MB_LIBRARY_NAME}
 )
 

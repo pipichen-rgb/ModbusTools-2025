@@ -2,6 +2,8 @@ TEMPLATE = app
 
 include(../version.pri)
 
+TARGET = mbclient
+
 CONFIG += no_keywords
 
 DESTDIR  = ../../bin
@@ -30,7 +32,7 @@ HEADERS +=
 SOURCES += \
     main.cpp
 
-LIBS  += -L../../bin -lcore
+LIBS  += -L../../bin -lmbcore
 LIBS  += -L../../bin -lmodbus
 
-RC_ICONS = gui/icons/client.ico
+RC_ICONS = gui/icons/mbclient.ico

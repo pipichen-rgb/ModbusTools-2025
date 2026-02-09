@@ -2,6 +2,8 @@ TEMPLATE = app
 
 include(../version.pri)
 
+TARGET = mbserver
+
 CONFIG += no_keywords
 
 DESTDIR  = ../../bin
@@ -30,10 +32,10 @@ SOURCES += \
 RESOURCES += \
     $$PWD/resource/server_resource.qrc
 
-LIBS  += -L../../bin -lcore
+LIBS  += -L../../bin -lmbcore
 LIBS  += -L../../bin -lmodbus
 
-RC_ICONS = gui/icons/server.ico
+RC_ICONS = gui/icons/mbserver.ico
 
 DISTFILES += \
     python/mbconfig.py \
