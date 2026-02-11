@@ -211,7 +211,7 @@ QValidator::State mbCoreAddressWidget::SpinBox::validate(QString &input, int &po
         if (text.back() == mb::Strings::instance().IEC61131SuffixHex)
             text.remove(text.length()-1, 1);
         bool ok;
-        text.toInt(&ok, 16); // Validate as hex
+        text.toUShort(&ok, 16); // Validate as hex
         return ok ? QValidator::Acceptable : QValidator::Invalid;
     }
     return QSpinBox::validate(input, pos);
