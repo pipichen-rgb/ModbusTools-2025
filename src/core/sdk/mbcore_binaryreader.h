@@ -16,6 +16,7 @@ public:
     void setData(const QByteArray &v);
     inline bool isProcessing() const { return m_i < m_data.size(); }
     inline bool isEnd() const { return m_i >= m_data.size(); }
+    inline void reset() { m_i = 0; }
 
 public:
     bool read(int &v);

@@ -37,6 +37,7 @@
 #include "dataview/core_dataviewui.h"
 
 mbCoreWindowManager::Strings::Strings() :
+    prefixViewMode(QStringLiteral("view:")),
     prefixDataView(QStringLiteral("dat:"))
 {
 }
@@ -160,7 +161,24 @@ void mbCoreWindowManager::actionWindowTile()
 
 QByteArray mbCoreWindowManager::saveWindowsState()
 {
+    /*
+    record := nameWithPrefix + windowState + geometry
+
+    nameWithPrefix := int32 byteCount + byte[byteCount]  // UTF-8
+    windowState    := int32                               // Qt::WindowState flags
+    geometry       := int32 x + int32 y + int32 w + int32 h
+    */
+    const Strings &s = Strings::instance();
+
     mbCoreBinaryWriter writer;
+    QString name = s.prefixViewMode;
+    int windowViewMode = this->viewMode();
+    QRect dummyGeometry;
+
+    writer.write(name);
+    writer.write(windowViewMode);
+    writer.write(dummyGeometry);
+
     Q_FOREACH (QMdiSubWindow *sw, m_area->subWindowList(QMdiArea::StackingOrder))
     {
         saveWindowStateInner(writer, getMdiSubWindowNameWithPrefix(sw), sw);
@@ -177,10 +195,40 @@ void mbCoreWindowManager::saveWindowStateInner(mbCoreBinaryWriter &writer, const
 
 bool mbCoreWindowManager::restoreWindowsState(const QByteArray &v)
 {
+    /*
+    record := nameWithPrefix + windowState + geometry
+
+    nameWithPrefix := int32 byteCount + byte[byteCount]  // UTF-8
+    windowState    := int32                               // Qt::WindowState flags
+    geometry       := int32 x + int32 y + int32 w + int32 h
+    */
     mbCoreProject *p = mbCore::globalCore()->projectCore();
     if (p)
     {
         mbCoreBinaryReader reader(v);
+        QString name;
+        int windowViewMode;
+        QRect dummyGeometry;
+        // Try to retrieve view mode
+        if (reader.read(name) && reader.read(windowViewMode) && reader.read(dummyGeometry))
+        {
+            const Strings &s = Strings::instance();
+
+            if (name == s.prefixViewMode)
+            {
+                switch (windowViewMode)
+                {
+                case QMdiArea::TabbedView:
+                    this->setViewMode(QMdiArea::TabbedView);
+                    break;
+                default:
+                    this->setViewMode(QMdiArea::SubWindowView);
+                    break;
+                }
+            }
+            else // For backward compatibility with v0.4 and older
+                reader.reset();
+        }
         while (reader.isProcessing())
         {
             if (!restoreWindowStateInner(reader))
@@ -188,6 +236,27 @@ bool mbCoreWindowManager::restoreWindowsState(const QByteArray &v)
         }
     }
     return false;
+}
+
+bool mbCoreWindowManager::restoreWindowStateInner(mbCoreBinaryReader &reader)
+{
+    QString nameWithPrefix;
+    int windowState;
+    QRect geometry;
+    if (reader.read(nameWithPrefix) && reader.read(windowState) && reader.read(geometry))
+    {
+        QMdiSubWindow* sw = getMdiSubWindowForNameWithPrefix(nameWithPrefix);
+        if (sw)
+        {
+            windowState &= ~Qt::WindowActive;
+            sw->setWindowState(static_cast<Qt::WindowState>(windowState));
+            sw->raise();
+            sw->setGeometry(geometry);
+        }
+    }
+    else
+        return false;
+    return true;
 }
 
 void mbCoreWindowManager::setViewMode(QMdiArea::ViewMode viewMode)
@@ -231,27 +300,6 @@ QMdiSubWindow *mbCoreWindowManager::subWindowRemove(QWidget *ui)
         ui->setParent(nullptr);
     }
     return sw;
-}
-
-bool mbCoreWindowManager::restoreWindowStateInner(mbCoreBinaryReader &reader)
-{
-    QString nameWithPrefix;
-    int windowState;
-    QRect geometry;
-    if (reader.read(nameWithPrefix) && reader.read(windowState) && reader.read(geometry))
-    {
-        QMdiSubWindow* sw = getMdiSubWindowForNameWithPrefix(nameWithPrefix);
-        if (sw)
-        {
-            windowState &= ~Qt::WindowActive;
-            sw->setWindowState(static_cast<Qt::WindowState>(windowState));
-            sw->raise();
-            sw->setGeometry(geometry);
-        }
-    }
-    else
-        return false;
-    return true;
 }
 
 void mbCoreWindowManager::setProject(mbCoreProject *p)

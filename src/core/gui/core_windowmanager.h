@@ -48,6 +48,7 @@ class MB_EXPORT mbCoreWindowManager : public QObject
 public:
     struct MB_EXPORT Strings
     {
+        const QString prefixViewMode;
         const QString prefixDataView;
 
         Strings();
