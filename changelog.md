@@ -201,4 +201,8 @@ List of changes of new v0.4 version of ModbusTools:
 
 # 0.4.9
 
-* Fixed bug 'UTF-16 strings write inserts BOM (U+FEFF)', Issue #63
+* Fixed bug `UTF-16 strings write inserts BOM (U+FEFF)`, Issue #63
+* Fixed bug `The server IP configuration is invalid`, Issue #69
+* Extended available serial port list for Windows OS, Issue #67
+* Added MDI windows ViewMode save/restore in project
+* Improved hex address validation for Modbus Address widget
