@@ -4,6 +4,5 @@ HEADERS += \
 
 SOURCES += \
     $$PWD/client.cpp \
-    $$PWD/client_global.cpp \
     $$PWD/client_global.cpp
 

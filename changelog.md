@@ -201,16 +201,20 @@ List of changes of new v0.4 version of ModbusTools:
 
 # 0.4.9
 
-* Fixed bug 'UTF-16 strings write inserts BOM (U+FEFF)', Issue #63
+* Fixed bug `UTF-16 strings write inserts BOM (U+FEFF)`, Issue #63
+* Fixed bug `The server IP configuration is invalid`, Issue #69
+* Extended available serial port list for Windows OS, Issue #67
+* Added MDI windows ViewMode save/restore in project
+* Improved hex address validation for Modbus Address widget
 
 # 0.5.0
 
 * Added support for Modbus protocol versions:
-    * UDP
-    * RTU over TCP
-    * ASCII over TCP
-    * RTU over UDP
-    * ASCII over UDP 
+    * `UDP`
+    * `RTU` over `TCP`
+    * `ASCII` over `TCP`
+    * `RTU` over `UDP`
+    * `ASCII` over `UDP` 
 * Added `SendBytes`-tool for Modbus client
 * Updated `Send Message` dialog for Modbus client
 * Updated `Scanner` dialog for Modbus client (added function support scanning)
