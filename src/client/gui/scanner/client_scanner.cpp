@@ -197,6 +197,7 @@ QString mbClientScanner::toString(const Request_t &req)
 mbClientScanner::Strings::Strings() :
     name          (QStringLiteral("Scanner")),
     type          (Modbus::Strings::instance().type),
+    period        (QStringLiteral("period")),
     timeout       (Modbus::Strings::instance().timeout),
     tries         (QStringLiteral("tries")),
     unitStart     (QStringLiteral("unitStart")),

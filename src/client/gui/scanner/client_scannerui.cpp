@@ -265,6 +265,16 @@ void mbClientScannerUi::setCachedSettings(const MBSETTINGS &m)
     it = m.find(s.wSplitterState  ); if (it != end) ui->splitter         ->restoreState   (it.value().toByteArray());
 }
 
+int mbClientScannerUi::unitFound() const
+{
+    return m_unitModel->rowCount();
+}
+
+int mbClientScannerUi::funcFound() const
+{
+    return m_funcModel->rowCount();
+}
+
 void mbClientScannerUi::slotEditRequest()
 {
     mbClientScanner::Request_t req = m_request;
@@ -335,7 +345,18 @@ void mbClientScannerUi::slotAddAll()
 
 void mbClientScannerUi::slotClear()
 {
-    m_scanner->clear();
+    if (this->unitFound() || this->funcFound())
+    {
+        QMessageBox::StandardButton res = QMessageBox::question(this,
+                                                                QStringLiteral("Clear results"),
+                                                                QStringLiteral("Are you sure you want to clear scan results?"),
+                                                                QMessageBox::Ok|QMessageBox::Cancel);
+        if (res == QMessageBox::Ok)
+        {
+            m_scanner->clear();
+            ui->lbTmElapsed->setText(QStringLiteral("-"));
+        }
+    }
 }
 
 void mbClientScannerUi::slotStart()

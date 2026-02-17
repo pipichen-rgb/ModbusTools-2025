@@ -56,6 +56,10 @@ public:
     MBSETTINGS cachedSettings() const override;
     void setCachedSettings(const MBSETTINGS &settings) override;
 
+public:
+    int unitFound() const;
+    int funcFound() const;
+
 private Q_SLOTS:
     void slotEditRequest ();
     void slotEditHost    ();
