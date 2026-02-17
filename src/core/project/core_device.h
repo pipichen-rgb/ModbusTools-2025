@@ -126,10 +126,14 @@ public: // settings
 
 public: // statistics
     inline CoreStatistics statisticsCore() const { QReadLocker locker(&m_statLock); return *m_stat; }
-    inline quint32 statGoodCount() const { QReadLocker locker(&m_statLock); return m_stat->countTx; }
+    inline quint32 statCountTx() const { QReadLocker locker(&m_statLock); return m_stat->countTx; }
+    inline quint32 statCountRx() const { QReadLocker locker(&m_statLock); return m_stat->countRx; }
+    inline quint32 statCountGood() const { QReadLocker locker(&m_statLock); return m_stat->countGood; }
+    inline quint32 statCountBad() const { QReadLocker locker(&m_statLock); return m_stat->countBad; }
+
     void incStatCountTx();
-    inline quint32 statBadCount() const { QReadLocker locker(&m_statLock); return m_stat->countRx; }
     void incStatCountRx();
+
     virtual void resetStatistics();
     virtual void setStatStatus(Modbus::StatusCode status, mb::Timestamp_t timestamp, const QString& err = QString());
 

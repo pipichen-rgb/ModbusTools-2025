@@ -56,8 +56,6 @@ public:
 public: // statistics
     struct MB_EXPORT CoreStatistics : public mb::BaseStatistics
     {
-        quint32 countTx          ;
-        quint32 countRx          ;
         quint32 countBadTimeout  ;
         quint32 countBadCRC      ;
         quint32 cycleCount       ;
@@ -127,10 +125,14 @@ public: // statistics
     inline CoreStatistics statisticsCore() const { QReadLocker locker(&m_statLock); return *m_stat; }
     virtual void resetStatistics();
 
-    inline quint32 statGoodCount() const { QReadLocker locker(&m_statLock); return m_stat->countTx; }
-    void incStatCountTx();
+    inline quint32 statCountTx() const { QReadLocker locker(&m_statLock); return m_stat->countTx; }
+    inline quint32 statCountRx() const { QReadLocker locker(&m_statLock); return m_stat->countRx; }
+    inline quint32 statCountGood() const { QReadLocker locker(&m_statLock); return m_stat->countGood; }
+    inline quint32 statCountBad() const { QReadLocker locker(&m_statLock); return m_stat->countBad; }
+    inline quint32 statCountBadTimeout() const { QReadLocker locker(&m_statLock); return m_stat->countBadTimeout; }
+    inline quint32 statCountBadCRC() const { QReadLocker locker(&m_statLock); return m_stat->countBadCRC; }
 
-    inline quint32 statBadCount() const { QReadLocker locker(&m_statLock); return m_stat->countRx; }
+    void incStatCountTx();
     void incStatCountRx();
 
     virtual void setStatCycleTime(quint64 time);

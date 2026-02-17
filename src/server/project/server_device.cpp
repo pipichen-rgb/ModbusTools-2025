@@ -30,6 +30,8 @@
 
 #include <QSet>
 
+#include <project/server_port.h>
+
 mbServerDevice::Strings::Strings() :
     count0x               (QStringLiteral("count0x")),
     count1x               (QStringLiteral("count1x")),
@@ -863,18 +865,80 @@ Modbus::StatusCode mbServerDevice::readExceptionStatus(uint8_t *status)
     return r;
 }
 
-Modbus::StatusCode mbServerDevice::diagnostics(mbServerPort* /*port*/, uint16_t subfunc, uint8_t insize, const void *indata, uint8_t *outsize, void *outdata)
+Modbus::StatusCode mbServerDevice::diagnostics(mbServerPort* port, uint16_t subfunc, uint8_t insize, const void *indata, uint8_t *outsize, void *outdata)
 {
+    Modbus::StatusCode r = Modbus::Status_Good;
+    QString err;
+    beginRequest();
     switch (subfunc)
     {
     case MBDIAGN_RETURN_QUERY_DATA:
         memcpy(outdata, indata, insize);
         *outsize = insize;
         break;
+    case MBDIAGN_RESTART_COMMUNICATIONS_OPTION:
+        *reinterpret_cast<uint16_t*>(outdata) = *reinterpret_cast<const uint16_t*>(indata);
+        *outsize = sizeof(uint16_t);
+        this->resetStatistics();
+        break;
+    case MBDIAGN_RETURN_DIAGNOSTIC_REGISTER: // TODO
+        *reinterpret_cast<uint16_t*>(outdata) = 0;
+        *outsize = sizeof(uint16_t);
+        break;
+    case MBDIAGN_CHANGE_ASCII_INPUT_DELIMITER: // TODO
+        *reinterpret_cast<uint16_t*>(outdata) = *reinterpret_cast<const uint16_t*>(indata);
+        *outsize = sizeof(uint16_t);
+        break;
+    case MBDIAGN_FORCE_LISTEN_ONLY_MODE: // TODO
+        *reinterpret_cast<uint16_t*>(outdata) = *reinterpret_cast<const uint16_t*>(indata);
+        *outsize = sizeof(uint16_t);
+        break;
+    case MBDIAGN_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER: // TODO
+        *reinterpret_cast<uint16_t*>(outdata) = *reinterpret_cast<const uint16_t*>(indata);
+        *outsize = sizeof(uint16_t);
+        break;
+    case MBDIAGN_RETURN_BUS_MESSAGE_COUNT:
+        *reinterpret_cast<uint16_t*>(outdata) = static_cast<uint16_t>(port->statCountRx());
+        *outsize = sizeof(uint16_t);
+        break;
+    case MBDIAGN_RETURN_BUS_COMMUNICATION_ERROR_COUNT:
+        *reinterpret_cast<uint16_t*>(outdata) = static_cast<uint16_t>(port->statCountBadCRC());
+        *outsize = sizeof(uint16_t);
+        break;
+    case MBDIAGN_RETURN_BUS_EXCEPTION_ERROR_COUNT: // TODO
+        *reinterpret_cast<uint16_t*>(outdata) = 0;
+        *outsize = sizeof(uint16_t);
+        break;
+    case MBDIAGN_RETURN_SERVER_MESSAGE_COUNT:
+        *reinterpret_cast<uint16_t*>(outdata) = static_cast<uint16_t>(this->statCountRx());
+        *outsize = sizeof(uint16_t);
+        break;
+    case MBDIAGN_RETURN_SERVER_NO_RESPONSE_COUNT: // TODO
+        *reinterpret_cast<uint16_t*>(outdata) = 0;
+        *outsize = sizeof(uint16_t);
+        break;
+    case MBDIAGN_RETURN_SERVER_NAK_COUNT: // TODO
+        *reinterpret_cast<uint16_t*>(outdata) = 0;
+        *outsize = sizeof(uint16_t);
+        break;
+    case MBDIAGN_RETURN_SERVER_BUSY_COUNT: // TODO
+        *reinterpret_cast<uint16_t*>(outdata) = 0;
+        *outsize = sizeof(uint16_t);
+        break;
+    case MBDIAGN_RETURN_BUS_CHARACTER_OVERRUN_COUNT: // TODO
+        *reinterpret_cast<uint16_t*>(outdata) = 0;
+        *outsize = sizeof(uint16_t);
+        break;
+    case MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAG: // TODO
+        *reinterpret_cast<uint16_t*>(outdata) = *reinterpret_cast<const uint16_t*>(indata);
+        *outsize = sizeof(uint16_t);
+        break;
     default:
-        return Modbus::Status_BadIllegalFunction;
+        err = QStringLiteral("Unknown diagnostic subfunction #%1").arg(subfunc);
+        r = Modbus::Status_BadIllegalFunction;
     }
-    return Modbus::Status_Good;
+    endRequest(r, err);
+    return r;
 }
 
 Modbus::StatusCode mbServerDevice::writeMultipleCoils(uint16_t offset, uint16_t count, const void *values)
