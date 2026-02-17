@@ -32,6 +32,7 @@ public:
         const QString isLoop        ;
         const QString CRC           ;
         const QString LRC           ;
+        const QString LRC_CR_LF     ;
 
         Strings();
         static const Strings &instance();

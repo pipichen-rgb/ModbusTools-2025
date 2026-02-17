@@ -101,6 +101,13 @@
         <item>
          <widget class="QRadioButton" name="rdLRC">
           <property name="text">
+           <string>LRC</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="rdLRC_CR_LF">
+          <property name="text">
            <string>LRC+CR LF</string>
           </property>
          </widget>
@@ -254,6 +261,29 @@
           <number>2</number>
          </property>
          <item>
+          <widget class="QPushButton" name="btnListRemove">
+           <property name="maximumSize">
+            <size>
+             <width>30</width>
+             <height>16777215</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../../../core/gui/core_rsc.qrc">
+             <normaloff>:/core/icons/remove.png</normaloff>:/core/icons/remove.png</iconset>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="btnListMoveUp">
            <property name="maximumSize">
             <size>
@@ -288,25 +318,6 @@
           </widget>
          </item>
          <item>
-          <widget class="QPushButton" name="btnListRemove">
-           <property name="maximumSize">
-            <size>
-             <width>30</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>-</string>
-           </property>
-          </widget>
-         </item>
-         <item>
           <widget class="QPushButton" name="btnListClear">
            <property name="maximumSize">
             <size>
@@ -319,7 +330,7 @@
            </property>
            <property name="icon">
             <iconset resource="../../../core/gui/core_rsc.qrc">
-             <normaloff>:/core/icons/remove.png</normaloff>:/core/icons/remove.png</iconset>
+             <normaloff>:/core/icons/clear.png</normaloff>:/core/icons/clear.png</iconset>
            </property>
           </widget>
          </item>

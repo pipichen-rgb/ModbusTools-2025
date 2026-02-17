@@ -26,7 +26,8 @@ mbClientSendBytesUi::Strings::Strings() :
     period        (QStringLiteral("period")),
     isLoop        (QStringLiteral("isLoop")),
     CRC           (QStringLiteral("CRC")),
-    LRC           (QStringLiteral("LRC"))
+    LRC           (QStringLiteral("LRC")),
+    LRC_CR_LF     (QStringLiteral("LRC_CR_LF"))
 {
 }
 
@@ -103,7 +104,7 @@ MBSETTINGS mbClientSendBytesUi::cachedSettings() const
     m[s.port         ] = ui->cmbPort        ->currentText();
     m[s.byteFormat   ] = ui->cmbByteFormat  ->currentText();
     m[s.isAddChecksum] = ui->chbAddCheck    ->isChecked();
-    m[s.checksum     ] = ui->rdLRC          ->isChecked() ? s.LRC : s.CRC;
+    m[s.checksum     ] = ui->rdLRC_CR_LF->isChecked() ? s.LRC_CR_LF : (ui->rdLRC->isChecked() ? s.LRC : s.CRC);
     m[s.text         ] = ui->txtData        ->toPlainText();
     m[s.list         ] = this               ->getListItems();
     m[s.period       ] = ui->spPeriod       ->value();
@@ -126,12 +127,24 @@ void mbClientSendBytesUi::setCachedSettings(const MBSETTINGS &m)
     it = m.find(s.port         ); if (it != end) ui->cmbPort       ->setCurrentText (it.value().toString()         );
     it = m.find(s.byteFormat   ); if (it != end) ui->cmbByteFormat ->setCurrentText (it.value().toString()         );
     it = m.find(s.isAddChecksum); if (it != end) ui->chbAddCheck   ->setChecked     (it.value().toBool()           );
-    it = m.find(s.checksum     ); if (it != end) ui->rdLRC         ->setChecked     (it.value().toString() == s.LRC);
+  //it = m.find(s.checksum     ); if (it != end) ui->rdLRC->setChecked(it.value().toString() == s.LRC); ui->rdLRC_CR_LF->setChecked(it.value().toString() == s.LRC);
     it = m.find(s.text         ); if (it != end) ui->txtData       ->setPlainText   (it.value().toString()         );
     it = m.find(s.list         ); if (it != end) this              ->setListItems   (it.value().toStringList()     );
     it = m.find(s.period       ); if (it != end) ui->spPeriod      ->setValue       (it.value().toInt()            );
     it = m.find(s.isLoop       ); if (it != end) ui->chbUseLoop    ->setChecked     (it.value().toBool()           );
     it = m.find(s.wGeometry    ); if (it != end) this              ->restoreGeometry(it.value().toByteArray()      );
+
+    it = m.find(s.checksum);
+    if (it != end)
+    {
+        QString key = it.value().toString();
+        if (key == s.LRC)
+            ui->rdLRC->setChecked(true);
+        else if (key == s.LRC_CR_LF)
+            ui->rdLRC_CR_LF->setChecked(true);
+        else
+            ui->rdCRC->setChecked(true);
+    }
 }
 
 void mbClientSendBytesUi::setProject(mbCoreProject *p)
@@ -479,6 +492,15 @@ void mbClientSendBytesUi::prepareToSend(mbClientRunMessageRaw *msg)
             msg->setInputCount(sz+2);
         }
         else if (ui->rdLRC->isChecked())
+        {
+            uint8_t b[MB_MAX_BYTES];
+            uint16_t cb = Modbus::asciiToBytes(&buff[1], b, sz-1);
+            uint8_t lrc = Modbus::lrc(b, cb);
+            // TODO: check set array bounds
+            Modbus::bytesToAscii(&lrc, &buff[sz], 1);
+            msg->setInputCount(sz+2); // 2 ASCII LRC symbols
+        }
+        else if (ui->rdLRC_CR_LF->isChecked())
         {
             uint8_t b[MB_MAX_BYTES];
             uint16_t cb = Modbus::asciiToBytes(&buff[1], b, sz-1);
