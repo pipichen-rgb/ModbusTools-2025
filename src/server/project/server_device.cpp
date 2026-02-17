@@ -863,6 +863,20 @@ Modbus::StatusCode mbServerDevice::readExceptionStatus(uint8_t *status)
     return r;
 }
 
+Modbus::StatusCode mbServerDevice::diagnostics(mbServerPort* /*port*/, uint16_t subfunc, uint8_t insize, const void *indata, uint8_t *outsize, void *outdata)
+{
+    switch (subfunc)
+    {
+    case MBDIAGN_RETURN_QUERY_DATA:
+        memcpy(outdata, indata, insize);
+        *outsize = insize;
+        break;
+    default:
+        return Modbus::Status_BadIllegalFunction;
+    }
+    return Modbus::Status_Good;
+}
+
 Modbus::StatusCode mbServerDevice::writeMultipleCoils(uint16_t offset, uint16_t count, const void *values)
 {
     Modbus::StatusCode r;

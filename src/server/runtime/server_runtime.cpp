@@ -139,7 +139,7 @@ void mbServerRuntime::clearComponents()
 
 mbServerRunThread *mbServerRuntime::createRunThread(mbServerPort *port)
 {
-    mbServerRunDevice *device = new mbServerRunDevice();
+    mbServerRunDevice *device = new mbServerRunDevice(port);
     device->setBroadcastEnabled(port->isBroadcastEnabled());
     for (int unit = 0; unit <= 255; unit++)
     {

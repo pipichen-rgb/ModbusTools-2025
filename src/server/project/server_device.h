@@ -30,6 +30,7 @@
 #include <server_global.h>
 
 class mbServerProject;
+class mbServerPort;
 
 class mbServerDevice :  public mbCoreDevice
 {
@@ -171,6 +172,7 @@ public: // 'Modbus'-like Interface
     Modbus::StatusCode writeSingleCoil(uint16_t offset, bool value);
     Modbus::StatusCode writeSingleRegister(uint16_t offset, uint16_t value);
     Modbus::StatusCode readExceptionStatus(uint8_t *status);
+    Modbus::StatusCode diagnostics(mbServerPort *port, uint16_t subfunc, uint8_t insize, const void *indata, uint8_t *outsize, void *outdata);
     Modbus::StatusCode writeMultipleCoils(uint16_t offset, uint16_t count, const void *values);
     Modbus::StatusCode writeMultipleRegisters(uint16_t offset, uint16_t count, const uint16_t *values);
     Modbus::StatusCode reportServerID(uint8_t *count, uint8_t *data);

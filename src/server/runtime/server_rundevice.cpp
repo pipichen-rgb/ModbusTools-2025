@@ -24,9 +24,11 @@
 
 #include <project/server_device.h>
 
-mbServerRunDevice::mbServerRunDevice()
+mbServerRunDevice::mbServerRunDevice(mbServerPort *port)
 {
     const Modbus::Defaults &d = Modbus::Defaults::instance();
+
+    m_port = port;
     m_settings.isBroadcastEnabled = d.isBroadcastEnabled;
     memset(m_units, 0, sizeof(m_units));
     m_timestamp = 0;
@@ -163,6 +165,24 @@ Modbus::StatusCode mbServerRunDevice::readExceptionStatus(uint8_t unit, uint8_t 
             return Modbus::Status_BadGatewayPathUnavailable;
         CHECK_DELAY
         return device->readExceptionStatus(status);
+    }
+}
+
+Modbus::StatusCode mbServerRunDevice::diagnostics(uint8_t unit, uint16_t subfunc, uint8_t insize, const void *indata, uint8_t *outsize, void *outdata)
+{
+    if (isBroadcast(unit))
+    {
+        Q_FOREACH (mbServerDevice *device, m_devices)
+        device->diagnostics(m_port, subfunc, insize, indata, outsize, outdata);
+        return Modbus::Status_Good;
+    }
+    else
+    {
+        mbServerDevice *device = this->device(unit);
+        if (!device)
+            return Modbus::Status_BadGatewayPathUnavailable;
+        CHECK_DELAY
+        return device->diagnostics(m_port, subfunc, insize, indata, outsize, outdata);
     }
 }
 

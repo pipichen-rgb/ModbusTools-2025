@@ -26,12 +26,13 @@
 #include <QSet>
 #include <mbcore.h>
 
+class mbServerPort;
 class mbServerDevice;
 
 class mbServerRunDevice : public ModbusInterface
 {
 public:
-    explicit mbServerRunDevice();
+    explicit mbServerRunDevice(mbServerPort *port);
     virtual ~mbServerRunDevice();
 
 public: // Modbus::Interface
@@ -42,6 +43,7 @@ public: // Modbus::Interface
     Modbus::StatusCode writeSingleCoil(uint8_t unit, uint16_t offset, bool value) override;
     Modbus::StatusCode writeSingleRegister(uint8_t unit, uint16_t offset, uint16_t value) override;
     Modbus::StatusCode readExceptionStatus(uint8_t unit, uint8_t *status) override;
+    Modbus::StatusCode diagnostics(uint8_t unit, uint16_t subfunc, uint8_t insize, const void *indata, uint8_t *outsize, void *outdata) override;
     Modbus::StatusCode writeMultipleCoils(uint8_t unit, uint16_t offset, uint16_t count, const void *values) override;
     Modbus::StatusCode writeMultipleRegisters(uint8_t unit, uint16_t offset, uint16_t count, const uint16_t *values) override;
     Modbus::StatusCode reportServerID(uint8_t unit, uint8_t *count, uint8_t *data) override;
@@ -53,6 +55,7 @@ public: // settings
     inline void setBroadcastEnabled(bool enable) { m_settings.isBroadcastEnabled = enable; }
 
 public:
+    inline mbServerPort* port() const { return m_port; }
     inline bool isBroadcast(uint8_t unit) const { return (unit == 0) && isBroadcastEnabled(); }
     inline QSet<mbServerDevice*> devices() const { return m_devices; }
     inline QSet<uint8_t> unitNumbers() const { return m_unitNumbers; }
@@ -64,6 +67,9 @@ private:
     {
         bool isBroadcastEnabled;
     } m_settings;
+
+private:
+    mbServerPort* m_port;
 
 private: // devices
     static const int UnitsSize = 256;
