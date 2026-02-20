@@ -23,7 +23,9 @@
 #include "client_scannerthread.h"
 
 #include <ModbusClientPort.h>
-#include <ModbusTcpPort.h>
+#include <ModbusNetPort.h>
+#include <ModbusRtuPort.h>
+#include <ModbusAscPort.h>
 
 #include <client.h>
 
@@ -132,32 +134,41 @@ void mbClientScannerThread::run()
         switch (clientPort->type())
         {
         case Modbus::ASC:
+        {
+            ModbusAscPort *port = static_cast<ModbusAscPort*>(clientPort->port());
             clientPort->connect(&ModbusClientPort::signalTx, this, &mbClientScannerThread::slotAsciiTx);
             clientPort->connect(&ModbusClientPort::signalRx, this, &mbClientScannerThread::slotAsciiRx);
             sPort = QString("ASC:%1:%2:%3%4%5")
-                        .arg(clientPort->port()->portName(),
-                             QString::number(clientPort->port()->baudRate()),
-                             QString::number(clientPort->port()->dataBits()),
-                             mbClientScanner::toShortParityStr(clientPort->port()->parity()),
-                             mbClientScanner::toShortStopBitsStr(clientPort->port()->stopBits()));
+                        .arg(port->portName(),
+                             QString::number(port->baudRate()),
+                             QString::number(port->dataBits()),
+                             mbClientScanner::toShortParityStr(port->parity()),
+                             mbClientScanner::toShortStopBitsStr(port->stopBits()));
+        }
             break;
         case Modbus::RTU:
+        {
+            ModbusRtuPort *port = static_cast<ModbusRtuPort*>(clientPort->port());
             clientPort->connect(&ModbusClientPort::signalTx, this, &mbClientScannerThread::slotBytesTx);
             clientPort->connect(&ModbusClientPort::signalRx, this, &mbClientScannerThread::slotBytesRx);
             sPort = QString("RTU:%1:%2:%3%4%5")
-                        .arg(clientPort->port()->portName(),
-                             QString::number(clientPort->port()->baudRate()),
-                             QString::number(clientPort->port()->dataBits()),
-                             mbClientScanner::toShortParityStr(clientPort->port()->parity()),
-                             mbClientScanner::toShortStopBitsStr(clientPort->port()->stopBits()));
+                        .arg(port->portName(),
+                             QString::number(port->baudRate()),
+                             QString::number(port->dataBits()),
+                             mbClientScanner::toShortParityStr(port->parity()),
+                             mbClientScanner::toShortStopBitsStr(port->stopBits()));
+        }
             break;
         default:
+        {
+            ModbusNetPort *port = static_cast<ModbusNetPort*>(clientPort->port());
             clientPort->connect(&ModbusClientPort::signalTx, this, &mbClientScannerThread::slotBytesTx);
             clientPort->connect(&ModbusClientPort::signalRx, this, &mbClientScannerThread::slotBytesRx);
             sPort = QString("%1:%2:%3")
                         .arg(Modbus::sprotocolType(clientPort->type()),
-                             static_cast<ModbusTcpPort*>(clientPort->port())->host(),
-                             QString::number(static_cast<ModbusTcpPort*>(clientPort->port())->port()));
+                             port->host(),
+                             QString::number(port->port()));
+        }
             break;
         }
         mbClient::LogInfo(s.name, QString("Begin scanning '%1'").arg(sPort));
