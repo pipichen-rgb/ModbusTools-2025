@@ -25,9 +25,13 @@
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QTableView>
-#include <QPlainTextEdit>
+#include <QTextEdit>
+#include <QTextCursor>
+#include <QTextCharFormat>
 #include <QToolBar>
 #include <QCoreApplication>
+#include <QMap>
+#include <QColor>
 
 #include <core.h>
 #include <gui/core_ui.h>
@@ -80,7 +84,7 @@ mbCoreLogView::mbCoreLogView(QWidget *parent)
     m_maxSize = 1<<20;
     m_offset = 0;
 
-    m_view = new QPlainTextEdit(this);
+    m_view = new QTextEdit(this);
     m_view->setReadOnly(true);
     setFontString(Defaults::instance().font);
 
@@ -166,14 +170,14 @@ void mbCoreLogView::logMessage(mb::LogFlag flag, const QString &source, const QS
     QString s;
     if (m_core->useTimestamp())
     {
-        s = QString("%1 '%2' %3: %4").arg(QDateTime::currentDateTime().toString(m_core->formatDateTime()),
+        s = QString("%1 '%2' [%3]: %4").arg(QDateTime::currentDateTime().toString(m_core->formatDateTime()),
                                           source,
                                           mb::toString(flag),
                                           text);
     }
     else
     {
-        s = QString("'%1' %2: %3").arg(source,
+        s = QString("'%1' [%2]: %3").arg(source,
                                        mb::toString(flag),
                                        text);
     }
@@ -196,5 +200,32 @@ void mbCoreLogView::logMessage(mb::LogFlag flag, const QString &source, const QS
     {
         m_offset = sz; // remember the point for the future deletion
     }
-    m_view->appendPlainText(s);
+    QTextCursor cursor = m_view->textCursor();
+    cursor.movePosition(QTextCursor::End);
+
+    QTextCharFormat format;
+    format.setForeground(logColor(flag));
+
+    cursor.insertText(s, format);
+    cursor.insertBlock();
+    m_view->setTextCursor(cursor);
+}
+
+QColor mbCoreLogView::logColor(mb::LogFlag flag) const
+{
+    static const QMap<mb::LogFlag, QColor> map = {
+        {mb::Log_Error,      QColor(Qt::red)},
+        {mb::Log_Warning,    QColor(255, 170, 0)},
+        {mb::Log_Info,       QColor(0, 140, 0)},
+        {mb::Log_Tx,         QColor(Qt::darkBlue)},
+        {mb::Log_Rx,         QColor(100, 0, 160)},
+        {mb::Log_Debug,      QColor(Qt::gray)},
+        {mb::Log_QtFatal,    QColor(180, 0, 0)},
+        {mb::Log_QtCritical, QColor(Qt::red)},
+        {mb::Log_QtWarning,  QColor(255, 170, 0)},
+        {mb::Log_QtDebug,    QColor(Qt::darkGray)},
+        {mb::Log_QtInfo,     QColor(0, 100, 0)}
+    };
+
+    return map.value(flag, palette().color(QPalette::Text));
 }

@@ -27,8 +27,9 @@
 #include <mbcore.h>
 
 class QTableView;
-class QPlainTextEdit;
+class QTextEdit;
 class QToolBar;
+class QColor;
 class mbCore;
 //class mbCoreLogViewModel;
 
@@ -72,9 +73,12 @@ public Q_SLOTS:
 Q_SIGNALS:
 
 protected:
+    QColor logColor(mb::LogFlag flag) const;
+
+protected:
     mbCore *m_core;
     QToolBar *m_toolBar;
-    QPlainTextEdit *m_view;
+    QTextEdit *m_view;
     int m_maxSize;
     int m_offset;
     //QTableView *m_view;
