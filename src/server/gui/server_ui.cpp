@@ -225,13 +225,8 @@ void mbServerUi::initialize()
     connect(m_simActionsUi, &mbServerSimActionsUi::simActionContextMenu, this, &mbServerUi::contextMenuSimAction);
 
     // ScriptModules
-    m_dockScriptModules = new QDockWidget("Script Modules", this);
-    m_dockScriptModules->setObjectName(QStringLiteral("dockScriptModules"));
-    m_scriptModulesUi = new mbServerScriptModulesUi(m_dockScriptModules);
+    m_scriptModulesUi = windowManager()->scriptModulesUi();
     connect(m_scriptModulesUi, &mbServerScriptModulesUi::scriptModuleContextMenu, this, &mbServerUi::contextMenuScriptModule);
-    m_dockScriptModules->setWidget(m_scriptModulesUi);
-    this->addDockWidget(Qt::BottomDockWidgetArea, m_dockScriptModules);
-    this->tabifyDockWidget(ui->dockLogView, m_dockScriptModules);
 
     ui->dockLogView->raise();
 
@@ -243,8 +238,7 @@ void mbServerUi::initialize()
     connect(ui->actionEditReplace, &QAction::triggered, this, &mbServerUi::menuSlotEditReplace);
 
     // Menu View
-    connect(ui->actionViewScriptModules, &QAction::triggered, this, &mbServerUi::menuSlotViewScriptModules);
-    connect(ui->actionViewOutput       , &QAction::triggered, this, &mbServerUi::menuSlotViewOutput       );
+    connect(ui->actionViewOutput       , &QAction::triggered, this, &mbServerUi::menuSlotViewOutput);
 
     // Menu Port
     connect(ui->actionPortDeviceNew   , &QAction::triggered, this, &mbServerUi::menuSlotPortDeviceNew   );
@@ -271,6 +265,7 @@ void mbServerUi::initialize()
     connect(ui->actionSimActionExport       , &QAction::triggered, this, &mbServerUi::menuSlotSimActionExport);
 
     // Menu Script Modules
+    connect(ui->actionScriptModules         , &QAction::triggered, this, &mbServerUi::menuSlotScriptModules         );
     connect(ui->actionScriptModuleNew       , &QAction::triggered, this, &mbServerUi::menuSlotScriptModuleNew       );
     connect(ui->actionScriptModuleOpen      , &QAction::triggered, this, &mbServerUi::menuSlotScriptModuleOpen      );
     connect(ui->actionScriptModuleDelete    , &QAction::triggered, this, &mbServerUi::menuSlotScriptModuleDelete    );
@@ -282,6 +277,7 @@ void mbServerUi::initialize()
     connect(ui->actionWindowDeviceCloseAll  , &QAction::triggered, this, &mbServerUi::menuSlotWindowDeviceCloseAll);
     connect(ui->actionWindowScriptCloseAll  , &QAction::triggered, this, &mbServerUi::menuSlotWindowScriptCloseAll);
     connect(ui->actionWindowSimActions      , &QAction::triggered, this, &mbServerUi::menuSlotWindowSimActions    );
+    connect(ui->actionWindowScriptModules   , &QAction::triggered, this, &mbServerUi::menuSlotWindowScriptModules );
 
     // tool bar
     // add data view format functionality to the end of toolbar
@@ -330,12 +326,6 @@ void mbServerUi::setCachedSettings(const MBSETTINGS &settings)
 void mbServerUi::outputMessage(const QString &message)
 {
     m_outputView->showOutput(message);
-}
-
-void mbServerUi::menuSlotViewScriptModules()
-{
-    m_dockScriptModules->show();
-    m_dockScriptModules->setFocus();
 }
 
 void mbServerUi::menuSlotEditCopy()
@@ -949,6 +939,11 @@ void mbServerUi::menuSlotSimActionExport()
     }
 }
 
+void mbServerUi::menuSlotScriptModules()
+{
+    windowManager()->showScriptModules();
+}
+
 void mbServerUi::menuSlotScriptModuleNew()
 {
     mbServerProject *project = core()->project();
@@ -962,6 +957,7 @@ void mbServerUi::menuSlotScriptModuleNew()
             project->scriptModuleAdd(sm);
             project->setModifiedFlag(true);
             windowManager()->showScriptModule(sm);
+            windowManager()->showScriptModules();
         }
     }
 }
@@ -973,6 +969,7 @@ void mbServerUi::menuSlotScriptModuleOpen()
         return;
     mbServerScriptModule *sm = modules.first();
     windowManager()->showScriptModule(sm);
+    windowManager()->showScriptModules();
 }
 
 void mbServerUi::menuSlotScriptModuleDelete()
@@ -984,6 +981,7 @@ void mbServerUi::menuSlotScriptModuleDelete()
         Q_FOREACH (mbServerScriptModule *sm, modules)
             project->scriptModuleRemove(sm);
         project->setModifiedFlag(true);
+        windowManager()->showScriptModules();
     }
 }
 
@@ -998,6 +996,7 @@ void mbServerUi::menuSlotScriptModuleEditParams()
     {
         sm->setSettings(p);
         m_project->setModifiedFlag(true);
+        windowManager()->showScriptModules();
     }
 }
 
@@ -1047,6 +1046,7 @@ void mbServerUi::menuSlotScriptModuleImport()
             }
             project->setModified();
             windowManager()->showScriptModule(sm);
+            windowManager()->showScriptModules();
         }
     }
 }
@@ -1080,6 +1080,11 @@ void mbServerUi::menuSlotWindowScriptCloseAll()
 void mbServerUi::menuSlotWindowSimActions()
 {
     windowManager()->showSimActions();;
+}
+
+void mbServerUi::menuSlotWindowScriptModules()
+{
+    windowManager()->showScriptModules();
 }
 
 void mbServerUi::slotSimActionCopy()

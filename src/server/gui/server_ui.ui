@@ -84,7 +84,6 @@
     <addaction name="actionViewProject"/>
     <addaction name="actionViewLogView"/>
     <addaction name="actionViewOutput"/>
-    <addaction name="actionViewScriptModules"/>
    </widget>
    <widget class="QMenu" name="menuDevice">
     <property name="title">
@@ -199,6 +198,7 @@
     <addaction name="menuWindowScripts"/>
     <addaction name="separator"/>
     <addaction name="actionWindowSimActions"/>
+    <addaction name="actionWindowScriptModules"/>
     <addaction name="separator"/>
     <addaction name="actionWindowCloseAll"/>
     <addaction name="separator"/>
@@ -233,6 +233,8 @@
     <property name="title">
      <string>Scripting</string>
     </property>
+    <addaction name="actionScriptModules"/>
+    <addaction name="separator"/>
     <addaction name="actionScriptModuleNew"/>
     <addaction name="actionScriptModuleOpen"/>
     <addaction name="actionScriptModuleDelete"/>
@@ -845,6 +847,16 @@
   <action name="actionWindowSimActions">
    <property name="text">
     <string>Simulation</string>
+   </property>
+  </action>
+  <action name="actionScriptModules">
+   <property name="text">
+    <string>Script Modules</string>
+   </property>
+  </action>
+  <action name="actionWindowScriptModules">
+   <property name="text">
+    <string>Script Modules</string>
    </property>
   </action>
  </widget>

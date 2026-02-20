@@ -131,10 +131,6 @@ private Q_SLOTS:
     void menuSlotEditFind     ();
     void menuSlotEditReplace  ();
     // ----------------------------
-    // ------------VIEW------------
-    // ----------------------------
-    void menuSlotViewScriptModules();
-    // ----------------------------
     // ------------PORT------------
     // ----------------------------
     void menuSlotPortNew         () override;
@@ -173,6 +169,7 @@ private Q_SLOTS:
     // ----------------------------
     // --------SCRIPTMODULE--------
     // ----------------------------
+    void menuSlotScriptModules         ();
     void menuSlotScriptModuleNew       ();
     void menuSlotScriptModuleOpen      ();
     void menuSlotScriptModuleDelete    ();
@@ -185,6 +182,7 @@ private Q_SLOTS:
     void menuSlotWindowDeviceCloseAll();
     void menuSlotWindowScriptCloseAll();
     void menuSlotWindowSimActions    ();
+    void menuSlotWindowScriptModules ();
 
 protected Q_SLOTS: // non menu slots
     void slotSimActionCopy();
@@ -230,7 +228,6 @@ private:
     mbServerSimActionsUi *m_simActionsUi;
     // ScriptModules
     mbServerScriptModulesUi *m_scriptModulesUi;
-    QDockWidget *m_dockScriptModules;
     // Device
     mbServerDeviceManager *m_deviceManager;
     // Script

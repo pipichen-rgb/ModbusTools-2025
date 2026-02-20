@@ -31,6 +31,7 @@ class mbServerDataView;
 
 class mbServerUi;
 class mbServerSimActionsUi;
+class mbServerScriptModulesUi;
 class mbServerDeviceManager;
 class mbServerScriptManager;
 class mbServerScriptModule;
@@ -48,6 +49,7 @@ public:
     struct Strings : public mbCoreWindowManager::Strings
     {
         const QString prefixSimActions;
+        const QString prefixScriptModules;
         const QString prefixDevice;
         const QString prefixScriptModule;
         const QString prefixScriptInit;
@@ -76,9 +78,11 @@ public: // 'mbCoreWindowManager'-interface
 public:
     mbServerDevice *activeDevice() const;
     inline mbServerSimActionsUi *simActionsUi() const { return m_simActionsUi; }
+    inline mbServerScriptModulesUi *scriptModulesUi() const { return m_scriptModulesUi; }
 
 public:
     void showSimActions();
+    void showScriptModules();
     void showScriptModule(mbServerScriptModule *sm);
     void showDeviceScript(mbServerDevice *device, mbServerDevice::ScriptType scriptType);
     void showScriptEditor(mbServerBaseScriptEditor *scriptEditor);
@@ -108,11 +112,14 @@ private:
     void closeSubWindow(QMdiSubWindow *sw) override;
     QMdiSubWindow* getSimActionsSubWindow();
     void closeSimActions();
+    QMdiSubWindow* getScriptModulesSubWindow();
+    void closeScriptModules();
 
 private:
     mbServerDeviceManager *m_deviceManager;
     mbServerScriptManager *m_scriptManager;
     mbServerSimActionsUi *m_simActionsUi;
+    mbServerScriptModulesUi *m_scriptModulesUi;
 };
 
 #endif // SERVER_WINDOWMANAGER_H
