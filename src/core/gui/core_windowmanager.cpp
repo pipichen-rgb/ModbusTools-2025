@@ -108,7 +108,7 @@ void mbCoreWindowManager::setActiveStatisticsUi(mbCoreStatisticsUi *ui)
         m_area->setActiveSubWindow(sw);
 }
 
-QMdiSubWindow *mbCoreWindowManager::getMdiSubWindowForNameWithPrefix(const QString &nameWithPrefix) const
+QMdiSubWindow *mbCoreWindowManager::getMdiSubWindowForNameWithPrefix(const QString &nameWithPrefix)
 {
     const Strings &s = Strings::instance();
     if (nameWithPrefix.startsWith(s.prefixDataView))

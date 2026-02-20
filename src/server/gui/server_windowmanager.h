@@ -30,6 +30,7 @@ class mbServerDevice;
 class mbServerDataView;
 
 class mbServerUi;
+class mbServerSimActionsUi;
 class mbServerDeviceManager;
 class mbServerScriptManager;
 class mbServerScriptModule;
@@ -46,6 +47,7 @@ class mbServerWindowManager : public mbCoreWindowManager
 public:
     struct Strings : public mbCoreWindowManager::Strings
     {
+        const QString prefixSimActions;
         const QString prefixDevice;
         const QString prefixScriptModule;
         const QString prefixScriptInit;
@@ -61,19 +63,22 @@ public:
                                                    mbServerScriptManager *scriptManager,
                                                    mbServerDataViewManager *dataViewManager,
                                                    mbServerStatisticsManager *statisticsManager);
+    ~mbServerWindowManager();
 
 public: // 'mbCoreWindowManager'-interface
     inline mbServerUi *ui() const { return reinterpret_cast<mbServerUi*>(uiCore()); }
     inline mbServerDataViewManager *dataViewManager() { return reinterpret_cast<mbServerDataViewManager*>(dataViewManagerCore()); }
     inline mbServerDataView *activeDataView() const { return reinterpret_cast<mbServerDataView*>(activeDataViewCore()); }
     inline void setActiveDataView(mbServerDataView *dataView) { setActiveDataViewCore(reinterpret_cast<mbCoreDataView*>(dataView)); }
-    QMdiSubWindow *getMdiSubWindowForNameWithPrefix(const QString &nameWithPrefix) const override;
+    QMdiSubWindow *getMdiSubWindowForNameWithPrefix(const QString &nameWithPrefix) override;
     QString getMdiSubWindowNameWithPrefix(const QMdiSubWindow *sw) const override;
 
 public:
     mbServerDevice *activeDevice() const;
+    inline mbServerSimActionsUi *simActionsUi() const { return m_simActionsUi; }
 
 public:
+    void showSimActions();
     void showScriptModule(mbServerScriptModule *sm);
     void showDeviceScript(mbServerDevice *device, mbServerDevice::ScriptType scriptType);
     void showScriptEditor(mbServerBaseScriptEditor *scriptEditor);
@@ -101,10 +106,13 @@ private Q_SLOTS:
 
 private:
     void closeSubWindow(QMdiSubWindow *sw) override;
+    QMdiSubWindow* getSimActionsSubWindow();
+    void closeSimActions();
 
 private:
     mbServerDeviceManager *m_deviceManager;
     mbServerScriptManager *m_scriptManager;
+    mbServerSimActionsUi *m_simActionsUi;
 };
 
 #endif // SERVER_WINDOWMANAGER_H

@@ -26,6 +26,7 @@
 #include <QMdiSubWindow>
 
 #include "server_ui.h"
+#include "simactions/server_simactionsui.h"
 #include "device/server_devicemanager.h"
 #include "device/server_deviceui.h"
 #include "script/server_scriptmanager.h"
@@ -37,6 +38,7 @@
 #include <project/server_project.h>
 
 mbServerWindowManager::Strings::Strings() : mbCoreWindowManager::Strings(),
+    prefixSimActions(QStringLiteral("sim")),
     prefixDevice(QStringLiteral("dev:")),
     prefixScriptModule(QStringLiteral("module:")),
     prefixScriptInit(QStringLiteral("init:")),
@@ -69,11 +71,23 @@ mbServerWindowManager::mbServerWindowManager(mbServerUi *ui,
     connect(m_scriptManager, &mbServerScriptManager::scriptEditorRemove, this, &mbServerWindowManager::scriptEditorRemove);
     Q_FOREACH (mbServerBaseScriptEditor *ui, m_scriptManager->scriptEditors())
         scriptEditorAdd(ui);
+
+    m_simActionsUi = new mbServerSimActionsUi(nullptr);
 }
 
-QMdiSubWindow *mbServerWindowManager::getMdiSubWindowForNameWithPrefix(const QString &nameWithPrefix) const
+mbServerWindowManager::~mbServerWindowManager()
+{
+    closeSimActions();
+    delete m_simActionsUi;
+}
+
+QMdiSubWindow *mbServerWindowManager::getMdiSubWindowForNameWithPrefix(const QString &nameWithPrefix)
 {
     const Strings &s = Strings::instance();
+    if (nameWithPrefix == s.prefixSimActions)
+    {
+        return getSimActionsSubWindow();
+    }
     if (nameWithPrefix.startsWith(s.prefixDevice))
     {
         mbServerDeviceUi *ui = m_deviceManager->deviceUi(nameWithPrefix.mid(s.prefixDevice.size()));
@@ -124,6 +138,11 @@ QMdiSubWindow *mbServerWindowManager::getMdiSubWindowForNameWithPrefix(const QSt
 
 QString mbServerWindowManager::getMdiSubWindowNameWithPrefix(const QMdiSubWindow *sw) const
 {
+    if (sw->widget() == m_simActionsUi)
+    {
+        const Strings &s = Strings::instance();
+        return s.prefixSimActions;
+    }
     if (mbServerDeviceUi *ui = qobject_cast<mbServerDeviceUi *>(sw->widget()))
     {
         const Strings &s = Strings::instance();
@@ -153,6 +172,12 @@ QString mbServerWindowManager::getMdiSubWindowNameWithPrefix(const QMdiSubWindow
 mbServerDevice *mbServerWindowManager::activeDevice() const
 {
     return m_deviceManager->activeDevice();
+}
+
+void mbServerWindowManager::showSimActions()
+{
+    QMdiSubWindow *sw = getSimActionsSubWindow();
+    m_area->setActiveSubWindow(sw);
 }
 
 void mbServerWindowManager::showScriptModule(mbServerScriptModule *sm)
@@ -229,6 +254,7 @@ void mbServerWindowManager::actionWindowCloseAll()
 {
     actionWindowScriptCloseAll();
     actionWindowDeviceCloseAll();
+    closeSimActions();
     mbCoreWindowManager::actionWindowCloseAll();
 }
 
@@ -291,8 +317,30 @@ void mbServerWindowManager::subWindowActivated(QMdiSubWindow *sw)
 
 void mbServerWindowManager::closeSubWindow(QMdiSubWindow *sw)
 {
-    if (mbServerBaseScriptEditor *ui = qobject_cast<mbServerBaseScriptEditor*>(sw->widget()))
+    if (sw->widget() == m_simActionsUi)
+        closeSimActions();
+    else if (mbServerBaseScriptEditor *ui = qobject_cast<mbServerBaseScriptEditor*>(sw->widget()))
         m_scriptManager->removeScriptEditor(ui);
     else
         mbCoreWindowManager::closeSubWindow(sw);
+}
+
+QMdiSubWindow *mbServerWindowManager::getSimActionsSubWindow()
+{
+    QMdiSubWindow *sw = m_hashWindows.value(m_simActionsUi);
+    if (!sw)
+    {
+        sw = subWindowAdd(m_simActionsUi);
+        sw->setWindowTitle("Simulation");
+    }
+    return sw;
+}
+
+void mbServerWindowManager::closeSimActions()
+{
+    QMdiSubWindow* sw = subWindowRemove(m_simActionsUi);
+    if (sw)
+    {
+        sw->deleteLater();
+    }
 }

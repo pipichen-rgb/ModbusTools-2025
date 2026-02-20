@@ -95,7 +95,6 @@ mbServerUi::mbServerUi(mbServer *core, QWidget *parent) :
     mb::fillDigitalFormatComboBox(m_cmbFormat);
 
     m_simActionsUi = nullptr;
-    m_dockSimActions = nullptr;
     m_deviceManager = nullptr;
     m_helpFile = QStringLiteral("/help/ModbusServer.qhc");
     m_outputView = new mbServerOutputView(this);
@@ -222,13 +221,8 @@ void mbServerUi::initialize()
     connect(projectUi(), &mbServerProjectUi::deviceContextMenu, this, &mbServerUi::contextMenuDeviceRef);
 
     // Simulation Action
-    m_dockSimActions = new QDockWidget("Simulation", this);
-    m_dockSimActions->setObjectName(QStringLiteral("dockSimActions"));
-    m_simActionsUi = new mbServerSimActionsUi(m_dockSimActions);
+    m_simActionsUi = windowManager()->simActionsUi();
     connect(m_simActionsUi, &mbServerSimActionsUi::simActionContextMenu, this, &mbServerUi::contextMenuSimAction);
-    m_dockSimActions->setWidget(m_simActionsUi);
-    this->addDockWidget(Qt::BottomDockWidgetArea, m_dockSimActions);
-    this->tabifyDockWidget(ui->dockLogView, m_dockSimActions);
 
     // ScriptModules
     m_dockScriptModules = new QDockWidget("Script Modules", this);
@@ -249,7 +243,6 @@ void mbServerUi::initialize()
     connect(ui->actionEditReplace, &QAction::triggered, this, &mbServerUi::menuSlotEditReplace);
 
     // Menu View
-    connect(ui->actionViewSimulation   , &QAction::triggered, this, &mbServerUi::menuSlotViewSimulation   );
     connect(ui->actionViewScriptModules, &QAction::triggered, this, &mbServerUi::menuSlotViewScriptModules);
     connect(ui->actionViewOutput       , &QAction::triggered, this, &mbServerUi::menuSlotViewOutput       );
 
@@ -269,6 +262,7 @@ void mbServerUi::initialize()
     connect(ui->actionDeviceScriptFinal   , &QAction::triggered, this, &mbServerUi::menuSlotDeviceScriptFinal   );
 
     // Menu Sim Action
+    connect(ui->actionSimActions            , &QAction::triggered, this, &mbServerUi::menuSlotSimActions     );
     connect(ui->actionSimActionNew          , &QAction::triggered, this, &mbServerUi::menuSlotSimActionNew   );
     connect(ui->actionSimActionEdit         , &QAction::triggered, this, &mbServerUi::menuSlotSimActionEdit  );
     connect(ui->actionSimActionInsert       , &QAction::triggered, this, &mbServerUi::menuSlotSimActionInsert);
@@ -285,8 +279,9 @@ void mbServerUi::initialize()
     connect(ui->actionScriptModuleExport    , &QAction::triggered, this, &mbServerUi::menuSlotScriptModuleExport    );
 
     // Menu Window
-    connect(ui->actionWindowDeviceCloseAll  , &QAction::triggered, this, &mbServerUi::menuSlotWindowDeviceCloseAll  );
-    connect(ui->actionWindowScriptCloseAll  , &QAction::triggered, this, &mbServerUi::menuSlotWindowScriptCloseAll  );
+    connect(ui->actionWindowDeviceCloseAll  , &QAction::triggered, this, &mbServerUi::menuSlotWindowDeviceCloseAll);
+    connect(ui->actionWindowScriptCloseAll  , &QAction::triggered, this, &mbServerUi::menuSlotWindowScriptCloseAll);
+    connect(ui->actionWindowSimActions      , &QAction::triggered, this, &mbServerUi::menuSlotWindowSimActions    );
 
     // tool bar
     // add data view format functionality to the end of toolbar
@@ -337,12 +332,6 @@ void mbServerUi::outputMessage(const QString &message)
     m_outputView->showOutput(message);
 }
 
-void mbServerUi::menuSlotViewSimulation()
-{
-    m_dockSimActions->show();
-    m_dockSimActions->setFocus();
-}
-
 void mbServerUi::menuSlotViewScriptModules()
 {
     m_dockScriptModules->show();
@@ -354,7 +343,7 @@ void mbServerUi::menuSlotEditCopy()
     QWidget* focus = QApplication::focusWidget();
     if (focus)
     {
-        if (focus == m_dockSimActions || m_dockSimActions->isAncestorOf(focus))
+        if (focus == m_simActionsUi || m_simActionsUi->isAncestorOf(focus))
         {
             slotSimActionCopy();
             return;
@@ -368,7 +357,7 @@ void mbServerUi::menuSlotEditPaste()
     QWidget* focus = QApplication::focusWidget();
     if (focus)
     {
-        if (focus == m_dockSimActions || m_dockSimActions->isAncestorOf(focus))
+        if (focus == m_simActionsUi || m_simActionsUi->isAncestorOf(focus))
         {
             slotSimActionPaste();
             return;
@@ -382,7 +371,7 @@ void mbServerUi::menuSlotEditInsert()
     QWidget* focus = QApplication::focusWidget();
     if (focus)
     {
-        if (focus == m_dockSimActions || m_dockSimActions->isAncestorOf(focus))
+        if (focus == m_simActionsUi || m_simActionsUi->isAncestorOf(focus))
         {
             menuSlotSimActionInsert();
             return;
@@ -409,7 +398,7 @@ void mbServerUi::menuSlotEditEdit()
                 return;
             }
         }
-        else if (focus == m_dockSimActions || m_dockSimActions->isAncestorOf(focus))
+        else if (focus == m_simActionsUi || m_simActionsUi->isAncestorOf(focus))
         {
             menuSlotSimActionEdit();
             return;
@@ -436,7 +425,7 @@ void mbServerUi::menuSlotEditDelete()
                 return;
             }
         }
-        else if (focus == m_dockSimActions || m_dockSimActions->isAncestorOf(focus))
+        else if (focus == m_simActionsUi || m_simActionsUi->isAncestorOf(focus))
         {
             menuSlotSimActionDelete();
             return;
@@ -450,7 +439,7 @@ void mbServerUi::menuSlotEditSelectAll()
     QWidget* focus = QApplication::focusWidget();
     if (focus)
     {
-        if (focus == m_dockSimActions || m_dockSimActions->isAncestorOf(focus))
+        if (focus == m_simActionsUi || m_simActionsUi->isAncestorOf(focus))
         {
             slotSimActionSelectAll();
             return;
@@ -824,6 +813,11 @@ void mbServerUi::menuSlotDeviceStatistics()
     }
 }
 
+void mbServerUi::menuSlotSimActions()
+{
+    windowManager()->showSimActions();
+}
+
 void mbServerUi::menuSlotSimActionNew()
 {
     if (core()->isRunning())
@@ -846,6 +840,7 @@ void mbServerUi::menuSlotSimActionNew()
                     p[sAction.address] = action->addressInt() + action->length();
                 }
                 m_project->setModifiedFlag(true);
+                windowManager()->showSimActions();
             }
         }
     }
@@ -859,6 +854,7 @@ void mbServerUi::menuSlotSimActionEdit()
     if (!actions.count())
         return;
     editActions(actions);
+    windowManager()->showSimActions();
 }
 
 void mbServerUi::menuSlotSimActionInsert()
@@ -890,6 +886,7 @@ void mbServerUi::menuSlotSimActionInsert()
         if (next)
             m_simActionsUi->selectItem(next);
         m_project->setModifiedFlag(true);
+        windowManager()->showSimActions();
     }
 }
 
@@ -903,6 +900,7 @@ void mbServerUi::menuSlotSimActionDelete()
         QList<mbServerSimAction*> items = m_simActionsUi->selectedItems();
         project->simActionsRemove(items);
         project->setModifiedFlag(true);
+        windowManager()->showSimActions();
     }
 }
 
@@ -925,6 +923,7 @@ void mbServerUi::menuSlotSimActionImport()
                 int index = m_simActionsUi->currentItemIndex();
                 project->simActionsInsert(actions, index);
                 m_project->setModifiedFlag(true);
+                windowManager()->showSimActions();
             }
         }
     }
@@ -1076,6 +1075,11 @@ void mbServerUi::menuSlotWindowDeviceCloseAll()
 void mbServerUi::menuSlotWindowScriptCloseAll()
 {
     windowManager()->actionWindowScriptCloseAll();
+}
+
+void mbServerUi::menuSlotWindowSimActions()
+{
+    windowManager()->showSimActions();;
 }
 
 void mbServerUi::slotSimActionCopy()

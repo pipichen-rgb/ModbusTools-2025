@@ -14,7 +14,7 @@
    <string>Server</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="server_rsc.qrc">
+   <iconset>
     <normaloff>:/server/icons/server.ico</normaloff>:/server/icons/server.ico</iconset>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -42,7 +42,7 @@
      <x>0</x>
      <y>0</y>
      <width>983</width>
-     <height>21</height>
+     <height>20</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -82,7 +82,6 @@
      <string>View</string>
     </property>
     <addaction name="actionViewProject"/>
-    <addaction name="actionViewSimulation"/>
     <addaction name="actionViewLogView"/>
     <addaction name="actionViewOutput"/>
     <addaction name="actionViewScriptModules"/>
@@ -149,6 +148,8 @@
     <property name="title">
      <string>Simulation</string>
     </property>
+    <addaction name="actionSimActions"/>
+    <addaction name="separator"/>
     <addaction name="actionSimActionNew"/>
     <addaction name="actionSimActionEdit"/>
     <addaction name="actionSimActionInsert"/>
@@ -196,6 +197,8 @@
     <addaction name="menuWindowStatistics"/>
     <addaction name="menuWindowDevices"/>
     <addaction name="menuWindowScripts"/>
+    <addaction name="separator"/>
+    <addaction name="actionWindowSimActions"/>
     <addaction name="separator"/>
     <addaction name="actionWindowCloseAll"/>
     <addaction name="separator"/>
@@ -834,10 +837,19 @@
     <string>Close All</string>
    </property>
   </action>
+  <action name="actionSimActions">
+   <property name="text">
+    <string>Simulation</string>
+   </property>
+  </action>
+  <action name="actionWindowSimActions">
+   <property name="text">
+    <string>Simulation</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../../core/gui/core_rsc.qrc"/>
-  <include location="server_rsc.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -133,7 +133,6 @@ private Q_SLOTS:
     // ----------------------------
     // ------------VIEW------------
     // ----------------------------
-    void menuSlotViewSimulation   ();
     void menuSlotViewScriptModules();
     // ----------------------------
     // ------------PORT------------
@@ -164,6 +163,7 @@ private Q_SLOTS:
     // ----------------------------
     // ----------SIMACTION---------
     // ----------------------------
+    void menuSlotSimActions     ();
     void menuSlotSimActionNew   ();
     void menuSlotSimActionEdit  ();
     void menuSlotSimActionInsert();
@@ -184,6 +184,7 @@ private Q_SLOTS:
     // ----------------------------
     void menuSlotWindowDeviceCloseAll();
     void menuSlotWindowScriptCloseAll();
+    void menuSlotWindowSimActions    ();
 
 protected Q_SLOTS: // non menu slots
     void slotSimActionCopy();
@@ -227,7 +228,6 @@ private:
     mbServerOutputView *m_outputView;
     // SimAction
     mbServerSimActionsUi *m_simActionsUi;
-    QDockWidget *m_dockSimActions;
     // ScriptModules
     mbServerScriptModulesUi *m_scriptModulesUi;
     QDockWidget *m_dockScriptModules;

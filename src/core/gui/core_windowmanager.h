@@ -83,7 +83,7 @@ public:
     void setActiveStatisticsUi(mbCoreStatisticsUi *ui);
 
 public:
-    virtual QMdiSubWindow *getMdiSubWindowForNameWithPrefix(const QString &name) const;
+    virtual QMdiSubWindow *getMdiSubWindowForNameWithPrefix(const QString &name);
     virtual QString getMdiSubWindowNameWithPrefix(const QMdiSubWindow *sw) const;
 
 public Q_SLOTS:
