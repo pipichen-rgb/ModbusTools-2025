@@ -59,7 +59,7 @@ mbCoreDataViewItem::Defaults::Defaults() :
     byteArrayFormat             (mb::Hex),
     byteArraySeparator          (QStringLiteral(" ")),
     isDefaultByteArraySeparator (true),
-    stringLengthType            (mb::ZerroEnded),
+    stringLengthType            (mb::ZeroEnded),
     stringEncoding              (mb::Defaults::instance().stringEncoding),
     value                       (QVariant())
 {
@@ -460,7 +460,7 @@ mb::StringLengthType mbCoreDataViewItem::getStringLengthType() const
     {
         if (m_device && (m_device->stringLengthType() != mb::DefaultStringLengthType))
             return m_device->stringLengthType();
-        return mb::ZerroEnded;
+        return mb::ZeroEnded;
     }
     return m_stringLengthType;
 }

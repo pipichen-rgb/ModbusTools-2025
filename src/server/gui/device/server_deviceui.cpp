@@ -142,7 +142,7 @@ void mbServerDeviceUi::setData(Modbus::MemoryType memoryType, const QByteArray &
     }
 }
 
-void mbServerDeviceUi::slotMemoryZerro()
+void mbServerDeviceUi::slotMemoryZero()
 {
     if      (ui->tabWidget->currentWidget() == ui->tab_0x)
         m_device->zerroAll_0x();
@@ -154,7 +154,7 @@ void mbServerDeviceUi::slotMemoryZerro()
         m_device->zerroAll_4x();
 }
 
-void mbServerDeviceUi::slotMemoryZerroAll()
+void mbServerDeviceUi::slotMemoryZeroAll()
 {
     m_device->zerroAll_0x();
     m_device->zerroAll_1x();

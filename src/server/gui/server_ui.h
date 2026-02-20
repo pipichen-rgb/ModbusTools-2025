@@ -148,8 +148,8 @@ private Q_SLOTS:
     void menuSlotDeviceDelete        () override;
     void menuSlotDeviceImport        () override;
     void menuSlotDeviceExport        () override;
-    void menuSlotDeviceMemoryZerro   ();
-    void menuSlotDeviceMemoryZerroAll();
+    void menuSlotDeviceMemoryZero   ();
+    void menuSlotDeviceMemoryZeroAll();
     void menuSlotDeviceMemoryImport  ();
     void menuSlotDeviceMemoryExport  ();
     void menuSlotDeviceScriptInit    ();

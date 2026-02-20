@@ -897,7 +897,7 @@ QByteArray toByteArray(const QVariant &value, Format format, Modbus::MemoryType 
     {
         QTextCodec *codec = QTextCodec::codecForName(stringEncoding);
         QString s = fromEscapeSequence(value.toString());
-        if (stringLengthType == ZerroEnded)
+        if (stringLengthType == ZeroEnded)
         {
             int index = s.indexOf(QChar('\0'));
             if (index < 0)
@@ -1113,7 +1113,7 @@ QVariant toVariant(const QByteArray &data, Format format, Modbus::MemoryType mem
         QTextCodec::ConverterState state;
         state.flags = QTextCodec::IgnoreHeader;
         QString s = codec->toUnicode(newData.constData(), newData.size(), &state);
-        if (stringLengthType == ZerroEnded)
+        if (stringLengthType == ZeroEnded)
         {
             int i = s.indexOf(QChar(0));
             if ((i >= 0) && (i < s.length()))

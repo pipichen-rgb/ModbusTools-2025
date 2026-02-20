@@ -30,9 +30,9 @@ QString mbServerDeviceScriptEditor::getName(const QString &baseName) const
     QString sScriptType;
     switch (m_scriptType)
     {
-    case mbServerDevice::Script_Init:  sScriptType = QStringLiteral(" : ScriptInit" ); break;
-    case mbServerDevice::Script_Loop:  sScriptType = QStringLiteral(" : ScriptLoop" ); break;
-    case mbServerDevice::Script_Final: sScriptType = QStringLiteral(" : ScriptFinal"); break;
+    case mbServerDevice::Script_Init:  sScriptType = QStringLiteral(" [ScriptInit]" ); break;
+    case mbServerDevice::Script_Loop:  sScriptType = QStringLiteral(" [ScriptLoop]" ); break;
+    case mbServerDevice::Script_Final: sScriptType = QStringLiteral(" [ScriptFinal]"); break;
     }
     return baseName+sScriptType;
 }

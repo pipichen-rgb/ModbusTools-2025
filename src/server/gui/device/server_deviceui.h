@@ -57,8 +57,8 @@ Q_SIGNALS:
     void nameChanged(const QString &name);
 
 public Q_SLOTS:
-    void slotMemoryZerro   ();
-    void slotMemoryZerroAll();
+    void slotMemoryZero   ();
+    void slotMemoryZeroAll();
 
 private Q_SLOTS:
     void deviceChanged();

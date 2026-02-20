@@ -17,7 +17,7 @@ QString mbServerScriptModuleEditor::name() const
 
 QString mbServerScriptModuleEditor::getName(const QString &baseName) const
 {
-    return baseName+QStringLiteral(" : ScriptModule" );
+    return baseName+QStringLiteral(" [ScriptModule]" );
 }
 
 void mbServerScriptModuleEditor::synchSourceCode()

@@ -247,8 +247,8 @@ void mbServerUi::initialize()
     connect(ui->actionPortDeviceDelete, &QAction::triggered, this, &mbServerUi::menuSlotPortDeviceDelete);
 
     // Menu Device
-    connect(ui->actionDeviceMemoryZerro   , &QAction::triggered, this, &mbServerUi::menuSlotDeviceMemoryZerro   );
-    connect(ui->actionDeviceMemoryZerroAll, &QAction::triggered, this, &mbServerUi::menuSlotDeviceMemoryZerroAll);
+    connect(ui->actionDeviceMemoryZero   , &QAction::triggered, this, &mbServerUi::menuSlotDeviceMemoryZero   );
+    connect(ui->actionDeviceMemoryZeroAll, &QAction::triggered, this, &mbServerUi::menuSlotDeviceMemoryZeroAll);
     connect(ui->actionDeviceMemoryImport  , &QAction::triggered, this, &mbServerUi::menuSlotDeviceMemoryImport  );
     connect(ui->actionDeviceMemoryExport  , &QAction::triggered, this, &mbServerUi::menuSlotDeviceMemoryExport  );
     connect(ui->actionDeviceScriptInit    , &QAction::triggered, this, &mbServerUi::menuSlotDeviceScriptInit    );
@@ -700,20 +700,20 @@ void mbServerUi::menuSlotDeviceExport()
     }
 }
 
-void mbServerUi::menuSlotDeviceMemoryZerro()
+void mbServerUi::menuSlotDeviceMemoryZero()
 {
     if (mbServerDeviceUi *deviceUi = this->activeDeviceUi())
     {
-        deviceUi->slotMemoryZerro();
+        deviceUi->slotMemoryZero();
         m_project->setModifiedFlag(true);
     }
 }
 
-void mbServerUi::menuSlotDeviceMemoryZerroAll()
+void mbServerUi::menuSlotDeviceMemoryZeroAll()
 {
     if (mbServerDeviceUi *deviceUi = this->activeDeviceUi())
     {
-        deviceUi->slotMemoryZerroAll();
+        deviceUi->slotMemoryZeroAll();
         m_project->setModifiedFlag(true);
     }
 }

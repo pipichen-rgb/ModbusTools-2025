@@ -96,8 +96,8 @@
     <addaction name="actionDeviceImport"/>
     <addaction name="actionDeviceExport"/>
     <addaction name="separator"/>
-    <addaction name="actionDeviceMemoryZerro"/>
-    <addaction name="actionDeviceMemoryZerroAll"/>
+    <addaction name="actionDeviceMemoryZero"/>
+    <addaction name="actionDeviceMemoryZeroAll"/>
     <addaction name="actionDeviceMemoryImport"/>
     <addaction name="actionDeviceMemoryExport"/>
     <addaction name="separator"/>
@@ -398,9 +398,9 @@
     <string>LogView</string>
    </property>
   </action>
-  <action name="actionDeviceMemoryZerro">
+  <action name="actionDeviceMemoryZero">
    <property name="text">
-    <string>Zerro Memory</string>
+    <string>Zero Memory</string>
    </property>
   </action>
   <action name="actionDeviceMemoryImport">
@@ -413,9 +413,9 @@
     <string>Export Memory ...</string>
    </property>
   </action>
-  <action name="actionDeviceMemoryZerroAll">
+  <action name="actionDeviceMemoryZeroAll">
    <property name="text">
-    <string>Zerro Memory All</string>
+    <string>Zero Memory All</string>
    </property>
   </action>
   <action name="actionToolsSettings">

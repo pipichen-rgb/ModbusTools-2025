@@ -423,7 +423,7 @@ inline SwapData toSwapData(RegisterOrder order) { if (order == R3R2R1R0 || order
 enum StringLengthType
 {
     DefaultStringLengthType = -1,
-    ZerroEnded,
+    ZeroEnded,
     FullLength
 };
 Q_ENUM_NS(StringLengthType)

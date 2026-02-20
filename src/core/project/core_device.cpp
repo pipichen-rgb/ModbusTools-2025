@@ -59,7 +59,7 @@ mbCoreDevice::Defaults::Defaults() :
     registerOrder(mb::R0R1R2R3),
     byteArrayFormat(mb::Hex),
     byteArraySeparator(QStringLiteral(" ")),
-    stringLengthType(mb::ZerroEnded),
+    stringLengthType(mb::ZeroEnded),
     stringEncoding(mb::Defaults::instance().stringEncoding)
 {
 }
