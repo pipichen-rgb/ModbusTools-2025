@@ -127,6 +127,7 @@ void mbCoreDialogSettings::fillForm(const MBSETTINGS &m)
     m_log->setLogFlags      (static_cast<mb::LogFlag>(m.value(sCore.settings_logFlags).toInt()));
     m_log->setUseTimestamp  (m.value(sCore.settings_useTimestamp  ).toBool());
     m_log->setFormatDateTime(m.value(sCore.settings_formatDateTime).toString());
+    m_log->setLogViewMaxSize(m.value(sLogView.maxSize).toInt());
     m_log->setLogViewFont   (m.value(sLogView.font).toString());
     m_log->setLogViewColorMap(m.value(sLogView.colors));
 
@@ -145,6 +146,7 @@ void mbCoreDialogSettings::fillData(MBSETTINGS &m)
     m[sCore.settings_logFlags       ] = static_cast<int>(m_log->logFlags());
     m[sCore.settings_useTimestamp   ] = m_log->useTimestamp();
     m[sCore.settings_formatDateTime ] = m_log->formatDateTime();
+    m[sLogView.maxSize              ] = m_log->logViewMaxSize();
     m[sLogView.font                 ] = m_log->logViewFont();
     m[sLogView.colors               ] = m_log->logViewColorMap();
 

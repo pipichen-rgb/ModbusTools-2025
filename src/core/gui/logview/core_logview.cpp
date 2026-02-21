@@ -41,6 +41,7 @@
 
 mbCoreLogView::Strings::Strings() :
     prefix(QStringLiteral("Ui.LogView.")),
+    maxSize(prefix+QStringLiteral("maxSize")),
     font(prefix+QStringLiteral("font")),
     colors(prefix+QStringLiteral("colors"))
 {
@@ -53,6 +54,7 @@ const mbCoreLogView::Strings &mbCoreLogView::Strings::instance()
 }
 
 mbCoreLogView::Defaults::Defaults() :
+    maxSize(1 << 20),
     font(QFont("Courier New", 8).toString()),
     colors({
         {mb::Log_Error,      QColor(Qt::red)},
@@ -96,8 +98,8 @@ mbCoreLogView::mbCoreLogView(QWidget *parent)
     //header->setSectionResizeMode(QHeaderView::ResizeToContents);
     //header->hide();
 
-    m_maxSize = 1<<20;
     m_offset = 0;
+    m_maxSize = d.maxSize;
     m_colorMap = d.colors;
 
     m_view = new QTextEdit(this);
@@ -124,6 +126,17 @@ mbCoreLogView::mbCoreLogView(QWidget *parent)
 
 }
 
+void mbCoreLogView::setMaxSize(int sz)
+{
+    if (sz < MBLOGVIEW_MAXSIZE_MIN)
+        sz = MBLOGVIEW_MAXSIZE_MIN;
+    if (m_maxSize != sz)
+    {
+        m_maxSize = sz;
+        //m_offset = m_view->document()->characterCount();
+    }
+}
+
 QString mbCoreLogView::fontString() const
 {
     return m_view->font().toString();
@@ -136,12 +149,28 @@ void mbCoreLogView::setFontString(const QString &font)
         m_view->setFont(f);
 }
 
+QVariant mbCoreLogView::colorMap() const
+{
+    return mb::toVariant(m_colorMap);
+}
+
+void mbCoreLogView::setColorMap(const QVariant &v)
+{
+    auto map = mb::toColorMap(v);
+    // Unite map and m_colorMap
+    for (auto it = map.constBegin(); it != map.constEnd(); ++it)
+    {
+        m_colorMap[it.key()] = it.value();
+    }
+}
+
 MBSETTINGS mbCoreLogView::cachedSettings() const
 {
     const Strings &s = Strings::instance();
     MBSETTINGS r;
-    r[s.font] = this->fontString();
-    r[s.colors] = this->colorMap();
+    r[s.maxSize] = this->maxSize   ();
+    r[s.font   ] = this->fontString();
+    r[s.colors ] = this->colorMap  ();
     return r;
 }
 
@@ -153,17 +182,9 @@ void mbCoreLogView::setCachedSettings(const MBSETTINGS &settings)
     MBSETTINGS::const_iterator end = settings.end();
     //bool ok;
 
-    it = settings.find(s.font);
-    if (it != end)
-    {
-        this->setFontString(it.value().toString());
-    }
-
-    it = settings.find(s.colors);
-    if (it != end)
-    {
-        this->setColorMap(it.value());
-    }
+    it = settings.find(s.maxSize); if (it != end) this->setMaxSize   (it.value().toInt());
+    it = settings.find(s.font   ); if (it != end) this->setFontString(it.value().toString());
+    it = settings.find(s.colors ); if (it != end) this->setColorMap  (it.value());
 }
 
 void mbCoreLogView::clear()
@@ -207,16 +228,19 @@ void mbCoreLogView::logMessage(mb::LogFlag flag, const QString &source, const QS
     int linesz = s.size();
     if ((sz + linesz) > m_maxSize)
     {
-        if (m_offset)
+        if (m_offset && ((sz > m_offset)))
         {
             QTextCursor cursor = m_view->textCursor();
             cursor.setPosition(0); // start of document
-            cursor.setPosition(m_offset, QTextCursor::KeepAnchor); // select until offset
+            cursor.setPosition(m_offset-1, QTextCursor::KeepAnchor); // select until offset
             cursor.removeSelectedText(); // remove the selection
             m_offset = sz-m_offset;
         }
         else
+        {
             m_view->clear();
+            m_offset = 0;
+        }
     }
     else if ((sz >= m_maxSize/2) && (m_offset == 0))
     {
@@ -236,19 +260,4 @@ void mbCoreLogView::logMessage(mb::LogFlag flag, const QString &source, const QS
 QColor mbCoreLogView::logColor(mb::LogFlag flag) const
 {
     return m_colorMap.value(flag, palette().color(QPalette::Text));
-}
-
-QVariant mbCoreLogView::colorMap() const
-{
-    return mb::toVariant(m_colorMap);
-}
-
-void mbCoreLogView::setColorMap(const QVariant &v)
-{
-    auto map = mb::toColorMap(v);
-    // Unite map and m_colorMap
-    for (auto it = map.constBegin(); it != map.constEnd(); ++it)
-    {
-        m_colorMap[it.key()] = it.value();
-    }
 }

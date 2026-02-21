@@ -23,6 +23,8 @@
 #ifndef CORE_LOGVIEW_H
 #define CORE_LOGVIEW_H
 
+#define MBLOGVIEW_MAXSIZE_MIN 1024
+
 #include <QWidget>
 #include <mbcore.h>
 
@@ -41,14 +43,17 @@ public:
     struct MB_EXPORT Strings
     {
         const QString prefix;
+        const QString maxSize;
         const QString font;
         const QString colors;
+
         Strings();
         static const Strings &instance();
     };
 
     struct MB_EXPORT Defaults
     {
+        int maxSize;
         const QString font;
         const mb::IntColorMap colors;
 
@@ -60,14 +65,21 @@ public:
     explicit mbCoreLogView(QWidget *parent = nullptr);
 
 public:
+    inline int maxSize() const { return m_maxSize; }
+    void setMaxSize(int sz);
+
     QString fontString() const;
     void setFontString(const QString &font);
+
+    QVariant colorMap() const;
+    void setColorMap(const QVariant &v);
 
     MBSETTINGS cachedSettings() const;
     void setCachedSettings(const MBSETTINGS &settings);
 
 public:
     void logMessage(mb::LogFlag flag, const QString &source, const QString &text);
+    QColor logColor(mb::LogFlag flag) const;
 
 public Q_SLOTS:
     void clear();
@@ -76,9 +88,6 @@ public Q_SLOTS:
 Q_SIGNALS:
 
 protected:
-    QColor logColor(mb::LogFlag flag) const;
-    QVariant colorMap() const;
-    void setColorMap(const QVariant &v);
 
 protected:
     mbCore *m_core;

@@ -16,6 +16,8 @@ mbCoreWidgetSettingsLog::mbCoreWidgetSettingsLog(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    ui->spMaxSize->setMinimum(MBLOGVIEW_MAXSIZE_MIN);
+    ui->spMaxSize->setMaximum(INT_MAX);
     setLogViewFont(mbCoreLogView::Defaults::instance().font);
     connect(ui->btnDefaultColors, &QToolButton::clicked,
             m_modelColors, &mbCoreModelSettingsLogColors::setDefaultColors);
@@ -71,6 +73,16 @@ QString mbCoreWidgetSettingsLog::formatDateTime() const
 void mbCoreWidgetSettingsLog::setFormatDateTime(const QString &format)
 {
     ui->lnFormat->setText(format);
+}
+
+int mbCoreWidgetSettingsLog::logViewMaxSize() const
+{
+    return ui->spMaxSize->value();
+}
+
+void mbCoreWidgetSettingsLog::setLogViewMaxSize(int sz)
+{
+    ui->spMaxSize->setValue(sz);
 }
 
 QString mbCoreWidgetSettingsLog::logViewFont() const

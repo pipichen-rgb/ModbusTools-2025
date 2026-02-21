@@ -29,6 +29,9 @@ public: // properties
     QString formatDateTime() const;
     void setFormatDateTime(const QString &format);
 
+    int logViewMaxSize() const;
+    void setLogViewMaxSize(int sz);
+
     QString logViewFont() const;
     void setLogViewFont(const QString &font);
 
