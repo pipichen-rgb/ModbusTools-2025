@@ -44,6 +44,8 @@ set(HEADERS
     gui/dialogs/core_dialogbase.h
     gui/dialogs/settings/core_widgetsettingsview.h
     gui/dialogs/settings/core_widgetsettingsdataview.h
+    gui/dialogs/settings/core_delegatesettingslogcolors.h
+    gui/dialogs/settings/core_modelsettingslogcolors.h
     gui/dialogs/settings/core_widgetsettingslog.h
     gui/dialogs/settings/core_dialogsettings.h
     gui/dialogs/core_dialogedit.h
@@ -98,6 +100,8 @@ set(SOURCES
     gui/dialogs/core_dialogbase.cpp          
     gui/dialogs/settings/core_widgetsettingsview.cpp
     gui/dialogs/settings/core_widgetsettingsdataview.cpp
+    gui/dialogs/settings/core_delegatesettingslogcolors.cpp
+    gui/dialogs/settings/core_modelsettingslogcolors.cpp
     gui/dialogs/settings/core_widgetsettingslog.cpp
     gui/dialogs/settings/core_dialogsettings.cpp
     gui/dialogs/core_dialogprojectinfo.cpp

@@ -24,6 +24,7 @@
 
 #include <limits>
 
+#include <QColor>
 #include <QDateTime>
 #include <QTextCodec>
 
@@ -235,6 +236,32 @@ StringEncoding toStringEncoding(const QString &s)
     if (s == QStringLiteral("Latin1"))
         return StringEncoding("latin1");
     return s.toLatin1();
+}
+
+QVariant toVariant(const IntColorMap &v)
+{
+    QVariantMap res;
+    for (auto it = v.constBegin(); it != v.constEnd(); ++it)
+    {
+        res.insert(QString::number(it.key()), it.value());
+    }
+    return res;
+}
+
+IntColorMap toColorMap(const QVariant &v)
+{
+    IntColorMap colorMap;
+    QVariantMap map = v.toMap();
+    for (auto it = map.constBegin(); it != map.constEnd(); ++it)
+    {
+        bool ok;
+        mb::LogFlag flag = static_cast<mb::LogFlag>(it.key().toInt(&ok));
+        if (ok)
+        {
+            colorMap[flag] = it.value().value<QColor>();
+        }
+    }
+    return colorMap;
 }
 
 unsigned int sizeOfDataType(DataType dataType)

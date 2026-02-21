@@ -42,6 +42,7 @@ public:
     {
         const QString prefix;
         const QString font;
+        const QString colors;
         Strings();
         static const Strings &instance();
     };
@@ -49,6 +50,8 @@ public:
     struct MB_EXPORT Defaults
     {
         const QString font;
+        const mb::IntColorMap colors;
+
         Defaults();
         static const Defaults &instance();
     };
@@ -74,6 +77,8 @@ Q_SIGNALS:
 
 protected:
     QColor logColor(mb::LogFlag flag) const;
+    QVariant colorMap() const;
+    void setColorMap(const QVariant &v);
 
 protected:
     mbCore *m_core;
@@ -81,8 +86,9 @@ protected:
     QTextEdit *m_view;
     int m_maxSize;
     int m_offset;
+    mb::IntColorMap m_colorMap;
     //QTableView *m_view;
     //mbCoreLogViewModel *m_model;
 };
 
-#endif // MBCOREOUTPUT_H
+#endif // CORE_LOGVIEW_H

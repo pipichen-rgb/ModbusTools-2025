@@ -41,7 +41,8 @@
 
 mbCoreLogView::Strings::Strings() :
     prefix(QStringLiteral("Ui.LogView.")),
-    font(prefix+QStringLiteral("font"))
+    font(prefix+QStringLiteral("font")),
+    colors(prefix+QStringLiteral("colors"))
 {
 }
 
@@ -52,7 +53,20 @@ const mbCoreLogView::Strings &mbCoreLogView::Strings::instance()
 }
 
 mbCoreLogView::Defaults::Defaults() :
-    font(QFont("Courier New", 8).toString())
+    font(QFont("Courier New", 8).toString()),
+    colors({
+        {mb::Log_Error,      QColor(Qt::red)},
+        {mb::Log_Warning,    QColor(255, 170, 0)},
+        {mb::Log_Info,       QColor(0, 140, 0)},
+        {mb::Log_Tx,         QColor(Qt::darkBlue)},
+        {mb::Log_Rx,         QColor(100, 0, 160)},
+        {mb::Log_Debug,      QColor(Qt::gray)},
+        {mb::Log_QtFatal,    QColor(180, 0, 0)},
+        {mb::Log_QtCritical, QColor(Qt::red)},
+        {mb::Log_QtWarning,  QColor(255, 170, 0)},
+        {mb::Log_QtDebug,    QColor(Qt::darkGray)},
+        {mb::Log_QtInfo,     QColor(0, 100, 0)}
+    })
 {
 }
 
@@ -65,6 +79,7 @@ const mbCoreLogView::Defaults &mbCoreLogView::Defaults::instance()
 mbCoreLogView::mbCoreLogView(QWidget *parent)
     : QWidget{parent}
 {
+    const auto &d = Defaults::instance();
     m_core = mbCore::globalCore();
     m_toolBar = new QToolBar(this);
     m_toolBar->setIconSize(QSize(16,16));
@@ -83,10 +98,11 @@ mbCoreLogView::mbCoreLogView(QWidget *parent)
 
     m_maxSize = 1<<20;
     m_offset = 0;
+    m_colorMap = d.colors;
 
     m_view = new QTextEdit(this);
     m_view->setReadOnly(true);
-    setFontString(Defaults::instance().font);
+    setFontString(d.font);
 
     QAction *actionClear = new QAction(m_toolBar);
     actionClear->setIcon(QIcon(":/core/icons/clear.png"));
@@ -125,6 +141,7 @@ MBSETTINGS mbCoreLogView::cachedSettings() const
     const Strings &s = Strings::instance();
     MBSETTINGS r;
     r[s.font] = this->fontString();
+    r[s.colors] = this->colorMap();
     return r;
 }
 
@@ -142,6 +159,11 @@ void mbCoreLogView::setCachedSettings(const MBSETTINGS &settings)
         this->setFontString(it.value().toString());
     }
 
+    it = settings.find(s.colors);
+    if (it != end)
+    {
+        this->setColorMap(it.value());
+    }
 }
 
 void mbCoreLogView::clear()
@@ -213,19 +235,20 @@ void mbCoreLogView::logMessage(mb::LogFlag flag, const QString &source, const QS
 
 QColor mbCoreLogView::logColor(mb::LogFlag flag) const
 {
-    static const QMap<mb::LogFlag, QColor> map = {
-        {mb::Log_Error,      QColor(Qt::red)},
-        {mb::Log_Warning,    QColor(255, 170, 0)},
-        {mb::Log_Info,       QColor(0, 140, 0)},
-        {mb::Log_Tx,         QColor(Qt::darkBlue)},
-        {mb::Log_Rx,         QColor(100, 0, 160)},
-        {mb::Log_Debug,      QColor(Qt::gray)},
-        {mb::Log_QtFatal,    QColor(180, 0, 0)},
-        {mb::Log_QtCritical, QColor(Qt::red)},
-        {mb::Log_QtWarning,  QColor(255, 170, 0)},
-        {mb::Log_QtDebug,    QColor(Qt::darkGray)},
-        {mb::Log_QtInfo,     QColor(0, 100, 0)}
-    };
+    return m_colorMap.value(flag, palette().color(QPalette::Text));
+}
 
-    return map.value(flag, palette().color(QPalette::Text));
+QVariant mbCoreLogView::colorMap() const
+{
+    return mb::toVariant(m_colorMap);
+}
+
+void mbCoreLogView::setColorMap(const QVariant &v)
+{
+    auto map = mb::toColorMap(v);
+    // Unite map and m_colorMap
+    for (auto it = map.constBegin(); it != map.constEnd(); ++it)
+    {
+        m_colorMap[it.key()] = it.value();
+    }
 }

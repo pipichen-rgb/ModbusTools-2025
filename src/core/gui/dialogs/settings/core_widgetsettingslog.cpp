@@ -1,6 +1,9 @@
 #include "core_widgetsettingslog.h"
 #include "ui_core_widgetsettingslog.h"
 
+#include "core_modelsettingslogcolors.h"
+#include "core_delegatesettingslogcolors.h"
+
 #include <core.h>
 #include <gui/core_ui.h>
 #include <gui/dialogs/core_dialogs.h>
@@ -8,11 +11,17 @@
 
 mbCoreWidgetSettingsLog::mbCoreWidgetSettingsLog(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::mbCoreWidgetSettingsLog)
+    ui(new Ui::mbCoreWidgetSettingsLog),
+    m_modelColors(new mbCoreModelSettingsLogColors(this))
 {
     ui->setupUi(this);
 
     setLogViewFont(mbCoreLogView::Defaults::instance().font);
+    connect(ui->btnDefaultColors, &QToolButton::clicked,
+            m_modelColors, &mbCoreModelSettingsLogColors::setDefaultColors);
+    ui->viewColors->setModel(m_modelColors);
+    ui->viewColors->setItemDelegate(new mbCoreDelegateSettingsLogColors(this));
+
     connect(ui->btnFont, &QPushButton::clicked, this, &mbCoreWidgetSettingsLog::slotFont);
 
 }
@@ -75,6 +84,16 @@ void mbCoreWidgetSettingsLog::setLogViewFont(const QString &font)
     QFont f;
     f.fromString(font);
     setLogViewFont(f);
+}
+
+QVariant mbCoreWidgetSettingsLog::logViewColorMap() const
+{
+    return mb::toVariant(m_modelColors->colorMap());
+}
+
+void mbCoreWidgetSettingsLog::setLogViewColorMap(const QVariant &v)
+{
+    m_modelColors->setColorMap(mb::toColorMap(v));
 }
 
 QFont mbCoreWidgetSettingsLog::getLogViewFont() const

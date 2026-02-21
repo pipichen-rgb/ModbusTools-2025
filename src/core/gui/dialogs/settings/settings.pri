@@ -1,11 +1,15 @@
 HEADERS += \
     $$PWD/core_dialogsettings.h \
+    $$PWD/core_delegatesettingslogcolors.h \
+    $$PWD/core_modelsettingslogcolors.h \
     $$PWD/core_widgetsettingsdataview.h \
     $$PWD/core_widgetsettingslog.h \
     $$PWD/core_widgetsettingsview.h
 
 SOURCES += \
     $$PWD/core_dialogsettings.cpp \
+    $$PWD/core_delegatesettingslogcolors.cpp \
+    $$PWD/core_modelsettingslogcolors.cpp \
     $$PWD/core_widgetsettingsdataview.cpp \
     $$PWD/core_widgetsettingslog.cpp \
     $$PWD/core_widgetsettingsview.cpp

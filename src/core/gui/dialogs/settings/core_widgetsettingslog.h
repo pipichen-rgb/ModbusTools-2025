@@ -9,6 +9,8 @@ namespace Ui {
 class mbCoreWidgetSettingsLog;
 }
 
+class mbCoreModelSettingsLogColors;
+
 class mbCoreWidgetSettingsLog : public QWidget
 {
     Q_OBJECT
@@ -30,6 +32,9 @@ public: // properties
     QString logViewFont() const;
     void setLogViewFont(const QString &font);
 
+    QVariant logViewColorMap() const;
+    void setLogViewColorMap(const QVariant &v);
+
 protected:
     QFont getLogViewFont() const;
     void setLogViewFont(const QFont &f);
@@ -39,6 +44,7 @@ private Q_SLOTS:
 
 private:
     Ui::mbCoreWidgetSettingsLog *ui;
+    mbCoreModelSettingsLogColors *m_modelColors;
 };
 
 #endif // CORE_WIDGETSETTINGSLOG_H

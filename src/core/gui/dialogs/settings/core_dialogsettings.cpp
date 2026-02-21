@@ -128,6 +128,7 @@ void mbCoreDialogSettings::fillForm(const MBSETTINGS &m)
     m_log->setUseTimestamp  (m.value(sCore.settings_useTimestamp  ).toBool());
     m_log->setFormatDateTime(m.value(sCore.settings_formatDateTime).toString());
     m_log->setLogViewFont   (m.value(sLogView.font).toString());
+    m_log->setLogViewColorMap(m.value(sLogView.colors));
 
     m_dataView->setColumns(m.value(sCore.settings_columns).toStringList());
 }
@@ -145,6 +146,7 @@ void mbCoreDialogSettings::fillData(MBSETTINGS &m)
     m[sCore.settings_useTimestamp   ] = m_log->useTimestamp();
     m[sCore.settings_formatDateTime ] = m_log->formatDateTime();
     m[sLogView.font                 ] = m_log->logViewFont();
+    m[sLogView.colors               ] = m_log->logViewColorMap();
 
     m[sCore.settings_columns        ] = m_dataView->getColumns();
 

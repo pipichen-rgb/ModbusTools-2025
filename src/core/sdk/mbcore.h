@@ -511,6 +511,10 @@ inline StringEncoding toStringEncoding(const QVariant &v, bool *ok) { return toS
 
 inline QString fromStringEncoding(const StringEncoding &s) { return QString::fromLatin1(s); }
 
+typedef QMap<int, QColor> IntColorMap;
+QVariant toVariant(const IntColorMap &v);
+IntColorMap toColorMap(const QVariant &v);
+
 template<typename T>
 constexpr mb::DataType dataTypeFromT()
 {
