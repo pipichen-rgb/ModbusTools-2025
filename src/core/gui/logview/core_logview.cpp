@@ -232,7 +232,20 @@ void mbCoreLogView::logMessage(mb::LogFlag flag, const QString &source, const QS
         {
             QTextCursor cursor = m_view->textCursor();
             cursor.setPosition(0); // start of document
-            cursor.setPosition(m_offset-1, QTextCursor::KeepAnchor); // select until offset
+            auto i = m_offset - 1;
+            // Pass possible new line characters
+            while (i < sz)
+            {
+                auto c = m_view->document()->characterAt(i);
+                // Unicode 0x2029 represents the Paragraph Separator (PS) character,
+                if ((c == '\n') || (c == '\r') || (c.unicode() == 0x2029))
+                {
+                    ++i; // skip the end of line character
+                    continue;
+                }
+                break;
+            }
+            cursor.setPosition(i, QTextCursor::KeepAnchor); // select until offset
             cursor.removeSelectedText(); // remove the selection
             m_offset = sz-m_offset;
         }
