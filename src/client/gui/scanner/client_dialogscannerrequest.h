@@ -48,6 +48,9 @@ private Q_SLOTS:
     void addFunc();
     void modifyFunc();
     void deleteFunc();
+    void moveUpFunc();
+    void moveDownFunc();
+    void clearFuncs();
     void setCurrentFuncIndex(int i);
 
 private:
@@ -77,6 +80,9 @@ private:
         void addFunc(const mbClientMessageParams &f);
         void modifyFunc(int i, const mbClientMessageParams &f);
         void deleteFunc(int i);
+        void moveUpFunc(int i);
+        void moveDownFunc(int i);
+        void clearFuncs();
 
     private:
         mbClientScanner::Request_t m_req;

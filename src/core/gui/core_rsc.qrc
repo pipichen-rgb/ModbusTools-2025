@@ -23,5 +23,7 @@
         <file>icons/arrow_up.png</file>
         <file>icons/logexport.png</file>
         <file>icons/device_small.png</file>
+        <file>icons/minus.ico</file>
+        <file>icons/plus.ico</file>
     </qresource>
 </RCC>

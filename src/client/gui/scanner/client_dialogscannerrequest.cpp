@@ -110,6 +110,12 @@ mbClientDialogScannerRequest::mbClientDialogScannerRequest(QWidget *parent) :
     connect(ui->btnModify, &QPushButton::clicked, this, &mbClientDialogScannerRequest::modifyFunc);
     connect(ui->btnDelete, &QPushButton::clicked, this, &mbClientDialogScannerRequest::deleteFunc);
 
+    connect(ui->btnIcoAdd     , &QPushButton::clicked, this, &mbClientDialogScannerRequest::addFunc     );
+    connect(ui->btnIcoModify  , &QPushButton::clicked, this, &mbClientDialogScannerRequest::modifyFunc  );
+    connect(ui->btnIcoDelete  , &QPushButton::clicked, this, &mbClientDialogScannerRequest::deleteFunc  );
+    connect(ui->btnIcoMoveUp  , &QPushButton::clicked, this, &mbClientDialogScannerRequest::moveUpFunc  );
+    connect(ui->btnIcoMoveDown, &QPushButton::clicked, this, &mbClientDialogScannerRequest::moveDownFunc);
+    connect(ui->btnIcoClear   , &QPushButton::clicked, this, &mbClientDialogScannerRequest::clearFuncs  );
 }
 
 mbClientDialogScannerRequest::~mbClientDialogScannerRequest()
@@ -193,6 +199,29 @@ void mbClientDialogScannerRequest::deleteFunc()
     {
         m_model->deleteFunc(ls.first().row());
     }
+}
+
+void mbClientDialogScannerRequest::moveUpFunc()
+{
+    QModelIndexList ls = ui->lsRequest->selectionModel()->selectedRows();
+    if (ls.count())
+    {
+        m_model->moveUpFunc(ls.first().row());
+    }
+}
+
+void mbClientDialogScannerRequest::moveDownFunc()
+{
+    QModelIndexList ls = ui->lsRequest->selectionModel()->selectedRows();
+    if (ls.count())
+    {
+        m_model->moveDownFunc(ls.first().row());
+    }
+}
+
+void mbClientDialogScannerRequest::clearFuncs()
+{
+    m_model->clearFuncs();
 }
 
 void mbClientDialogScannerRequest::setCurrentFuncIndex(int i)
@@ -389,4 +418,31 @@ void mbClientDialogScannerRequest::Model::deleteFunc(int i)
         m_req.removeAt(i);
         endRemoveRows();
     }
+}
+
+void mbClientDialogScannerRequest::Model::moveUpFunc(int i)
+{
+    if ((0 < i) && (i < m_req.size()))
+    {
+        beginMoveRows(QModelIndex(), i, i, QModelIndex(), i-1);
+        m_req.move(i, i-1);
+        endMoveRows();
+    }
+}
+
+void mbClientDialogScannerRequest::Model::moveDownFunc(int i)
+{
+    if ((0 <= i) && (i < m_req.size() - 1))
+    {
+        beginMoveRows(QModelIndex(), i, i, QModelIndex(), i+2);
+        m_req.move(i, i+1);
+        endMoveRows();
+    }
+}
+
+void mbClientDialogScannerRequest::Model::clearFuncs()
+{
+    beginResetModel();
+    m_req.clear();
+    endResetModel();
 }

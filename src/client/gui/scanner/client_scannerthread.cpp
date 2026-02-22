@@ -56,6 +56,7 @@ void mbClientScannerThread::setSettings(const Modbus::Settings &settings)
     m_request   = mbClientScanner::getSettingRequest  (settings);
     m_combinationCount = 1;
 
+    m_unitInc = m_unitStart > m_unitEnd ? -1 : +1;
     m_divMods   .clear();
     m_names     .clear();
     m_valuesList.clear();
@@ -98,7 +99,7 @@ void mbClientScannerThread::setSettings(const Modbus::Settings &settings)
 
         break;
     }
-    m_combinationCountAll = m_combinationCount * (m_unitEnd - m_unitStart + 1) * m_request.count();
+    m_combinationCountAll = m_combinationCount * (qAbs(m_unitEnd - m_unitStart) + 1) * m_request.count();
     m_statTx = 0;
     m_statRx = 0;
 }
@@ -172,7 +173,7 @@ void mbClientScannerThread::run()
             break;
         }
         mbClient::LogInfo(s.name, QString("Begin scanning '%1'").arg(sPort));
-        for (uint16_t unit = m_unitStart; unit <= m_unitEnd; unit++)
+        for (int unit = m_unitStart;; unit+=m_unitInc)
         {
             if (!m_ctrlRun)
                 break;
@@ -258,7 +259,7 @@ void mbClientScannerThread::run()
                 }
                 else if (Modbus::StatusIsBad(status))
                 {
-                    mbClient::LogInfo(s.name, QString("%1 Error (%2): %3").arg(sPortUnit, QString::number(status, 16), clientPort->lastErrorText()));
+                    mbClient::LogError(s.name, QString("%1 Error (%2): %3").arg(sPortUnit, QString::number(status, 16), clientPort->lastErrorText()));
                     m_scanner->setFunctionCompleted(sPort, unit, f, status);
                 }
                 auto percent = ++funcCount*100/m_combinationCountAll;
@@ -273,6 +274,8 @@ void mbClientScannerThread::run()
                     Modbus::msleep(1);
                 }
             }
+            if (unit == m_unitEnd)
+                break;
         }
         clientPort->close();
         mbClient::LogInfo(s.name, QString("End scanning '%1'").arg(sPort));

@@ -99,9 +99,9 @@ QString saveClientMessageParams(const mbClientMessageParams &params, bool useFun
     if (useFunc)
     {
         if (res.isEmpty())
-            res = QString("func=%1").arg(params.func);
+            res = QString("FC%1").arg(params.func, 2, 10, QLatin1Char('0'));
         else
-            res = QString("func=%1;%2").arg(params.func).arg(res);
+            res = QString("FC%1;%2").arg(params.func, 2, 10, QLatin1Char('0')).arg(res);
     }
     return res;
 }
@@ -112,13 +112,31 @@ mbClientMessageParams restoreClientMessageParams(const QString &params, bool *ok
     QHash<QString, QString> map = getClientParamMap(params);
     if (func == 0)
     {
-        bool okInner = false;
-        func = static_cast<uint8_t>(map.value(QStringLiteral("func")).toInt(&okInner));
-        if (!okInner)
+        bool funcOk = false;
+        Q_FOREACH(const QString &key, map.keys())
         {
-            if (ok)
-                *ok = false;
-            return res;
+            if (key.startsWith(QLatin1String("FC")))
+            {
+                func = static_cast<uint8_t>(key.midRef(2).toInt(&funcOk));
+                if (!funcOk)
+                {
+                    if (ok)
+                        *ok = false;
+                    return res;
+                }
+                break;
+            }
+        }
+        if (!funcOk)
+        {
+            // Support old format where func was a separate parameter
+            func = static_cast<uint8_t>(map.value(QStringLiteral("func")).toInt(&funcOk));
+            if (!funcOk)
+            {
+                if (ok)
+                    *ok = false;
+                return res;
+            }
         }
     }
     res.func = func;

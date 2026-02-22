@@ -58,8 +58,9 @@ private:
 private:
     mbClientScanner *m_scanner;
     uint32_t m_period;
-    uint16_t m_unitStart;
-    uint16_t m_unitEnd;
+    int m_unitStart;
+    int m_unitEnd;
+    int m_unitInc;
     mbClientScanner::Request_t m_request;
     Modbus::Settings m_settings;
 
