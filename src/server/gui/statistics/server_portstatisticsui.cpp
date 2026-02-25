@@ -20,6 +20,7 @@ mbServerPortStatisticsUi::mbServerPortStatisticsUi(mbServerPort *port, QWidget *
     m_ui.lnCountRx              = ui->lnCountRx             ;
     m_ui.lnCountGood            = ui->lnCountGood           ;
     m_ui.lnCountBad             = ui->lnCountBad            ;
+    m_ui.lnCountBadStandard     = ui->lnCountBadStandard    ;
     m_ui.lnCountBadTimeout      = ui->lnCountBadTimeout     ;
     m_ui.lnCountBadCRC          = ui->lnCountBadCRC         ;
     m_ui.lnCycleCount           = ui->lnCycleCount          ;

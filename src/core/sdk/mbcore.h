@@ -500,6 +500,7 @@ struct MB_EXPORT BaseStatistics
     quint32             countRx             ;
     quint32             countGood           ;
     quint32             countBad            ;
+    quint32             countBadStandard    ;
 
     BaseStatistics();
     virtual ~BaseStatistics() = default;

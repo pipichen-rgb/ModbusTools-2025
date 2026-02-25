@@ -129,7 +129,7 @@ Strings::Strings() :
     DiagnReturnServerNAKCount              (QStringLiteral("ReturnServerNAKCount")),
     DiagnReturnServerBusyCount             (QStringLiteral("ReturnServerBusyCount")),
     DiagnReturnBusCharacterOverrunCount    (QStringLiteral("ReturnBusCharacterOverrunCount")),
-    DiagnClearOverrunCounterAndFlag       (QStringLiteral("ClearOverrunCounterAndFlags")),
+    DiagnClearOverrunCounterAndFlag        (QStringLiteral("ClearOverrunCounterAndFlags")),
     Address_Default                        (QStringLiteral("Default")),
     Address_Modbus                         (QStringLiteral("Modbus")),
     Address_IEC61131                       (QStringLiteral("IEC61131")),
@@ -161,6 +161,7 @@ BaseStatistics::BaseStatistics()
     countRx             = 0;
     countGood           = 0;
     countBad            = 0;
+    countBadStandard    = 0;
 }
 
 void processMinMax(DataType dataType, QVariant &min, QVariant &max)

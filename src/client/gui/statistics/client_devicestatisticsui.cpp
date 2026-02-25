@@ -20,6 +20,7 @@ mbClientDeviceStatisticsUi::mbClientDeviceStatisticsUi(mbClientDevice *device, Q
     m_ui.lnCountRx              = ui->lnCountRx             ;
     m_ui.lnCountGood            = ui->lnCountGood           ;
     m_ui.lnCountBad             = ui->lnCountBad            ;
+    m_ui.lnCountBadStandard     = ui->lnCountBadStandard    ;
 
     connect(ui->btnReset, &QPushButton::clicked, this, &mbClientDeviceStatisticsUi::resetStatistics);
 }

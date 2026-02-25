@@ -67,6 +67,7 @@ void mbCorePortStatisticsUi::syncStatisticsCoreInner()
     m_ui.lnCountGood           ->setText(QString::number(s.countGood        ));
     m_ui.lnCountBad            ->setText(QString::number(s.countBad         ));
     m_ui.lnCountBadTimeout     ->setText(QString::number(s.countBadTimeout  ));
+    m_ui.lnCountBadStandard    ->setText(QString::number(s.countBadStandard ));
     m_ui.lnCountBadCRC         ->setText(QString::number(s.countBadCRC      ));
     m_ui.lnCycleCount          ->setText(QString::number(s.cycleCount       ));
     m_ui.lnCycleSumDuration    ->setText(QString::number(s.cycleSumDuration ));

@@ -71,6 +71,7 @@ protected:
         QLineEdit*      lnCountRx             ;
         QLineEdit*      lnCountGood           ; 
         QLineEdit*      lnCountBad            ;
+        QLineEdit*      lnCountBadStandard    ;
         QLineEdit*      lnCountBadTimeout     ;
         QLineEdit*      lnCountBadCRC         ;
         QLineEdit*      lnCycleCount          ;

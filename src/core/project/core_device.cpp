@@ -336,6 +336,7 @@ void mbCoreDevice::setStatStatus(Modbus::StatusCode status, mb::Timestamp_t time
     else
     {
         m_stat->countBad++;
+        m_stat->countBadStandard += Modbus::StatusIsStandardError(status);
         m_stat->lastErrorStatus = status;
         m_stat->lastErrorTimestamp = timestamp;
         m_stat->lastErrorText = err;

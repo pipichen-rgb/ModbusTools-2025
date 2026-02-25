@@ -360,6 +360,7 @@ void mbCorePort::setStatStatus(Modbus::StatusCode status, mb::Timestamp_t timest
             m_stat->countBadCRC++;
             break;
         default:
+            m_stat->countBadStandard += Modbus::StatusIsStandardError(status);
             break;
         }
         m_stat->lastErrorStatus = status;

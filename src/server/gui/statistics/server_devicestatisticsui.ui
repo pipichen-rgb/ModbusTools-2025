@@ -269,6 +269,33 @@
           </property>
          </widget>
         </item>
+        <item row="4" column="1">
+         <widget class="QLineEdit" name="lnCountBadStandard">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <spacer name="verticalSpacer">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Bad (Exception)</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </item>

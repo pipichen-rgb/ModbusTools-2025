@@ -66,6 +66,7 @@ void mbCoreDeviceStatisticsUi::syncStatisticsCoreInner()
     m_ui.lnCountRx             ->setText(QString::number(s.countRx          ));
     m_ui.lnCountGood           ->setText(QString::number(s.countGood        ));
     m_ui.lnCountBad            ->setText(QString::number(s.countBad         ));
+    m_ui.lnCountBadStandard    ->setText(QString::number(s.countBadStandard ));
 }
 
 void mbCoreDeviceStatisticsUi::startScanning()

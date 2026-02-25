@@ -130,6 +130,7 @@ public: // statistics
     inline quint32 statCountRx() const { QReadLocker locker(&m_statLock); return m_stat->countRx; }
     inline quint32 statCountGood() const { QReadLocker locker(&m_statLock); return m_stat->countGood; }
     inline quint32 statCountBad() const { QReadLocker locker(&m_statLock); return m_stat->countBad; }
+    inline quint32 statCountBadStandard() const { QReadLocker locker(&m_statLock); return m_stat->countBadStandard; }
 
     void incStatCountTx();
     void incStatCountRx();

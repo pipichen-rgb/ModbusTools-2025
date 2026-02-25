@@ -71,6 +71,7 @@ protected:
         QLineEdit*      lnCountRx             ;
         QLineEdit*      lnCountGood           ;
         QLineEdit*      lnCountBad            ;
+        QLineEdit*      lnCountBadStandard    ;
     } m_ui;
 
 protected:

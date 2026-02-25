@@ -195,24 +195,6 @@
         <string>Counters</string>
        </property>
        <layout class="QFormLayout" name="formLayout_2">
-        <property name="horizontalSpacing">
-         <number>3</number>
-        </property>
-        <property name="verticalSpacing">
-         <number>3</number>
-        </property>
-        <property name="leftMargin">
-         <number>4</number>
-        </property>
-        <property name="topMargin">
-         <number>4</number>
-        </property>
-        <property name="rightMargin">
-         <number>4</number>
-        </property>
-        <property name="bottomMargin">
-         <number>4</number>
-        </property>
         <item row="0" column="0">
          <widget class="QLabel" name="label_6">
           <property name="text">
@@ -270,27 +252,41 @@
          </widget>
         </item>
         <item row="4" column="0">
-         <widget class="QLabel" name="label_9">
+         <widget class="QLabel" name="label_11">
           <property name="text">
-           <string>Bad (Timeout)</string>
+           <string>Bad (Exception)</string>
           </property>
          </widget>
         </item>
         <item row="4" column="1">
-         <widget class="QLineEdit" name="lnCountBadTimeout">
+         <widget class="QLineEdit" name="lnCountBadStandard">
           <property name="readOnly">
            <bool>true</bool>
           </property>
          </widget>
         </item>
         <item row="5" column="0">
+         <widget class="QLabel" name="label_9">
+          <property name="text">
+           <string>Bad (Timeout)</string>
+          </property>
+         </widget>
+        </item>
+        <item row="5" column="1">
+         <widget class="QLineEdit" name="lnCountBadTimeout">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item row="6" column="0">
          <widget class="QLabel" name="label_10">
           <property name="text">
            <string>Bad (CRC/LRC)</string>
           </property>
          </widget>
         </item>
-        <item row="5" column="1">
+        <item row="6" column="1">
          <widget class="QLineEdit" name="lnCountBadCRC">
           <property name="readOnly">
            <bool>true</bool>

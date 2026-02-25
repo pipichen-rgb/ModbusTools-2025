@@ -906,7 +906,7 @@ Modbus::StatusCode mbServerDevice::diagnostics(mbServerPort* port, uint16_t subf
         *outsize = sizeof(uint16_t);
         break;
     case MBDIAGN_RETURN_BUS_EXCEPTION_ERROR_COUNT: // TODO
-        *reinterpret_cast<uint16_t*>(outdata) = 0;
+        *reinterpret_cast<uint16_t*>(outdata) = static_cast<uint16_t>(this->statCountBadStandard());
         *outsize = sizeof(uint16_t);
         break;
     case MBDIAGN_RETURN_SERVER_MESSAGE_COUNT:
