@@ -905,7 +905,7 @@ Modbus::StatusCode mbServerDevice::diagnostics(mbServerPort* port, uint16_t subf
         *reinterpret_cast<uint16_t*>(outdata) = static_cast<uint16_t>(port->statCountBadCRC());
         *outsize = sizeof(uint16_t);
         break;
-    case MBDIAGN_RETURN_BUS_EXCEPTION_ERROR_COUNT: // TODO
+    case MBDIAGN_RETURN_BUS_EXCEPTION_ERROR_COUNT:
         *reinterpret_cast<uint16_t*>(outdata) = static_cast<uint16_t>(this->statCountBadStandard());
         *outsize = sizeof(uint16_t);
         break;
@@ -917,12 +917,12 @@ Modbus::StatusCode mbServerDevice::diagnostics(mbServerPort* port, uint16_t subf
         *reinterpret_cast<uint16_t*>(outdata) = 0;
         *outsize = sizeof(uint16_t);
         break;
-    case MBDIAGN_RETURN_SERVER_NAK_COUNT: // TODO
-        *reinterpret_cast<uint16_t*>(outdata) = 0;
+    case MBDIAGN_RETURN_SERVER_NAK_COUNT:
+        *reinterpret_cast<uint16_t*>(outdata) = static_cast<uint16_t>(this->statCountBadNegativeAcknowledge());
         *outsize = sizeof(uint16_t);
         break;
-    case MBDIAGN_RETURN_SERVER_BUSY_COUNT: // TODO
-        *reinterpret_cast<uint16_t*>(outdata) = 0;
+    case MBDIAGN_RETURN_SERVER_BUSY_COUNT:
+        *reinterpret_cast<uint16_t*>(outdata) = static_cast<uint16_t>(this->statCountBadServerDeviceBusy());
         *outsize = sizeof(uint16_t);
         break;
     case MBDIAGN_RETURN_BUS_CHARACTER_OVERRUN_COUNT: // TODO

@@ -78,6 +78,16 @@ public:
 public: // statistics
     struct MB_EXPORT CoreStatistics : public mb::BaseStatistics
     {
+        quint32 countBadIllegalFunction                   ;
+        quint32 countBadIllegalDataAddress                ;
+        quint32 countBadIllegalDataValue                  ;
+        quint32 countBadServerDeviceFailure               ;
+        quint32 countBadAcknowledge                       ;
+        quint32 countBadServerDeviceBusy                  ;
+        quint32 countBadNegativeAcknowledge               ;
+        quint32 countBadMemoryParityError                 ;
+        quint32 countBadGatewayPathUnavailable            ;
+        quint32 countBadGatewayTargetDeviceFailedToRespond;
         CoreStatistics();
     };
 
@@ -131,6 +141,17 @@ public: // statistics
     inline quint32 statCountGood() const { QReadLocker locker(&m_statLock); return m_stat->countGood; }
     inline quint32 statCountBad() const { QReadLocker locker(&m_statLock); return m_stat->countBad; }
     inline quint32 statCountBadStandard() const { QReadLocker locker(&m_statLock); return m_stat->countBadStandard; }
+
+    inline quint32 statCountBadIllegalFunction                   () const { QReadLocker locker(&m_statLock); return m_stat->countBadIllegalFunction                   ; }
+    inline quint32 statCountBadIllegalDataAddress                () const { QReadLocker locker(&m_statLock); return m_stat->countBadIllegalDataAddress                ; }
+    inline quint32 statCountBadIllegalDataValue                  () const { QReadLocker locker(&m_statLock); return m_stat->countBadIllegalDataValue                  ; }
+    inline quint32 statCountBadServerDeviceFailure               () const { QReadLocker locker(&m_statLock); return m_stat->countBadServerDeviceFailure               ; }
+    inline quint32 statCountBadAcknowledge                       () const { QReadLocker locker(&m_statLock); return m_stat->countBadAcknowledge                       ; }
+    inline quint32 statCountBadServerDeviceBusy                  () const { QReadLocker locker(&m_statLock); return m_stat->countBadServerDeviceBusy                  ; }
+    inline quint32 statCountBadNegativeAcknowledge               () const { QReadLocker locker(&m_statLock); return m_stat->countBadNegativeAcknowledge               ; }
+    inline quint32 statCountBadMemoryParityError                 () const { QReadLocker locker(&m_statLock); return m_stat->countBadMemoryParityError                 ; }
+    inline quint32 statCountBadGatewayPathUnavailable            () const { QReadLocker locker(&m_statLock); return m_stat->countBadGatewayPathUnavailable            ; }
+    inline quint32 statCountBadGatewayTargetDeviceFailedToRespond() const { QReadLocker locker(&m_statLock); return m_stat->countBadGatewayTargetDeviceFailedToRespond; }
 
     void incStatCountTx();
     void incStatCountRx();

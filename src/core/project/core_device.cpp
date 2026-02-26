@@ -71,7 +71,17 @@ const mbCoreDevice::Defaults &mbCoreDevice::Defaults::instance()
 }
 
 mbCoreDevice::CoreStatistics::CoreStatistics() :
-    mb::BaseStatistics()
+    mb::BaseStatistics(),
+    countBadIllegalFunction                   (0),
+    countBadIllegalDataAddress                (0),
+    countBadIllegalDataValue                  (0),
+    countBadServerDeviceFailure               (0),
+    countBadAcknowledge                       (0),
+    countBadServerDeviceBusy                  (0),
+    countBadNegativeAcknowledge               (0),
+    countBadMemoryParityError                 (0),
+    countBadGatewayPathUnavailable            (0),
+    countBadGatewayTargetDeviceFailedToRespond(0)
 {
 
 }
@@ -337,6 +347,16 @@ void mbCoreDevice::setStatStatus(Modbus::StatusCode status, mb::Timestamp_t time
     {
         m_stat->countBad++;
         m_stat->countBadStandard += Modbus::StatusIsStandardError(status);
+        m_stat->countBadIllegalFunction                    += (status == Modbus::Status_BadIllegalFunction                   );
+        m_stat->countBadIllegalDataAddress                 += (status == Modbus::Status_BadIllegalDataAddress                );
+        m_stat->countBadIllegalDataValue                   += (status == Modbus::Status_BadIllegalDataValue                  );
+        m_stat->countBadServerDeviceFailure                += (status == Modbus::Status_BadServerDeviceFailure               );
+        m_stat->countBadAcknowledge                        += (status == Modbus::Status_BadAcknowledge                       );
+        m_stat->countBadServerDeviceBusy                   += (status == Modbus::Status_BadServerDeviceBusy                  );
+        m_stat->countBadNegativeAcknowledge                += (status == Modbus::Status_BadNegativeAcknowledge               );
+        m_stat->countBadMemoryParityError                  += (status == Modbus::Status_BadMemoryParityError                 );
+        m_stat->countBadGatewayPathUnavailable             += (status == Modbus::Status_BadGatewayPathUnavailable            );
+        m_stat->countBadGatewayTargetDeviceFailedToRespond += (status == Modbus::Status_BadGatewayTargetDeviceFailedToRespond);
         m_stat->lastErrorStatus = status;
         m_stat->lastErrorTimestamp = timestamp;
         m_stat->lastErrorText = err;
