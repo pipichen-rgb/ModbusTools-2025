@@ -608,21 +608,21 @@ QString ModbusFunctionString(uint8_t func)
 uint16_t ModbusDiagnSubfunction(const QString &func)
 {
     const Strings &s = Strings::instance();
-    if (func == s.DiagnReturnQueryData                   ) return MBDIAGN_RETURN_QUERY_DATA                     ;
-    if (func == s.DiagnRestartCommunicationsOption       ) return MBDIAGN_RESTART_COMMUNICATIONS_OPTION         ;
-    if (func == s.DiagnReturnDiagnosticRegister          ) return MBDIAGN_RETURN_DIAGNOSTIC_REGISTER            ;
-    if (func == s.DiagnChangeAsciiInputDelimiter         ) return MBDIAGN_CHANGE_ASCII_INPUT_DELIMITER          ;
-    if (func == s.DiagnForceListenOnlyMode               ) return MBDIAGN_FORCE_LISTEN_ONLY_MODE                ;
-    if (func == s.DiagnClearCountersAndDiagnosticRegister) return MBDIAGN_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER;
-    if (func == s.DiagnReturnBusMessageCount             ) return MBDIAGN_RETURN_BUS_MESSAGE_COUNT              ;
-    if (func == s.DiagnReturnBusCommunicationErrorCount  ) return MBDIAGN_RETURN_BUS_COMMUNICATION_ERROR_COUNT  ;
-    if (func == s.DiagnReturnBusExceptionErrorCount      ) return MBDIAGN_RETURN_BUS_EXCEPTION_ERROR_COUNT      ;
-    if (func == s.DiagnReturnServerMessageCount          ) return MBDIAGN_RETURN_SERVER_MESSAGE_COUNT           ;
-    if (func == s.DiagnReturnServerNoResponseCount       ) return MBDIAGN_RETURN_SERVER_NO_RESPONSE_COUNT       ;
-    if (func == s.DiagnReturnServerNAKCount              ) return MBDIAGN_RETURN_SERVER_NAK_COUNT               ;
-    if (func == s.DiagnReturnServerBusyCount             ) return MBDIAGN_RETURN_SERVER_BUSY_COUNT              ;
-    if (func == s.DiagnReturnBusCharacterOverrunCount    ) return MBDIAGN_RETURN_BUS_CHARACTER_OVERRUN_COUNT    ;
-    if (func == s.DiagnClearOverrunCounterAndFlag        ) return MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAG        ;
+    if (func == s.DiagnReturnQueryData                   ) return MBF_DIAGNOSTICS_RETURN_QUERY_DATA                     ;
+    if (func == s.DiagnRestartCommunicationsOption       ) return MBF_DIAGNOSTICS_RESTART_COMMUNICATIONS_OPTION         ;
+    if (func == s.DiagnReturnDiagnosticRegister          ) return MBF_DIAGNOSTICS_RETURN_DIAGNOSTIC_REGISTER            ;
+    if (func == s.DiagnChangeAsciiInputDelimiter         ) return MBF_DIAGNOSTICS_CHANGE_ASCII_INPUT_DELIMITER          ;
+    if (func == s.DiagnForceListenOnlyMode               ) return MBF_DIAGNOSTICS_FORCE_LISTEN_ONLY_MODE                ;
+    if (func == s.DiagnClearCountersAndDiagnosticRegister) return MBF_DIAGNOSTICS_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER;
+    if (func == s.DiagnReturnBusMessageCount             ) return MBF_DIAGNOSTICS_RETURN_BUS_MESSAGE_COUNT              ;
+    if (func == s.DiagnReturnBusCommunicationErrorCount  ) return MBF_DIAGNOSTICS_RETURN_BUS_COMMUNICATION_ERROR_COUNT  ;
+    if (func == s.DiagnReturnBusExceptionErrorCount      ) return MBF_DIAGNOSTICS_RETURN_BUS_EXCEPTION_ERROR_COUNT      ;
+    if (func == s.DiagnReturnServerMessageCount          ) return MBF_DIAGNOSTICS_RETURN_SERVER_MESSAGE_COUNT           ;
+    if (func == s.DiagnReturnServerNoResponseCount       ) return MBF_DIAGNOSTICS_RETURN_SERVER_NO_RESPONSE_COUNT       ;
+    if (func == s.DiagnReturnServerNAKCount              ) return MBF_DIAGNOSTICS_RETURN_SERVER_NAK_COUNT               ;
+    if (func == s.DiagnReturnServerBusyCount             ) return MBF_DIAGNOSTICS_RETURN_SERVER_BUSY_COUNT              ;
+    if (func == s.DiagnReturnBusCharacterOverrunCount    ) return MBF_DIAGNOSTICS_RETURN_BUS_CHARACTER_OVERRUN_COUNT    ;
+    if (func == s.DiagnClearOverrunCounterAndFlag        ) return MBF_DIAGNOSTICS_CLEAR_OVERRUN_COUNTER_AND_FLAG        ;
     return 0;
 }
 
@@ -631,21 +631,21 @@ QString ModbusDiagnSubfunctionString(uint16_t func)
     const Strings &s = Strings::instance();
     switch(func)
     {
-    case MBDIAGN_RETURN_QUERY_DATA                     : return s.DiagnReturnQueryData                   ;
-    case MBDIAGN_RESTART_COMMUNICATIONS_OPTION         : return s.DiagnRestartCommunicationsOption       ;
-    case MBDIAGN_RETURN_DIAGNOSTIC_REGISTER            : return s.DiagnReturnDiagnosticRegister          ;
-    case MBDIAGN_CHANGE_ASCII_INPUT_DELIMITER          : return s.DiagnChangeAsciiInputDelimiter         ;
-    case MBDIAGN_FORCE_LISTEN_ONLY_MODE                : return s.DiagnForceListenOnlyMode               ;
-    case MBDIAGN_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER: return s.DiagnClearCountersAndDiagnosticRegister;
-    case MBDIAGN_RETURN_BUS_MESSAGE_COUNT              : return s.DiagnReturnBusMessageCount             ;
-    case MBDIAGN_RETURN_BUS_COMMUNICATION_ERROR_COUNT  : return s.DiagnReturnBusCommunicationErrorCount  ;
-    case MBDIAGN_RETURN_BUS_EXCEPTION_ERROR_COUNT      : return s.DiagnReturnBusExceptionErrorCount      ;
-    case MBDIAGN_RETURN_SERVER_MESSAGE_COUNT           : return s.DiagnReturnServerMessageCount          ;
-    case MBDIAGN_RETURN_SERVER_NO_RESPONSE_COUNT       : return s.DiagnReturnServerNoResponseCount       ;
-    case MBDIAGN_RETURN_SERVER_NAK_COUNT               : return s.DiagnReturnServerNAKCount              ;
-    case MBDIAGN_RETURN_SERVER_BUSY_COUNT              : return s.DiagnReturnServerBusyCount             ;
-    case MBDIAGN_RETURN_BUS_CHARACTER_OVERRUN_COUNT    : return s.DiagnReturnBusCharacterOverrunCount    ;
-    case MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAG        : return s.DiagnClearOverrunCounterAndFlag        ;
+    case MBF_DIAGNOSTICS_RETURN_QUERY_DATA                     : return s.DiagnReturnQueryData                   ;
+    case MBF_DIAGNOSTICS_RESTART_COMMUNICATIONS_OPTION         : return s.DiagnRestartCommunicationsOption       ;
+    case MBF_DIAGNOSTICS_RETURN_DIAGNOSTIC_REGISTER            : return s.DiagnReturnDiagnosticRegister          ;
+    case MBF_DIAGNOSTICS_CHANGE_ASCII_INPUT_DELIMITER          : return s.DiagnChangeAsciiInputDelimiter         ;
+    case MBF_DIAGNOSTICS_FORCE_LISTEN_ONLY_MODE                : return s.DiagnForceListenOnlyMode               ;
+    case MBF_DIAGNOSTICS_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER: return s.DiagnClearCountersAndDiagnosticRegister;
+    case MBF_DIAGNOSTICS_RETURN_BUS_MESSAGE_COUNT              : return s.DiagnReturnBusMessageCount             ;
+    case MBF_DIAGNOSTICS_RETURN_BUS_COMMUNICATION_ERROR_COUNT  : return s.DiagnReturnBusCommunicationErrorCount  ;
+    case MBF_DIAGNOSTICS_RETURN_BUS_EXCEPTION_ERROR_COUNT      : return s.DiagnReturnBusExceptionErrorCount      ;
+    case MBF_DIAGNOSTICS_RETURN_SERVER_MESSAGE_COUNT           : return s.DiagnReturnServerMessageCount          ;
+    case MBF_DIAGNOSTICS_RETURN_SERVER_NO_RESPONSE_COUNT       : return s.DiagnReturnServerNoResponseCount       ;
+    case MBF_DIAGNOSTICS_RETURN_SERVER_NAK_COUNT               : return s.DiagnReturnServerNAKCount              ;
+    case MBF_DIAGNOSTICS_RETURN_SERVER_BUSY_COUNT              : return s.DiagnReturnServerBusyCount             ;
+    case MBF_DIAGNOSTICS_RETURN_BUS_CHARACTER_OVERRUN_COUNT    : return s.DiagnReturnBusCharacterOverrunCount    ;
+    case MBF_DIAGNOSTICS_CLEAR_OVERRUN_COUNTER_AND_FLAG        : return s.DiagnClearOverrunCounterAndFlag        ;
     default:
         return QString();
     }

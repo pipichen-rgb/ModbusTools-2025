@@ -1389,7 +1389,7 @@ void mbServerUi::importDomProject(mbCoreDomProject *dom)
             {
             case mbCoreDialogReplace::ReplaceAll:
                 applyToAll = r;
-                // no need break
+                MB_FALLTHROUGH
             case mbCoreDialogReplace::Replace:
             {
                 mbServerScriptModule *old = this->project()->scriptModule(d->name());
@@ -1399,13 +1399,13 @@ void mbServerUi::importDomProject(mbCoreDomProject *dom)
             break;
             case mbCoreDialogReplace::RenameAll:
                 applyToAll = r;
-                // no need break
+                MB_FALLTHROUGH
             case mbCoreDialogReplace::Rename:
                 needToAdd = true;
                 break;
             case mbCoreDialogReplace::SkipAll:
                 applyToAll = r;
-                // no need break
+                MB_FALLTHROUGH
             default:
                 continue;
             }

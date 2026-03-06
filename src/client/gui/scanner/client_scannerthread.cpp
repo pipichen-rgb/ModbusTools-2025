@@ -213,7 +213,57 @@ void mbClientScannerThread::run()
                         status = clientPort->readExceptionStatus(static_cast<uint8_t>(unit), dummy);
                         break;
                     case MBF_DIAGNOSTICS:
-                        status = clientPort->diagnostics(static_cast<uint8_t>(unit), f.subfunc, 2, dummy, dummy, &dummy[1]);
+                        switch (f.subfunc)
+                        {
+                        case MBF_DIAGNOSTICS_RETURN_QUERY_DATA:
+                            status = clientPort->diagnosticsReturnQueryData(static_cast<uint8_t>(unit), 2, dummy, dummy, &dummy[1]);
+                            break;
+                        case MBF_DIAGNOSTICS_RESTART_COMMUNICATIONS_OPTION:
+                            status = clientPort->diagnosticsRestartCommunicationsOption(static_cast<uint8_t>(unit), dummy[0]);
+                            break;
+                        case MBF_DIAGNOSTICS_RETURN_DIAGNOSTIC_REGISTER:
+                            status = clientPort->diagnosticsReturnDiagnosticRegister(static_cast<uint8_t>(unit), reinterpret_cast<uint16_t*>(dummy));
+                            break;
+                        case MBF_DIAGNOSTICS_CHANGE_ASCII_INPUT_DELIMITER:
+                            status = clientPort->diagnosticsChangeAsciiInputDelimiter(static_cast<uint8_t>(unit), dummy[0]);
+                            break;
+                        case MBF_DIAGNOSTICS_FORCE_LISTEN_ONLY_MODE:
+                            status = clientPort->diagnosticsForceListenOnlyMode(static_cast<uint8_t>(unit));
+                            break;
+                        case MBF_DIAGNOSTICS_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER:
+                            status = clientPort->diagnosticsClearCountersAndDiagnosticRegister(static_cast<uint8_t>(unit));
+                            break;
+                        case MBF_DIAGNOSTICS_RETURN_BUS_MESSAGE_COUNT:
+                            status = clientPort->diagnosticsReturnBusMessageCount(static_cast<uint8_t>(unit), reinterpret_cast<uint16_t*>(dummy));
+                            break;
+                        case MBF_DIAGNOSTICS_RETURN_BUS_COMMUNICATION_ERROR_COUNT:
+                            status = clientPort->diagnosticsReturnBusCommunicationErrorCount(static_cast<uint8_t>(unit), reinterpret_cast<uint16_t*>(dummy));
+                            break;
+                        case MBF_DIAGNOSTICS_RETURN_BUS_EXCEPTION_ERROR_COUNT:
+                            status = clientPort->diagnosticsReturnBusExceptionErrorCount(static_cast<uint8_t>(unit), reinterpret_cast<uint16_t*>(dummy));
+                            break;
+                        case MBF_DIAGNOSTICS_RETURN_SERVER_MESSAGE_COUNT:
+                            status = clientPort->diagnosticsReturnServerMessageCount(static_cast<uint8_t>(unit), reinterpret_cast<uint16_t*>(dummy));
+                            break;
+                        case MBF_DIAGNOSTICS_RETURN_SERVER_NO_RESPONSE_COUNT:
+                            status = clientPort->diagnosticsReturnServerNoResponseCount(static_cast<uint8_t>(unit), reinterpret_cast<uint16_t*>(dummy));
+                            break;
+                        case MBF_DIAGNOSTICS_RETURN_SERVER_NAK_COUNT:
+                            status = clientPort->diagnosticsReturnServerNAKCount(static_cast<uint8_t>(unit), reinterpret_cast<uint16_t*>(dummy));
+                            break;
+                        case MBF_DIAGNOSTICS_RETURN_SERVER_BUSY_COUNT:
+                            status = clientPort->diagnosticsReturnServerBusyCount(static_cast<uint8_t>(unit), reinterpret_cast<uint16_t*>(dummy));
+                            break;
+                        case MBF_DIAGNOSTICS_RETURN_BUS_CHARACTER_OVERRUN_COUNT:
+                            status = clientPort->diagnosticsReturnBusCharacterOverrunCount(static_cast<uint8_t>(unit), reinterpret_cast<uint16_t*>(dummy));
+                            break;
+                        case MBF_DIAGNOSTICS_CLEAR_OVERRUN_COUNTER_AND_FLAG:
+                            status = clientPort->diagnosticsClearOverrunCounterAndFlag(static_cast<uint8_t>(unit));
+                            break;
+                        default:
+                            status = Modbus::Status_BadIllegalFunction;
+                            break;
+                        }
                         break;
                     case MBF_GET_COMM_EVENT_COUNTER:
                         status = clientPort->getCommEventCounter(static_cast<uint8_t>(unit), &regdummy[0], &regdummy[1]);

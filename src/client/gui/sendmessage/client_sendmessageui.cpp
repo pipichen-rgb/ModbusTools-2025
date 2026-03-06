@@ -136,21 +136,21 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
     m_funcNums.append(MBF_READ_WRITE_MULTIPLE_REGISTERS );
     m_funcNums.append(MBF_READ_FIFO_QUEUE               );
 
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_QUERY_DATA                     );
-    m_diagnSubfuncNums.append(MBDIAGN_RESTART_COMMUNICATIONS_OPTION         );
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_DIAGNOSTIC_REGISTER            );
-    m_diagnSubfuncNums.append(MBDIAGN_CHANGE_ASCII_INPUT_DELIMITER          );
-    m_diagnSubfuncNums.append(MBDIAGN_FORCE_LISTEN_ONLY_MODE                );
-    m_diagnSubfuncNums.append(MBDIAGN_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER);
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_MESSAGE_COUNT              );
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_COMMUNICATION_ERROR_COUNT  );
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_EXCEPTION_ERROR_COUNT      );
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_MESSAGE_COUNT           );
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_NO_RESPONSE_COUNT       );
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_NAK_COUNT               );
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_BUSY_COUNT              );
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_CHARACTER_OVERRUN_COUNT    );
-    m_diagnSubfuncNums.append(MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAG        );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_QUERY_DATA                     );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RESTART_COMMUNICATIONS_OPTION         );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_DIAGNOSTIC_REGISTER            );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_CHANGE_ASCII_INPUT_DELIMITER          );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_FORCE_LISTEN_ONLY_MODE                );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER);
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_BUS_MESSAGE_COUNT              );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_BUS_COMMUNICATION_ERROR_COUNT  );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_BUS_EXCEPTION_ERROR_COUNT      );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_SERVER_MESSAGE_COUNT           );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_SERVER_NO_RESPONSE_COUNT       );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_SERVER_NAK_COUNT               );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_SERVER_BUSY_COUNT              );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_BUS_CHARACTER_OVERRUN_COUNT    );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_CLEAR_OVERRUN_COUNTER_AND_FLAG        );
 
     // -----------------------------------------------------------------------
     // Unit
@@ -791,7 +791,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
     case MBF_DIAGNOSTICS:
         switch (params.subfunc)
         {
-        case MBDIAGN_RETURN_QUERY_DATA:
+        case MBF_DIAGNOSTICS_RETURN_QUERY_DATA:
             switch (params.format)
             {
             case mb::Bool:
@@ -821,13 +821,13 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
                 break;
             }
             break;
-        case MBDIAGN_RESTART_COMMUNICATIONS_OPTION:
+        case MBF_DIAGNOSTICS_RESTART_COMMUNICATIONS_OPTION:
             if (params.data.toInt())
                 data = QByteArray("\xFF\x00", 2);
             else
                 data = QByteArray("\0\0", 2);
             break;
-        case MBDIAGN_CHANGE_ASCII_INPUT_DELIMITER:
+        case MBF_DIAGNOSTICS_CHANGE_ASCII_INPUT_DELIMITER:
             if (params.data.length())
             {
                 char d[2];
@@ -1403,7 +1403,7 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
     case MBF_READ_WRITE_MULTIPLE_REGISTERS:
         txt = ui->txtRWMultiRegReadData;
         format = mb::enumFormatValueByIndex(ui->cmbRWMultiRegReadFormat->currentIndex());
-        // no need break
+        MB_FALLTHROUGH
     case MBF_READ_HOLDING_REGISTERS:
     case MBF_READ_INPUT_REGISTERS:
     {
@@ -1827,9 +1827,9 @@ void mbClientSendMessageUi::setCurrentDiagnSubfuncNum(uint16_t subfunc)
 {
     switch (subfunc)
     {
-    case MBDIAGN_RETURN_QUERY_DATA:
-    case MBDIAGN_RETURN_DIAGNOSTIC_REGISTER:
-    case MBDIAGN_CHANGE_ASCII_INPUT_DELIMITER:
+    case MBF_DIAGNOSTICS_RETURN_QUERY_DATA:
+    case MBF_DIAGNOSTICS_RETURN_DIAGNOSTIC_REGISTER:
+    case MBF_DIAGNOSTICS_CHANGE_ASCII_INPUT_DELIMITER:
         ui->txtDiagnRequest->setEnabled(true);
         break;
     default:

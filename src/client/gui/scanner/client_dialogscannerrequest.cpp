@@ -67,21 +67,21 @@ mbClientDialogScannerRequest::mbClientDialogScannerRequest(QWidget *parent) :
     m_funcNums.append(MBF_READ_WRITE_MULTIPLE_REGISTERS);
     m_funcNums.append(MBF_READ_FIFO_QUEUE              );
 
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_QUERY_DATA                     );
-    m_diagnSubfuncNums.append(MBDIAGN_RESTART_COMMUNICATIONS_OPTION         );
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_DIAGNOSTIC_REGISTER            );
-    m_diagnSubfuncNums.append(MBDIAGN_CHANGE_ASCII_INPUT_DELIMITER          );
-    m_diagnSubfuncNums.append(MBDIAGN_FORCE_LISTEN_ONLY_MODE                );
-    m_diagnSubfuncNums.append(MBDIAGN_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER);
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_MESSAGE_COUNT              );
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_COMMUNICATION_ERROR_COUNT  );
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_EXCEPTION_ERROR_COUNT      );
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_MESSAGE_COUNT           );
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_NO_RESPONSE_COUNT       );
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_NAK_COUNT               );
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_SERVER_BUSY_COUNT              );
-    m_diagnSubfuncNums.append(MBDIAGN_RETURN_BUS_CHARACTER_OVERRUN_COUNT    );
-    m_diagnSubfuncNums.append(MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAG        );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_QUERY_DATA                     );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RESTART_COMMUNICATIONS_OPTION         );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_DIAGNOSTIC_REGISTER            );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_CHANGE_ASCII_INPUT_DELIMITER          );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_FORCE_LISTEN_ONLY_MODE                );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER);
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_BUS_MESSAGE_COUNT              );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_BUS_COMMUNICATION_ERROR_COUNT  );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_BUS_EXCEPTION_ERROR_COUNT      );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_SERVER_MESSAGE_COUNT           );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_SERVER_NO_RESPONSE_COUNT       );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_SERVER_NAK_COUNT               );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_SERVER_BUSY_COUNT              );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_BUS_CHARACTER_OVERRUN_COUNT    );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_CLEAR_OVERRUN_COUNTER_AND_FLAG        );
 
     cmb = ui->cmbFunction;
     connect(cmb, SIGNAL(currentIndexChanged(int)), this, SLOT(setCurrentFuncIndex(int)));

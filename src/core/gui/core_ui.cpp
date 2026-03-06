@@ -504,7 +504,7 @@ void mbCoreUi::menuSlotFileImportProject()
                     {
                     case mbCoreDialogReplace::ReplaceAll:
                         applyToAll = r;
-                        // no need break
+                        MB_FALLTHROUGH
                     case mbCoreDialogReplace::Replace:
                     {
                         mbCoreDevice *old = m_project->deviceCore(d->name());
@@ -514,13 +514,13 @@ void mbCoreUi::menuSlotFileImportProject()
                         break;
                     case mbCoreDialogReplace::RenameAll:
                         applyToAll = r;
-                        // no need break
+                        MB_FALLTHROUGH
                     case mbCoreDialogReplace::Rename:
                         needToAdd = true;
                         break;
                     case mbCoreDialogReplace::SkipAll:
                         applyToAll = r;
-                        // no need break
+                        MB_FALLTHROUGH
                     default:
                         continue;
                     }
@@ -553,7 +553,7 @@ void mbCoreUi::menuSlotFileImportProject()
                     {
                     case mbCoreDialogReplace::ReplaceAll:
                         applyToAll = r;
-                        // no need break
+                        MB_FALLTHROUGH
                     case mbCoreDialogReplace::Replace:
                     {
                         mbCorePort *old = m_project->portCore(d->name());
@@ -563,13 +563,13 @@ void mbCoreUi::menuSlotFileImportProject()
                         break;
                     case mbCoreDialogReplace::RenameAll:
                         applyToAll = r;
-                        // no need break
+                        MB_FALLTHROUGH
                     case mbCoreDialogReplace::Rename:
                         needToAdd = true;
                         break;
                     case mbCoreDialogReplace::SkipAll:
                         applyToAll = r;
-                        // no need break
+                        MB_FALLTHROUGH
                     default:
                         continue;
                     }
@@ -602,7 +602,7 @@ void mbCoreUi::menuSlotFileImportProject()
                     {
                     case mbCoreDialogReplace::ReplaceAll:
                         applyToAll = r;
-                        // no need break
+                        MB_FALLTHROUGH
                     case mbCoreDialogReplace::Replace:
                     {
                         mbCoreDataView *old = m_project->dataViewCore(d->name());
@@ -612,13 +612,13 @@ void mbCoreUi::menuSlotFileImportProject()
                         break;
                     case mbCoreDialogReplace::RenameAll:
                         applyToAll = r;
-                        // no need break
+                        MB_FALLTHROUGH
                     case mbCoreDialogReplace::Rename:
                         needToAdd = true;
                         break;
                     case mbCoreDialogReplace::SkipAll:
                         applyToAll = r;
-                        // no need break
+                        MB_FALLTHROUGH
                     default:
                         continue;
                     }

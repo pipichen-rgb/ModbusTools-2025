@@ -865,79 +865,140 @@ Modbus::StatusCode mbServerDevice::readExceptionStatus(uint8_t *status)
     return r;
 }
 
-Modbus::StatusCode mbServerDevice::diagnostics(mbServerPort* port, uint16_t subfunc, uint8_t insize, const void *indata, uint8_t *outsize, void *outdata)
+Modbus::StatusCode mbServerDevice::diagnosticsReturnQueryData(uint8_t insize, const void *indata, uint8_t *outsize, void *outdata)
 {
-    Modbus::StatusCode r = Modbus::Status_Good;
-    QString err;
+    auto r = Modbus::Status_Good;
     beginRequest();
-    switch (subfunc)
-    {
-    case MBDIAGN_RETURN_QUERY_DATA:
-        memcpy(outdata, indata, insize);
-        *outsize = insize;
-        break;
-    case MBDIAGN_RESTART_COMMUNICATIONS_OPTION:
-        *reinterpret_cast<uint16_t*>(outdata) = *reinterpret_cast<const uint16_t*>(indata);
-        *outsize = sizeof(uint16_t);
-        this->resetStatistics();
-        break;
-    case MBDIAGN_RETURN_DIAGNOSTIC_REGISTER: // TODO
-        *reinterpret_cast<uint16_t*>(outdata) = 0;
-        *outsize = sizeof(uint16_t);
-        break;
-    case MBDIAGN_CHANGE_ASCII_INPUT_DELIMITER: // TODO
-        *reinterpret_cast<uint16_t*>(outdata) = *reinterpret_cast<const uint16_t*>(indata);
-        *outsize = sizeof(uint16_t);
-        break;
-    case MBDIAGN_FORCE_LISTEN_ONLY_MODE: // TODO
-        *reinterpret_cast<uint16_t*>(outdata) = *reinterpret_cast<const uint16_t*>(indata);
-        *outsize = sizeof(uint16_t);
-        break;
-    case MBDIAGN_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER: // TODO
-        *reinterpret_cast<uint16_t*>(outdata) = *reinterpret_cast<const uint16_t*>(indata);
-        *outsize = sizeof(uint16_t);
-        break;
-    case MBDIAGN_RETURN_BUS_MESSAGE_COUNT:
-        *reinterpret_cast<uint16_t*>(outdata) = static_cast<uint16_t>(port->statCountRx());
-        *outsize = sizeof(uint16_t);
-        break;
-    case MBDIAGN_RETURN_BUS_COMMUNICATION_ERROR_COUNT:
-        *reinterpret_cast<uint16_t*>(outdata) = static_cast<uint16_t>(port->statCountBadCRC());
-        *outsize = sizeof(uint16_t);
-        break;
-    case MBDIAGN_RETURN_BUS_EXCEPTION_ERROR_COUNT:
-        *reinterpret_cast<uint16_t*>(outdata) = static_cast<uint16_t>(this->statCountBadStandard());
-        *outsize = sizeof(uint16_t);
-        break;
-    case MBDIAGN_RETURN_SERVER_MESSAGE_COUNT:
-        *reinterpret_cast<uint16_t*>(outdata) = static_cast<uint16_t>(this->statCountRx());
-        *outsize = sizeof(uint16_t);
-        break;
-    case MBDIAGN_RETURN_SERVER_NO_RESPONSE_COUNT: // TODO
-        *reinterpret_cast<uint16_t*>(outdata) = 0;
-        *outsize = sizeof(uint16_t);
-        break;
-    case MBDIAGN_RETURN_SERVER_NAK_COUNT:
-        *reinterpret_cast<uint16_t*>(outdata) = static_cast<uint16_t>(this->statCountBadNegativeAcknowledge());
-        *outsize = sizeof(uint16_t);
-        break;
-    case MBDIAGN_RETURN_SERVER_BUSY_COUNT:
-        *reinterpret_cast<uint16_t*>(outdata) = static_cast<uint16_t>(this->statCountBadServerDeviceBusy());
-        *outsize = sizeof(uint16_t);
-        break;
-    case MBDIAGN_RETURN_BUS_CHARACTER_OVERRUN_COUNT: // TODO
-        *reinterpret_cast<uint16_t*>(outdata) = 0;
-        *outsize = sizeof(uint16_t);
-        break;
-    case MBDIAGN_CLEAR_OVERRUN_COUNTER_AND_FLAG: // TODO
-        *reinterpret_cast<uint16_t*>(outdata) = *reinterpret_cast<const uint16_t*>(indata);
-        *outsize = sizeof(uint16_t);
-        break;
-    default:
-        err = QStringLiteral("Unknown diagnostic subfunction #%1").arg(subfunc);
-        r = Modbus::Status_BadIllegalFunction;
-    }
-    endRequest(r, err);
+    memcpy(outdata, indata, insize);
+    *outsize = insize;
+    endRequest(r);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::diagnosticsRestartCommunicationsOption(bool clearEventLog)
+{
+    Q_UNUSED(clearEventLog)
+    auto r = Modbus::Status_Good;
+    beginRequest();
+    resetStatistics();
+    endRequest(r);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::diagnosticsReturnDiagnosticRegister(uint16_t *value)
+{
+    auto r = Modbus::Status_Good;
+    beginRequest();
+    *value = 0;
+    endRequest(r);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::diagnosticsChangeAsciiInputDelimiter(char delimiter)
+{
+    Q_UNUSED(delimiter)
+    auto r = Modbus::Status_Good;
+    beginRequest();
+    endRequest(r);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::diagnosticsForceListenOnlyMode()
+{
+    auto r = Modbus::Status_Good;
+    beginRequest();
+    endRequest(r);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::diagnosticsClearCountersAndDiagnosticRegister()
+{
+    auto r = Modbus::Status_Good;
+    beginRequest();
+    resetStatistics();
+    endRequest(r);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::diagnosticsReturnBusMessageCount(mbServerPort *port, uint16_t *count)
+{
+    auto r = Modbus::Status_Good;
+    beginRequest();
+    *count = static_cast<uint16_t>(port->statCountRx());
+    r = Modbus::Status_Good;
+    endRequest(r);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::diagnosticsReturnBusCommunicationErrorCount(mbServerPort *port, uint16_t *count)
+{
+    auto r = Modbus::Status_Good;
+    beginRequest();
+    *count = static_cast<uint16_t>(port->statCountBadCRC());
+    r = Modbus::Status_Good;
+    endRequest(r);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::diagnosticsReturnBusExceptionErrorCount(uint16_t *count)
+{
+    auto r = Modbus::Status_Good;
+    beginRequest();
+    *count = static_cast<uint16_t>(statCountBadStandard());
+    endRequest(r);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::diagnosticsReturnServerMessageCount(uint16_t *count)
+{
+    auto r = Modbus::Status_Good;
+    beginRequest();
+    *count = static_cast<uint16_t>(statCountRx());
+    endRequest(r);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::diagnosticsReturnServerNoResponseCount(uint16_t *count)
+{
+    auto r = Modbus::Status_Good;
+    beginRequest();
+    *count = 0;
+    endRequest(r);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::diagnosticsReturnServerNAKCount(uint16_t *count)
+{
+    auto r = Modbus::Status_Good;
+    beginRequest();
+    *count = static_cast<uint16_t>(statCountBadNegativeAcknowledge());
+    endRequest(r);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::diagnosticsReturnServerBusyCount(uint16_t *count)
+{
+    auto r = Modbus::Status_Good;
+    beginRequest();
+    *count = static_cast<uint16_t>(statCountBadServerDeviceBusy());
+    endRequest(r);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::diagnosticsReturnBusCharacterOverrunCount(uint16_t *count)
+{
+    auto r = Modbus::Status_Good;
+    beginRequest();
+    *count = 0;
+    endRequest(r);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::diagnosticsClearOverrunCounterAndFlag()
+{
+    auto r = Modbus::Status_Good;
+    beginRequest();
+    endRequest(r);
     return r;
 }
 

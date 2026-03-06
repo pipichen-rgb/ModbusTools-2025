@@ -99,7 +99,7 @@ void mbClientPortRunnable::run()
         else
             break;
         m_state = STATE_EXEC_EXTERNAL;
-        // no need break
+        MB_FALLTHROUGH
     case STATE_EXEC_EXTERNAL:
     {
         Modbus::StatusCode r = execExternalMessage();
@@ -162,12 +162,75 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
         res = m_modbusPort->readExceptionStatus(m_currentMessage->unit(), reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
         break;
     case MBF_DIAGNOSTICS:
-        res = m_modbusPort->diagnostics(m_currentMessage->unit(),
-                                              static_cast<mbClientRunMessageDiagnostics*>(m_currentMessage.data())->subFunction(),
-                                              static_cast<uint8_t>(m_currentMessage->count()),
-                                              m_currentMessage->innerBuffer(),
-                                              &m_byteCount,
-                                              reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
+        switch (static_cast<mbClientRunMessageDiagnostics*>(m_currentMessage.data())->subFunction())
+        {
+        case MBF_DIAGNOSTICS_RETURN_QUERY_DATA:
+            res = m_modbusPort->diagnosticsReturnQueryData(m_currentMessage->unit(), 
+                                                           static_cast<uint8_t>(m_currentMessage->count()),
+                                                           m_currentMessage->innerBuffer(),
+                                                           &m_byteCount,
+                                                           reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
+            break;
+        case MBF_DIAGNOSTICS_RESTART_COMMUNICATIONS_OPTION:
+            res = m_modbusPort->diagnosticsRestartCommunicationsOption(m_currentMessage->unit(), reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer())[0]);
+            m_byteCount = 0;
+            break;
+        case MBF_DIAGNOSTICS_RETURN_DIAGNOSTIC_REGISTER:
+            res = m_modbusPort->diagnosticsReturnDiagnosticRegister(m_currentMessage->unit(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+            m_byteCount = 2;
+            break;
+        case MBF_DIAGNOSTICS_CHANGE_ASCII_INPUT_DELIMITER:
+            res = m_modbusPort->diagnosticsChangeAsciiInputDelimiter(m_currentMessage->unit(), reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer())[0]);
+            m_byteCount = 0;
+            break;
+        case MBF_DIAGNOSTICS_FORCE_LISTEN_ONLY_MODE:
+            res = m_modbusPort->diagnosticsForceListenOnlyMode(m_currentMessage->unit());
+            m_byteCount = 0;
+            break;
+        case MBF_DIAGNOSTICS_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER:
+            res = m_modbusPort->diagnosticsClearCountersAndDiagnosticRegister(m_currentMessage->unit());
+            m_byteCount = 0;
+            break;
+        case MBF_DIAGNOSTICS_RETURN_BUS_MESSAGE_COUNT:
+            res = m_modbusPort->diagnosticsReturnBusMessageCount(m_currentMessage->unit(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+            m_byteCount = 2;
+            break;
+        case MBF_DIAGNOSTICS_RETURN_BUS_COMMUNICATION_ERROR_COUNT:
+            res = m_modbusPort->diagnosticsReturnBusCommunicationErrorCount(m_currentMessage->unit(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+            m_byteCount = 2;
+            break;
+        case MBF_DIAGNOSTICS_RETURN_BUS_EXCEPTION_ERROR_COUNT:
+            res = m_modbusPort->diagnosticsReturnBusExceptionErrorCount(m_currentMessage->unit(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+            m_byteCount = 2;
+            break;
+        case MBF_DIAGNOSTICS_RETURN_SERVER_MESSAGE_COUNT:
+            res = m_modbusPort->diagnosticsReturnServerMessageCount(m_currentMessage->unit(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+            m_byteCount = 2;
+            break;
+        case MBF_DIAGNOSTICS_RETURN_SERVER_NO_RESPONSE_COUNT:
+            res = m_modbusPort->diagnosticsReturnServerNoResponseCount(m_currentMessage->unit(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+            m_byteCount = 2;
+            break;
+        case MBF_DIAGNOSTICS_RETURN_SERVER_NAK_COUNT:
+            res = m_modbusPort->diagnosticsReturnServerNAKCount(m_currentMessage->unit(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+            m_byteCount = 2;
+            break;
+        case MBF_DIAGNOSTICS_RETURN_SERVER_BUSY_COUNT:
+            res = m_modbusPort->diagnosticsReturnServerBusyCount(m_currentMessage->unit(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+            m_byteCount = 2;
+            break;
+        case MBF_DIAGNOSTICS_RETURN_BUS_CHARACTER_OVERRUN_COUNT:
+            res = m_modbusPort->diagnosticsReturnBusCharacterOverrunCount(m_currentMessage->unit(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+            m_byteCount = 2;
+            break;
+        case MBF_DIAGNOSTICS_CLEAR_OVERRUN_COUNTER_AND_FLAG:
+            res = m_modbusPort->diagnosticsClearOverrunCounterAndFlag(m_currentMessage->unit());
+            m_byteCount = 0;
+            break;
+        default:
+            res = Modbus::Status_BadIllegalFunction;
+            break;
+        }
         if (Modbus::StatusIsGood(res))
             static_cast<mbClientRunMessageDiagnostics*>(m_currentMessage.data())->setCount(m_byteCount);
         break;

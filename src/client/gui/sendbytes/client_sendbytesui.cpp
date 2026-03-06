@@ -626,7 +626,7 @@ bool mbClientSendBytesUi::parseBinChar(ushort c, QString &s, char &out)
         s += c;
         if (s.length() < 3)
             break;
-        // no need break
+        MB_FALLTHROUGH
     default:
         if (s.length())
         {
@@ -647,7 +647,7 @@ bool mbClientSendBytesUi::parseOctChar(ushort c, QString &s, char &out)
         s += c;
         if (s.length() < 3)
             break;
-        // no need break
+        MB_FALLTHROUGH
     default:
         if (s.length())
         {
@@ -729,7 +729,7 @@ bool mbClientSendBytesUi::parseUDecChar(ushort c, QString &s, char &out)
         s += c;
         if (s.length() < 3)
             break;
-        // no need break
+        MB_FALLTHROUGH
     default:
         if (s.length())
         {
@@ -761,7 +761,7 @@ bool mbClientSendBytesUi::parseHexChar(ushort c, QString &s, char &out)
         s += c;
         if (s.length() < 2)
             break;
-        // no need break
+        MB_FALLTHROUGH
     default:
         if (s.length())
         {
