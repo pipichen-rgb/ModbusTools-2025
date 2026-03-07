@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>570</width>
+    <width>589</width>
     <height>514</height>
    </rect>
   </property>
@@ -186,6 +186,12 @@
                <layout class="QHBoxLayout" name="horizontalLayout_4">
                 <item>
                  <widget class="QLabel" name="label_4">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="text">
                    <string>Serial Port</string>
                   </property>
@@ -196,6 +202,12 @@
                 </item>
                 <item>
                  <widget class="QLabel" name="label_10">
+                  <property name="sizePolicy">
+                   <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                   </sizepolicy>
+                  </property>
                   <property name="text">
                    <string>Timeout Inter Byte</string>
                   </property>
