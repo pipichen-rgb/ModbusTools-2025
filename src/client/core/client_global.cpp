@@ -93,6 +93,12 @@ QString saveClientMessageParams(const mbClientMessageParams &params, bool useFun
         else
             res += QString("offset=%1").arg(params.offset);
         break;
+    case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
+        if (useData)
+            res += QString("deviceId=%1;objectId=%2;format=%3").arg(params.deviceId).arg(params.objectId).arg(mb::enumFormatKey(params.format));
+        else
+            res += QString("deviceId=%1;objectId=%2").arg(params.deviceId).arg(params.objectId);
+        break;
     default:
         break;
     }
@@ -192,6 +198,11 @@ mbClientMessageParams restoreClientMessageParams(const QString &params, bool *ok
     case MBF_READ_FIFO_QUEUE:
         res.offset = static_cast<uint16_t>(map.value(QStringLiteral("offset"), "0").toInt());
         res.format = mb::enumFormatValue(map.value(QStringLiteral("format"), "Dec16"));
+        return res;
+    case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
+        res.deviceId = static_cast<uint16_t>(map.value(QStringLiteral("deviceId"), "1").toInt());
+        res.objectId = static_cast<uint16_t>(map.value(QStringLiteral("objectId"), "0").toInt());
+        res.format = mb::enumFormatValue(map.value(QStringLiteral("format"), "String"));
         return res;
     default:
         if (ok)

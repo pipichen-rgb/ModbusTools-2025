@@ -1088,6 +1088,8 @@ void mbClientSendMessageUi::prepareToSend(mbClientRunMessage *msg)
     case MBF_READ_FIFO_QUEUE:
         ui->txtFIFOData->clear();
         break;
+    case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
+        ui->tblReadDeviceObjects->clearContents();
     }
 }
 
@@ -1294,6 +1296,10 @@ void mbClientSendMessageUi::fillParams(mbClientMessageParams &params)
         params.offset = static_cast<uint16_t>(ui->spFIFOOffset->value());
         params.format = mb::enumFormatValueByIndex(ui->cmbFIFOFormat->currentIndex());
         break;
+    case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
+        params.deviceId = static_cast<uint8_t>(ui->spReadDeviceId->value());
+        params.objectId = static_cast<uint8_t>(ui->spReadDeviceObjectId->value());
+        params.format = mb::enumFormatValueByIndex(ui->cmbReadDeviceFormat->currentIndex());
     default:
         return;
     }
@@ -1355,6 +1361,8 @@ void mbClientSendMessageUi::fillForm(const mbClientMessageParams &params)
         ui->cmbFIFOFormat->setCurrentText(mb::enumFormatKey(params.format));
         break;
     case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
+        ui->spReadDeviceId->setValue(params.deviceId);
+        ui->spReadDeviceObjectId->setValue(params.objectId);
         break;
     default:
         return;
@@ -1587,7 +1595,7 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
         ui->lnReadDeviceConformity->setText(mb::toDecString(m->conformityLevel()));
         ui->lnReadDeviceNextObjectId->setText(mb::toDecString(m->nextObjectId()));
         ui->chbReadDeviceMoreFollows->setChecked(m->moreFollows());
-        ui->tblReadDeviceObjects->clearContents();
+        ui->tblReadDeviceObjects->setRowCount(0);
         auto sz = m->dataSize();
         for (int i = 0, c = 0; i+2 < sz; ++c)
         {
