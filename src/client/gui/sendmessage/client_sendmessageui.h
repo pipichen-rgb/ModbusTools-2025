@@ -74,6 +74,9 @@ public:
         const QString writeMaskAddress      ;
         const QString writeMaskAnd          ;
         const QString writeMaskOr           ;
+        const QString readDeviceId          ;
+        const QString readDeviceObjectId    ;
+        const QString readDeviceFormat      ;
         const QString list                  ;
         const QString period                ;
         Strings();

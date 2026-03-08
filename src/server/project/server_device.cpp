@@ -30,6 +30,7 @@
 
 #include <QSet>
 
+#include <project/server_project.h>
 #include <project/server_port.h>
 
 mbServerDevice::Strings::Strings() :
@@ -1161,6 +1162,122 @@ Modbus::StatusCode mbServerDevice::readWriteMultipleRegisters(uint16_t readOffse
             }
         }
     }
+    endRequest(r, err);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::readDeviceIdentification(uint8_t readDeviceId, uint8_t objectId, uint8_t *dataSize, void *data, uint8_t *numberOfObjects, uint8_t *conformityLevel, bool *moreFollows, uint8_t *nextObjectId)
+{
+    Modbus::StatusCode r;
+    QString err;
+    beginRequest();
+
+    uint8_t numObjects = 0, next = 0, len = 0, c;
+    switch (readDeviceId)
+    {
+    case 0x01: // Basic device identification
+        numObjects = 3;
+        if (objectId > 0x02)
+            objectId = 0x00;
+        break;
+    case 0x02: // Regular device identification
+        numObjects = 4;
+        if (objectId < 0x03 || objectId > 0x06)
+            objectId = 0x03;
+        break;
+    case 0x03: // Extended device identification
+        numObjects = 0;
+        break;
+    case 0x04: // Individual address device identification
+        numObjects = 1;
+        break;
+    default:
+        r = Modbus::Status_BadIllegalDataValue;
+        err = QStringLiteral("Invalid device identification: %1").arg(readDeviceId);
+        endRequest(r, err);
+        return r;
+    }
+
+    uint8_t *d = reinterpret_cast<uint8_t*>(data);
+    switch (objectId)
+    {
+    case 0x00: // VendorName
+        c = sizeof(MBTOOLS_VENDOR_NAME)-1;
+        d[len] = 0x00;
+        d[len+1] = c;
+        memcpy(&d[len+2], MBTOOLS_VENDOR_NAME, c);
+        len += 2 + c;
+        if (readDeviceId == 0x04)
+            break;
+        MB_FALLTHROUGH
+    case 0x01: // ProductCode
+        c = sizeof(MBTOOLS_PRODUCT_CODE)-1;
+        d[len] = 0x01;
+        d[len+1] = c;
+        memcpy(&d[len+2], MBTOOLS_PRODUCT_CODE, c);
+        len += 2 + c;
+        if (readDeviceId == 0x04)
+            break;
+        MB_FALLTHROUGH
+    case 0x02: // MajorMinorRevision
+        c = sizeof(MBTOOLS_VERSION_STR)-1;
+        d[len] = 0x02;
+        d[len+1] = c;
+        memcpy(&d[len+2], MBTOOLS_VERSION_STR, c);
+        len += 2 + c;
+        break;
+    case 0x03: // VendorName
+        c = sizeof(MBTOOLS_VENDOR_NAME)-1;
+        d[len] = 0x00;
+        d[len+1] = c;
+        memcpy(&d[len+2], MBTOOLS_VENDOR_NAME, c);
+        len += 2 + c;
+        if (readDeviceId == 0x04)
+            break;
+        MB_FALLTHROUGH
+    case 0x04: // VendorUrl
+        c = sizeof(MBTOOLS_VENDOR_URL)-1;
+        d[len] = 0x01;
+        d[len+1] = c;
+        memcpy(&d[len+2], MBTOOLS_VENDOR_URL, c);
+        len += 2 + c;
+        if (readDeviceId == 0x04)
+            break;
+        MB_FALLTHROUGH
+    case 0x05: // ProductName
+        c = sizeof(MBTOOLS_SERVER_APP_NAME)-1;
+        d[len] = 0x01;
+        d[len+1] = c;
+        memcpy(&d[len+2], MBTOOLS_SERVER_APP_NAME, c);
+        len += 2 + c;
+        if (readDeviceId == 0x04)
+            break;
+        MB_FALLTHROUGH
+    case 0x06: // UserApplicationName
+    {
+        QByteArray userAppName = project()->name().toUtf8();
+        c = userAppName.length();
+        d[len] = 0x02;
+        d[len+1] = c;
+        memcpy(&d[len+2], userAppName.constData(), c);
+        len += 2 + c;
+    }
+        break;
+    default:
+        r = Modbus::Status_BadIllegalDataAddress;
+        err = QStringLiteral("Invalid device object ID: %1").arg(objectId);
+        endRequest(r, err);
+        return r;
+    }
+    *dataSize = len;
+    if (numberOfObjects)
+        *numberOfObjects = numObjects;
+    if (conformityLevel)
+        *conformityLevel = 0x83; // extended identification(stream access and individual access)
+    if (moreFollows)
+        *moreFollows = false;
+    if (nextObjectId)
+        *nextObjectId = next;
     endRequest(r, err);
     return r;
 }

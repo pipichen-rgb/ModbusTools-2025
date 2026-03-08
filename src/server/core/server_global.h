@@ -26,6 +26,10 @@
 #include <mbcore.h>
 #include <core_global.h>
 
+#ifndef MBTOOLS_SERVER_APP_NAME
+#define MBTOOLS_SERVER_APP_NAME "mbserver"
+#endif
+
 namespace mb {
 
 enum FindFlags

@@ -500,3 +500,17 @@ Modbus::StatusCode mbClientRunMessageReadFIFOQueue::getData(uint16_t innerOffset
     return Modbus::readMemRegs(innerOffset, count, buff, m_buff, innerBufferRegSize(), &c);
 }
 
+// --------------------------------------------------------------------------------------------------------
+// ---------------------------- ENCAPSULATED_INTERFACE_TRANSPORT/READ_DEVICE_ID ---------------------------
+// --------------------------------------------------------------------------------------------------------
+
+mbClientRunMessageReadDeviceId::mbClientRunMessageReadDeviceId(uint8_t unit, uint8_t deviceId, uint8_t objectId, QObject *parent) : 
+    mbClientRunMessageRead(unit, 0, 0, 0, parent)
+{
+    m_deviceId        = deviceId;
+    m_objectId        = objectId;
+    m_numberOfObjects = 0;
+    m_conformityLevel = 0;
+    m_moreFollows     = 0;
+    m_nextObjectId    = 0;
+}

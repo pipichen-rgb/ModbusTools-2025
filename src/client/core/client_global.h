@@ -26,6 +26,10 @@
 #include <mbcore.h>
 #include <core_global.h>
 
+#ifndef MBTOOLS_CLIENT_APP_NAME
+#define MBTOOLS_CLIENT_APP_NAME "mbclient"
+#endif
+
 class mbClientPort;
 class mbClientDevice;
 class mbClientDataViewItem;
@@ -53,6 +57,11 @@ struct mbClientMessageParams
     {
         uint16_t offset;
         uint16_t subfunc;
+        struct 
+        {
+            uint8_t deviceId;
+            uint8_t objectId;
+        };
     };
     uint16_t count;
     mb::Format format;

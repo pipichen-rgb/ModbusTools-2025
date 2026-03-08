@@ -37,6 +37,11 @@
 #define MBTOOLS_VERSION_STR_MAKE(major,minor,patch) MBTOOLS_VERSION_STR_HELPER(major,minor,patch)
 #define MBTOOLS_VERSION_STR MBTOOLS_VERSION_STR_MAKE(MBTOOLS_VERSION_MAJOR,MBTOOLS_VERSION_MINOR,MBTOOLS_VERSION_PATCH)
 
+#define MBTOOLS_VENDOR_NAME "serhmarch"
+#define MBTOOLS_VENDOR_URL "https://github.com/serhmarch"
+
+#define MBTOOLS_PRODUCT_CODE MBTOOLS_VERSION_STR
+
 #include <typeinfo>
 
 #include <QMetaEnum>

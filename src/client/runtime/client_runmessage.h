@@ -328,7 +328,7 @@ public:
 
 
 // --------------------------------------------------------------------------------------------------------
-// ---------------------------------------- GET COMM EVENT COUNTER ----------------------------------------
+// ---------------------------------------- GET_COMM_EVENT_COUNTER ----------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
 class mbClientRunMessageGetCommEventCounter : public mbClientRunMessageRead
@@ -348,7 +348,7 @@ public:
 
 
 // --------------------------------------------------------------------------------------------------------
-// ------------------------------------------ GET COMM EVENT LOG ------------------------------------------
+// ------------------------------------------ GET_COMM_EVENT_LOG ------------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
 class mbClientRunMessageGetCommEventLog : public mbClientRunMessageRead
@@ -371,7 +371,7 @@ public:
 
 
 // --------------------------------------------------------------------------------------------------------
-// ------------------------------------------- REPORT SERVER ID -------------------------------------------
+// ------------------------------------------- REPORT_SERVER_ID -------------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
 class mbClientRunMessageReportServerID : public mbClientRunMessageRead
@@ -471,6 +471,44 @@ public:
     Modbus::MemoryType memoryType() const override { return Modbus::Memory_Unknown; }
     Modbus::StatusCode getData(uint16_t innerOffset, uint16_t count, void *buff) const override;
     inline void setCount(uint16_t count) { m_count = count; }
+};
+
+
+// --------------------------------------------------------------------------------------------------------
+// ---------------------------- ENCAPSULATED_INTERFACE_TRANSPORT/READ_DEVICE_ID ---------------------------
+// --------------------------------------------------------------------------------------------------------
+
+class mbClientRunMessageReadDeviceId : public mbClientRunMessageRead
+{
+public:
+    explicit mbClientRunMessageReadDeviceId(uint8_t unit, uint8_t deviceId, uint8_t objectId, QObject *parent = nullptr);
+    explicit mbClientRunMessageReadDeviceId(uint8_t deviceId, uint8_t objectId, QObject *parent = nullptr) : mbClientRunMessageReadDeviceId(0, deviceId, objectId, parent) {}
+
+public:
+    uint8_t function() const override { return MBF_ENCAPSULATED_INTERFACE_TRANSPORT; }
+    Modbus::MemoryType memoryType() const override { return Modbus::Memory_Unknown; }
+    inline uint8_t deviceId() const { return m_deviceId; }
+    inline void setDeviceId(uint8_t id) { m_deviceId = id; }
+    inline uint8_t objectId() const { return m_objectId; }
+    inline void setObjectId(uint8_t id) { m_objectId = id; }
+    inline uint8_t dataSize() const { return m_count; }
+    inline void setDataSize(uint8_t v) { m_count = v; }
+    inline uint8_t numberOfObjects() const { return m_numberOfObjects; }
+    inline void setNumberOfObjects(uint8_t count) { m_numberOfObjects = count; }
+    inline uint8_t conformityLevel() const { return m_conformityLevel; }
+    inline void setConformityLevel(uint8_t level) { m_conformityLevel = level; }
+    inline bool moreFollows() const { return m_moreFollows; }
+    inline void setMoreFollows(bool follows) { m_moreFollows = follows; }
+    inline uint8_t nextObjectId() const { return m_nextObjectId; }
+    inline void setNextObjectId(uint8_t id) { m_nextObjectId = id; }
+
+private:
+    uint8_t m_deviceId       ;
+    uint8_t m_objectId       ;
+    uint8_t m_numberOfObjects;
+    uint8_t m_conformityLevel;
+    bool    m_moreFollows    ;
+    uint8_t m_nextObjectId   ;
 };
 
 

@@ -294,6 +294,31 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
             static_cast<mbClientRunMessageReadFIFOQueue*>(m_currentMessage.data())->setCount(count);
     }
         break;
+    case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
+    {
+        // Note: supported only READ_DEVICE_ID sub-function
+        auto m = static_cast<mbClientRunMessageReadDeviceId*>(m_currentMessage.data());
+        uint8_t numberOfObjects, conformityLevel, nextObjectId, dataSize;
+        bool moreFollows;
+        res = m_modbusPort->readDeviceIdentification(m->unit(),
+                                                     m->deviceId(),
+                                                     m->objectId(),
+                                                     &dataSize,
+                                                     m->innerBuffer(),
+                                                     &numberOfObjects,
+                                                     &conformityLevel,
+                                                     &moreFollows,
+                                                     &nextObjectId);
+        if (Modbus::StatusIsGood(res))
+        {
+            m->setDataSize(dataSize);
+            m->setNumberOfObjects(numberOfObjects);
+            m->setConformityLevel(conformityLevel);
+            m->setMoreFollows(moreFollows);
+            m->setNextObjectId(nextObjectId);
+        }
+    }
+        break;
     default:
         return Modbus::Status_Bad;
     }

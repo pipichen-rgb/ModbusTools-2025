@@ -60,6 +60,9 @@ mbClientSendMessageUi::Strings::Strings() :
     writeMaskAddress       (prefix+QStringLiteral("writeMaskAddress")),
     writeMaskAnd           (prefix+QStringLiteral("writeMaskAnd")),
     writeMaskOr            (prefix+QStringLiteral("writeMaskOr")),
+    readDeviceId           (prefix+QStringLiteral("readDeviceId")),
+    readDeviceObjectId     (prefix+QStringLiteral("readDeviceObjectId")),
+    readDeviceFormat       (prefix+QStringLiteral("readDeviceFormat")),
     list                   (prefix+QStringLiteral("list")),
     period                 (prefix+QStringLiteral("period"))
 {
@@ -119,39 +122,6 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
 
     mbClient *core = mbClient::global();
 
-    m_funcNums.append(MBF_READ_COILS                    );
-    m_funcNums.append(MBF_READ_DISCRETE_INPUTS          );
-    m_funcNums.append(MBF_READ_HOLDING_REGISTERS        );
-    m_funcNums.append(MBF_READ_INPUT_REGISTERS          );
-    m_funcNums.append(MBF_WRITE_SINGLE_COIL             );
-    m_funcNums.append(MBF_WRITE_SINGLE_REGISTER         );
-    m_funcNums.append(MBF_READ_EXCEPTION_STATUS         );
-    m_funcNums.append(MBF_DIAGNOSTICS                   );
-    m_funcNums.append(MBF_GET_COMM_EVENT_COUNTER        );
-    m_funcNums.append(MBF_GET_COMM_EVENT_LOG            );
-    m_funcNums.append(MBF_WRITE_MULTIPLE_COILS          );
-    m_funcNums.append(MBF_WRITE_MULTIPLE_REGISTERS      );
-    m_funcNums.append(MBF_REPORT_SERVER_ID              );
-    m_funcNums.append(MBF_MASK_WRITE_REGISTER           );
-    m_funcNums.append(MBF_READ_WRITE_MULTIPLE_REGISTERS );
-    m_funcNums.append(MBF_READ_FIFO_QUEUE               );
-
-    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_QUERY_DATA                     );
-    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RESTART_COMMUNICATIONS_OPTION         );
-    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_DIAGNOSTIC_REGISTER            );
-    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_CHANGE_ASCII_INPUT_DELIMITER          );
-    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_FORCE_LISTEN_ONLY_MODE                );
-    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER);
-    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_BUS_MESSAGE_COUNT              );
-    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_BUS_COMMUNICATION_ERROR_COUNT  );
-    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_BUS_EXCEPTION_ERROR_COUNT      );
-    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_SERVER_MESSAGE_COUNT           );
-    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_SERVER_NO_RESPONSE_COUNT       );
-    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_SERVER_NAK_COUNT               );
-    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_SERVER_BUSY_COUNT              );
-    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_BUS_CHARACTER_OVERRUN_COUNT    );
-    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_CLEAR_OVERRUN_COUNTER_AND_FLAG        );
-
     // -----------------------------------------------------------------------
     // Unit
     sp = ui->spUnit;
@@ -175,6 +145,7 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
         ui->cmbReadDataFormat       ->addItem(s);
         ui->cmbDiagnFormat          ->addItem(s);
         ui->cmbFIFOFormat           ->addItem(s);
+        ui->cmbReadDeviceFormat     ->addItem(s);
     }
     ui->cmbDefaultFormat        ->setCurrentIndex(mb::Dec16);
     ui->cmbRWMultiRegWriteFormat->setCurrentIndex(mb::Dec16);
@@ -182,6 +153,7 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
     ui->cmbReadDataFormat       ->setCurrentIndex(mb::Dec16);
     ui->cmbDiagnFormat          ->setCurrentIndex(mb::Dec16);
     ui->cmbFIFOFormat           ->setCurrentIndex(mb::Dec16);
+    ui->cmbReadDeviceFormat     ->setCurrentIndex(mb::String);
 
     sp = ui->spDefaultCount;
     sp->setMinimum(1);
@@ -231,6 +203,22 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
 
     cmb = ui->cmbFunction;
     connect(cmb, SIGNAL(currentIndexChanged(int)), this, SLOT(setCurrentFuncIndex(int)));
+    m_funcNums.append(MBF_READ_COILS                      );
+    m_funcNums.append(MBF_READ_DISCRETE_INPUTS            );
+    m_funcNums.append(MBF_READ_HOLDING_REGISTERS          );
+    m_funcNums.append(MBF_READ_INPUT_REGISTERS            );
+    m_funcNums.append(MBF_WRITE_SINGLE_COIL               );
+    m_funcNums.append(MBF_WRITE_SINGLE_REGISTER           );
+    m_funcNums.append(MBF_READ_EXCEPTION_STATUS           );
+    m_funcNums.append(MBF_DIAGNOSTICS                     );
+    m_funcNums.append(MBF_GET_COMM_EVENT_COUNTER          );
+    m_funcNums.append(MBF_GET_COMM_EVENT_LOG              );
+    m_funcNums.append(MBF_WRITE_MULTIPLE_COILS            );
+    m_funcNums.append(MBF_WRITE_MULTIPLE_REGISTERS        );
+    m_funcNums.append(MBF_REPORT_SERVER_ID                );
+    m_funcNums.append(MBF_MASK_WRITE_REGISTER             );
+    m_funcNums.append(MBF_READ_WRITE_MULTIPLE_REGISTERS   );
+    m_funcNums.append(MBF_READ_FIFO_QUEUE                 );
     Q_FOREACH (uint8_t funcNum, m_funcNums)
     {
         cmb->addItem(QString("%1 - %2")
@@ -238,10 +226,29 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
                          .arg(mb::ModbusFunctionString(funcNum))
                      );
     }
+    m_funcNums.append(MBF_ENCAPSULATED_INTERFACE_TRANSPORT);
+    cmb->addItem(QString("%1/%2 - ReadDeviceIdentification")
+                    .arg(MBF_ENCAPSULATED_INTERFACE_TRANSPORT, 2, 10, QChar('0'))
+                    .arg(MBF_MEI_READ_DEVICE_ID, 2, 10, QChar('0')));
     cmb->setCurrentIndex(2);
 
     cmb = ui->cmbDiagnSubfunction;
     connect(cmb, SIGNAL(currentIndexChanged(int)), this, SLOT(setCurrentDiagnSubfuncIndex(int)));
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_QUERY_DATA                     );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RESTART_COMMUNICATIONS_OPTION         );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_DIAGNOSTIC_REGISTER            );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_CHANGE_ASCII_INPUT_DELIMITER          );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_FORCE_LISTEN_ONLY_MODE                );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_CLEAR_COUNTERS_AND_DIAGNOSTIC_REGISTER);
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_BUS_MESSAGE_COUNT              );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_BUS_COMMUNICATION_ERROR_COUNT  );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_BUS_EXCEPTION_ERROR_COUNT      );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_SERVER_MESSAGE_COUNT           );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_SERVER_NO_RESPONSE_COUNT       );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_SERVER_NAK_COUNT               );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_SERVER_BUSY_COUNT              );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_BUS_CHARACTER_OVERRUN_COUNT    );
+    m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_CLEAR_OVERRUN_COUNTER_AND_FLAG        );
     Q_FOREACH (auto funcNum, m_diagnSubfuncNums)
     {
         cmb->addItem(QString("%1 - %2")
@@ -261,9 +268,24 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
     //ui->lnGetCommEventLogMessageCount->setText("0");
 
     // Read FIFO queue
-    ui->spFIFOOffset->setMinimum(0x0000);
-    ui->spFIFOOffset->setMaximum(0xFFFF);
-    ui->spFIFOOffset->setValue(0);
+    sp = ui->spFIFOOffset;
+    sp->setMinimum(0x0000);
+    sp->setMaximum(0xFFFF);
+    sp->setValue(0);
+
+    // Read Device Identification
+    sp = ui->spReadDeviceId;
+    sp->setMinimum(0);
+    sp->setMaximum(UINT8_MAX);
+    sp->setValue(1);
+ 
+    sp = ui->spReadDeviceObjectId;
+    sp->setMinimum(0);
+    sp->setMaximum(UINT8_MAX);
+    sp->setValue(0);
+
+    ui->lnReadDeviceConformity->setText("0");
+    ui->lnReadDeviceNextObjectId->setText("0");
 
     connect(mbCore::globalCore(), &mbCore::addressNotationChanged, this, &mbClientSendMessageUi::setModbusAddresNotation);
 
@@ -329,6 +351,9 @@ MBSETTINGS mbClientSendMessageUi::cachedSettings() const
     m[s.writeMaskAddress      ] = getWriteMaskAddress      ();
     m[s.writeMaskAnd          ] = ui->spWriteMaskAnd           ->value      ();
     m[s.writeMaskOr           ] = ui->spWriteMaskOr            ->value      ();
+    m[s.readDeviceId          ] = ui->spReadDeviceId           ->value      ();
+    m[s.readDeviceObjectId    ] = ui->spReadDeviceObjectId     ->value      ();
+    m[s.readDeviceFormat      ] = ui->cmbReadDeviceFormat      ->currentText();
     m[s.list                  ] = this                         ->getListItems();
     m[s.period                ] = ui->spPeriod                 ->value      ();
     m[s.wGeometry             ] = this->saveGeometry();
@@ -364,6 +389,9 @@ void mbClientSendMessageUi::setCachedSettings(const MBSETTINGS &m)
     it = m.find(s.writeMaskAddress      ); if (it != end) setWriteMaskAddress                    (it.value().toInt()   );
     it = m.find(s.writeMaskAnd          ); if (it != end) ui->spWriteMaskAnd    ->setValue       (it.value().toInt()   );
     it = m.find(s.writeMaskOr           ); if (it != end) ui->spWriteMaskOr     ->setValue       (it.value().toInt()   );
+    it = m.find(s.readDeviceId          ); if (it != end) ui->spReadDeviceId    ->setValue       (it.value().toInt()   );
+    it = m.find(s.readDeviceObjectId    ); if (it != end) ui->spReadDeviceObjectId->setValue       (it.value().toInt()   );
+    it = m.find(s.readDeviceFormat      ); if (it != end) ui->cmbReadDeviceFormat->setCurrentText (it.value().toString());
     it = m.find(s.list                  ); if (it != end) this                  ->setListItems   (it.value().toStringList()     );
     it = m.find(s.period                ); if (it != end) ui->spPeriod          ->setValue       (it.value().toInt()   );
     it = m.find(s.wGeometry             ); if (it != end) this                  ->restoreGeometry(it.value().toByteArray());
@@ -980,8 +1008,9 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
     }
         break;
     case MBF_READ_FIFO_QUEUE:
-        return new mbClientRunMessageReadFIFOQueue(params.offset,
-                                                   this);
+        return new mbClientRunMessageReadFIFOQueue(params.offset, this);
+    case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
+        return new mbClientRunMessageReadDeviceId(params.deviceId, params.objectId, this);
     default:
         return nullptr;
     }
@@ -1325,6 +1354,8 @@ void mbClientSendMessageUi::fillForm(const mbClientMessageParams &params)
         ui->spFIFOOffset->setValue(params.offset);
         ui->cmbFIFOFormat->setCurrentText(mb::enumFormatKey(params.format));
         break;
+    case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
+        break;
     default:
         return;
     }
@@ -1546,6 +1577,41 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
         default:
             ls = toStringListNumbers(data, format);
             break;
+        }
+    }
+        break;
+    case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
+    {
+        format = mb::enumFormatValueByIndex(ui->cmbReadDeviceFormat->currentIndex());
+        auto m = reinterpret_cast<mbClientRunMessageReadDeviceId*>(message.data());
+        ui->lnReadDeviceConformity->setText(mb::toDecString(m->conformityLevel()));
+        ui->lnReadDeviceNextObjectId->setText(mb::toDecString(m->nextObjectId()));
+        ui->chbReadDeviceMoreFollows->setChecked(m->moreFollows());
+        ui->tblReadDeviceObjects->clearContents();
+        auto sz = m->dataSize();
+        for (int i = 0, c = 0; i+2 < sz; ++c)
+        {
+            uint8_t objectId = reinterpret_cast<uint8_t*>(m->innerBuffer())[i];
+            uint8_t len = reinterpret_cast<uint8_t*>(m->innerBuffer())[i+1];
+            if (i + 1 + len >= sz)
+                len = sz - i - 2;
+            QByteArray data(reinterpret_cast<char*>(m->innerBuffer()) + i + 2, len);
+            auto v = mb::toVariant(data,
+                                   format,
+                                   Modbus::Memory_0x,
+                                   m_dataParams.swapBytes,
+                                   m_dataParams.registerOrder,
+                                   m_dataParams.byteArrayFormat,
+                                   m_dataParams.stringEncoding,
+                                   m_dataParams.stringLengthType,
+                                   m_dataParams.byteArraySeparator,
+                                   data.count()).toString();
+            ui->tblReadDeviceObjects->insertRow(c);
+            QTableWidgetItem *item0 = new QTableWidgetItem(mb::toHexString(objectId));
+            QTableWidgetItem *item1 = new QTableWidgetItem(v);
+            ui->tblReadDeviceObjects->setItem(c, 0, item0);
+            ui->tblReadDeviceObjects->setItem(c, 1, item1);
+            i += len + 2;
         }
     }
         break;
@@ -1809,6 +1875,9 @@ void mbClientSendMessageUi::setCurrentFuncNum(uint8_t func)
         break;
     case MBF_READ_FIFO_QUEUE:
         ui->swFunctionData->setCurrentWidget(ui->pgFIFO);
+        break;
+    case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
+        ui->swFunctionData->setCurrentWidget(ui->pgReadDeviceId);
         break;
     }
     int i = 0;
