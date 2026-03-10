@@ -112,6 +112,8 @@ Strings::Strings() :
     WriteMultipleCoils                     (QStringLiteral("WriteMultipleCoils")),
     WriteMultipleRegisters                 (QStringLiteral("WriteMultipleRegisters")),
     ReportServerID                         (QStringLiteral("ReportServerID")),
+    ReadFileRecord                         (QStringLiteral("ReadFileRecord")),
+    WriteFileRecord                        (QStringLiteral("WriteFileRecord")),
     MaskWriteRegister                      (QStringLiteral("MaskWriteRegister")),
     ReadWriteMultipleRegisters             (QStringLiteral("ReadWriteMultipleRegisters")),
     ReadFIFOQueue                          (QStringLiteral("ReadFIFOQueue")),
@@ -573,6 +575,8 @@ uint8_t ModbusFunction(const QString &func)
     if (func == s.WriteMultipleCoils        ) return MBF_WRITE_MULTIPLE_COILS         ;
     if (func == s.WriteMultipleRegisters    ) return MBF_WRITE_MULTIPLE_REGISTERS     ;
     if (func == s.ReportServerID            ) return MBF_REPORT_SERVER_ID             ;
+    if (func == s.ReadFileRecord            ) return MBF_READ_FILE_RECORD             ;
+    if (func == s.WriteFileRecord           ) return MBF_WRITE_FILE_RECORD            ;
     if (func == s.MaskWriteRegister         ) return MBF_MASK_WRITE_REGISTER          ;
     if (func == s.ReadWriteMultipleRegisters) return MBF_READ_WRITE_MULTIPLE_REGISTERS;
     if (func == s.ReadFIFOQueue             ) return MBF_READ_FIFO_QUEUE              ;
@@ -597,6 +601,8 @@ QString ModbusFunctionString(uint8_t func)
     case MBF_WRITE_MULTIPLE_COILS         : return s.WriteMultipleCoils        ;
     case MBF_WRITE_MULTIPLE_REGISTERS     : return s.WriteMultipleRegisters    ;
     case MBF_REPORT_SERVER_ID             : return s.ReportServerID            ;
+    case MBF_READ_FILE_RECORD             : return s.ReadFileRecord            ;
+    case MBF_WRITE_FILE_RECORD            : return s.WriteFileRecord           ;
     case MBF_MASK_WRITE_REGISTER          : return s.MaskWriteRegister         ;
     case MBF_READ_WRITE_MULTIPLE_REGISTERS: return s.ReadWriteMultipleRegisters;
     case MBF_READ_FIFO_QUEUE              : return s.ReadFIFOQueue             ;

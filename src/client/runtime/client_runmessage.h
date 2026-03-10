@@ -186,6 +186,21 @@ public:
 
 
 // --------------------------------------------------------------------------------------------------------
+// ----------------------------------------- File Record Messages -----------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+class mbClientRunMessageFileRecord : public mbClientRunMessage
+{
+public:
+    mbClientRunMessageFileRecord(uint8_t unit, uint16_t count, QObject *parent = nullptr);
+    mbClientRunMessageFileRecord(uint16_t count, QObject *parent = nullptr) : mbClientRunMessage(0, count, parent){}
+
+public:
+    inline Modbus::FileRecord *fileRecords() { return reinterpret_cast<Modbus::FileRecord*>(innerBuffer()); }
+    inline void *fileData() { return &reinterpret_cast<Modbus::FileRecord*>(innerBuffer())[m_count]; }
+};
+
+// --------------------------------------------------------------------------------------------------------
 // ---------------------------------------------- READ_COILS ----------------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
@@ -371,24 +386,6 @@ public:
 
 
 // --------------------------------------------------------------------------------------------------------
-// ------------------------------------------- REPORT_SERVER_ID -------------------------------------------
-// --------------------------------------------------------------------------------------------------------
-
-class mbClientRunMessageReportServerID : public mbClientRunMessageRead
-{
-public:
-    explicit mbClientRunMessageReportServerID(uint8_t unit, QObject *parent = nullptr) : mbClientRunMessageRead(unit, 0, 0, 0, parent) {}
-    explicit mbClientRunMessageReportServerID(QObject *parent = nullptr) : mbClientRunMessageReportServerID(0, parent) {}
-
-public:
-    uint8_t function() const override { return MBF_REPORT_SERVER_ID; }
-    Modbus::MemoryType memoryType() const override { return Modbus::Memory_Unknown; }
-    Modbus::StatusCode getData(uint16_t innerOffset, uint16_t count, void *buff) const override;
-    inline void setCount(uint16_t count) { m_count = count; }
-};
-
-
-// --------------------------------------------------------------------------------------------------------
 // ----------------------------------------- WRITE_MULTIPLE_COILS -----------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
@@ -419,6 +416,50 @@ public:
     Modbus::MemoryType memoryType() const override { return Modbus::Memory_4x; }
     Modbus::StatusCode getData(uint16_t innerOffset, uint16_t count, void *buff) const override;
     Modbus::StatusCode setData(uint16_t innerOffset, uint16_t count, const void *buff) override;
+};
+
+// --------------------------------------------------------------------------------------------------------
+// ------------------------------------------- REPORT_SERVER_ID -------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+class mbClientRunMessageReportServerID : public mbClientRunMessageRead
+{
+public:
+    explicit mbClientRunMessageReportServerID(uint8_t unit, QObject *parent = nullptr) : mbClientRunMessageRead(unit, 0, 0, 0, parent) {}
+    explicit mbClientRunMessageReportServerID(QObject *parent = nullptr) : mbClientRunMessageReportServerID(0, parent) {}
+
+public:
+    uint8_t function() const override { return MBF_REPORT_SERVER_ID; }
+    Modbus::MemoryType memoryType() const override { return Modbus::Memory_Unknown; }
+    Modbus::StatusCode getData(uint16_t innerOffset, uint16_t count, void *buff) const override;
+    inline void setCount(uint16_t count) { m_count = count; }
+};
+
+
+// --------------------------------------------------------------------------------------------------------
+// ------------------------------------------- READ_FILE_RECORD -------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+class mbClientRunMessageReadFileRecord : public mbClientRunMessageFileRecord
+{
+public:
+    using mbClientRunMessageFileRecord::mbClientRunMessageFileRecord;
+
+public:
+    uint8_t function() const override { return MBF_READ_FILE_RECORD; }
+};
+
+// --------------------------------------------------------------------------------------------------------
+// ------------------------------------------- WRITE_FILE_RECORD ------------------------------------------
+// --------------------------------------------------------------------------------------------------------
+
+class mbClientRunMessageWriteFileRecord : public mbClientRunMessageFileRecord
+{
+public:
+    using mbClientRunMessageFileRecord::mbClientRunMessageFileRecord;
+
+public:
+    uint8_t function() const override { return MBF_WRITE_FILE_RECORD; }
 };
 
 // --------------------------------------------------------------------------------------------------------

@@ -17,12 +17,12 @@ mbClientSendMessageListModel::~mbClientSendMessageListModel()
     qDeleteAll(m_items);
 }
 
-int mbClientSendMessageListModel::columnCount(const QModelIndex &parent) const
+int mbClientSendMessageListModel::columnCount(const QModelIndex &/*parent*/) const
 {
     return ColumnCount;
 }
 
-int mbClientSendMessageListModel::rowCount(const QModelIndex &parent) const
+int mbClientSendMessageListModel::rowCount(const QModelIndex &/*parent*/) const
 {
     return m_items.count();
 }

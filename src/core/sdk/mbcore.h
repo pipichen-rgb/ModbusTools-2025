@@ -460,6 +460,8 @@ struct MB_EXPORT Strings
     const QString WriteMultipleCoils                     ;
     const QString WriteMultipleRegisters                 ;
     const QString ReportServerID                         ;
+    const QString ReadFileRecord                         ;
+    const QString WriteFileRecord                        ;
     const QString MaskWriteRegister                      ;
     const QString ReadWriteMultipleRegisters             ;
     const QString ReadFIFOQueue                          ;

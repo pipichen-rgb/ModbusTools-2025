@@ -38,6 +38,7 @@
 #include <gui/client_ui.h>
 #include <gui/dialogs/client_dialogs.h>
 
+#include "client_sendmessagefilerecordmodel.h"
 #include "client_sendmessagelistmodel.h"
 
 mbClientSendMessageUi::Strings::Strings() :
@@ -144,6 +145,7 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
         ui->cmbRWMultiRegReadFormat ->addItem(s);
         ui->cmbReadDataFormat       ->addItem(s);
         ui->cmbDiagnFormat          ->addItem(s);
+        ui->cmbFileRecordDataFormat ->addItem(s);
         ui->cmbFIFOFormat           ->addItem(s);
         ui->cmbReadDeviceFormat     ->addItem(s);
     }
@@ -152,6 +154,7 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
     ui->cmbRWMultiRegReadFormat ->setCurrentIndex(mb::Dec16);
     ui->cmbReadDataFormat       ->setCurrentIndex(mb::Dec16);
     ui->cmbDiagnFormat          ->setCurrentIndex(mb::Dec16);
+    ui->cmbFileRecordDataFormat ->setCurrentIndex(mb::Dec16);
     ui->cmbFIFOFormat           ->setCurrentIndex(mb::Dec16);
     ui->cmbReadDeviceFormat     ->setCurrentIndex(mb::String);
 
@@ -216,6 +219,8 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
     m_funcNums.append(MBF_WRITE_MULTIPLE_COILS            );
     m_funcNums.append(MBF_WRITE_MULTIPLE_REGISTERS        );
     m_funcNums.append(MBF_REPORT_SERVER_ID                );
+    m_funcNums.append(MBF_READ_FILE_RECORD                );
+    m_funcNums.append(MBF_WRITE_FILE_RECORD               );
     m_funcNums.append(MBF_MASK_WRITE_REGISTER             );
     m_funcNums.append(MBF_READ_WRITE_MULTIPLE_REGISTERS   );
     m_funcNums.append(MBF_READ_FIFO_QUEUE                 );
@@ -267,6 +272,16 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
     //ui->lnGetCommEventLogEventCount->setText("0");
     //ui->lnGetCommEventLogMessageCount->setText("0");
 
+    // Read/Write File Records
+    m_fileRecordModel = new mbClientSendMessageFileRecordModel(this);
+    ui->tblFileRecords->setModel(m_fileRecordModel);
+
+    connect(ui->btnFileRecordAdd     , &QPushButton::clicked, this, &mbClientSendMessageUi::slotFileRecordAdd     );
+    connect(ui->btnFileRecordDelete  , &QPushButton::clicked, this, &mbClientSendMessageUi::slotFileRecordDelete  );
+    connect(ui->btnFileRecordMoveUp  , &QPushButton::clicked, this, &mbClientSendMessageUi::slotFileRecordMoveUp  );
+    connect(ui->btnFileRecordMoveDown, &QPushButton::clicked, this, &mbClientSendMessageUi::slotFileRecordMoveDown);
+    connect(ui->btnFileRecordClear   , &QPushButton::clicked, this, &mbClientSendMessageUi::slotFileRecordClear   );
+
     // Read FIFO queue
     sp = ui->spFIFOOffset;
     sp->setMinimum(0x0000);
@@ -298,6 +313,7 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
     connect(ui->rdPortUnit, &QRadioButton::clicked, this, [this]() {
         this->setSendTo(SendToPortUnit);
     });
+
 
     connect(ui->btnListShowHide, &QPushButton::clicked, this, &mbClientSendMessageUi::slotListShowHide);
     connect(ui->btnListInsert  , &QPushButton::clicked, this, &mbClientSendMessageUi::slotListInsert  );
@@ -488,6 +504,34 @@ void mbClientSendMessageUi::setRunStatus(int status)
 {
     if (status == mbClient::Stopped)
         slotStop();
+}
+
+void mbClientSendMessageUi::slotFileRecordAdd()
+{
+    int i = currentFileRecordIndex();
+    m_fileRecordModel->insertRecord(i);
+}
+
+void mbClientSendMessageUi::slotFileRecordDelete()
+{
+    int i = currentFileRecordIndex();
+    m_fileRecordModel->removeRecord(i);
+}
+
+void mbClientSendMessageUi::slotFileRecordMoveUp()
+{
+    int i = currentFileRecordIndex();
+    m_fileRecordModel->moveUp(i);
+}
+
+void mbClientSendMessageUi::slotFileRecordMoveDown()
+{
+    int i = currentFileRecordIndex();
+    m_fileRecordModel->moveDown(i);
+}
+void mbClientSendMessageUi::slotFileRecordClear()
+{
+    m_fileRecordModel->clear();
 }
 
 void mbClientSendMessageUi::slotListShowHide()
@@ -691,6 +735,14 @@ void mbClientSendMessageUi::timerEvent(QTimerEvent */*event*/)
         }
         this->sendMessage();
     }
+}
+
+int mbClientSendMessageUi::currentFileRecordIndex() const
+{
+    auto indexes = ui->tblFileRecords->selectionModel()->selectedIndexes();
+    if (indexes.count())
+        return indexes.first().row();
+    return -1;
 }
 
 QStringList mbClientSendMessageUi::getListItems() const
@@ -957,6 +1009,10 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
         break;
     case MBF_REPORT_SERVER_ID:
        return new mbClientRunMessageReportServerID(this);
+    case MBF_READ_FILE_RECORD:
+        return nullptr; //new mbClientRunMessageReportServerID(this);
+    case MBF_WRITE_FILE_RECORD:
+        return nullptr; //new mbClientRunMessageReportServerID(this);
     case MBF_MASK_WRITE_REGISTER:
     {
         msg = new mbClientRunMessageMaskWriteRegister(params.offset, this);
@@ -1081,6 +1137,10 @@ void mbClientSendMessageUi::prepareToSend(mbClientRunMessage *msg)
         ui->lnGetCommEventLogEventCount->clear();
         ui->lnGetCommEventLogMessageCount->clear();
         ui->tblEventLog->clearContents();
+        break;
+    case MBF_READ_FILE_RECORD:
+        break;
+    case MBF_WRITE_FILE_RECORD:
         break;
     case MBF_READ_WRITE_MULTIPLE_REGISTERS:
         ui->txtRWMultiRegReadData->clear();
@@ -1277,6 +1337,10 @@ void mbClientSendMessageUi::fillParams(mbClientMessageParams &params)
         break;
     case MBF_REPORT_SERVER_ID:
         break;
+    case MBF_READ_FILE_RECORD:
+        break;
+    case MBF_WRITE_FILE_RECORD:
+        break;
     case MBF_MASK_WRITE_REGISTER:
         params.offset = getWriteMaskOffset();
         params.format = mb::Hex16; //mb::enumFormatValueByIndex(ui->cmbWriteMaskFormat->currentIndex());
@@ -1339,6 +1403,10 @@ void mbClientSendMessageUi::fillForm(const mbClientMessageParams &params)
         ui->spDefaultCount->setValue(params.count);
         ui->cmbDefaultFormat->setCurrentText(mb::enumFormatKey(params.format));
         ui->txtDefaultData->setPlainText(params.data);
+        break;
+    case MBF_READ_FILE_RECORD:
+        break;
+    case MBF_WRITE_FILE_RECORD:
         break;
     case MBF_MASK_WRITE_REGISTER:
     {
@@ -1559,6 +1627,10 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
         }
     }
         break;
+    case MBF_READ_FILE_RECORD:
+        return;
+    case MBF_WRITE_FILE_RECORD:
+        return;
     case MBF_READ_FIFO_QUEUE:
     {
         uint16_t count = message->count();
@@ -1871,6 +1943,12 @@ void mbClientSendMessageUi::setCurrentFuncNum(uint8_t func)
         m_defaultAddress->setEnabledAddress(true);
         ui->spDefaultCount->setEnabled(true);
         ui->txtDefaultData->setReadOnly(false);
+        break;
+    case MBF_READ_FILE_RECORD:
+        ui->swFunctionData->setCurrentWidget(ui->pgFileRecords);
+        break;
+    case MBF_WRITE_FILE_RECORD:
+        ui->swFunctionData->setCurrentWidget(ui->pgFileRecords);
         break;
     case MBF_MASK_WRITE_REGISTER:
         ui->swFunctionData->setCurrentWidget(ui->pgWriteMask);

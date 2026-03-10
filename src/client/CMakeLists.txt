@@ -40,6 +40,7 @@ set(MBTOOLS_HEADERS
     gui/statistics/client_portstatisticsui.h
     gui/statistics/client_devicestatisticsui.h
     gui/statistics/client_statisticsmanager.h
+    gui/sendmessage/client_sendmessagefilerecordmodel.h
     gui/sendmessage/client_sendmessagelistmodel.h
     gui/sendmessage/client_sendmessageui.h
     gui/sendbytes/client_sendbyteslistmodel.h
@@ -87,6 +88,7 @@ set(MBTOOLS_SOURCES
     gui/statistics/client_portstatisticsui.cpp
     gui/statistics/client_devicestatisticsui.cpp
     gui/statistics/client_statisticsmanager.cpp
+    gui/sendmessage/client_sendmessagefilerecordmodel.cpp
     gui/sendmessage/client_sendmessagelistmodel.cpp
     gui/sendmessage/client_sendmessageui.cpp
     gui/sendbytes/client_sendbyteslistmodel.cpp

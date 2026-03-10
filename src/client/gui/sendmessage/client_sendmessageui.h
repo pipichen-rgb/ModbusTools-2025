@@ -34,6 +34,7 @@ class mbCoreAddressWidget;
 class mbClientProject;
 class mbClientPort;
 class mbClientDevice;
+class mbClientSendMessageFileRecordModel;
 class mbClientSendMessageListModel;
 
 namespace Ui {
@@ -111,6 +112,13 @@ private Q_SLOTS:
     void setCurrentDiagnSubfuncIndex(int funcIndex);
     void setRunStatus(int status);
 
+private Q_SLOTS: // file records
+    void slotFileRecordAdd     ();
+    void slotFileRecordDelete  ();
+    void slotFileRecordMoveUp  ();
+    void slotFileRecordMoveDown();
+    void slotFileRecordClear   ();
+
 private Q_SLOTS: // list
     void slotListShowHide();
     void slotListInsert  ();
@@ -139,6 +147,9 @@ private:
     void timerEvent(QTimerEvent *event) override;
 
 private:
+    int currentFileRecordIndex() const;
+
+    private:
     QStringList getListItems() const;
     void setListItems(const QStringList& list);
     int currentListIndex() const;
@@ -225,6 +236,7 @@ private:
     mbClientPort *m_port;
     uint8_t m_unit;
     mbClientDevice *m_device;
+    mbClientSendMessageFileRecordModel *m_fileRecordModel;
     mbClientSendMessageListModel *m_list;
     QList<mbClientRunMessagePtr> m_messageList;
     int m_messageIndex;
