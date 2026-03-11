@@ -2,11 +2,21 @@
 
 struct mbClientSendMessageFileRecordModel::Item
 {
-    uint16_t file;
-    uint16_t record;
-    uint16_t length;
+    Modbus::FileRecord file;
     QByteArray data;
     QString cache;
+
+    QByteArray getData() const
+    {
+        auto expectedSize = file.recordLength*2;
+        if (data.length() != expectedSize)
+        {
+            QByteArray b = data;
+            b.resize(expectedSize);
+            return b;
+        }
+        return data;
+    }
 };
 
 mbClientSendMessageFileRecordModel::mbClientSendMessageFileRecordModel(QObject *parent)
@@ -71,11 +81,11 @@ QVariant mbClientSendMessageFileRecordModel::data(const QModelIndex &index, int 
             switch (index.column())
             {
             case Column_File:
-                return mb::toHexString(item->file);
+                return mb::toHexString(item->file.fileNumber);
             case Column_Record:
-                return mb::toHexString(item->record);
+                return mb::toHexString(item->file.recordNumber);
             case Column_Length:
-                return item->length;
+                return item->file.recordLength;
             case Column_Data:
                 return item->cache;
             }
@@ -98,13 +108,13 @@ bool mbClientSendMessageFileRecordModel::setData(const QModelIndex &index, const
             switch (index.column())
             {
             case Column_File:
-                item->file = value.toString().toUShort(nullptr, 16);
+                item->file.fileNumber = value.toString().toUShort(nullptr, 16);
                 break;
             case Column_Record:
-                item->record = value.toString().toUShort(nullptr, 16);
+                item->file.recordNumber = value.toString().toUShort(nullptr, 16);
                 break;
             case Column_Length:
-                item->length = value.toUInt();
+                item->file.recordLength = value.toUInt();
                 break;
             case Column_Data:
                 item->data = value.toByteArray();
@@ -128,22 +138,59 @@ bool mbClientSendMessageFileRecordModel::setData(const QModelIndex &index, const
     return false;
 }
 
+void mbClientSendMessageFileRecordModel::fillParams(mbClientMessageParams &params, bool useData)
+{
+    params.fileRecords.resize(m_items.count());
+    int i = 0;
+    QVariantList ls;
+    Q_FOREACH(const auto &item, m_items)
+    {
+        params.fileRecords[i] = item->file;
+        if (useData)
+            ls.append(item->getData());
+        ++i;
+    }
+    params.data = ls;
+}
+
+void mbClientSendMessageFileRecordModel::setParams(const mbClientMessageParams &params)
+{
+    beginResetModel();
+
+    qDeleteAll(m_items);
+    m_items.clear();
+
+    QVariantList ls = params.data.toList();
+    for (int i = 0; i < params.fileRecords.count(); ++i)
+    {
+        Item *item = new Item;
+        item->file = params.fileRecords.at(i);
+        if (i < ls.count())
+            setItemDataInner(item, ls.at(i).toByteArray());
+        m_items.append(item);
+    }
+    endResetModel();
+}
+
+void mbClientSendMessageFileRecordModel::setRecordData(const QList<QByteArray> &dataList)
+{
+    if (m_items.count() == dataList.count())
+    {
+        for (int i = 0; i < m_items.count(); ++i)
+        {
+            setItemDataInner(m_items.at(i), dataList.at(i));
+        }
+        Q_EMIT dataChanged(index(0, Column_Data), index(m_items.count()-1, Column_Data));
+    }
+}
+
 void mbClientSendMessageFileRecordModel::setFormat(mb::Format format)
 {
     if (m_format != format)
     {
         m_format = format;
         for (Item *item : std::as_const(m_items))
-            item->cache = mb::toVariant(item->data,
-                                        format,
-                                        Modbus::Memory_0x,
-                                        mb::SwapNo,
-                                        mb::R0R1R2R3,
-                                        mb::DefaultDigitalFormat,
-                                        "UTF-8",
-                                        mb::DefaultStringLengthType,
-                                        " ",
-                                        item->data.count()).toString();
+            setItemDataInner(item, item->data);
         Q_EMIT dataChanged(index(0, Column_Data), index(m_items.count()-1, Column_Data));
     }
 }
@@ -153,9 +200,9 @@ void mbClientSendMessageFileRecordModel::insertRecord(int i)
     if (i < 0 || i > m_items.count())
         i = m_items.count();
     Item *item = new Item;
-    item->file = 0;
-    item->record = 0;
-    item->length = 1;
+    item->file.fileNumber = 0;
+    item->file.recordNumber = 0;
+    item->file.recordLength = 1;
     beginInsertRows(QModelIndex(), i, i);
     m_items.insert(i, item);
     endInsertRows();
@@ -209,4 +256,19 @@ bool mbClientSendMessageFileRecordModel::moveTo(int oldPos, int newPos)
         return true;
     }
     return false;
+}
+
+void mbClientSendMessageFileRecordModel::setItemDataInner(Item *item, const QByteArray &data)
+{
+    item->data = data;
+    item->cache = mb::toVariant(item->data,
+                                m_format,
+                                Modbus::Memory_0x,
+                                mb::SwapNo,
+                                mb::R0R1R2R3,
+                                mb::DefaultDigitalFormat,
+                                "UTF-8",
+                                mb::DefaultStringLengthType,
+                                " ",
+                                item->data.count()).toString();
 }

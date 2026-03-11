@@ -840,7 +840,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
         {
         case mb::Bool:
         {
-            QStringList ls = dataToStringList(params.data);
+            QStringList ls = dataToStringList(params.data.toString());
             data = fromStringListBits(ls);
         }
             break;
@@ -859,7 +859,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
             break;
         default:
         {
-            QStringList ls = dataToStringList(params.data);
+            QStringList ls = dataToStringList(params.data.toString());
             data = fromStringListNumbers(ls, params.format);
         }
             break;
@@ -876,7 +876,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
             {
             case mb::Bool:
             {
-                QStringList ls = dataToStringList(params.data);
+                QStringList ls = dataToStringList(params.data.toString());
                 data = fromStringListBits(ls);
             }
                 break;
@@ -895,7 +895,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
                 break;
             default:
             {
-                QStringList ls = dataToStringList(params.data);
+                QStringList ls = dataToStringList(params.data.toString());
                 data = fromStringListNumbers(ls, params.format);
             }
                 break;
@@ -908,10 +908,12 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
                 data = QByteArray("\0\0", 2);
             break;
         case MBF_DIAGNOSTICS_CHANGE_ASCII_INPUT_DELIMITER:
-            if (params.data.length())
+        {
+            QString s = params.data.toString();
+            if (s.length())
             {
                 char d[2];
-                d[0] = params.data.front().toLatin1();
+                d[0] = s.front().toLatin1();
                 d[1] = '\0';
                 data = QByteArray(d, 2);
             }
@@ -919,6 +921,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
             {
                 data = QByteArray("\0\0", 2);
             }
+        }
             break;
         default:
             data = QByteArray("\0\0", 2);
@@ -939,7 +942,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
         {
         case mb::Bool:
         {
-            QStringList ls = dataToStringList(params.data);
+            QStringList ls = dataToStringList(params.data.toString());
             data = fromStringListBits(ls);
             c = ls.count();
         }
@@ -960,7 +963,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
             break;
         default:
         {
-            QStringList ls = dataToStringList(params.data);
+            QStringList ls = dataToStringList(params.data.toString());
             data = fromStringListNumbers(ls, params.format);
             c = data.count() * 8;
         }
@@ -978,7 +981,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
         {
         case mb::Bool:
         {
-            QStringList ls = dataToStringList(params.data);
+            QStringList ls = dataToStringList(params.data.toString());
             data = fromStringListBits(ls);
         }
         break;
@@ -997,7 +1000,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
             break;
         default:
         {
-            QStringList ls = dataToStringList(params.data);
+            QStringList ls = dataToStringList(params.data.toString());
             data = fromStringListNumbers(ls, params.format);
         }
             break;
@@ -1008,11 +1011,27 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
     }
         break;
     case MBF_REPORT_SERVER_ID:
-       return new mbClientRunMessageReportServerID(this);
+        return new mbClientRunMessageReportServerID(this);
     case MBF_READ_FILE_RECORD:
-        return nullptr; //new mbClientRunMessageReportServerID(this);
+    {
+        auto *m = new mbClientRunMessageReadFileRecord(params.fileRecords.count(), this);
+        memcpy(m->fileRecords(), params.fileRecords.constData(), params.fileRecords.count()*sizeof(Modbus::FileRecord));
+        return m;
+    }
     case MBF_WRITE_FILE_RECORD:
-        return nullptr; //new mbClientRunMessageReportServerID(this);
+    {
+        auto *m = new mbClientRunMessageWriteFileRecord(params.fileRecords.count(), this);
+        memcpy(m->fileRecords(), params.fileRecords.constData(), params.fileRecords.count()*sizeof(Modbus::FileRecord));
+        auto ls = params.data.toList();
+        uint8_t sz = 0;
+        Q_FOREACH (const auto& v, ls)
+        {
+            auto b = v.toByteArray();
+            memcpy(reinterpret_cast<uint8_t*>(m->fileData())+sz, b.constData(), b.length());
+            sz += b.length();
+        }
+        return m;
+    }
     case MBF_MASK_WRITE_REGISTER:
     {
         msg = new mbClientRunMessageMaskWriteRegister(params.offset, this);
@@ -1034,7 +1053,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
         {
         case mb::Bool:
         {
-            QStringList ls = dataToStringList(params.data);
+            QStringList ls = dataToStringList(params.data.toString());
             data = fromStringListBits(ls);
         }
         break;
@@ -1053,7 +1072,7 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
             break;
         default:
         {
-            QStringList ls = dataToStringList(params.data);
+            QStringList ls = dataToStringList(params.data.toString());
             data = fromStringListNumbers(ls, params.format);
         }
             break;
@@ -1338,8 +1357,8 @@ void mbClientSendMessageUi::fillParams(mbClientMessageParams &params)
     case MBF_REPORT_SERVER_ID:
         break;
     case MBF_READ_FILE_RECORD:
-        break;
     case MBF_WRITE_FILE_RECORD:
+        m_fileRecordModel->fillParams(params);
         break;
     case MBF_MASK_WRITE_REGISTER:
         params.offset = getWriteMaskOffset();
@@ -1386,7 +1405,7 @@ void mbClientSendMessageUi::fillForm(const mbClientMessageParams &params)
     case MBF_WRITE_SINGLE_REGISTER:
         setDefaultOffset(params.offset);
         ui->cmbDefaultFormat->setCurrentText(mb::enumFormatKey(params.format));
-        ui->txtDefaultData->setPlainText(params.data);
+        ui->txtDefaultData->setPlainText(params.data.toString());
         break;
     case MBF_READ_EXCEPTION_STATUS:
     case MBF_REPORT_SERVER_ID:
@@ -1395,18 +1414,18 @@ void mbClientSendMessageUi::fillForm(const mbClientMessageParams &params)
     case MBF_DIAGNOSTICS:
         setCurrentDiagnSubfuncNum(params.subfunc);
         ui->cmbDiagnFormat->setCurrentText(mb::enumFormatKey(params.format));
-        ui->txtDiagnRequest->setPlainText(params.data);
+        ui->txtDiagnRequest->setPlainText(params.data.toString());
         break;
     case MBF_WRITE_MULTIPLE_COILS:
     case MBF_WRITE_MULTIPLE_REGISTERS:
         setDefaultOffset(params.offset);
         ui->spDefaultCount->setValue(params.count);
         ui->cmbDefaultFormat->setCurrentText(mb::enumFormatKey(params.format));
-        ui->txtDefaultData->setPlainText(params.data);
+        ui->txtDefaultData->setPlainText(params.data.toString());
         break;
     case MBF_READ_FILE_RECORD:
-        break;
     case MBF_WRITE_FILE_RECORD:
+        m_fileRecordModel->setParams(params);
         break;
     case MBF_MASK_WRITE_REGISTER:
     {
@@ -1422,7 +1441,7 @@ void mbClientSendMessageUi::fillForm(const mbClientMessageParams &params)
         setRWMultiRegWriteOffset(params.writeOffset);
         ui->spRWMultiRegWriteCount->setValue(params.writeCount);
         ui->cmbRWMultiRegWriteFormat->setCurrentText(mb::enumFormatKey(params.writeFormat));
-        ui->txtRWMultiRegWriteData->setPlainText(params.data);
+        ui->txtRWMultiRegWriteData->setPlainText(params.data.toString());
         break;
     case MBF_READ_FIFO_QUEUE:
         ui->spFIFOOffset->setValue(params.offset);
@@ -1628,8 +1647,22 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
     }
         break;
     case MBF_READ_FILE_RECORD:
-        return;
-    case MBF_WRITE_FILE_RECORD:
+    {
+        auto *m = static_cast<mbClientRunMessageFileRecord*>(message.data());
+        auto dataSize = m->dataSize();
+        auto count = m->count();
+        QList<QByteArray> ls;
+        for (int i = 0, j = 0; i < count; ++i)
+        {
+            const Modbus::FileRecord& f = m->fileRecords()[i];
+            if (f.recordLength > dataSize-j)
+                return;
+            QByteArray b(reinterpret_cast<char*>(m->fileData())+j, f.recordLength);
+            ls.append(b);
+            j += f.recordLength;
+        }
+        m_fileRecordModel->setRecordData(ls);
+    }
         return;
     case MBF_READ_FIFO_QUEUE:
     {

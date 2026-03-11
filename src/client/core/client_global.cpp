@@ -44,7 +44,7 @@ QString saveClientMessageParams(const mbClientMessageParams &params, bool useFun
     case MBF_WRITE_SINGLE_COIL:
     case MBF_WRITE_SINGLE_REGISTER:
         if (useData)
-            res = QString("offset=%1;format=%2;data=%3").arg(params.offset).arg(mb::enumFormatKey(params.format), params.data);
+            res = QString("offset=%1;format=%2;data=%3").arg(params.offset).arg(mb::enumFormatKey(params.format), params.data.toString());
         else
             res = QString("offset=%1").arg(params.offset);
         break;
@@ -55,7 +55,7 @@ QString saveClientMessageParams(const mbClientMessageParams &params, bool useFun
         break;
     case MBF_DIAGNOSTICS:
         if (useData)
-            res = QString("subfunc=%1;format=%2;data=%3").arg(params.subfunc).arg(mb::enumFormatKey(params.format), params.data);
+            res = QString("subfunc=%1;format=%2;data=%3").arg(params.subfunc).arg(mb::enumFormatKey(params.format), params.data.toString());
         else
             res = QString("subfunc=%1").arg(params.subfunc);
         break;
@@ -63,7 +63,7 @@ QString saveClientMessageParams(const mbClientMessageParams &params, bool useFun
     case MBF_WRITE_MULTIPLE_REGISTERS:
         if (useData)
             res = QString("offset=%1;count=%2;format=%3;data=%4")
-                  .arg(params.offset).arg(params.count).arg(mb::enumFormatKey(params.format), params.data);
+                  .arg(params.offset).arg(params.count).arg(mb::enumFormatKey(params.format), params.data.toString());
         else
             res = QString("offset=%1;count=%2")
                   .arg(params.offset).arg(params.count);
@@ -79,7 +79,7 @@ QString saveClientMessageParams(const mbClientMessageParams &params, bool useFun
                    .arg(mb::enumFormatKey(params.format))
                    .arg(params.writeOffset)
                    .arg(params.writeCount)
-                   .arg(mb::enumFormatKey(params.writeFormat), params.data);
+                   .arg(mb::enumFormatKey(params.writeFormat), params.data.toString());
         else
             res += QString("readoffset=%1;readcount=%2;writeoffset=%3;writecount=%5")
                        .arg(params.offset)

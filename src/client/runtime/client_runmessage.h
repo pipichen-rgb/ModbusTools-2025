@@ -193,11 +193,16 @@ class mbClientRunMessageFileRecord : public mbClientRunMessage
 {
 public:
     mbClientRunMessageFileRecord(uint8_t unit, uint16_t count, QObject *parent = nullptr);
-    mbClientRunMessageFileRecord(uint16_t count, QObject *parent = nullptr) : mbClientRunMessage(0, count, parent){}
+    mbClientRunMessageFileRecord(uint16_t count, QObject *parent = nullptr) : mbClientRunMessageFileRecord(0, count, parent){}
+
+public:
+    Modbus::MemoryType memoryType() const override { return Modbus::Memory_Unknown; }
 
 public:
     inline Modbus::FileRecord *fileRecords() { return reinterpret_cast<Modbus::FileRecord*>(innerBuffer()); }
     inline void *fileData() { return &reinterpret_cast<Modbus::FileRecord*>(innerBuffer())[m_count]; }
+    inline uint8_t dataSize() const { return static_cast<uint8_t>(m_maxCount); }
+    inline void setDataSize(uint8_t sz) { m_maxCount = sz; }
 };
 
 // --------------------------------------------------------------------------------------------------------

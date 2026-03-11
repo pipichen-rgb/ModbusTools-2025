@@ -29,6 +29,11 @@ public: // QAbstractItemModel interface
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
 public:
+    void fillParams(mbClientMessageParams &params, bool useData = true);
+    void setParams(const mbClientMessageParams &params);
+    void setRecordData(const QList<QByteArray>& dataList);
+
+public:
     inline mb::Format format() const { return m_format; }
     void setFormat(mb::Format format);
     void insertRecord(int i);
@@ -40,6 +45,7 @@ public:
 private:
     struct Item;
     bool moveTo(int oldPos, int newPos);
+    void setItemDataInner(Item *item, const QByteArray &data);
 
 private:
     QList<Item*> m_items;

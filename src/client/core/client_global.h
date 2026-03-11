@@ -79,7 +79,8 @@ struct mbClientMessageParams
     };
 
     mb::Format writeFormat;
-    QString data;
+    QVector<Modbus::FileRecord> fileRecords;
+    QVariant data;
 
 };
 Q_DECLARE_METATYPE(mbClientMessageParams)
