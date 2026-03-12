@@ -273,7 +273,7 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
     //ui->lnGetCommEventLogMessageCount->setText("0");
 
     // Read/Write File Records
-    m_fileRecordModel = new mbClientSendMessageFileRecordModel(this);
+    m_fileRecordModel = new mbClientSendMessageFileRecordsModel(this);
     ui->tblFileRecords->setModel(m_fileRecordModel);
 
     connect(ui->btnFileRecordAdd     , &QPushButton::clicked, this, &mbClientSendMessageUi::slotFileRecordAdd     );

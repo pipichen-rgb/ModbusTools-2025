@@ -34,7 +34,7 @@ class mbCoreAddressWidget;
 class mbClientProject;
 class mbClientPort;
 class mbClientDevice;
-class mbClientSendMessageFileRecordModel;
+class mbClientSendMessageFileRecordsModel;
 class mbClientSendMessageListModel;
 
 namespace Ui {
@@ -149,7 +149,7 @@ private:
 private:
     int currentFileRecordIndex() const;
 
-    private:
+private:
     QStringList getListItems() const;
     void setListItems(const QStringList& list);
     int currentListIndex() const;
@@ -236,7 +236,7 @@ private:
     mbClientPort *m_port;
     uint8_t m_unit;
     mbClientDevice *m_device;
-    mbClientSendMessageFileRecordModel *m_fileRecordModel;
+    mbClientSendMessageFileRecordsModel *m_fileRecordModel;
     mbClientSendMessageListModel *m_list;
     QList<mbClientRunMessagePtr> m_messageList;
     int m_messageIndex;
