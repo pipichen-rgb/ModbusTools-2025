@@ -12,7 +12,8 @@ HEADERS += \
 #    $$PWD/client_sendmessagereaddeviceidwidget.h            \
 #    $$PWD/client_sendmessagereadwritemultiregwidget.h       \
  \#    $$PWD/client_sendmessagewritemaskwidget.h
-    $$PWD/client_sendmessagewritesinglecoilwidget.h
+     $$PWD/client_sendmessagewritesinglecoilwidget.h \
+     $$PWD/client_sendmessagewritesingleregisterwidget.h
 
 SOURCES += \
     $$PWD/client_sendmessagelistmodel.cpp                   \
@@ -28,7 +29,8 @@ SOURCES += \
 #    $$PWD/client_sendmessagereaddeviceidwidget.cpp          \
 #    $$PWD/client_sendmessagereadwritemultiregwidget.cpp     \
  \#    $$PWD/client_sendmessagewritemaskwidget.h
-    $$PWD/client_sendmessagewritesinglecoilwidget.cpp
+     $$PWD/client_sendmessagewritesinglecoilwidget.cpp \
+     $$PWD/client_sendmessagewritesingleregisterwidget.cpp
 
 FORMS += \
     $$PWD/client_sendmessageui.ui

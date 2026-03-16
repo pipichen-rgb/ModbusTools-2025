@@ -40,6 +40,7 @@
 
 #include "client_sendmessagedefaultwidget.h"
 #include "client_sendmessagewritesinglecoilwidget.h"
+#include "client_sendmessagewritesingleregisterwidget.h"
 //#include "client_sendmessagediagnwidget.h"
 //#include "client_sendmessagefifowidget.h"
 //#include "client_sendmessagefilerecordswidget.h"
@@ -103,7 +104,7 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
     addFunctionWidget(new mbClientSendMessageReadHoldingRegistersWidget     (&m_converter, this));
     addFunctionWidget(new mbClientSendMessageReadInputRegistersWidget       (&m_converter, this));
     addFunctionWidget(new mbClientSendMessageWriteSingleCoilWidget          (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageDefaultWidget                  (&m_converter, this));
+        addFunctionWidget(new mbClientSendMessageWriteSingleRegisterWidget      (&m_converter, this));
   //addFunctionWidget(new mbClientSendMessageDefaultWidget                  (&m_converter, this));
   //addFunctionWidget(new mbClientSendMessageDefaultWidget                  (&m_converter, this));
   //addFunctionWidget(new mbClientSendMessageDefaultWidget                  (&m_converter, this));

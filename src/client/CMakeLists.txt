@@ -43,6 +43,7 @@ set(MBTOOLS_HEADERS
     gui/sendmessage/client_sendmessagewidget.h
     gui/sendmessage/client_sendmessagedefaultwidget.h
     gui/sendmessage/client_sendmessagewritesinglecoilwidget.h
+    gui/sendmessage/client_sendmessagewritesingleregisterwidget.h
 #    gui/sendmessage/client_sendmessagediagnwidget.h
 #    gui/sendmessage/client_sendmessagefifowidget.h
 #    gui/sendmessage/client_sendmessagefilerecordswidget.h
@@ -102,6 +103,7 @@ set(MBTOOLS_SOURCES
     gui/sendmessage/client_sendmessagewidget.cpp
     gui/sendmessage/client_sendmessagedefaultwidget.cpp
     gui/sendmessage/client_sendmessagewritesinglecoilwidget.cpp
+    gui/sendmessage/client_sendmessagewritesingleregisterwidget.cpp
 #    gui/sendmessage/client_sendmessagediagnwidget.cpp
 #    gui/sendmessage/client_sendmessagefifowidget.cpp
 #    gui/sendmessage/client_sendmessagefilerecordswidget.cpp
