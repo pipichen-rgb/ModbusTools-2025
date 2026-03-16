@@ -40,6 +40,7 @@ mbClientSendMessageWriteMaskWidget::mbClientSendMessageWriteMaskWidget(mbClientS
     m_spMaskAnd->setMinimumSize(QSize(80, 0));
     m_spMaskAnd->setMinimum(0);
     m_spMaskAnd->setMaximum(UINT16_MAX);
+    m_spMaskAnd->setValue(0);
     m_spMaskAnd->setDisplayIntegerBase(16);
 
     // mask or
@@ -48,6 +49,7 @@ mbClientSendMessageWriteMaskWidget::mbClientSendMessageWriteMaskWidget(mbClientS
     m_spMaskOr->setMinimumSize(QSize(80, 0));
     m_spMaskOr->setMinimum(0);
     m_spMaskOr->setMaximum(UINT16_MAX);
+    m_spMaskOr->setValue(0);
     m_spMaskOr->setDisplayIntegerBase(16);
     
     // Labels
@@ -56,8 +58,8 @@ mbClientSendMessageWriteMaskWidget::mbClientSendMessageWriteMaskWidget(mbClientS
     lblAddress->setText(QCoreApplication::translate("mbClientSendMessageUi", "Address:", nullptr));
 
     auto lblMaskAnd = new QLabel(this);
-    lblMaskAnd->setObjectName(QString::fromUtf8("lblMaskAnd"));
-    lblMaskAnd->setText(QCoreApplication::translate("mbClientSendMessageUi", "Mask AND:", nullptr));
+    lblMaskAnd->setObjectName(QString::fromUtf8("lblMaskAnd")); 
+    lblMaskAnd->setText(QCoreApplication::translate("mbClientSendMessageUi", "Mask AND(Hex):", nullptr));
 
     auto lblMaskOr = new QLabel(this);
     lblMaskOr->setObjectName(QString::fromUtf8("lblMaskOr"));

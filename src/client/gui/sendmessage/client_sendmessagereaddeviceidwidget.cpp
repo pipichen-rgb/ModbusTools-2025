@@ -55,7 +55,7 @@ mbClientSendMessageReadDeviceIdWidget::mbClientSendMessageReadDeviceIdWidget(mbC
     {
         m_cmbFormat->addItem(s);
     }
-    m_cmbFormat->setCurrentIndex(mb::Dec16);
+    m_cmbFormat->setCurrentIndex(mb::String);
 
     // group response
     auto grResponse = new QGroupBox(this);

@@ -116,14 +116,17 @@ void mbClientRunMessage::setDeleteItems(bool del)
     m_deleteItems = del;
 }
 
-Modbus::StatusCode mbClientRunMessage::getData(uint16_t /*innerOffset*/, uint16_t /*count*/, void * /*buff*/) const
+Modbus::StatusCode mbClientRunMessage::getData(uint16_t innerOffset, uint16_t count, void *buff) const
 {
-    return Modbus::Status_Bad;
+    // TODO: add check for innerOffset and count to be in range of m_buff
+    memcpy(buff, m_buff+innerOffset, count);
+    return Modbus::Status_Good;
 }
 
-Modbus::StatusCode mbClientRunMessage::setData(uint16_t /*innerOffset*/, uint16_t /*count*/, const void * /*buff*/)
+Modbus::StatusCode mbClientRunMessage::setData(uint16_t innerOffset, uint16_t count, const void *buff)
 {
-    return Modbus::Status_Bad;
+    memcpy(m_buff+innerOffset, buff, count);
+    return Modbus::Status_Good;
 }
 
 void mbClientRunMessage::prepareToSend()
@@ -247,10 +250,10 @@ void mbClientRunMessageWrite::prepareToSend()
 // ----------------------------------------- File Record Messages -----------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
-mbClientRunMessageFileRecord::mbClientRunMessageFileRecord(uint8_t unit, uint16_t count, QObject *parent) :
+mbClientRunMessageFileRecord::mbClientRunMessageFileRecord(uint8_t unit, uint16_t count, const Modbus::FileRecord *fileRecords, QObject *parent) :
     mbClientRunMessage(unit, 0, count, 0, parent)
 {
-
+    memcpy(innerBuffer(), fileRecords, count * sizeof(Modbus::FileRecord));
 }
 
 
@@ -372,10 +375,10 @@ Modbus::StatusCode mbClientRunMessageReadExceptionStatus::getData(uint16_t inner
 // ---------------------------------------------- DIAGNOSTICS ---------------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
-mbClientRunMessageDiagnostics::mbClientRunMessageDiagnostics(uint8_t unit, uint16_t subfunc, const void *buff, uint8_t buffsz, QObject *parent) :
+mbClientRunMessageDiagnostics::mbClientRunMessageDiagnostics(uint8_t unit, uint16_t subfunc, uint8_t buffsz, QObject *parent) :
     mbClientRunMessageRead(unit, subfunc, buffsz, MSG_MAX_BYTES, parent)
 {
-    memcpy(m_buff, buff, buffsz);
+    m_count = buffsz;
 }
 
 Modbus::StatusCode mbClientRunMessageDiagnostics::getData(uint16_t innerOffset, uint16_t count, void *buff) const

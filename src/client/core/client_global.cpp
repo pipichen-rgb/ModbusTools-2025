@@ -1,22 +1,22 @@
 #include "client_global.h"
 
-int id_mbClientMessageParams = qRegisterMetaType<mbClientMessageParams>();
+int id_mbClientMessageParams = qRegisterMetaType<mbClientMessageParamsOLD>();
 
 namespace mb {
 
-QStringList saveClientMessages(const QList<mbClientMessageParams> messages)
+QStringList saveClientMessages(const QList<mbClientMessageParamsOLD> messages)
 {
     QStringList res;
-    Q_FOREACH(const mbClientMessageParams &p, messages)
+    Q_FOREACH(const mbClientMessageParamsOLD &p, messages)
     {
         res.append(saveClientMessageParams(p));
     }
     return res;
 }
 
-QList<mbClientMessageParams> restoreClientMessages(const QStringList &messages)
+QList<mbClientMessageParamsOLD> restoreClientMessages(const QStringList &messages)
 {
-    QList<mbClientMessageParams> res;
+    QList<mbClientMessageParamsOLD> res;
     bool ok = false;
     Q_FOREACH(const QString &s, messages)
     {
@@ -27,7 +27,7 @@ QList<mbClientMessageParams> restoreClientMessages(const QStringList &messages)
     return res;
 }
 
-QString saveClientMessageParams(const mbClientMessageParams &params, bool useFunc, bool useData)
+QString saveClientMessageParams(const mbClientMessageParamsOLD &params, bool useFunc, bool useData)
 {
     QString res;
     switch(params.func)
@@ -112,9 +112,9 @@ QString saveClientMessageParams(const mbClientMessageParams &params, bool useFun
     return res;
 }
 
-mbClientMessageParams restoreClientMessageParams(const QString &params, bool *ok, uint8_t func)
+mbClientMessageParamsOLD restoreClientMessageParams(const QString &params, bool *ok, uint8_t func)
 {
-    mbClientMessageParams res;
+    mbClientMessageParamsOLD res;
     QHash<QString, QString> map = getClientParamMap(params);
     if (func == 0)
     {
@@ -234,3 +234,300 @@ QHash<QString, QString> getClientParamMap(const QString &params)
 }
 
 } // namespace mb
+
+mbClientMessageConverter::mbClientMessageConverter()
+{
+}
+
+QByteArray mbClientMessageConverter::toByteArray(const mbClientMessageParams &params)
+{
+    if (params.data().type() == QVariant::ByteArray)
+        return params.data().toByteArray();
+    QByteArray data;
+    switch (params.format())
+    {
+    case mb::Bool:
+    {
+        QStringList ls = dataToStringList(params.data().toString());
+        data = fromStringListBits(ls);
+    }
+        break;
+    case mb::ByteArray:
+    case mb::String:
+    {
+        auto memType = getMemoryType(params);
+        int c;
+        if (isBitMemory(memType))
+            c = (params.count() + 7) / 8;
+        else
+            c = params.count() * 2;
+        data = mb::toByteArray(params.data(),
+                               params.format(),
+                               Modbus::Memory_4x,
+                               m_dataParams.swapBytes,
+                               m_dataParams.registerOrder,
+                               m_dataParams.byteArrayFormat,
+                               m_dataParams.stringEncoding,
+                               m_dataParams.stringLengthType,
+                               m_dataParams.byteArraySeparator,
+                               c);
+    }
+        break;
+    default:
+    {
+        QStringList ls = dataToStringList(params.data().toString());
+        data = fromStringListNumbers(ls, params.format());
+    }
+        break;
+    }
+    return data;
+}
+
+QVariant mbClientMessageConverter::toVariant(const mbClientMessageParams &params)
+{
+    QByteArray data = params.data().toByteArray();
+    QStringList ls;
+    switch (params.format())
+    {
+    case mb::Bool:
+    {
+        uint16_t count = params.count();
+        if (!isBitMemory(params))
+            count *= 16;
+        ls = toStringListBits(data, count);
+    }
+        break;
+    case mb::ByteArray:
+    case mb::String:
+        ls.append(mb::toVariant(data,
+                                params.format(),
+                                Modbus::Memory_0x,
+                                m_dataParams.swapBytes,
+                                m_dataParams.registerOrder,
+                                m_dataParams.byteArrayFormat,
+                                m_dataParams.stringEncoding,
+                                m_dataParams.stringLengthType,
+                                m_dataParams.byteArraySeparator,
+                                data.count()).toString());
+        break;
+    default:
+        ls = toStringListNumbers(data, params.format());
+        break;
+    }
+    QVariant res;
+    if (ls.count())
+    {
+        QStringList::ConstIterator it = ls.constBegin();
+        QString s = *it;
+        for (++it; it != ls.constEnd(); ++it)
+            s += QStringLiteral(",") + *it;
+        res = s;
+    }
+    return res;
+}
+
+QStringList mbClientMessageConverter::toStringListBits(const QByteArray &data, uint16_t count)
+{
+    QStringList ls;
+    for (int i = 0; i < count; i++)
+    {
+        bool v = data.at(i / 8) & (1 << (i % 8));
+        QString s = v ? QStringLiteral("1") : QStringLiteral("0");
+        ls.append(s);
+    }
+    return ls;
+}
+
+QStringList mbClientMessageConverter::toStringListNumbers(const QByteArray &data, mb::Format format)
+{
+    QStringList ls;
+    int sz = static_cast<int>(mb::sizeofFormat(format));
+    int c = data.size() / sz;
+    for (int i = 0; i < c; i++)
+    {
+        QByteArray numData = data.mid(i*sz, sz);
+        QString s = mb::toVariant(numData,
+                                  format,
+                                  Modbus::Memory_4x,
+                                  m_dataParams.swapBytes,
+                                  m_dataParams.registerOrder,
+                                  m_dataParams.byteArrayFormat,
+                                  m_dataParams.stringEncoding,
+                                  m_dataParams.stringLengthType,
+                                  m_dataParams.byteArraySeparator,
+                                  numData.count()).toString();
+        ls.append(s);
+    }
+    size_t szRemainder = data.size() - c * sz;
+    if (szRemainder)
+    {
+        quint64 v = 0;
+        memcpy(&v, &data.data()[c*sz], szRemainder);
+        QByteArray numData(reinterpret_cast<char*>(&v), sizeof(v));
+        QString s = mb::toVariant(numData,
+                                  format,
+                                  Modbus::Memory_4x,
+                                  m_dataParams.swapBytes,
+                                  m_dataParams.registerOrder,
+                                  m_dataParams.byteArrayFormat,
+                                  m_dataParams.stringEncoding,
+                                  m_dataParams.stringLengthType,
+                                  m_dataParams.byteArraySeparator,
+                                  numData.count()).toString();
+        ls.append(s);
+    }
+    return ls;
+}
+
+QByteArray mbClientMessageConverter::fromStringListBits(const QStringList &ls)
+{
+    QByteArray r((ls.count()+7)/8, '\0');
+    int i = 0;
+    Q_FOREACH(const QString &s, ls)
+    {
+        if (s == QStringLiteral("1"))
+            r.data()[i / 8] |= (1 << (i % 8));
+        i++;
+    }
+    return r;
+}
+
+QByteArray mbClientMessageConverter::fromStringListNumbers(const QStringList &ls, mb::Format format)
+{
+    QByteArray data;
+    Q_FOREACH(const QString &s, ls)
+        data.append(mb::toByteArray(s,
+                                    format,
+                                    Modbus::Memory_4x,
+                                    m_dataParams.swapBytes,
+                                    m_dataParams.registerOrder,
+                                    m_dataParams.byteArrayFormat,
+                                    m_dataParams.stringEncoding,
+                                    m_dataParams.stringLengthType,
+                                    m_dataParams.byteArraySeparator,
+                                    0));
+
+    return data;
+}
+
+bool mbClientMessageConverter::fromStringNumber(mb::Format format, const QString &v, void *buff)
+{
+    bool ok = false;
+    switch (format)
+    {
+    case mb::Bin16:
+        *reinterpret_cast<quint16*>(buff) = v.toUShort(&ok, 2);
+        break;
+    case mb::Oct16:
+        *reinterpret_cast<quint16*>(buff) = v.toUShort(&ok, 8);
+        break;
+    case mb::Dec16:
+        *reinterpret_cast<qint16*>(buff) = v.toShort(&ok, 10);
+        break;
+    case mb::UDec16:
+        *reinterpret_cast<quint16*>(buff) = v.toUShort(&ok, 10);
+        break;
+    case mb::Hex16:
+        *reinterpret_cast<quint16*>(buff) = v.toUShort(&ok, 16);
+        break;
+    case mb::Bin32:
+        *reinterpret_cast<quint32*>(buff) = v.toULong(&ok, 2);
+        break;
+    case mb::Oct32:
+        *reinterpret_cast<quint32*>(buff) = v.toULong(&ok, 8);
+        break;
+    case mb::Dec32:
+        *reinterpret_cast<qint32*>(buff) = v.toLong(&ok, 10);
+        break;
+    case mb::UDec32:
+        *reinterpret_cast<quint32*>(buff) = v.toULong(&ok, 10);
+        break;
+    case mb::Hex32:
+        *reinterpret_cast<quint32*>(buff) = v.toULong(&ok, 16);
+        break;
+    case mb::Bin64:
+        *reinterpret_cast<quint64*>(buff) = v.toULongLong(&ok, 2);
+        break;
+    case mb::Oct64:
+        *reinterpret_cast<quint64*>(buff) = v.toULongLong(&ok, 8);
+        break;
+    case mb::Dec64:
+        *reinterpret_cast<qint64*>(buff) = v.toLongLong(&ok, 10);
+        break;
+    case mb::UDec64:
+        *reinterpret_cast<quint64*>(buff) = v.toULongLong(&ok, 10);
+        break;
+    case mb::Hex64:
+        *reinterpret_cast<quint64*>(buff) = v.toULongLong(&ok, 16);
+        break;
+    case mb::Float:
+        *reinterpret_cast<float*>(buff) = v.toFloat(&ok);
+        break;
+    case mb::Double:
+        *reinterpret_cast<double*>(buff) = v.toDouble(&ok);
+        break;
+    default:
+        break;
+    }
+    return ok;
+}
+
+QStringList mbClientMessageConverter::dataToStringList(const QString &s)
+{
+    QStringList ls = s.split(',');
+    return ls;
+}
+
+QString mbClientMessageConverter::getEventLogDescription(uint8_t eventId)
+{
+    QString res;
+    if (eventId & 0x80)
+    {
+        res = "Receive Event: ";
+        QStringList ls;
+        if (eventId & 0x02) ls.append("Communication Error");
+        if (eventId & 0x10) ls.append("Character Overrun");
+        if (eventId & 0x20) ls.append("Currently in Listen Only Mode");
+        if (eventId & 0x40) ls.append("Broadcast Received");
+        res += ls.join(", ");
+    }
+    else if (eventId & 0x40)
+    {
+        res = "Send Event: ";
+        QStringList ls;
+        if (eventId & 0x01) ls.append("Read Exception Sent");
+        if (eventId & 0x02) ls.append("Server Abort Exception Sent ");
+        if (eventId & 0x04) ls.append("Server Busy Exception Sent");
+        if (eventId & 0x08) ls.append("Server Program NAK Exception Sent");
+        if (eventId & 0x10) ls.append("Write Timeout Error Occurred");
+        if (eventId & 0x20) ls.append("Currently in Listen Only Mode");
+        res += ls.join(", ");
+    }
+    else if (eventId == 0x04)
+        res = "Entered Listen Only Mode";
+    else if (eventId == 0x00)
+        res = "Initiated Communication Restart";
+    return res;
+}
+
+Modbus::MemoryType mbClientMessageConverter::getMemoryType(const mbClientMessageParams &params)
+{
+    switch (params.function())
+    {
+    case MBF_READ_COILS:
+    case MBF_WRITE_SINGLE_COIL:
+    case MBF_WRITE_MULTIPLE_COILS:
+        return Modbus::Memory_Coils;
+    case MBF_READ_DISCRETE_INPUTS:
+        return Modbus::Memory_DiscreteInputs;
+    case MBF_READ_INPUT_REGISTERS:
+        return Modbus::Memory_InputRegisters;
+    case MBF_READ_HOLDING_REGISTERS:
+    case MBF_WRITE_SINGLE_REGISTER:
+    case MBF_WRITE_MULTIPLE_REGISTERS:
+    case MBF_MASK_WRITE_REGISTER:
+    case MBF_READ_WRITE_MULTIPLE_REGISTERS:
+        return Modbus::Memory_HoldingRegisters;
+    }
+    return Modbus::Memory_0x;
+}

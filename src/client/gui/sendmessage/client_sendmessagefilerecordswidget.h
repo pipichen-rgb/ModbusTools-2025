@@ -33,8 +33,8 @@ public: // QAbstractItemModel interface
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
 public:
-    void fillParams(mbClientMessageParams &params, bool useData = true);
-    void setParams(const mbClientMessageParams &params);
+    void fillParams(mbClientMessageParamsOLD &params, bool useData = true);
+    void setParams(const mbClientMessageParamsOLD &params);
     void setRecordData(const QList<QByteArray>& dataList);
 
 public:

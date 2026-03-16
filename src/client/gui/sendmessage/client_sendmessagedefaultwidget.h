@@ -15,7 +15,6 @@ class mbClientSendMessageDefaultWidget : public mbClientSendMessageWidget
 public:
     struct Strings
     {
-        const QString prefix        ;
         const QString defaultAddress;
         const QString defaultFormat ;
         const QString defaultCount  ;
@@ -25,29 +24,95 @@ public:
     };
 
 public:
-    mbClientSendMessageDefaultWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
+    mbClientSendMessageDefaultWidget(uint8_t func, mbClientMessageConverter* conv, QWidget *parent = nullptr);
 
 public:
     MBSETTINGS cachedSettings() const override;
     void setCachedSettings(const MBSETTINGS &settings) override;
-    QByteArray getData() const override;
-    void setData(const QByteArray &data) override;
+    void fillParams(mbClientMessageParams &params) const override;
 
-public:
+public:    
     uint16_t getOffset() const;
     uint16_t getCount() const;
 
-private:
+protected Q_SLOTS:
+    void setModbusAddresNotation(mb::AddressNotation notation);
+
+protected:
     int getAddress() const;
     void setAddress(int v);
 
-private:
+protected:
     QComboBox* m_cmbFormat;
     mbCoreAddressWidget* m_address;
     QSpinBox* m_spCount;
     QPlainTextEdit* m_txtData;
-    QByteArray m_data;
-    bool m_isDirty;
 };
+
+class mbClientSendMessageReadDefaultWidget : public mbClientSendMessageDefaultWidget
+{
+    Q_OBJECT
+
+public:
+    mbClientSendMessageReadDefaultWidget(uint8_t func, mbClientMessageConverter* conv, QWidget *parent = nullptr);
+
+public:
+    void setParams(mbClientMessageParams &params) override;
+
+protected Q_SLOTS:
+    void setFormat(int index);
+
+protected:
+    QByteArray m_data;
+};
+
+class mbClientSendMessageWriteDefaultWidget : public mbClientSendMessageDefaultWidget
+{
+    Q_OBJECT
+
+public:
+    mbClientSendMessageWriteDefaultWidget(uint8_t func, mbClientMessageConverter* conv, QWidget *parent = nullptr);
+
+public:
+    MBSETTINGS cachedSettings() const override;
+    void setCachedSettings(const MBSETTINGS &settings) override;
+    void fillParams(mbClientMessageParams &params) const override;
+};
+
+class mbClientSendMessageReadCoilsWidget : public mbClientSendMessageReadDefaultWidget
+{
+public:
+    mbClientSendMessageReadCoilsWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
+};  
+
+class mbClientSendMessageReadDiscreteInputsWidget : public mbClientSendMessageReadDefaultWidget
+{
+public:
+    mbClientSendMessageReadDiscreteInputsWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
+};  
+
+class mbClientSendMessageReadInputRegistersWidget : public mbClientSendMessageReadDefaultWidget
+{
+public:
+    mbClientSendMessageReadInputRegistersWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
+};  
+
+class mbClientSendMessageReadHoldingRegistersWidget : public mbClientSendMessageReadDefaultWidget
+{
+public:
+    mbClientSendMessageReadHoldingRegistersWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
+};  
+
+class mbClientSendMessageWriteMultipleCoilsWidget : public mbClientSendMessageWriteDefaultWidget
+{
+public:
+    mbClientSendMessageWriteMultipleCoilsWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
+};    
+
+class mbClientSendMessageWriteMultipleRegistersWidget : public mbClientSendMessageWriteDefaultWidget
+{
+public:
+    mbClientSendMessageWriteMultipleRegistersWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
+};    
 
 #endif // CLIENT_SENDMESSAGEDEFAULTWIDGET_H

@@ -34,7 +34,17 @@ class mbCoreAddressWidget;
 class mbClientProject;
 class mbClientPort;
 class mbClientDevice;
-class mbClientSendMessageFileRecordsModel;
+class mbClientSendMessageWidget;
+class mbClientSendMessageDefaultWidget;
+class mbClientSendMessageDiagnWidget;
+class mbClientSendMessageFIFOWidget;
+class mbClientSendMessageFileRecordsWidget;
+class mbClientSendMessageGetCommEventCounterWidget;
+class mbClientSendMessageGetCommEventLogWidget;
+class mbClientSendMessageReadDataWidget;
+class mbClientSendMessageReadDeviceIdWidget;
+class mbClientSendMessageReadWriteMultiRegWidget;
+class mbClientSendMessageWriteMaskWidget;
 class mbClientSendMessageListModel;
 
 namespace Ui {
@@ -60,24 +70,6 @@ public:
         const QString sendTo                ;
         const QString unit                  ;
         const QString function              ;
-        const QString defaultAddress        ;
-        const QString defaultFormat         ;
-        const QString defaultCount          ;
-        const QString defaultData           ;
-        const QString rwMultiRegWriteAddress;
-        const QString rwMultiRegWriteFormat ;
-        const QString rwMultiRegWriteCount  ;
-        const QString rwMultiRegWriteData   ;
-        const QString rwMultiRegReadAddress ;
-        const QString rwMultiRegReadFormat  ;
-        const QString rwMultiRegReadCount   ;
-        const QString rwMultiRegReadData    ;
-        const QString writeMaskAddress      ;
-        const QString writeMaskAnd          ;
-        const QString writeMaskOr           ;
-        const QString readDeviceId          ;
-        const QString readDeviceObjectId    ;
-        const QString readDeviceFormat      ;
         const QString list                  ;
         const QString period                ;
         Strings();
@@ -100,7 +92,6 @@ public:
     inline bool isTimerStopped() const { return (m_timer <= 0); }
 
 private Q_SLOTS:
-    void setModbusAddresNotation(mb::AddressNotation notation);
     void setProject(mbCoreProject *p);
     void addPort(mbCorePort *port);
     void removePort(mbCorePort *port);
@@ -109,15 +100,11 @@ private Q_SLOTS:
     void removeDevice(mbCoreDevice *device);
     void renameDevice(mbCoreDevice *device, const QString newName);
     void setCurrentFuncIndex(int funcIndex);
-    void setCurrentDiagnSubfuncIndex(int funcIndex);
     void setRunStatus(int status);
 
-private Q_SLOTS: // file records
-    void slotFileRecordAdd     ();
-    void slotFileRecordDelete  ();
-    void slotFileRecordMoveUp  ();
-    void slotFileRecordMoveDown();
-    void slotFileRecordClear   ();
+private:
+    void addFunctionWidget(mbClientSendMessageWidget *w);
+    mbClientSendMessageWidget *currentFunctionWidget() const;
 
 private Q_SLOTS: // list
     void slotListShowHide();
@@ -147,9 +134,6 @@ private:
     void timerEvent(QTimerEvent *event) override;
 
 private:
-    int currentFileRecordIndex() const;
-
-private:
     QStringList getListItems() const;
     void setListItems(const QStringList& list);
     int currentListIndex() const;
@@ -170,76 +154,40 @@ private:
 private:
     bool prepareSendParams();
     void fillParams(mbClientMessageParams &params);
-    void fillForm(const mbClientMessageParams &params);
+    void fillForm(mbClientMessageParams &params);
     void fillForm(const mbClientRunMessagePtr &message);
-    QStringList toStringListBits(const QByteArray &data, uint16_t count);
-    QStringList toStringListNumbers(const QByteArray &data, mb::Format format);
-    QByteArray fromStringListBits(const QStringList &ls);
-    QByteArray fromStringListNumbers(const QStringList &ls, mb::Format format);
-    bool fromStringNumber(mb::Format format, const QString &v, void *buff);
-    QStringList dataToStringList(const QString &s);
     uint8_t getCurrentFuncNum() const;
-    uint16_t getCurrentDiagnSubfuncNum() const;
     void setCurrentFuncNum(uint8_t func);
-    void setCurrentDiagnSubfuncNum(uint16_t func);
-
-private:
-    uint16_t getDefaultOffset() const;
-    void setDefaultOffset(uint16_t v);
-    int getDefaultAddress() const;
-    void setDefaultAddress(int v);
-    uint16_t getRWMultiRegWriteOffset() const;
-    void setRWMultiRegWriteOffset(uint16_t v);
-    int getRWMultiRegWriteAddress() const;
-    void setRWMultiRegWriteAddress(int v);
-    uint16_t getRWMultiRegReadOffset() const;
-    void setRWMultiRegReadOffset(uint16_t v);
-    int getRWMultiRegReadAddress() const;
-    void setRWMultiRegReadAddress(int v);
-    uint16_t getWriteMaskOffset() const;
-    void setWriteMaskOffset(uint16_t v);
-    int getWriteMaskAddress() const;
-    void setWriteMaskAddress(int v);
 
 private:
     Ui::mbClientSendMessageUi *ui;
-    mbCoreAddressWidget *m_defaultAddress        ;
-    mbCoreAddressWidget *m_rwMultiRegWriteAddress;
-    mbCoreAddressWidget *m_rwMultiRegReadAddress ;
-    mbCoreAddressWidget *m_writeMaskAddress      ;
 
 private:
     mbClientProject *m_project;
     int m_sendTo;
     QList<uint8_t> m_funcNums;
-    QList<uint16_t> m_diagnSubfuncNums;
+    QMap<uint8_t, mbClientSendMessageWidget*> m_funcWidget;
     int m_timer;
 
 private:
     struct DataParams
     {
-        uint16_t             maxReadCoils             ;
-        uint16_t             maxReadDiscreteInputs    ;
-        uint16_t             maxReadHoldingRegisters  ;
-        uint16_t             maxReadInputRegisters    ;
-        uint16_t             maxWriteMultipleCoils    ;
-        uint16_t             maxWriteMultipleRegisters;
-        mb::SwapData         swapBytes                ;
-        mb::RegisterOrder    registerOrder            ;
-        mb::DigitalFormat    byteArrayFormat          ;
-        mb::StringEncoding   stringEncoding           ;
-        mb::StringLengthType stringLengthType         ;
-        QString              byteArraySeparator       ;
+        uint16_t maxReadCoils             ;
+        uint16_t maxReadDiscreteInputs    ;
+        uint16_t maxReadHoldingRegisters  ;
+        uint16_t maxReadInputRegisters    ;
+        uint16_t maxWriteMultipleCoils    ;
+        uint16_t maxWriteMultipleRegisters;
     };
 
     DataParams m_dataParams;
     mbClientPort *m_port;
     uint8_t m_unit;
     mbClientDevice *m_device;
-    mbClientSendMessageFileRecordsModel *m_fileRecordModel;
     mbClientSendMessageListModel *m_list;
     QList<mbClientRunMessagePtr> m_messageList;
     int m_messageIndex;
+    mbClientMessageConverter m_converter;
 };
 
 #endif // CLIENT_DIALOGSENDMESSAGE_H

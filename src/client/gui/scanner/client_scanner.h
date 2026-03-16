@@ -32,7 +32,7 @@ public:
 
     };
 
-    typedef QList<mbClientMessageParams> Request_t;
+    typedef QList<mbClientMessageParamsOLD> Request_t;
 
 public:
     static uint32_t     getSettingPeriod   (const Modbus::Settings &s, bool *ok = nullptr);
@@ -113,13 +113,13 @@ public:
         uint32_t                timeoutInterByte;
     };
 
-    static mbClientMessageParams toFuncParams(const QString &s, bool *ok = nullptr);
-    static QString toString(const mbClientMessageParams &f);
+    static mbClientMessageParamsOLD toFuncParams(const QString &s, bool *ok = nullptr);
+    static QString toString(const mbClientMessageParamsOLD &f);
     static Request_t toRequest(const QString &s, bool *ok = nullptr);
     static QString toString(const Request_t &req);
     static Request_t createRequestParam2(uint8_t funcNum, uint16_t offset, uint16_t count)
     {
-        mbClientMessageParams f;
+        mbClientMessageParamsOLD f;
         f.func = funcNum;
         f.offset = offset;
         f.count = count;
@@ -151,8 +151,8 @@ public:
     void setStatFound    (quint32 count);
     void setStatFunc     (const QString &func);
     void setStatFuncFound(quint32 count);
-    void setFunctionBegin(const QString &port, quint8 unit, const mbClientMessageParams &params);
-    void setFunctionCompleted(const QString &port, quint8 unit, const mbClientMessageParams &params, int status);
+    void setFunctionBegin(const QString &port, quint8 unit, const mbClientMessageParamsOLD &params);
+    void setFunctionCompleted(const QString &port, quint8 unit, const mbClientMessageParamsOLD &params, int status);
     void setStatCountTx(quint32 count);
     void setStatCountRx(quint32 count);
     void setStatPercent(quint32 percent);
@@ -165,7 +165,7 @@ Q_SIGNALS:
     void statFoundChanged  (quint32 count);
     void statFuncChanged   (const QString &name);
     void statFuncFoundChanged(quint32 count);
-    void statFunctionCompleted(const QString &port, quint8 unit, const mbClientMessageParams &params, int status);
+    void statFunctionCompleted(const QString &port, quint8 unit, const mbClientMessageParamsOLD &params, int status);
     void statCountTxChanged(quint32 count);
     void statCountRxChanged(quint32 count);
     void statPercentChanged(quint32 percent);

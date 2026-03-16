@@ -38,6 +38,8 @@ public:
     void setData(const QByteArray &data) override;
 
 public:
+    void setModbusAddresNotation(mb::AddressNotation notation);
+    
     int getWriteAddress() const;
     void setWriteAddress(int v);
     uint16_t getWriteOffset() const;

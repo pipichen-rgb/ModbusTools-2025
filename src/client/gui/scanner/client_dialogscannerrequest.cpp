@@ -172,13 +172,13 @@ bool mbClientDialogScannerRequest::getRequest(mbClientScanner::Request_t &req)
 
 void mbClientDialogScannerRequest::selectionChanged(const QModelIndex &current, const QModelIndex &)
 {
-    mbClientMessageParams func = m_model->func(current.row());
+    mbClientMessageParamsOLD func = m_model->func(current.row());
     setCurrentFunc(func);
 }
 
 void mbClientDialogScannerRequest::addFunc()
 {
-    mbClientMessageParams func = getCurrentFunc();
+    mbClientMessageParamsOLD func = getCurrentFunc();
     m_model->addFunc(func);
 }
 
@@ -187,7 +187,7 @@ void mbClientDialogScannerRequest::modifyFunc()
     QModelIndexList ls = ui->lsRequest->selectionModel()->selectedRows();
     if (ls.count())
     {
-        mbClientMessageParams func = getCurrentFunc();
+        mbClientMessageParamsOLD func = getCurrentFunc();
         m_model->modifyFunc(ls.first().row(), func);
     }
 }
@@ -230,10 +230,10 @@ void mbClientDialogScannerRequest::setCurrentFuncIndex(int i)
     setCurrentFuncNum(funcNum);
 }
 
-mbClientMessageParams mbClientDialogScannerRequest::getCurrentFunc() const
+mbClientMessageParamsOLD mbClientDialogScannerRequest::getCurrentFunc() const
 {
     uint8_t funcNum = getCurrentFuncNum();
-    mbClientMessageParams func;
+    mbClientMessageParamsOLD func;
     switch(funcNum)
     {
     case MBF_READ_COILS:
@@ -269,7 +269,7 @@ mbClientMessageParams mbClientDialogScannerRequest::getCurrentFunc() const
     return func;
 }
 
-void mbClientDialogScannerRequest::setCurrentFunc(const mbClientMessageParams &f)
+void mbClientDialogScannerRequest::setCurrentFunc(const mbClientMessageParamsOLD &f)
 {
     int index = m_funcNums.indexOf(f.func);
     if (index < 0)
@@ -387,12 +387,12 @@ void mbClientDialogScannerRequest::Model::setRequest(const mbClientScanner::Requ
     endResetModel();
 }
 
-mbClientMessageParams mbClientDialogScannerRequest::Model::func(int i)
+mbClientMessageParamsOLD mbClientDialogScannerRequest::Model::func(int i)
 {
     return m_req.value(i);
 }
 
-void mbClientDialogScannerRequest::Model::addFunc(const mbClientMessageParams &f)
+void mbClientDialogScannerRequest::Model::addFunc(const mbClientMessageParamsOLD &f)
 {
     int c = m_req.count();
     beginInsertRows(QModelIndex(), c, c);
@@ -400,7 +400,7 @@ void mbClientDialogScannerRequest::Model::addFunc(const mbClientMessageParams &f
     endInsertRows();
 }
 
-void mbClientDialogScannerRequest::Model::modifyFunc(int i, const mbClientMessageParams &f)
+void mbClientDialogScannerRequest::Model::modifyFunc(int i, const mbClientMessageParamsOLD &f)
 {
     if ((0 <= i) && (i < m_req.size()))
     {

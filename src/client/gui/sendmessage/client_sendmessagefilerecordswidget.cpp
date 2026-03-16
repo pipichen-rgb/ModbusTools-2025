@@ -149,7 +149,7 @@ bool mbClientSendMessageFileRecordsModel::setData(const QModelIndex &index, cons
     return false;
 }
 
-void mbClientSendMessageFileRecordsModel::fillParams(mbClientMessageParams &params, bool useData)
+void mbClientSendMessageFileRecordsModel::fillParams(mbClientMessageParamsOLD &params, bool useData)
 {
     params.fileRecords.resize(m_items.count());
     int i = 0;
@@ -164,7 +164,7 @@ void mbClientSendMessageFileRecordsModel::fillParams(mbClientMessageParams &para
     params.data = ls;
 }
 
-void mbClientSendMessageFileRecordsModel::setParams(const mbClientMessageParams &params)
+void mbClientSendMessageFileRecordsModel::setParams(const mbClientMessageParamsOLD &params)
 {
     beginResetModel();
 
@@ -372,6 +372,12 @@ mbClientSendMessageFileRecordsWidget::mbClientSendMessageFileRecordsWidget(mbCli
     QIcon icon4;
     icon4.addFile(QString::fromUtf8(":/core/icons/clear.png"), QSize(), QIcon::Normal, QIcon::Off);
     btnFileRecordClear->setIcon(icon4);
+
+    connect(btnFileRecordAdd     , &QPushButton::clicked, this, &mbClientSendMessageFileRecordsWidget::slotFileRecordAdd     );
+    connect(btnFileRecordDelete  , &QPushButton::clicked, this, &mbClientSendMessageFileRecordsWidget::slotFileRecordDelete  );
+    connect(btnFileRecordMoveUp  , &QPushButton::clicked, this, &mbClientSendMessageFileRecordsWidget::slotFileRecordMoveUp  );
+    connect(btnFileRecordMoveDown, &QPushButton::clicked, this, &mbClientSendMessageFileRecordsWidget::slotFileRecordMoveDown);
+    connect(btnFileRecordClear   , &QPushButton::clicked, this, &mbClientSendMessageFileRecordsWidget::slotFileRecordClear   );
 
     // Spacer
     auto horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);

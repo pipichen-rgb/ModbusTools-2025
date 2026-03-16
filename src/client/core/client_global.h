@@ -39,9 +39,9 @@ class mbClientRunMessageRaw;
 typedef mb::SharedPointer<mbClientRunMessage> mbClientRunMessagePtr;
 typedef mb::SharedPointer<mbClientRunMessageRaw> mbClientRunMessageRawPtr;
 
-struct mbClientMessageParams
+struct mbClientMessageParamsOLD
 {
-    mbClientMessageParams()
+    mbClientMessageParamsOLD()
     {
         func = MBF_READ_HOLDING_REGISTERS;
         offset = 0;
@@ -83,7 +83,257 @@ struct mbClientMessageParams
     QVariant data;
 
 };
+Q_DECLARE_METATYPE(mbClientMessageParamsOLD)
+
+// Note: Memento class for Client messages
+class mbClientMessageParams
+{
+public:
+    mbClientMessageParams()
+    {
+        m_func = MBF_READ_HOLDING_REGISTERS;
+        m_offset = 0;
+        m_count = 0;
+        m_format = mb::Dec16;
+        m_writeOffset = 0;
+        m_writeCount = 0;
+        m_writeFormat = mb::Dec16;
+        m_status = 0;
+        m_eventCount = 0;
+        m_messageCount = 0;
+        m_deviceId = 0;
+        m_objectId = 0;
+        m_numberOfObjects = 0;
+        m_conformityLevel = 0;
+        m_numberOfObjects = 0;
+        m_nextObjectId = 0;
+        m_usedFields = 0;
+    }
+
+public:
+    inline int function() const { return m_func; }
+    inline void setFunction(int func) { m_func = func; }
+    inline bool hasFunction() const { return (m_usedFields & UsedFunc) != 0; }
+    inline void clearFunction() { m_usedFields &= ~UsedFunc; }
+
+    inline uint16_t offset() const { return m_offset; } 
+    inline void setOffset(uint16_t offset) { m_offset = offset; }
+    inline bool hasOffset() const { return (m_usedFields & UsedOffset) != 0; }
+    inline void clearOffset() { m_usedFields &= ~UsedOffset; }
+
+    inline uint16_t count() const { return m_count; }
+    inline void setCount(uint16_t count) { m_count = count; }
+    inline bool hasCount() const { return (m_usedFields & UsedCount) != 0; }
+    inline void clearCount() { m_usedFields &= ~UsedCount; }
+
+    inline mb::Format format() const { return m_format; }
+    inline void setFormat(mb::Format format) { m_format = format; }
+    inline bool hasFormat() const { return (m_usedFields & UsedFormat) != 0; }
+    inline void clearFormat() { m_usedFields &= ~UsedFormat; }
+
+    inline uint16_t subfunction() const { return m_subfunc; }
+    inline void setSubfunction(uint16_t subfunc) { m_subfunc = subfunc; }
+    inline bool hasSubfunction() const { return (m_usedFields & UsedSubfunction) != 0; }
+    inline void clearSubfunction() { m_usedFields &= ~UsedSubfunction; }
+
+    inline uint16_t writeOffset() const { return m_writeOffset; }
+    inline void setWriteOffset(uint16_t writeOffset) { m_writeOffset = writeOffset; }
+    inline bool hasWriteOffset() const { return (m_usedFields & UsedWriteOffset) != 0; }
+    inline void clearWriteOffset() { m_usedFields &= ~UsedWriteOffset; }
+    
+    inline uint16_t writeCount() const { return m_writeCount; }
+    inline void setWriteCount(uint16_t writeCount) { m_writeCount = writeCount; }
+    inline bool hasWriteCount() const { return (m_usedFields & UsedWriteCount) != 0; }
+    inline void clearWriteCount() { m_usedFields &= ~UsedWriteCount; }
+
+    inline mb::Format writeFormat() const { return m_writeFormat; }
+    inline void setWriteFormat(mb::Format writeFormat) { m_writeFormat = writeFormat; }
+    inline bool hasWriteFormat() const { return (m_usedFields & UsedWriteFormat) != 0; }
+    inline void clearWriteFormat() { m_usedFields &= ~UsedWriteFormat; }
+
+    inline uint16_t status() const { return m_status; }
+    inline void setStatus(uint16_t status) { m_status = status; }
+    inline bool hasStatus() const { return (m_usedFields & UsedStatus) != 0; }
+    inline void clearStatus() { m_usedFields &= ~UsedStatus; }
+
+    inline uint16_t eventCount() const { return m_eventCount; }
+    inline void setEventCount(uint16_t eventCount) { m_eventCount = eventCount; }
+    inline bool hasEventCount() const { return (m_usedFields & UsedEventCount) != 0; }
+    inline void clearEventCount() { m_usedFields &= ~UsedEventCount; } 
+
+    inline uint16_t messageCount() const { return m_messageCount; }
+    inline void setMessageCount(uint16_t messageCount) { m_messageCount = messageCount; }
+    inline bool hasMessageCount() const { return (m_usedFields & UsedMessageCount) != 0; }
+    inline void clearMessageCount() { m_usedFields &= ~UsedMessageCount; }
+
+    inline uint8_t deviceId() const { return m_deviceId; }
+    inline void setDeviceId(uint8_t deviceId) { m_deviceId = deviceId; }
+    inline bool hasDeviceId() const { return (m_usedFields & UsedDeviceId) != 0; }
+    inline void clearDeviceId() { m_usedFields &= ~UsedDeviceId; }  
+
+    inline uint8_t objectId() const { return m_objectId; }
+    inline void setObjectId(uint8_t objectId) { m_objectId = objectId; }
+    inline bool hasObjectId() const { return (m_usedFields & UsedObjectId) != 0; }
+    inline void clearObjectId() { m_usedFields &= ~UsedObjectId; }  
+
+    inline uint8_t numberOfObjects() const { return m_numberOfObjects; }
+    inline void setNumberOfObjects(uint8_t numberOfObjects) { m_numberOfObjects = numberOfObjects; }
+    inline bool hasNumberOfObjects() const { return (m_usedFields & UsedNumberOfObjects) != 0; }
+    inline void clearNumberOfObjects() { m_usedFields &= ~UsedNumberOfObjects; }    
+
+    inline uint8_t conformityLevel() const { return m_conformityLevel; }
+    inline void setConformityLevel(uint8_t conformityLevel) { m_conformityLevel = conformityLevel; }
+    inline bool hasConformityLevel() const { return (m_usedFields & UsedConformityLevel) != 0; }
+    inline void clearConformityLevel() { m_usedFields &= ~UsedConformityLevel; }    
+
+    inline uint8_t nextObjectId() const { return m_nextObjectId; }
+    inline void setNextObjectId(uint8_t nextObjectId) { m_nextObjectId = nextObjectId; }
+    inline bool hasNextObjectId() const { return (m_usedFields & UsedNextObjectId) != 0; }
+    inline void clearNextObjectId() { m_usedFields &= ~UsedNextObjectId; }
+
+    inline bool moreFollows() const { return m_moreFollows; }
+    inline void setMoreFollows(bool moreFollows) { m_moreFollows = moreFollows; }
+    inline bool hasMoreFollows() const { return (m_usedFields & UsedMoreFollows) != 0; }
+    inline void clearMoreFollows() { m_usedFields &= ~UsedMoreFollows; }
+
+    inline const QVector<Modbus::FileRecord>& fileRecords() const { return m_fileRecords; }
+    inline QVector<Modbus::FileRecord>& fileRecords() { return m_fileRecords; }
+    inline bool hasFileRecords() const { return (m_usedFields & UsedFileRecords) != 0; }
+    inline void clearFileRecords() { m_usedFields &= ~UsedFileRecords; }
+
+    inline const QVariant& data() const { return m_data; }
+    inline void setData(const QVariant &data) { m_data = data; }
+    inline bool hasData() const { return (m_usedFields & UsedData) != 0; }
+    inline void clearData() { m_usedFields &= ~UsedData; }
+
+private:
+    enum UsedFields
+    {
+        UsedFunc = 0x01,
+        UsedOffset = 0x02,
+        UsedCount = 0x04,
+        UsedFormat = 0x08,
+        UsedWriteOffset = 0x10,
+        UsedWriteCount = 0x20,
+        UsedWriteFormat = 0x40,
+        UsedSubfunction = 0x80,
+        UsedStatus = 0x200,
+        UsedEventCount = 0x400,
+        UsedMessageCount = 0x800,
+        UsedDeviceId = 0x1000,
+        UsedObjectId = 0x2000,
+        UsedNumberOfObjects = 0x4000,
+        UsedConformityLevel = 0x8000,
+        UsedNextObjectId = 0x10000,
+        UsedMoreFollows = 0x20000,
+        UsedFileRecords = 0x40000000,
+        UsedData = 0x80000000
+    };
+    int m_usedFields;
+    int m_func;
+    union
+    {
+        uint16_t m_offset;
+        uint16_t m_subfunc;
+    };
+    uint16_t m_count;
+    mb::Format m_format;
+
+    union
+    {
+        uint16_t m_writeOffset;
+        uint16_t m_andMask;
+    };
+
+    union
+    {
+        uint16_t m_writeCount;
+        uint16_t m_orMask;
+    };
+
+    union 
+    {
+        struct // Event Log
+        {
+            uint16_t m_status;
+            uint16_t m_eventCount;
+            uint16_t m_messageCount;
+        };
+
+        struct // Read Device and Object IDs
+        {
+            uint8_t m_deviceId;
+            uint8_t m_objectId;
+            uint8_t m_numberOfObjects;
+            uint8_t m_conformityLevel;
+            uint8_t m_nextObjectId;
+            bool m_moreFollows;
+        };
+    };
+    
+    mb::Format m_writeFormat;
+    QVector<Modbus::FileRecord> m_fileRecords;
+    QVariant m_data;
+
+};
 Q_DECLARE_METATYPE(mbClientMessageParams)
+
+class mbClientMessageConverter
+{
+public:
+    struct DataParams
+    {
+        mb::SwapData         swapBytes         ;
+        mb::RegisterOrder    registerOrder     ;
+        mb::DigitalFormat    byteArrayFormat   ;
+        mb::StringEncoding   stringEncoding    ;
+        mb::StringLengthType stringLengthType  ;
+        QString              byteArraySeparator;
+    };
+
+public:
+    mbClientMessageConverter();
+
+public:
+    inline mb::SwapData swapBytes() const  { return m_dataParams.swapBytes; }
+    inline void setSwapBytes(mb::SwapData swapBytes) { m_dataParams.swapBytes = swapBytes; }
+
+    inline mb::RegisterOrder registerOrder() const  { return m_dataParams.registerOrder; }
+    inline void setRegisterOrder(mb::RegisterOrder registerOrder) { m_dataParams.registerOrder = registerOrder; }
+
+    inline mb::DigitalFormat byteArrayFormat() const  { return m_dataParams.byteArrayFormat; }
+    inline void setByteArrayFormat(mb::DigitalFormat byteArrayFormat) { m_dataParams.byteArrayFormat = byteArrayFormat; }
+
+    inline mb::StringEncoding stringEncoding() const  { return m_dataParams.stringEncoding; }
+    inline void setStringEncoding(mb::StringEncoding stringEncoding) { m_dataParams.stringEncoding = stringEncoding; }
+
+    inline mb::StringLengthType stringLengthType() const  { return m_dataParams.stringLengthType; }
+    inline void setStringLengthType(mb::StringLengthType stringLengthType) { m_dataParams.stringLengthType = stringLengthType; }
+
+    inline QString byteArraySeparator() const  { return m_dataParams.byteArraySeparator; }
+    inline void setByteArraySeparator(const QString &byteArraySeparator) { m_dataParams.byteArraySeparator = byteArraySeparator; }
+
+public:
+    QByteArray toByteArray(const mbClientMessageParams &params);
+    QVariant toVariant(const mbClientMessageParams &params);
+
+public:
+    QStringList toStringListBits(const QByteArray &data, uint16_t count);
+    QStringList toStringListNumbers(const QByteArray &data, mb::Format format);
+    QByteArray fromStringListBits(const QStringList &ls);
+    QByteArray fromStringListNumbers(const QStringList &ls, mb::Format format);
+    bool fromStringNumber(mb::Format format, const QString &v, void *buff);
+    QStringList dataToStringList(const QString &s);
+    static QString getEventLogDescription(uint8_t eventId);
+    static Modbus::MemoryType getMemoryType(const mbClientMessageParams &params);
+    inline static bool isBitMemory(Modbus::MemoryType memType) { return memType == Modbus::Memory_0x || memType == Modbus::Memory_1x; }
+    inline static bool isBitMemory(const mbClientMessageParams &params) { return isBitMemory(getMemoryType(params)); }
+    inline static bool isRegMemory(Modbus::MemoryType memType) { return memType == Modbus::Memory_4x || memType == Modbus::Memory_3x; }
+    inline static bool isRegMemory(const mbClientMessageParams &params) { return isRegMemory(getMemoryType(params)); }
+
+private:
+    DataParams m_dataParams;
+};
 
 namespace mb {
 
@@ -95,13 +345,13 @@ typedef mbClientDataViewItem* ItemHandle_t;
 
 } // namespace Client
 
-QStringList saveClientMessages(const QList<mbClientMessageParams> messages);
+QStringList saveClientMessages(const QList<mbClientMessageParamsOLD> messages);
 
-QList<mbClientMessageParams> restoreClientMessages(const QStringList &messages);
+QList<mbClientMessageParamsOLD> restoreClientMessages(const QStringList &messages);
 
-QString saveClientMessageParams(const mbClientMessageParams &params, bool useFunc = true, bool useData = true);
+QString saveClientMessageParams(const mbClientMessageParamsOLD &params, bool useFunc = true, bool useData = true);
 
-mbClientMessageParams restoreClientMessageParams(const QString &params, bool *ok = nullptr, uint8_t func = 0);
+mbClientMessageParamsOLD restoreClientMessageParams(const QString &params, bool *ok = nullptr, uint8_t func = 0);
 
 QHash<QString, QString> getClientParamMap(const QString &params);
 

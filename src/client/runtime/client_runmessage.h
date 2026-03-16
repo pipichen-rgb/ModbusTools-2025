@@ -192,8 +192,8 @@ public:
 class mbClientRunMessageFileRecord : public mbClientRunMessage
 {
 public:
-    mbClientRunMessageFileRecord(uint8_t unit, uint16_t count, QObject *parent = nullptr);
-    mbClientRunMessageFileRecord(uint16_t count, QObject *parent = nullptr) : mbClientRunMessageFileRecord(0, count, parent){}
+    mbClientRunMessageFileRecord(uint8_t unit, uint16_t count, const Modbus::FileRecord *fileRecords, QObject *parent = nullptr);
+    mbClientRunMessageFileRecord(uint16_t count, const Modbus::FileRecord *fileRecords, QObject *parent = nullptr) : mbClientRunMessageFileRecord(0, count, fileRecords, parent){}
 
 public:
     Modbus::MemoryType memoryType() const override { return Modbus::Memory_Unknown; }
@@ -335,8 +335,8 @@ public:
 class mbClientRunMessageDiagnostics : public mbClientRunMessageRead
 {
 public:
-    explicit mbClientRunMessageDiagnostics(uint8_t unit, uint16_t subfunc, const void *buff, uint8_t buffsz, QObject *parent = nullptr);
-    explicit mbClientRunMessageDiagnostics(uint16_t subfunc, const void *buff, uint8_t buffsz, QObject *parent = nullptr) : mbClientRunMessageDiagnostics(0, subfunc, buff, buffsz, parent) {}
+    explicit mbClientRunMessageDiagnostics(uint8_t unit, uint16_t subfunc, uint8_t buffsz, QObject *parent = nullptr);
+    explicit mbClientRunMessageDiagnostics(uint16_t subfunc, uint8_t buffsz, QObject *parent = nullptr) : mbClientRunMessageDiagnostics(0, subfunc, buffsz, parent) {}
 
 public:
     uint8_t function() const override { return MBF_DIAGNOSTICS; }

@@ -2,7 +2,7 @@
 #define CLIENT_SENDMESSAGEWIDGET_H
 
 #include <QWidget>
-#include <mbcore.h>
+#include <client_global.h>
 
 class mbClientSendMessageUi;
 
@@ -10,16 +10,20 @@ class mbClientSendMessageWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit mbClientSendMessageWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
+    explicit mbClientSendMessageWidget(uint8_t func, mbClientMessageConverter* conv, QWidget *parent = nullptr);
 
 public:
+    inline uint8_t function() const { return m_func; }
     virtual MBSETTINGS cachedSettings() const;
     virtual void setCachedSettings(const MBSETTINGS &settings);
-    virtual QByteArray getData() const;
-    virtual void setData(const QByteArray &data);
+    virtual void prepareToSend();
+    virtual void fillParams(mbClientMessageParams &params) const;
+    virtual void setParams(mbClientMessageParams &params);
 
 protected:
-    mbClientSendMessageUi* m_ui;
+    const uint8_t m_func;
+    QString m_prefix;
+    mbClientMessageConverter* m_conv;
 };
 
 #endif // CLIENT_SENDMESSAGEWIDGET_H

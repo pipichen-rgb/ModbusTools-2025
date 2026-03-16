@@ -53,7 +53,7 @@ mbClientSendMessageReadWriteMultiRegWidget::mbClientSendMessageReadWriteMultiReg
     m_spWriteCount->setObjectName(QString::fromUtf8("spWriteMultiRegCount"));
     m_spWriteCount->setMinimumSize(QSize(80, 0));
     m_spWriteCount->setMinimum(1);
-    m_spWriteCount->setMaximum(MB_MAX_DISCRETS); // TODO: if register was choosen than change this value
+    m_spWriteCount->setMaximum(MB_MAX_REGISTERS);
 
     // write text data
     m_txtWriteData = new QPlainTextEdit(this);

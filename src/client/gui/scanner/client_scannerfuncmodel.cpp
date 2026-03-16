@@ -75,7 +75,7 @@ QVariant mbClientScannerFuncModel::data(const QModelIndex &index, int role) cons
     return QVariant();
 }
 
-void mbClientScannerFuncModel::funcAdd(const QString &port, quint8 unit, const mbClientMessageParams &params, int status)
+void mbClientScannerFuncModel::funcAdd(const QString &port, quint8 unit, const mbClientMessageParamsOLD &params, int status)
 {
     int c = m_func.count();
     Item item;

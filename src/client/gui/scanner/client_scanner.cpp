@@ -151,12 +151,12 @@ QString mbClientScanner::toShortParityStr(Modbus::Parity v)
 
    Format of string repr of FuncParams: `F1;F2;F3;...;Fn`
  */
-mbClientMessageParams mbClientScanner::toFuncParams(const QString &sf, bool *ok)
+mbClientMessageParamsOLD mbClientScanner::toFuncParams(const QString &sf, bool *ok)
 {
     return mb::restoreClientMessageParams(sf, ok);
 }
 
-QString mbClientScanner::toString(const mbClientMessageParams &f)
+QString mbClientScanner::toString(const mbClientMessageParamsOLD &f)
 {
     return mb::saveClientMessageParams(f, true, false);
 }
@@ -168,7 +168,7 @@ mbClientScanner::Request_t mbClientScanner::toRequest(const QString &sr, bool *o
     Request_t req;
     Q_FOREACH (const QString &s, sParams)
     {
-        mbClientMessageParams f = toFuncParams(s, &okInner);
+        mbClientMessageParamsOLD f = toFuncParams(s, &okInner);
         if (!okInner)
         {
             req.clear();
@@ -384,7 +384,7 @@ void mbClientScanner::setStatDevice(const QString &device)
     }
 }
 
-void mbClientScanner::setFunctionCompleted(const QString &port, quint8 unit, const mbClientMessageParams &params, int status)
+void mbClientScanner::setFunctionCompleted(const QString &port, quint8 unit, const mbClientMessageParamsOLD &params, int status)
 {
     if (Modbus::StatusIsGood(static_cast<Modbus::StatusCode>(status)))
         setStatFuncFound(m_stat.foundFunc+1);
@@ -418,7 +418,7 @@ void mbClientScanner::setStatFuncFound(quint32 count)
     }
 }
 
-void mbClientScanner::setFunctionBegin(const QString &port, quint8 unit, const mbClientMessageParams &params)
+void mbClientScanner::setFunctionBegin(const QString &port, quint8 unit, const mbClientMessageParamsOLD &params)
 {
     QString s = QString("%1,Unit=%2,%3").arg(port, QString::number(unit), mb::saveClientMessageParams(params, true, false));
     setStatFunc(s);
