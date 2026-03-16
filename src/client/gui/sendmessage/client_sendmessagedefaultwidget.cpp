@@ -22,7 +22,7 @@ mbClientSendMessageDefaultWidget::Strings::Strings() :
 
 const mbClientSendMessageDefaultWidget::Strings &mbClientSendMessageDefaultWidget::Strings::instance()
 {
-    static Strings s;
+    static const Strings s;
     return s;
 }
 
@@ -41,6 +41,7 @@ mbClientSendMessageDefaultWidget::mbClientSendMessageDefaultWidget(uint8_t funct
     // address
     m_address = new mbCoreAddressWidget(this);
     m_address->setEnabledAddressType(false);
+    connect(mbCore::globalCore(), &mbCore::addressNotationChanged, m_address, &mbCoreAddressWidget::setAddressNotation);
 
     // count
     m_spCount = new QSpinBox(this);
@@ -85,7 +86,6 @@ mbClientSendMessageDefaultWidget::mbClientSendMessageDefaultWidget(uint8_t funct
 
     this->setLayout(horizontalLayout);
 
-    connect(mbCore::globalCore(), &mbCore::addressNotationChanged, this, &mbClientSendMessageDefaultWidget::setModbusAddresNotation);
 
 }
 
@@ -120,19 +120,9 @@ void mbClientSendMessageDefaultWidget::fillParams(mbClientMessageParams &params)
     params.setFormat(mb::enumFormatValueByIndex(m_cmbFormat->currentIndex()));
 }
 
-void mbClientSendMessageDefaultWidget::setModbusAddresNotation(mb::AddressNotation notation)
-{
-    m_address->setAddressNotation(notation);
-}
-
 uint16_t mbClientSendMessageDefaultWidget::getOffset() const
 {
     return m_address->getAddress().offset();
-}
-
-uint16_t mbClientSendMessageDefaultWidget::getCount() const
-{
-    return static_cast<uint16_t>(m_spCount->value());
 }
 
 int mbClientSendMessageDefaultWidget::getAddress() const
@@ -145,6 +135,11 @@ void mbClientSendMessageDefaultWidget::setAddress(int v)
     mb::Address adr = m_address->getAddress();
     adr.setNumber(v);
     m_address->setAddress(adr);
+}
+
+uint16_t mbClientSendMessageDefaultWidget::getCount() const
+{
+    return static_cast<uint16_t>(m_spCount->value());
 }
 
 mbClientSendMessageReadDefaultWidget::mbClientSendMessageReadDefaultWidget(uint8_t func, mbClientMessageConverter *conv, QWidget *parent)

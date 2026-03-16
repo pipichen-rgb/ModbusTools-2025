@@ -42,15 +42,16 @@ set(MBTOOLS_HEADERS
     gui/statistics/client_statisticsmanager.h
     gui/sendmessage/client_sendmessagewidget.h
     gui/sendmessage/client_sendmessagedefaultwidget.h
-    gui/sendmessage/client_sendmessagediagnwidget.h
-    gui/sendmessage/client_sendmessagefifowidget.h
-    gui/sendmessage/client_sendmessagefilerecordswidget.h
-    gui/sendmessage/client_sendmessagepggetcommeventcounterwidget.h
-    gui/sendmessage/client_sendmessagepggetcommeventlogwidget.h
-    gui/sendmessage/client_sendmessagereaddatawidget.h
-    gui/sendmessage/client_sendmessagereaddeviceidwidget.h
-    gui/sendmessage/client_sendmessagereadwritemultiregwidget.h
-    gui/sendmessage/client_sendmessagewritemaskwidget.h
+    gui/sendmessage/client_sendmessagewritesinglecoilwidget.h
+#    gui/sendmessage/client_sendmessagediagnwidget.h
+#    gui/sendmessage/client_sendmessagefifowidget.h
+#    gui/sendmessage/client_sendmessagefilerecordswidget.h
+#    gui/sendmessage/client_sendmessagepggetcommeventcounterwidget.h
+#    gui/sendmessage/client_sendmessagepggetcommeventlogwidget.h
+#    gui/sendmessage/client_sendmessagereaddatawidget.h
+#    gui/sendmessage/client_sendmessagereaddeviceidwidget.h
+#    gui/sendmessage/client_sendmessagereadwritemultiregwidget.h
+#    gui/sendmessage/client_sendmessagewritemaskwidget.h
     gui/sendmessage/client_sendmessagelistmodel.h
     gui/sendmessage/client_sendmessageui.h
     gui/sendbytes/client_sendbyteslistmodel.h
@@ -100,15 +101,16 @@ set(MBTOOLS_SOURCES
     gui/statistics/client_statisticsmanager.cpp
     gui/sendmessage/client_sendmessagewidget.cpp
     gui/sendmessage/client_sendmessagedefaultwidget.cpp
-    gui/sendmessage/client_sendmessagediagnwidget.cpp
-    gui/sendmessage/client_sendmessagefifowidget.cpp
-    gui/sendmessage/client_sendmessagefilerecordswidget.cpp
-    gui/sendmessage/client_sendmessagepggetcommeventcounterwidget.cpp
-    gui/sendmessage/client_sendmessagepggetcommeventlogwidget.cpp
-    gui/sendmessage/client_sendmessagereaddatawidget.cpp
-    gui/sendmessage/client_sendmessagereaddeviceidwidget.cpp
-    gui/sendmessage/client_sendmessagereadwritemultiregwidget.cpp
-    gui/sendmessage/client_sendmessagewritemaskwidget.cpp
+    gui/sendmessage/client_sendmessagewritesinglecoilwidget.cpp
+#    gui/sendmessage/client_sendmessagediagnwidget.cpp
+#    gui/sendmessage/client_sendmessagefifowidget.cpp
+#    gui/sendmessage/client_sendmessagefilerecordswidget.cpp
+#    gui/sendmessage/client_sendmessagepggetcommeventcounterwidget.cpp
+#    gui/sendmessage/client_sendmessagepggetcommeventlogwidget.cpp
+#    gui/sendmessage/client_sendmessagereaddatawidget.cpp
+#    gui/sendmessage/client_sendmessagereaddeviceidwidget.cpp
+#    gui/sendmessage/client_sendmessagereadwritemultiregwidget.cpp
+#    gui/sendmessage/client_sendmessagewritemaskwidget.cpp
     gui/sendmessage/client_sendmessagelistmodel.cpp
     gui/sendmessage/client_sendmessageui.cpp
     gui/sendbytes/client_sendbyteslistmodel.cpp

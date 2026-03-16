@@ -288,7 +288,7 @@ Q_SIGNALS:
     void itemRemoved(mbCoreDataViewItem* item);
     void itemChanged(mbCoreDataViewItem* item);
     void periodChanged(int period);
-    void addressNotationChanged(mb::AddressNotation addressNotation);
+    void addressNotationChanged(int addressNotation);
     void columnsChanged();
     void enableProcessingChanged(bool enable);
 

@@ -185,7 +185,7 @@ public: // task factory interface
 Q_SIGNALS:
     void statusChanged(int status);
     void projectChanged(mbCoreProject* project);
-    void addressNotationChanged(mb::AddressNotation addressNotation);
+    void addressNotationChanged(int addressNotation);
     void columnsChanged();
 
 Q_SIGNALS:

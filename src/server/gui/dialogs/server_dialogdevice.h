@@ -74,7 +74,7 @@ private:
     void setModbusExceptionStatusAddress(const QVariant &v);
 
 private Q_SLOTS:
-    void setModbusAddresNotation(mb::AddressNotation notation);
+    void setModbusAddresNotation(int notation);
     void setCurrentDevice(int i);
 
 private:

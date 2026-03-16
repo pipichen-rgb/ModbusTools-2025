@@ -90,7 +90,7 @@ protected:
     void setModbusAddress(const QVariant &v);
 
 protected Q_SLOTS:
-    void setModbusAddresNotation(mb::AddressNotation notation);
+    void setModbusAddresNotation(int notation);
     void deviceChanged(int i);
     void adrTypeChanged(int i);
     void formatChanged(int i);

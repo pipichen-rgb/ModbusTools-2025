@@ -563,7 +563,7 @@ void mbCoreDialogDataViewItem::setModbusAddress(const QVariant &v)
     m_addressWidget->setAddress(mb::toAddress(v.toInt()));
 }
 
-void mbCoreDialogDataViewItem::setModbusAddresNotation(mb::AddressNotation notation)
+void mbCoreDialogDataViewItem::setModbusAddresNotation(int notation)
 {
     m_addressWidget->setAddressNotation(notation);
 }

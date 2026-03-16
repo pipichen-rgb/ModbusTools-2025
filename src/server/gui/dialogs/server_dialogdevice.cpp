@@ -335,7 +335,7 @@ void mbServerDialogDevice::setModbusExceptionStatusAddress(const QVariant &v)
     m_addressExcStatus->setAddress(mb::toAddress(v.toInt()));
 }
 
-void mbServerDialogDevice::setModbusAddresNotation(mb::AddressNotation notation)
+void mbServerDialogDevice::setModbusAddresNotation(int notation)
 {
     m_addressExcStatus->setAddressNotation(notation);
 }

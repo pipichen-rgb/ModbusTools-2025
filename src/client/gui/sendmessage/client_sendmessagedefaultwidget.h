@@ -33,14 +33,9 @@ public:
 
 public:    
     uint16_t getOffset() const;
-    uint16_t getCount() const;
-
-protected Q_SLOTS:
-    void setModbusAddresNotation(mb::AddressNotation notation);
-
-protected:
     int getAddress() const;
     void setAddress(int v);
+    uint16_t getCount() const;
 
 protected:
     QComboBox* m_cmbFormat;

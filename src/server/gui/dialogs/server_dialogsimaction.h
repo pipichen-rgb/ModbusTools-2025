@@ -79,7 +79,7 @@ private:
     void setModbusAddressCopy(const QVariant &v);
 
 private Q_SLOTS:
-    void setModbusAddresNotation(mb::AddressNotation notation);
+    void setModbusAddresNotation(int notation);
     void deviceChanged(int i);
     void setActionType(int i);
 

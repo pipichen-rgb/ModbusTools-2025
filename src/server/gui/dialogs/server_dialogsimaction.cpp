@@ -479,7 +479,7 @@ void mbServerDialogSimAction::setModbusAddressCopy(const QVariant &v)
     m_addressCopy->setAddress(mb::toAddress(v.toInt()));
 }
 
-void mbServerDialogSimAction::setModbusAddresNotation(mb::AddressNotation notation)
+void mbServerDialogSimAction::setModbusAddresNotation(int notation)
 {
     m_address->setAddressNotation(notation);
     m_addressCopy->setAddressNotation(notation);
