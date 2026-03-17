@@ -36,7 +36,7 @@ class mbClientPort;
 class mbClientDevice;
 class mbClientSendMessageWidget;
 class mbClientSendMessageDefaultWidget;
-class mbClientSendMessageDiagnWidget;
+class mbClientSendMessageDiagnosticsWidget;
 class mbClientSendMessageReadFIFOQueueWidget;
 class mbClientSendMessageFileRecordsWidget;
 class mbClientSendMessageGetCommEventCounterWidget;

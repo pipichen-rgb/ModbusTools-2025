@@ -42,27 +42,27 @@
 #include "client_sendmessagewritesinglecoilwidget.h"
 #include "client_sendmessagewritesingleregisterwidget.h"
 #include "client_sendmessagereadexceptionstatuswidget.h"
+#include "client_sendmessagediagnosticswidget.h"
+#include "client_sendmessagepggetcommeventcounterwidget.h"
+#include "client_sendmessagepggetcommeventlogwidget.h"
 #include "client_sendmessagereportserveridwidget.h"
 #include "client_sendmessagemaskwriteregisterwidget.h"
 #include "client_sendmessagereadwritemultipleregisterswidget.h"
 #include "client_sendmessagereadfifoqueuewidget.h"
 
-//#include "client_sendmessagediagnwidget.h"
 //#include "client_sendmessagefilerecordswidget.h"
-//#include "client_sendmessagepggetcommeventcounterwidget.h"
-//#include "client_sendmessagepggetcommeventlogwidget.h"
 //#include "client_sendmessagereaddatawidget.h"
 //#include "client_sendmessagereaddeviceidwidget.h"
 
 #include "client_sendmessagelistmodel.h"
 
 mbClientSendMessageUi::Strings::Strings() :
-    prefix                 (QStringLiteral("Ui.SendMessage.")),
-    sendTo                 (prefix+QStringLiteral("sendTo")),
-    unit                   (prefix+QStringLiteral("unit")),
-    function               (prefix+QStringLiteral("function")),
-    list                   (prefix+QStringLiteral("list")),
-    period                 (prefix+QStringLiteral("period"))
+    prefix  (QStringLiteral("Ui.SendMessage.")),
+    sendTo  (prefix+QStringLiteral("sendTo")),
+    unit    (prefix+QStringLiteral("unit")),
+    function(prefix+QStringLiteral("function")),
+    list    (prefix+QStringLiteral("list")),
+    period  (prefix+QStringLiteral("period"))
 {
 }
 
@@ -109,9 +109,9 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
     addFunctionWidget(new mbClientSendMessageWriteSingleCoilWidget           (this, this));
     addFunctionWidget(new mbClientSendMessageWriteSingleRegisterWidget       (this, this));
     addFunctionWidget(new mbClientSendMessageReadExceptionStatusWidget       (this, this));
-  //addFunctionWidget(new mbClientSendMessageDiagnosticsWidget               (this, this));
-  //addFunctionWidget(new mbClientSendMessageGetCommEventCounterWidget       (this, this));
-  //addFunctionWidget(new mbClientSendMessageGetCommEventLogWidget           (this, this));
+    addFunctionWidget(new mbClientSendMessageDiagnosticsWidget               (this, this));
+    addFunctionWidget(new mbClientSendMessageGetCommEventCounterWidget       (this, this));
+    addFunctionWidget(new mbClientSendMessageGetCommEventLogWidget           (this, this));
     addFunctionWidget(new mbClientSendMessageWriteMultipleCoilsWidget        (this, this));
     addFunctionWidget(new mbClientSendMessageWriteMultipleRegistersWidget    (this, this));
     addFunctionWidget(new mbClientSendMessageReportServerIdWidget            (this, this));

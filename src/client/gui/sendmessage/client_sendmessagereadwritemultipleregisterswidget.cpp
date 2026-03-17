@@ -284,7 +284,7 @@ void mbClientSendMessageReadWriteMultipleRegistersWidget::updateReadData()
     mbClientMessageParams params;
     params.setFunction(function());
     params.setFormat(readFormat());
-    params.setCount(m_readData.length()/8);
+    params.setCount(m_readData.length()/2);
     params.setData(m_readData);
     QString s = m_conv->toVariant(params).toString();
     m_txtReadData->setPlainText(s);

@@ -13,7 +13,10 @@ class mbClientSendMessageGetCommEventLogWidget : public mbClientSendMessageWidge
 public:
     struct Strings
     {
-        const QString prefix;
+        const QString status      ;
+        const QString eventCount  ;
+        const QString messageCount;
+        const QString eventData   ;
         Strings();
         static const Strings &instance();
     };
@@ -25,8 +28,9 @@ public:
     mbClientSendMessageGetCommEventLogWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 
 public:
-    QByteArray getData() const override;
-    void setData(const QByteArray &data) override;
+    MBSETTINGS cachedSettings() const override;
+    void setCachedSettings(const MBSETTINGS &settings) override;
+    void setParams(mbClientMessageParams &params) override;
 
 public:
     uint16_t getStatus() const;
@@ -38,7 +42,11 @@ public:
     uint16_t getMessageCount() const;
     void setMessageCount(uint16_t v);
 
+private Q_SLOTS:
+    void updateEventLog();
+
 private:
+    QByteArray m_eventData;
     QLineEdit* m_lnStatus;
     QLineEdit* m_lnEventCount;
     QLineEdit* m_lnMessageCount;

@@ -11,7 +11,10 @@
 #include <gui/widgets/core_addresswidget.h>
 
 mbClientSendMessageGetCommEventLogWidget::Strings::Strings() :
-    prefix(QStringLiteral("Ui.SendMessage.GetCommEventLogWidget."))
+    status      (QStringLiteral("status")),
+    eventCount  (QStringLiteral("eventCount")),
+    messageCount(QStringLiteral("messageCount")),
+    eventData   (QStringLiteral("eventData"))
 {
 }
 
@@ -53,47 +56,39 @@ QString mbClientSendMessageGetCommEventLogWidget::getEventLogDescription(uint8_t
     return res;
 }
 
-mbClientSendMessageGetCommEventLogWidget::mbClientSendMessageGetCommEventLogWidget(mbClientSendMessageUi *ui, QWidget *parent) : mbClientSendMessageWidget(ui, parent)
+mbClientSendMessageGetCommEventLogWidget::mbClientSendMessageGetCommEventLogWidget(mbClientSendMessageUi *ui, QWidget *parent) :
+    mbClientSendMessageWidget(MBF_GET_COMM_EVENT_LOG, ui, parent)
 {
-    this->setObjectName(QString::fromUtf8("pgGetCommEventLog"));
-
     // status
     m_lnStatus = new QLineEdit(this);
-    m_lnStatus->setObjectName(QString::fromUtf8("lnGetCommEventLogStatus"));
     m_lnStatus->setReadOnly(true);
 
     m_lnEventCount = new QLineEdit(this);
-    m_lnEventCount->setObjectName(QString::fromUtf8("lnGetCommEventLogEventCount"));
     m_lnEventCount->setReadOnly(true);
 
     m_lnMessageCount = new QLineEdit(this);
-    m_lnMessageCount->setObjectName(QString::fromUtf8("lnGetCommEventLogMessageCount"));
     m_lnMessageCount->setReadOnly(true);
 
     // table
     m_tblEventLog = new QTableWidget(this);
-    m_tblEventLog->setObjectName(QString::fromUtf8("tblEventLog"));
+    m_tblEventLog->setRowCount(0);
+    m_tblEventLog->setColumnCount(2);
+    m_tblEventLog->horizontalHeader()->setStretchLastSection(true);
     QTableWidgetItem *item0 = new QTableWidgetItem();
     item0->setText(QCoreApplication::translate("mbClientSendMessageUi", "Event Id", nullptr));
     QTableWidgetItem *item1 = new QTableWidgetItem();
-    item1->setText(QCoreApplication::translate("mbClientSendMessageUi", "Description", nullptr));  
+    item1->setText(QCoreApplication::translate("mbClientSendMessageUi", "Description", nullptr));
     m_tblEventLog->setHorizontalHeaderItem(0, item0);
     m_tblEventLog->setHorizontalHeaderItem(1, item1);
-    m_tblEventLog->setRowCount(0);
-    m_tblEventLog->setColumnCount(2);
-    m_tblEventLog->horizontalHeader()->setStretchLastSection(true); 
 
     // Labels
     auto lblStatus = new QLabel(this);
-    lblStatus->setObjectName(QString::fromUtf8("lblGetCommEventLogStatus"));
     lblStatus->setText(QCoreApplication::translate("mbClientSendMessageUi", "Status:", nullptr));
 
     auto lblEventCount = new QLabel(this);
-    lblEventCount->setObjectName(QString::fromUtf8("lblGetCommEventLogEventCount"));
     lblEventCount->setText(QCoreApplication::translate("mbClientSendMessageUi", "Event Count:", nullptr));
 
     auto lblMessageCount = new QLabel(this);
-    lblMessageCount->setObjectName(QString::fromUtf8("lblGetCommEventLogMessageCount"));
     lblMessageCount->setText(QCoreApplication::translate("mbClientSendMessageUi", "Message Count:", nullptr));
 
     // Spacer
@@ -101,7 +96,6 @@ mbClientSendMessageGetCommEventLogWidget::mbClientSendMessageGetCommEventLogWidg
 
     // Layouts
     auto formLayout = new QFormLayout();
-    formLayout->setObjectName(QString::fromUtf8("formGetCommEventLogLayout"));
 
     formLayout->setWidget(0, QFormLayout::LabelRole, lblStatus);
     formLayout->setWidget(0, QFormLayout::FieldRole, m_lnStatus);
@@ -111,26 +105,49 @@ mbClientSendMessageGetCommEventLogWidget::mbClientSendMessageGetCommEventLogWidg
     formLayout->setWidget(2, QFormLayout::FieldRole, m_lnMessageCount);
     formLayout->setItem(3, QFormLayout::FieldRole, verticalSpacer);
 
-    this->setLayout(formLayout);
+    auto verticalLayout = new QVBoxLayout();
+    verticalLayout->addLayout(formLayout);
+    verticalLayout->addWidget(m_tblEventLog);
+
+    this->setLayout(verticalLayout);
+
+    setStatus(0);
+    setEventCount(0);
+    setMessageCount(0);
 }
 
-QByteArray mbClientSendMessageGetCommEventLogWidget::getData() const
+MBSETTINGS mbClientSendMessageGetCommEventLogWidget::cachedSettings() const
 {
+    const Strings &s = Strings::instance();
 
+    MBSETTINGS m;
+    m[s.status      ] = getStatus();
+    m[s.eventCount  ] = getEventCount();
+    m[s.messageCount] = getMessageCount();
+    m[s.eventData   ] = m_eventData;
+    return m;
 }
 
-void mbClientSendMessageGetCommEventLogWidget::setData(const QByteArray &data)
+void mbClientSendMessageGetCommEventLogWidget::setCachedSettings(const MBSETTINGS &m)
 {
-    m_tblEventLog->clearContents();
-    for (int i = 0; i < data.length(); i++)
-    {
-        uint8_t eventId = reinterpret_cast<const uint8_t*>(data.constData())[i];
-        m_tblEventLog->insertRow(i);
-        QTableWidgetItem *item0 = new QTableWidgetItem(mb::toHexString(eventId));
-        QTableWidgetItem *item1 = new QTableWidgetItem(getEventLogDescription(eventId));
-        m_tblEventLog->setItem(i, 0, item0);
-        m_tblEventLog->setItem(i, 1, item1);
-    }
+    const Strings &s = Strings::instance();
+
+    MBSETTINGS::const_iterator it;
+    MBSETTINGS::const_iterator end = m.end();
+
+    it = m.find(s.status      ); if (it != end) setStatus(static_cast<uint16_t>(it.value().toInt()));
+    it = m.find(s.eventCount  ); if (it != end) setEventCount(static_cast<uint16_t>(it.value().toInt()));
+    it = m.find(s.messageCount); if (it != end) setMessageCount(static_cast<uint16_t>(it.value().toInt()));
+    it = m.find(s.eventData   ); if (it != end) m_eventData = it.value().toByteArray();
+}
+
+void mbClientSendMessageGetCommEventLogWidget::setParams(mbClientMessageParams &params)
+{
+    setStatus(params.status());
+    setEventCount(params.eventCount());
+    setMessageCount(params.messageCount());
+    m_eventData = m_conv->toByteArray(params);
+    updateEventLog();
 }
 
 uint16_t mbClientSendMessageGetCommEventLogWidget::getStatus() const
@@ -161,4 +178,18 @@ uint16_t mbClientSendMessageGetCommEventLogWidget::getMessageCount() const
 void mbClientSendMessageGetCommEventLogWidget::setMessageCount(uint16_t v)
 {
     m_lnMessageCount->setText(QString::number(v));
+}
+
+void mbClientSendMessageGetCommEventLogWidget::updateEventLog()
+{
+    m_tblEventLog->setRowCount(0);
+    for (int i = 0; i < m_eventData.length(); i++)
+    {
+        uint8_t eventId = reinterpret_cast<const uint8_t*>(m_eventData.constData())[i];
+        m_tblEventLog->insertRow(i);
+        QTableWidgetItem *item0 = new QTableWidgetItem(mb::toHexString(eventId));
+        QTableWidgetItem *item1 = new QTableWidgetItem(getEventLogDescription(eventId));
+        m_tblEventLog->setItem(i, 0, item0);
+        m_tblEventLog->setItem(i, 1, item1);
+    }
 }

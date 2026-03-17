@@ -1,4 +1,4 @@
-#include "client_sendmessagediagnwidget.h"
+#include "client_sendmessagediagnosticswidget.h"
 
 #include <QCoreApplication>
 #include <QLabel>
@@ -9,29 +9,26 @@
 
 #include <gui/widgets/core_addresswidget.h>
 
-mbClientSendMessageDiagnWidget::Strings::Strings() :
-    prefix                 (QStringLiteral("Ui.SendMessage.DiagnWidget.")),
-    diagnSubfunction       (prefix+QStringLiteral("subfunc")),
-    diagnFormat            (prefix+QStringLiteral("format")),
-    diagnRequest           (prefix+QStringLiteral("request"))
+mbClientSendMessageDiagnosticsWidget::Strings::Strings() :
+    subfunction(QStringLiteral("subfunc")),
+    format     (QStringLiteral("format")),
+    request    (QStringLiteral("request")),
+    response   (QStringLiteral("response"))
 {
 }
 
-const mbClientSendMessageDiagnWidget::Strings &mbClientSendMessageDiagnWidget::Strings::instance()
+const mbClientSendMessageDiagnosticsWidget::Strings &mbClientSendMessageDiagnosticsWidget::Strings::instance()
 {
     static Strings s;
     return s;
 }
 
-mbClientSendMessageDiagnWidget::mbClientSendMessageDiagnWidget(mbClientSendMessageUi *ui, QWidget *parent) :
-    mbClientSendMessageWidget(ui, parent)
+mbClientSendMessageDiagnosticsWidget::mbClientSendMessageDiagnosticsWidget(mbClientSendMessageUi *ui, QWidget *parent) :
+    mbClientSendMessageWidget(MBF_DIAGNOSTICS, ui, parent)
 {
-    this->setObjectName(QString::fromUtf8("pgDiagn"));
-
     // subfunctions
     m_cmbSubfunction = new QComboBox(this);
     m_cmbSubfunction->setObjectName(QString::fromUtf8("cmbDiagnSubfunction"));
-    connect(m_cmbSubfunction, SIGNAL(currentIndexChanged(int)), this, SLOT(setCurrentDiagnSubfuncIndex(int)));
     m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_QUERY_DATA                     );
     m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RESTART_COMMUNICATIONS_OPTION         );
     m_diagnSubfuncNums.append(MBF_DIAGNOSTICS_RETURN_DIAGNOSTIC_REGISTER            );
@@ -54,6 +51,7 @@ mbClientSendMessageDiagnWidget::mbClientSendMessageDiagnWidget(mbClientSendMessa
                          .arg(mb::ModbusDiagnSubfunctionString(funcNum))
                      );
     }
+    connect(m_cmbSubfunction, SIGNAL(currentIndexChanged(int)), this, SLOT(setCurrentDiagnSubfuncIndex(int)));
     m_cmbSubfunction->setCurrentIndex(0);
 
     // format
@@ -68,33 +66,27 @@ mbClientSendMessageDiagnWidget::mbClientSendMessageDiagnWidget(mbClientSendMessa
 
     // request data
     m_txtDataRequest = new QPlainTextEdit(this);
-    m_txtDataRequest->setObjectName(QString::fromUtf8("txtDiagnRequest"));
     m_txtDataRequest->setMinimumSize(QSize(0, 100));
     m_txtDataRequest->setUndoRedoEnabled(true);
     m_txtDataRequest->setReadOnly(true);
 
     // request data
     m_txtDataResponse = new QPlainTextEdit(this);
-    m_txtDataResponse->setObjectName(QString::fromUtf8("txtDiagnResponse"));
     m_txtDataResponse->setMinimumSize(QSize(0, 100));
     m_txtDataResponse->setUndoRedoEnabled(true);
     m_txtDataResponse->setReadOnly(true);
 
     // Labels
     auto lblSubfunction = new QLabel(this);
-    lblSubfunction->setObjectName(QString::fromUtf8("lblDiagnSubfunction"));
     lblSubfunction->setText(QCoreApplication::translate("mbClientSendMessageUi", "Subfunction", nullptr));
 
     auto lblFormat = new QLabel(this);
-    lblFormat->setObjectName(QString::fromUtf8("lblDiagnFormat"));
     lblFormat->setText(QCoreApplication::translate("mbClientSendMessageUi", "Format", nullptr));
 
     auto lblRequest = new QLabel(this);
-    lblRequest->setObjectName(QString::fromUtf8("lblDiagnRequest"));
     lblRequest->setText(QCoreApplication::translate("mbClientSendMessageUi", "Request", nullptr));
 
     auto lblResponse = new QLabel(this);
-    lblResponse->setObjectName(QString::fromUtf8("lblDiagnResponse"));
     lblResponse->setText(QCoreApplication::translate("mbClientSendMessageUi", "Response", nullptr));
 
     // Layouts
@@ -107,57 +99,70 @@ mbClientSendMessageDiagnWidget::mbClientSendMessageDiagnWidget(mbClientSendMessa
     horizontalLayout->setStretch(1, 1);
 
     auto verticalLayout = new QVBoxLayout();
-    horizontalLayout->setObjectName(QString::fromUtf8("verticalDiagnLayout"));
-    horizontalLayout->addLayout(horizontalLayout);
-    horizontalLayout->addWidget(lblRequest);
-    horizontalLayout->addWidget(m_txtDataRequest);
-    horizontalLayout->addWidget(lblResponse);
-    horizontalLayout->addWidget(m_txtDataResponse);
-    horizontalLayout->setStretch(1, 1);
-
+    verticalLayout->addLayout(horizontalLayout);
+    verticalLayout->addWidget(lblRequest);
+    verticalLayout->addWidget(m_txtDataRequest);
+    verticalLayout->addWidget(lblResponse);
+    verticalLayout->addWidget(m_txtDataResponse);
+    verticalLayout->setStretch(1, 1);
     this->setLayout(verticalLayout);
+
+    connect(m_cmbFormat, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &mbClientSendMessageDiagnosticsWidget::updateResponseData);
+    updateResponseData();
 }
 
-MBSETTINGS mbClientSendMessageDiagnWidget::cachedSettings() const
+MBSETTINGS mbClientSendMessageDiagnosticsWidget::cachedSettings() const
 {
     const Strings &s = Strings::instance();
 
     MBSETTINGS m;
-    m[s.diagnSubfunction] = getSubfunction();
-    m[s.diagnFormat     ] = m_cmbFormat     ->currentText();
-    m[s.diagnRequest    ] = m_txtDataRequest ->toPlainText();
+    m[s.subfunction] = getSubfunction();
+    m[s.format     ] = m_cmbFormat     ->currentText();
+    m[s.request    ] = m_txtDataRequest ->toPlainText();
+    m[s.response   ] = m_responseData;
 
     return m;
 }
 
-void mbClientSendMessageDiagnWidget::setCachedSettings(const MBSETTINGS &m)
+void mbClientSendMessageDiagnosticsWidget::setCachedSettings(const MBSETTINGS &m)
 {
     const Strings &s = Strings::instance();
 
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = m.end();
 
-    it = m.find(s.diagnSubfunction); if (it != end) setSubfunction                  (it.value().toInt   ());
-    it = m.find(s.diagnFormat     ); if (it != end) m_cmbFormat     ->setCurrentText(it.value().toString());
-    it = m.find(s.diagnRequest    ); if (it != end) m_txtDataRequest->setPlainText  (it.value().toString());
+    it = m.find(s.subfunction); if (it != end) setSubfunction                  (it.value().toInt   ());
+    it = m.find(s.format     ); if (it != end) m_cmbFormat     ->setCurrentText(it.value().toString());
+    it = m.find(s.request    ); if (it != end) m_txtDataRequest->setPlainText  (it.value().toString());
+    it = m.find(s.response   ); if (it != end) m_responseData = it.value().toByteArray();
 }
 
-QByteArray mbClientSendMessageDiagnWidget::getData() const
+void mbClientSendMessageDiagnosticsWidget::fillParams(mbClientMessageParams &params) const
 {
-
+    params.setSubfunction(getSubfunction());
+    params.setFormat(mb::enumFormatValueByIndex(m_cmbFormat->currentIndex()));
+    params.setData(m_txtDataRequest->toPlainText());
 }
 
-void mbClientSendMessageDiagnWidget::setData(const QByteArray &data)
+void mbClientSendMessageDiagnosticsWidget::setParams(mbClientMessageParams &params)
 {
-
+    params.setSubfunction(getSubfunction());
+    params.setFormat(mb::enumFormatValueByIndex(m_cmbFormat->currentIndex()));
+    m_responseData = m_conv->toByteArray(params);
+    updateResponseData();
 }
 
-uint16_t mbClientSendMessageDiagnWidget::getSubfunction() const
+mb::Format mbClientSendMessageDiagnosticsWidget::format() const
+{
+    return mb::enumFormatValueByIndex(m_cmbFormat->currentIndex());
+}
+
+uint16_t mbClientSendMessageDiagnosticsWidget::getSubfunction() const
 {
     return m_diagnSubfuncNums.value(m_cmbSubfunction->currentIndex());
 }
 
-void mbClientSendMessageDiagnWidget::setSubfunction(uint16_t subfunc)
+void mbClientSendMessageDiagnosticsWidget::setSubfunction(uint16_t subfunc)
 {
     switch (subfunc)
     {
@@ -183,8 +188,24 @@ void mbClientSendMessageDiagnWidget::setSubfunction(uint16_t subfunc)
     }
 }
 
-void mbClientSendMessageDiagnWidget::setCurrentDiagnSubfuncIndex(int funcIndex)
+void mbClientSendMessageDiagnosticsWidget::setCurrentDiagnSubfuncIndex(int funcIndex)
 {
     uint8_t funcNum = m_diagnSubfuncNums.value(funcIndex);
     setSubfunction(funcNum);
+}
+
+void mbClientSendMessageDiagnosticsWidget::updateResponseData()
+{
+    if (m_responseData.length() == 0)
+    {
+        m_txtDataResponse->setPlainText(QString());
+        return;
+    }
+    mbClientMessageParams params;
+    params.setFunction(function());
+    params.setFormat(format());
+    params.setCount(m_responseData.length()*8);
+    params.setData(m_responseData);
+    QString s = m_conv->toVariant(params).toString();
+    m_txtDataResponse->setPlainText(s);
 }

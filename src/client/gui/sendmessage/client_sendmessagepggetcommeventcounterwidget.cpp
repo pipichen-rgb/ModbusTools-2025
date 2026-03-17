@@ -9,7 +9,8 @@
 #include <gui/widgets/core_addresswidget.h>
 
 mbClientSendMessageGetCommEventCounterWidget::Strings::Strings() :
-    prefix(QStringLiteral("Ui.SendMessage.GetCommEventCounterWidget."))
+    status(QStringLiteral("status")),
+    count (QStringLiteral("count"))
 {
 }
 
@@ -20,26 +21,20 @@ const mbClientSendMessageGetCommEventCounterWidget::Strings &mbClientSendMessage
 }
 
 mbClientSendMessageGetCommEventCounterWidget::mbClientSendMessageGetCommEventCounterWidget(mbClientSendMessageUi *ui, QWidget *parent) :
-    mbClientSendMessageWidget(ui, parent)
+    mbClientSendMessageWidget(MBF_GET_COMM_EVENT_COUNTER, ui, parent)
 {
-    this->setObjectName(QString::fromUtf8("pgGetCommEventCounter"));
-
     // status
     m_lnStatus = new QLineEdit(this);
-    m_lnStatus->setObjectName(QString::fromUtf8("lnGetCommEventCounterStatus"));
     m_lnStatus->setReadOnly(true);
 
     m_lnCount = new QLineEdit(this);
-    m_lnCount->setObjectName(QString::fromUtf8("lnGetCommEventCounterCount"));
     m_lnCount->setReadOnly(true);
 
     // Labels
     auto lblStatus = new QLabel(this);
-    lblStatus->setObjectName(QString::fromUtf8("lblGetCommEventCounterStatus"));
     lblStatus->setText(QCoreApplication::translate("mbClientSendMessageUi", "Status:", nullptr));
 
     auto lblCount = new QLabel(this);
-    lblCount->setObjectName(QString::fromUtf8("lblGetCommEventCounterCount"));
     lblCount->setText(QCoreApplication::translate("mbClientSendMessageUi", "Count:", nullptr));
 
     // Spacer
@@ -54,8 +49,37 @@ mbClientSendMessageGetCommEventCounterWidget::mbClientSendMessageGetCommEventCou
     formLayout->setWidget(1, QFormLayout::LabelRole, lblCount);
     formLayout->setWidget(1, QFormLayout::FieldRole, m_lnCount);
     formLayout->setItem(2, QFormLayout::FieldRole, verticalSpacer);
-
     this->setLayout(formLayout);
+
+    setStatus(0);
+    setCount(0);
+}
+
+MBSETTINGS mbClientSendMessageGetCommEventCounterWidget::cachedSettings() const
+{
+    const Strings &s = Strings::instance();
+
+    MBSETTINGS m;
+    m[s.status] = getStatus();
+    m[s.count ] = getCount();
+    return m;
+}
+
+void mbClientSendMessageGetCommEventCounterWidget::setCachedSettings(const MBSETTINGS &m)
+{
+    const Strings &s = Strings::instance();
+
+    MBSETTINGS::const_iterator it;
+    MBSETTINGS::const_iterator end = m.end();
+
+    it = m.find(s.status); if (it != end) setStatus(static_cast<uint16_t>(it.value().toInt()));
+    it = m.find(s.count ); if (it != end) setCount(static_cast<uint16_t>(it.value().toInt()));
+}
+
+void mbClientSendMessageGetCommEventCounterWidget::setParams(mbClientMessageParams &params)
+{
+    setStatus(params.status());
+    setCount(params.eventCount());
 }
 
 uint16_t mbClientSendMessageGetCommEventCounterWidget::getStatus() const

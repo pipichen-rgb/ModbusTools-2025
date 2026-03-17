@@ -12,13 +12,19 @@ class mbClientSendMessageGetCommEventCounterWidget : public mbClientSendMessageW
 public:
     struct Strings
     {
-        const QString prefix;
+        const QString status;
+        const QString count ;
         Strings();
         static const Strings &instance();
     };
 
 public:
     mbClientSendMessageGetCommEventCounterWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
+
+public:
+    MBSETTINGS cachedSettings() const override;
+    void setCachedSettings(const MBSETTINGS &settings) override;
+    void setParams(mbClientMessageParams &params) override;
 
 public:
     uint16_t getStatus() const;
