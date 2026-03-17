@@ -45,7 +45,7 @@ set(MBTOOLS_HEADERS
     gui/sendmessage/client_sendmessagewritesinglecoilwidget.h
     gui/sendmessage/client_sendmessagewritesingleregisterwidget.h
     gui/sendmessage/client_sendmessagereadexceptionstatuswidget.h
-
+    gui/sendmessage/client_sendmessagereportserveridwidget.h
 #    gui/sendmessage/client_sendmessagediagnwidget.h
 #    gui/sendmessage/client_sendmessagefifowidget.h
 #    gui/sendmessage/client_sendmessagefilerecordswidget.h
@@ -54,7 +54,7 @@ set(MBTOOLS_HEADERS
 #    gui/sendmessage/client_sendmessagereaddatawidget.h
 #    gui/sendmessage/client_sendmessagereaddeviceidwidget.h
 #    gui/sendmessage/client_sendmessagereadwritemultiregwidget.h
-#    gui/sendmessage/client_sendmessagewritemaskwidget.h
+#    gui/sendmessage/client_sendmessagemaskwriteregisterwidget.h
     gui/sendmessage/client_sendmessagelistmodel.h
     gui/sendmessage/client_sendmessageui.h
     gui/sendbytes/client_sendbyteslistmodel.h
@@ -107,6 +107,7 @@ set(MBTOOLS_SOURCES
     gui/sendmessage/client_sendmessagewritesinglecoilwidget.cpp
     gui/sendmessage/client_sendmessagewritesingleregisterwidget.cpp
     gui/sendmessage/client_sendmessagereadexceptionstatuswidget.cpp
+    gui/sendmessage/client_sendmessagereportserveridwidget.cpp
 #    gui/sendmessage/client_sendmessagediagnwidget.cpp
 #    gui/sendmessage/client_sendmessagefifowidget.cpp
 #    gui/sendmessage/client_sendmessagefilerecordswidget.cpp
@@ -115,7 +116,7 @@ set(MBTOOLS_SOURCES
 #    gui/sendmessage/client_sendmessagereaddatawidget.cpp
 #    gui/sendmessage/client_sendmessagereaddeviceidwidget.cpp
 #    gui/sendmessage/client_sendmessagereadwritemultiregwidget.cpp
-#    gui/sendmessage/client_sendmessagewritemaskwidget.cpp
+#    gui/sendmessage/client_sendmessagemaskwriteregisterwidget.cpp
     gui/sendmessage/client_sendmessagelistmodel.cpp
     gui/sendmessage/client_sendmessageui.cpp
     gui/sendbytes/client_sendbyteslistmodel.cpp

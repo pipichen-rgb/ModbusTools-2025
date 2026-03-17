@@ -41,10 +41,10 @@ class mbClientSendMessageFIFOWidget;
 class mbClientSendMessageFileRecordsWidget;
 class mbClientSendMessageGetCommEventCounterWidget;
 class mbClientSendMessageGetCommEventLogWidget;
-class mbClientSendMessageReadDataWidget;
+class mbClientSendMessageReportServerIdWidget;
 class mbClientSendMessageReadDeviceIdWidget;
 class mbClientSendMessageReadWriteMultiRegWidget;
-class mbClientSendMessageWriteMaskWidget;
+class mbClientSendMessageMaskWriteRegisterWidget;
 class mbClientSendMessageListModel;
 
 namespace Ui {

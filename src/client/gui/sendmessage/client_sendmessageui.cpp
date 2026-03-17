@@ -42,6 +42,8 @@
 #include "client_sendmessagewritesinglecoilwidget.h"
 #include "client_sendmessagewritesingleregisterwidget.h"
 #include "client_sendmessagereadexceptionstatuswidget.h"
+#include "client_sendmessagereportserveridwidget.h"
+
 //#include "client_sendmessagediagnwidget.h"
 //#include "client_sendmessagefifowidget.h"
 //#include "client_sendmessagefilerecordswidget.h"
@@ -50,7 +52,7 @@
 //#include "client_sendmessagereaddatawidget.h"
 //#include "client_sendmessagereaddeviceidwidget.h"
 //#include "client_sendmessagereadwritemultiregwidget.h"
-//#include "client_sendmessagewritemaskwidget.h"
+//#include "client_sendmessagemaskwriteregisterwidget.h"
 
 #include "client_sendmessagelistmodel.h"
 
@@ -100,24 +102,24 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
     cmb = ui->cmbFunction;
     connect(cmb, SIGNAL(currentIndexChanged(int)), this, SLOT(setCurrentFuncIndex(int)));
 
-    addFunctionWidget(new mbClientSendMessageReadCoilsWidget                (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageReadDiscreteInputsWidget       (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageReadHoldingRegistersWidget     (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageReadInputRegistersWidget       (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageWriteSingleCoilWidget          (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageWriteSingleRegisterWidget      (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageReadExceptionStatusWidget      (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageDefaultWidget                  (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageDefaultWidget                  (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageDefaultWidget                  (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageWriteMultipleCoilsWidget       (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageWriteMultipleRegistersWidget   (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageDefaultWidget                  (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageDefaultWidget                  (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageDefaultWidget                  (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageDefaultWidget                  (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageDefaultWidget                  (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageDefaultWidget                  (&m_converter, this));
+    addFunctionWidget(new mbClientSendMessageReadCoilsWidget                 (&m_converter, this));
+    addFunctionWidget(new mbClientSendMessageReadDiscreteInputsWidget        (&m_converter, this));
+    addFunctionWidget(new mbClientSendMessageReadHoldingRegistersWidget      (&m_converter, this));
+    addFunctionWidget(new mbClientSendMessageReadInputRegistersWidget        (&m_converter, this));
+    addFunctionWidget(new mbClientSendMessageWriteSingleCoilWidget           (&m_converter, this));
+    addFunctionWidget(new mbClientSendMessageWriteSingleRegisterWidget       (&m_converter, this));
+    addFunctionWidget(new mbClientSendMessageReadExceptionStatusWidget       (&m_converter, this));
+  //addFunctionWidget(new mbClientSendMessageDiagnosticsWidget               (&m_converter, this));
+  //addFunctionWidget(new mbClientSendMessageGetCommEventCounterWidget       (&m_converter, this));
+  //addFunctionWidget(new mbClientSendMessageGetCommEventLogWidget           (&m_converter, this));
+    addFunctionWidget(new mbClientSendMessageWriteMultipleCoilsWidget        (&m_converter, this));
+    addFunctionWidget(new mbClientSendMessageWriteMultipleRegistersWidget    (&m_converter, this));
+    addFunctionWidget(new mbClientSendMessageReportServerIdWidget            (&m_converter, this));
+  //addFunctionWidget(new mbClientSendMessageReadFileRecordsWidget           (&m_converter, this));
+  //addFunctionWidget(new mbClientSendMessageWriteFileRecordsWidget          (&m_converter, this));
+  //addFunctionWidget(new mbClientSendMessageMaskWriteWidget                 (&m_converter, this));
+  //addFunctionWidget(new mbClientSendMessageReadWriteMultipleRegistersWidget(&m_converter, this));
+  //addFunctionWidget(new mbClientSendMessageReadFIFOQueueWidget             (&m_converter, this));
 
     Q_FOREACH (uint8_t funcNum, m_funcNums)
     {
@@ -126,7 +128,7 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
                          .arg(mb::ModbusFunctionString(funcNum))
                      );
     }
-    //m_funcNums.append(MBF_ENCAPSULATED_INTERFACE_TRANSPORT);
+    //addFunctionWidget(new mbClientSendMessageReadDeviceIdWidget(&m_converter, this));
     //cmb->addItem(QString("%1/%2 - ReadDeviceIdentification")
     //                .arg(MBF_ENCAPSULATED_INTERFACE_TRANSPORT, 2, 10, QChar('0'))
     //                .arg(MBF_MEI_READ_DEVICE_ID, 2, 10, QChar('0')));

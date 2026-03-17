@@ -1,13 +1,12 @@
-#ifndef CLIENT_SENDMESSAGEREADEXCEPTIONSTATUSWIDGET_H
-#define CLIENT_SENDMESSAGEREADEXCEPTIONSTATUSWIDGET_H
+#ifndef CLIENT_SENDMESSAGEREPORTSERVERIDWIDGET_H
+#define CLIENT_SENDMESSAGEREPORTSERVERIDWIDGET_H
 
 #include "client_sendmessagewidget.h"
 
 class QComboBox;
-class QLineEdit;
-class mbCoreAddressWidget;
+class QPlainTextEdit;
 
-class mbClientSendMessageReadExceptionStatusWidget : public mbClientSendMessageWidget
+class mbClientSendMessageReportServerIdWidget : public mbClientSendMessageWidget
 {
     Q_OBJECT
 
@@ -21,7 +20,7 @@ public:
     };
 
 public:
-    mbClientSendMessageReadExceptionStatusWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
+    mbClientSendMessageReportServerIdWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
 
 public:
     MBSETTINGS cachedSettings() const override;
@@ -29,15 +28,15 @@ public:
     void setParams(mbClientMessageParams &params) override;
 
 public:
-    mb::DigitalFormat digitalFormat() const;
-
+    mb::Format format() const;
+    
 private Q_SLOTS:
     void updateData();
 
 private:
-    quint8 m_data;
+    QByteArray m_data;
     QComboBox* m_cmbFormat;
-    QLineEdit* m_lnData;
+    QPlainTextEdit* m_txtData;
 };
 
-#endif // CLIENT_SENDMESSAGEREADEXCEPTIONSTATUSWIDGET_H
+#endif // CLIENT_SENDMESSAGEREPORTSERVERIDWIDGET_H

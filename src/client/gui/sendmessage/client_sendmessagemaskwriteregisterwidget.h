@@ -1,12 +1,12 @@
-#ifndef CLIENT_SENDMESSAGEWRITEMASKWIDGET_H
-#define CLIENT_SENDMESSAGEWRITEMASKWIDGET_H
+#ifndef CLIENT_SENDMESSAGEMASKWRITEREGISTERWIDGET_H
+#define CLIENT_SENDMESSAGEMASKWRITEREGISTERWIDGET_H
 
 #include "client_sendmessagewidget.h"
 
 class QSpinBox;
 class mbCoreAddressWidget;
 
-class mbClientSendMessageWriteMaskWidget : public mbClientSendMessageWidget
+class mbClientSendMessageMaskWriteRegisterWidget : public mbClientSendMessageWidget
 {
     Q_OBJECT
 
@@ -22,7 +22,7 @@ public:
     };
 
 public:
-    mbClientSendMessageWriteMaskWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
+    mbClientSendMessageMaskWriteRegisterWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 
 public:
     MBSETTINGS cachedSettings() const override;
@@ -50,4 +50,4 @@ private:
     QSpinBox* m_spMaskOr;
 };
 
-#endif // CLIENT_SENDMESSAGEWRITEMASKWIDGET_H
+#endif // CLIENT_SENDMESSAGEMASKWRITEREGISTERWIDGET_H

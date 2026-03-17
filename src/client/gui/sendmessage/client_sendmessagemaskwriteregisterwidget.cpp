@@ -1,4 +1,4 @@
-#include "client_sendmessagewritemaskwidget.h"
+#include "client_sendmessagemaskwriteregisterwidget.h"
 
 #include <QCoreApplication>
 #include <QLabel>
@@ -10,7 +10,7 @@
 
 #include <gui/widgets/core_addresswidget.h>
 
-mbClientSendMessageWriteMaskWidget::Strings::Strings() :
+mbClientSendMessageMaskWriteRegisterWidget::Strings::Strings() :
     prefix                 (QStringLiteral("Ui.SendMessage.WriteMaskWidget.")),
     writeMaskAddress       (prefix+QStringLiteral("writeMaskAddress")),
     writeMaskAnd           (prefix+QStringLiteral("writeMaskAnd")),
@@ -18,13 +18,13 @@ mbClientSendMessageWriteMaskWidget::Strings::Strings() :
 {
 }
 
-const mbClientSendMessageWriteMaskWidget::Strings &mbClientSendMessageWriteMaskWidget::Strings::instance()
+const mbClientSendMessageMaskWriteRegisterWidget::Strings &mbClientSendMessageMaskWriteRegisterWidget::Strings::instance()
 {
     static Strings s;
     return s;
 }
 
-mbClientSendMessageWriteMaskWidget::mbClientSendMessageWriteMaskWidget(mbClientSendMessageUi *ui, QWidget *parent) :
+mbClientSendMessageMaskWriteRegisterWidget::mbClientSendMessageMaskWriteRegisterWidget(mbClientSendMessageUi *ui, QWidget *parent) :
     mbClientSendMessageWidget(ui, parent)
 {
     this->setObjectName(QString::fromUtf8("pgWriteMask"));
@@ -83,7 +83,7 @@ mbClientSendMessageWriteMaskWidget::mbClientSendMessageWriteMaskWidget(mbClientS
     this->setLayout(formLayout);
 }
 
-MBSETTINGS mbClientSendMessageWriteMaskWidget::cachedSettings() const
+MBSETTINGS mbClientSendMessageMaskWriteRegisterWidget::cachedSettings() const
 {
     const Strings &s = Strings::instance();
 
@@ -95,7 +95,7 @@ MBSETTINGS mbClientSendMessageWriteMaskWidget::cachedSettings() const
     return m;
 }
 
-void mbClientSendMessageWriteMaskWidget::setCachedSettings(const MBSETTINGS &m)
+void mbClientSendMessageMaskWriteRegisterWidget::setCachedSettings(const MBSETTINGS &m)
 {
     const Strings &s = Strings::instance();
 
@@ -107,56 +107,56 @@ void mbClientSendMessageWriteMaskWidget::setCachedSettings(const MBSETTINGS &m)
     it = m.find(s.writeMaskOr     ); if (it != end) m_spMaskOr ->setValue(it.value().toInt()   );
 }
 
-QByteArray mbClientSendMessageWriteMaskWidget::getData() const
+QByteArray mbClientSendMessageMaskWriteRegisterWidget::getData() const
 {
 
 }
 
-void mbClientSendMessageWriteMaskWidget::setData(const QByteArray &data)
+void mbClientSendMessageMaskWriteRegisterWidget::setData(const QByteArray &data)
 {
 
 }
 
-int mbClientSendMessageWriteMaskWidget::getAddress() const
+int mbClientSendMessageMaskWriteRegisterWidget::getAddress() const
 {
     return m_address->getAddress().number();
 }
 
-void mbClientSendMessageWriteMaskWidget::setAddress(int v)
+void mbClientSendMessageMaskWriteRegisterWidget::setAddress(int v)
 {
     mb::Address adr = m_address->getAddress();
     adr.setNumber(v);
     m_address->setAddress(adr);
 }
 
-uint16_t mbClientSendMessageWriteMaskWidget::getOffset() const
+uint16_t mbClientSendMessageMaskWriteRegisterWidget::getOffset() const
 {
     return m_address->getAddress().offset();
 }
 
-void mbClientSendMessageWriteMaskWidget::setOffset(uint16_t v)
+void mbClientSendMessageMaskWriteRegisterWidget::setOffset(uint16_t v)
 {
     mb::Address adr = m_address->getAddress();
     adr.setOffset(v);
     m_address->setAddress(adr);
 }
 
-uint16_t mbClientSendMessageWriteMaskWidget::getMaskAnd() const
+uint16_t mbClientSendMessageMaskWriteRegisterWidget::getMaskAnd() const
 {
     return static_cast<uint16_t>(m_spMaskAnd->value());
 }
 
-void mbClientSendMessageWriteMaskWidget::setMaskAnd(uint16_t v)
+void mbClientSendMessageMaskWriteRegisterWidget::setMaskAnd(uint16_t v)
 {
     m_spMaskAnd->setValue(v);
 }
 
-uint16_t mbClientSendMessageWriteMaskWidget::getMaskOr() const
+uint16_t mbClientSendMessageMaskWriteRegisterWidget::getMaskOr() const
 {
     return static_cast<uint16_t>(m_spMaskOr->value());
 }
 
-void mbClientSendMessageWriteMaskWidget::setMaskOr(uint16_t v)
+void mbClientSendMessageMaskWriteRegisterWidget::setMaskOr(uint16_t v)
 {
     m_spMaskOr->setValue(v);
 }
