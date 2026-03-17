@@ -3,6 +3,7 @@
 
 #include "client_sendmessagewidget.h"
 
+class QComboBox;
 class QSpinBox;
 class mbCoreAddressWidget;
 
@@ -13,10 +14,10 @@ class mbClientSendMessageMaskWriteRegisterWidget : public mbClientSendMessageWid
 public:
     struct Strings
     {
-        const QString prefix          ;
-        const QString writeMaskAddress;
-        const QString writeMaskAnd    ;
-        const QString writeMaskOr     ;
+        const QString format ;
+        const QString address;
+        const QString maskAnd;
+        const QString maskOr ;
         Strings();
         static const Strings &instance();
     };
@@ -27,24 +28,28 @@ public:
 public:
     MBSETTINGS cachedSettings() const override;
     void setCachedSettings(const MBSETTINGS &settings) override;
-    QByteArray getData() const override;
-    void setData(const QByteArray &data) override;
+    void fillParams(mbClientMessageParams &params) const override;
 
 public:
-    void setModbusAddresNotation(mb::AddressNotation notation);
-    
     int getAddress() const;
     void setAddress(int v);
+
     uint16_t getOffset() const;
     void setOffset(uint16_t v);
 
-    uint16_t getMaskAnd() const;
-    void setMaskAnd(uint16_t v);
+    int getMaskAnd() const;
+    void setMaskAnd(int v);
 
-    uint16_t getMaskOr() const;
-    void setMaskOr(uint16_t v);
+    int getMaskOr() const;
+    void setMaskOr(int v);
+
+    mb::DigitalFormat digitalFormat() const;
+
+private Q_SLOTS:
+    void setDigitalFormat(int index);
 
 private:
+    QComboBox* m_cmbFormat;
     mbCoreAddressWidget* m_address;
     QSpinBox* m_spMaskAnd;
     QSpinBox* m_spMaskOr;

@@ -22,8 +22,8 @@ const mbClientSendMessageWriteSingleRegisterWidget::Strings &mbClientSendMessage
     return s;
 }
 
-mbClientSendMessageWriteSingleRegisterWidget::mbClientSendMessageWriteSingleRegisterWidget(mbClientMessageConverter* conv, QWidget *parent) :
-    mbClientSendMessageWidget(MBF_WRITE_SINGLE_REGISTER, conv, parent)
+mbClientSendMessageWriteSingleRegisterWidget::mbClientSendMessageWriteSingleRegisterWidget(mbClientSendMessageUi* ui, QWidget *parent) :
+    mbClientSendMessageWidget(MBF_WRITE_SINGLE_REGISTER, ui, parent)
 {
     // format
     m_cmbFormat = new QComboBox(this);
@@ -143,11 +143,16 @@ void mbClientSendMessageWriteSingleRegisterWidget::setAddress(int v)
     m_address->setAddress(adr);
 }
 
+mb::DigitalFormat mbClientSendMessageWriteSingleRegisterWidget::digitalFormat() const
+{
+    return static_cast<mb::DigitalFormat>(m_cmbFormat->currentData().toInt());
+}
+
 void mbClientSendMessageWriteSingleRegisterWidget::setDigitalFormat(int index)
 {
     Q_UNUSED(index)
 
-    const auto digitalFormat = mb::enumDigitalFormatValueByIndex(index+1); // pass DefaultDigitalFormat
+    const auto digitalFormat = this->digitalFormat();
     const auto value16 = static_cast<quint16>(m_spValue->value());
 
     int minValue = 0;

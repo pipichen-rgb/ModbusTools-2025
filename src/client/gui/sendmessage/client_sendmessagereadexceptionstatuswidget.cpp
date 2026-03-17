@@ -21,8 +21,8 @@ const mbClientSendMessageReadExceptionStatusWidget::Strings &mbClientSendMessage
     return s;
 }
 
-mbClientSendMessageReadExceptionStatusWidget::mbClientSendMessageReadExceptionStatusWidget(mbClientMessageConverter* conv, QWidget *parent) :
-    mbClientSendMessageWidget(MBF_READ_EXCEPTION_STATUS, conv, parent)
+mbClientSendMessageReadExceptionStatusWidget::mbClientSendMessageReadExceptionStatusWidget(mbClientSendMessageUi* ui, QWidget *parent) :
+    mbClientSendMessageWidget(MBF_READ_EXCEPTION_STATUS, ui, parent)
 {
     // format
     m_cmbFormat = new QComboBox(this);

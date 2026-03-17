@@ -1,5 +1,7 @@
 #include "client_global.h"
 
+#include <project/client_device.h>
+
 int id_mbClientMessageParams = qRegisterMetaType<mbClientMessageParamsOLD>();
 
 namespace mb {
@@ -237,6 +239,14 @@ QHash<QString, QString> getClientParamMap(const QString &params)
 
 mbClientMessageConverter::mbClientMessageConverter()
 {
+    const auto &d = mbClientDevice::Defaults::instance();
+
+    m_dataParams.swapBytes          = d.swapBytes         ;
+    m_dataParams.registerOrder      = d.registerOrder     ;
+    m_dataParams.byteArrayFormat    = d.byteArrayFormat   ;
+    m_dataParams.stringEncoding     = d.stringEncoding    ;
+    m_dataParams.stringLengthType   = d.stringLengthType  ;
+    m_dataParams.byteArraySeparator = d.byteArraySeparator;
 }
 
 QByteArray mbClientMessageConverter::toByteArray(const mbClientMessageParams &params)
@@ -527,6 +537,7 @@ Modbus::MemoryType mbClientMessageConverter::getMemoryType(const mbClientMessage
     case MBF_WRITE_MULTIPLE_REGISTERS:
     case MBF_MASK_WRITE_REGISTER:
     case MBF_READ_WRITE_MULTIPLE_REGISTERS:
+    case MBF_READ_FIFO_QUEUE:
         return Modbus::Memory_HoldingRegisters;
     }
     return Modbus::Memory_0x;

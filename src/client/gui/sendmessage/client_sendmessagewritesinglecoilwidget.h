@@ -20,7 +20,7 @@ public:
     };
 
 public:
-    mbClientSendMessageWriteSingleCoilWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
+    mbClientSendMessageWriteSingleCoilWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 
 public:
     MBSETTINGS cachedSettings() const override;

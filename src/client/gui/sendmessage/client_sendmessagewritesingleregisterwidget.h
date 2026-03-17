@@ -22,7 +22,7 @@ public:
     };
 
 public:
-    mbClientSendMessageWriteSingleRegisterWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
+    mbClientSendMessageWriteSingleRegisterWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 
 public:
     MBSETTINGS cachedSettings() const override;
@@ -33,6 +33,7 @@ public:
     uint16_t getOffset() const;
     int getAddress() const;
     void setAddress(int v);
+    mb::DigitalFormat digitalFormat() const;
 
 private Q_SLOTS:
     void setDigitalFormat(int index);

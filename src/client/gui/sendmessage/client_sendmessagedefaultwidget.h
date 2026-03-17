@@ -24,7 +24,7 @@ public:
     };
 
 public:
-    mbClientSendMessageDefaultWidget(uint8_t func, mbClientMessageConverter* conv, QWidget *parent = nullptr);
+    mbClientSendMessageDefaultWidget(uint8_t func, mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 
 public:
     MBSETTINGS cachedSettings() const override;
@@ -49,7 +49,7 @@ class mbClientSendMessageReadDefaultWidget : public mbClientSendMessageDefaultWi
     Q_OBJECT
 
 public:
-    mbClientSendMessageReadDefaultWidget(uint8_t func, mbClientMessageConverter* conv, QWidget *parent = nullptr);
+    mbClientSendMessageReadDefaultWidget(uint8_t func, mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 
 public:
     void setParams(mbClientMessageParams &params) override;
@@ -66,7 +66,7 @@ class mbClientSendMessageWriteDefaultWidget : public mbClientSendMessageDefaultW
     Q_OBJECT
 
 public:
-    mbClientSendMessageWriteDefaultWidget(uint8_t func, mbClientMessageConverter* conv, QWidget *parent = nullptr);
+    mbClientSendMessageWriteDefaultWidget(uint8_t func, mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 
 public:
     MBSETTINGS cachedSettings() const override;
@@ -77,37 +77,37 @@ public:
 class mbClientSendMessageReadCoilsWidget : public mbClientSendMessageReadDefaultWidget
 {
 public:
-    mbClientSendMessageReadCoilsWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
+    mbClientSendMessageReadCoilsWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 };  
 
 class mbClientSendMessageReadDiscreteInputsWidget : public mbClientSendMessageReadDefaultWidget
 {
 public:
-    mbClientSendMessageReadDiscreteInputsWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
+    mbClientSendMessageReadDiscreteInputsWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 };  
 
 class mbClientSendMessageReadInputRegistersWidget : public mbClientSendMessageReadDefaultWidget
 {
 public:
-    mbClientSendMessageReadInputRegistersWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
+    mbClientSendMessageReadInputRegistersWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 };  
 
 class mbClientSendMessageReadHoldingRegistersWidget : public mbClientSendMessageReadDefaultWidget
 {
 public:
-    mbClientSendMessageReadHoldingRegistersWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
+    mbClientSendMessageReadHoldingRegistersWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 };  
 
 class mbClientSendMessageWriteMultipleCoilsWidget : public mbClientSendMessageWriteDefaultWidget
 {
 public:
-    mbClientSendMessageWriteMultipleCoilsWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
+    mbClientSendMessageWriteMultipleCoilsWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 };    
 
 class mbClientSendMessageWriteMultipleRegistersWidget : public mbClientSendMessageWriteDefaultWidget
 {
 public:
-    mbClientSendMessageWriteMultipleRegistersWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
+    mbClientSendMessageWriteMultipleRegistersWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 };    
 
 #endif // CLIENT_SENDMESSAGEDEFAULTWIDGET_H

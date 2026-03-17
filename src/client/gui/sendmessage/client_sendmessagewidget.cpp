@@ -1,9 +1,11 @@
 #include "client_sendmessagewidget.h"
 
-mbClientSendMessageWidget::mbClientSendMessageWidget(uint8_t func, mbClientMessageConverter* conv, QWidget *parent) :
+#include "client_sendmessageui.h"
+
+mbClientSendMessageWidget::mbClientSendMessageWidget(uint8_t func, mbClientSendMessageUi *ui, QWidget *parent) :
     QWidget{parent},
     m_func{func},
-    m_conv{conv}
+    m_conv{ui->converter()}
 {
     m_prefix = QString("Ui.SendMessage.FC%1.").arg(func, 2, 10, QChar('0'));
 }
@@ -23,12 +25,12 @@ void mbClientSendMessageWidget::prepareToSend()
     // Note: Base implementation does nothing
 }
 
-void mbClientSendMessageWidget::fillParams(mbClientMessageParams &params) const
+void mbClientSendMessageWidget::fillParams(mbClientMessageParams &/*params*/) const
 {
     // Note: Base implementation does nothing
 }
 
-void mbClientSendMessageWidget::setParams(mbClientMessageParams &params)
+void mbClientSendMessageWidget::setParams(mbClientMessageParams &/*params*/)
 {
     // Note: Base implementation does nothing
 }

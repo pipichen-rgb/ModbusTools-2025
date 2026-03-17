@@ -43,16 +43,16 @@
 #include "client_sendmessagewritesingleregisterwidget.h"
 #include "client_sendmessagereadexceptionstatuswidget.h"
 #include "client_sendmessagereportserveridwidget.h"
+#include "client_sendmessagemaskwriteregisterwidget.h"
+#include "client_sendmessagereadwritemultipleregisterswidget.h"
+#include "client_sendmessagereadfifoqueuewidget.h"
 
 //#include "client_sendmessagediagnwidget.h"
-//#include "client_sendmessagefifowidget.h"
 //#include "client_sendmessagefilerecordswidget.h"
 //#include "client_sendmessagepggetcommeventcounterwidget.h"
 //#include "client_sendmessagepggetcommeventlogwidget.h"
 //#include "client_sendmessagereaddatawidget.h"
 //#include "client_sendmessagereaddeviceidwidget.h"
-//#include "client_sendmessagereadwritemultiregwidget.h"
-//#include "client_sendmessagemaskwriteregisterwidget.h"
 
 #include "client_sendmessagelistmodel.h"
 
@@ -102,24 +102,24 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
     cmb = ui->cmbFunction;
     connect(cmb, SIGNAL(currentIndexChanged(int)), this, SLOT(setCurrentFuncIndex(int)));
 
-    addFunctionWidget(new mbClientSendMessageReadCoilsWidget                 (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageReadDiscreteInputsWidget        (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageReadHoldingRegistersWidget      (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageReadInputRegistersWidget        (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageWriteSingleCoilWidget           (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageWriteSingleRegisterWidget       (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageReadExceptionStatusWidget       (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageDiagnosticsWidget               (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageGetCommEventCounterWidget       (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageGetCommEventLogWidget           (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageWriteMultipleCoilsWidget        (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageWriteMultipleRegistersWidget    (&m_converter, this));
-    addFunctionWidget(new mbClientSendMessageReportServerIdWidget            (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageReadFileRecordsWidget           (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageWriteFileRecordsWidget          (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageMaskWriteWidget                 (&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageReadWriteMultipleRegistersWidget(&m_converter, this));
-  //addFunctionWidget(new mbClientSendMessageReadFIFOQueueWidget             (&m_converter, this));
+    addFunctionWidget(new mbClientSendMessageReadCoilsWidget                 (this, this));
+    addFunctionWidget(new mbClientSendMessageReadDiscreteInputsWidget        (this, this));
+    addFunctionWidget(new mbClientSendMessageReadHoldingRegistersWidget      (this, this));
+    addFunctionWidget(new mbClientSendMessageReadInputRegistersWidget        (this, this));
+    addFunctionWidget(new mbClientSendMessageWriteSingleCoilWidget           (this, this));
+    addFunctionWidget(new mbClientSendMessageWriteSingleRegisterWidget       (this, this));
+    addFunctionWidget(new mbClientSendMessageReadExceptionStatusWidget       (this, this));
+  //addFunctionWidget(new mbClientSendMessageDiagnosticsWidget               (this, this));
+  //addFunctionWidget(new mbClientSendMessageGetCommEventCounterWidget       (this, this));
+  //addFunctionWidget(new mbClientSendMessageGetCommEventLogWidget           (this, this));
+    addFunctionWidget(new mbClientSendMessageWriteMultipleCoilsWidget        (this, this));
+    addFunctionWidget(new mbClientSendMessageWriteMultipleRegistersWidget    (this, this));
+    addFunctionWidget(new mbClientSendMessageReportServerIdWidget            (this, this));
+  //addFunctionWidget(new mbClientSendMessageReadFileRecordsWidget           (this, this));
+  //addFunctionWidget(new mbClientSendMessageWriteFileRecordsWidget          (this, this));
+    addFunctionWidget(new mbClientSendMessageMaskWriteRegisterWidget         (this, this));
+    addFunctionWidget(new mbClientSendMessageReadWriteMultipleRegistersWidget(this, this));
+    addFunctionWidget(new mbClientSendMessageReadFIFOQueueWidget             (this, this));
 
     Q_FOREACH (uint8_t funcNum, m_funcNums)
     {
@@ -948,6 +948,7 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
         uint16_t count = message->count();
         QByteArray data(count * 2, '\0');
         message->getData(0, count, data.data());
+        params.setCount(count);
         params.setData(data);
     }
         break;

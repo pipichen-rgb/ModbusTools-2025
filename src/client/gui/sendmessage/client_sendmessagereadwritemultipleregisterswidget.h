@@ -8,38 +8,38 @@ class QSpinBox;
 class QPlainTextEdit;
 class mbCoreAddressWidget;
 
-class mbClientSendMessageReadWriteMultiRegWidget : public mbClientSendMessageWidget
+class mbClientSendMessageReadWriteMultipleRegistersWidget : public mbClientSendMessageWidget
 {
     Q_OBJECT
 
 public:
     struct Strings
     {
-        const QString prefix                ;
-        const QString rwMultiRegWriteAddress;
-        const QString rwMultiRegWriteFormat ;
-        const QString rwMultiRegWriteCount  ;
-        const QString rwMultiRegWriteData   ;
-        const QString rwMultiRegReadAddress ;
-        const QString rwMultiRegReadFormat  ;
-        const QString rwMultiRegReadCount   ;
-        const QString rwMultiRegReadData    ;
+        const QString writeFormat ;
+        const QString writeAddress;
+        const QString writeCount  ;
+        const QString writeData   ;
+        const QString readFormat  ;
+        const QString readAddress ;
+        const QString readCount   ;
+        const QString readData    ;
         Strings();
         static const Strings &instance();
     };
 
 public:
-    mbClientSendMessageReadWriteMultiRegWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
+    mbClientSendMessageReadWriteMultipleRegistersWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 
 public:
     MBSETTINGS cachedSettings() const override;
     void setCachedSettings(const MBSETTINGS &settings) override;
-    QByteArray getData() const override;
-    void setData(const QByteArray &data) override;
+    void fillParams(mbClientMessageParams &params) const override;
+    void setParams(mbClientMessageParams &params) override;
 
 public:
     void setModbusAddresNotation(mb::AddressNotation notation);
     
+    mb::Format writeFormat() const;
     int getWriteAddress() const;
     void setWriteAddress(int v);
     uint16_t getWriteOffset() const;
@@ -48,6 +48,7 @@ public:
     uint16_t getWriteCount() const;
     void setWriteCount(uint16_t v);
 
+    mb::Format readFormat() const;
     int getReadAddress() const;
     void setReadAddress(int v);
     uint16_t getReadOffset() const;
@@ -56,20 +57,21 @@ public:
     uint16_t getReadCount() const;
     void setReadCount(uint16_t v);
 
+private Q_SLOTS:
+    void updateReadData();
+
 private:
+    QByteArray m_writeData;
     QComboBox* m_cmbWriteFormat;
     mbCoreAddressWidget* m_writeAddress;
     QSpinBox* m_spWriteCount;
     QPlainTextEdit* m_txtWriteData;
-    QByteArray m_writeData;
-    bool m_isWriteDirty;
 
+    QByteArray m_readData;
     QComboBox* m_cmbReadFormat;
     mbCoreAddressWidget* m_readAddress;
     QSpinBox* m_spReadCount;
     QPlainTextEdit* m_txtReadData;
-    QByteArray m_readData;
-    bool m_isReadDirty;
 };
 
 #endif // CLIENT_SENDMESSAGEREADWRITEMULTIREGWIDGET_H

@@ -1,4 +1,4 @@
-#include "client_sendmessagereadwritemultiregwidget.h"
+#include "client_sendmessagereadwritemultipleregisterswidget.h"
 
 #include <QCoreApplication>
 #include <QLabel>
@@ -10,33 +10,29 @@
 
 #include <gui/widgets/core_addresswidget.h>
 
-mbClientSendMessageReadWriteMultiRegWidget::Strings::Strings() :
-    prefix                 (QStringLiteral("Ui.SendMessage.")),
-    rwMultiRegWriteAddress (prefix+QStringLiteral("rwMultiRegWriteAddress")),
-    rwMultiRegWriteFormat  (prefix+QStringLiteral("rwMultiRegWriteFormat")),
-    rwMultiRegWriteCount   (prefix+QStringLiteral("rwMultiRegWriteCount")),
-    rwMultiRegWriteData    (prefix+QStringLiteral("rwMultiRegWriteData")),
-    rwMultiRegReadAddress  (prefix+QStringLiteral("rwMultiRegReadAddress")),
-    rwMultiRegReadFormat   (prefix+QStringLiteral("rwMultiRegReadFormat")),
-    rwMultiRegReadCount    (prefix+QStringLiteral("rwMultiRegReadCount")),
-    rwMultiRegReadData     (prefix+QStringLiteral("rwMultiRegReadData"))
+mbClientSendMessageReadWriteMultipleRegistersWidget::Strings::Strings() :
+    writeFormat (QStringLiteral("writeFormat")),
+    writeAddress(QStringLiteral("writeAddress")),
+    writeCount  (QStringLiteral("writeCount")),
+    writeData   (QStringLiteral("writeData")),
+    readFormat  (QStringLiteral("readFormat")),
+    readAddress (QStringLiteral("readAddress")),
+    readCount   (QStringLiteral("readCount")),
+    readData    (QStringLiteral("readData"))
 {
 }
 
-const mbClientSendMessageReadWriteMultiRegWidget::Strings &mbClientSendMessageReadWriteMultiRegWidget::Strings::instance()
+const mbClientSendMessageReadWriteMultipleRegistersWidget::Strings &mbClientSendMessageReadWriteMultipleRegistersWidget::Strings::instance()
 {
     static const Strings s;
     return s;
 }
 
-mbClientSendMessageReadWriteMultiRegWidget::mbClientSendMessageReadWriteMultiRegWidget(mbClientSendMessageUi *ui, QWidget *parent) :
-    mbClientSendMessageWidget(ui, parent)
+mbClientSendMessageReadWriteMultipleRegistersWidget::mbClientSendMessageReadWriteMultipleRegistersWidget(mbClientSendMessageUi *ui, QWidget *parent) :
+    mbClientSendMessageWidget(MBF_READ_WRITE_MULTIPLE_REGISTERS, ui, parent)
 {
-    this->setObjectName(QString::fromUtf8("pgReadWriteMultiReg"));
-
     // write format
     m_cmbWriteFormat = new QComboBox(this);
-    m_cmbWriteFormat->setObjectName(QString::fromUtf8("cmbWriteMultiRegFormat"));
     auto ls = mb::enumFormatKeyList();
     Q_FOREACH (const QString &s, ls)
     {
@@ -50,22 +46,19 @@ mbClientSendMessageReadWriteMultiRegWidget::mbClientSendMessageReadWriteMultiReg
 
     // write count
     m_spWriteCount = new QSpinBox(this);
-    m_spWriteCount->setObjectName(QString::fromUtf8("spWriteMultiRegCount"));
     m_spWriteCount->setMinimumSize(QSize(80, 0));
     m_spWriteCount->setMinimum(1);
     m_spWriteCount->setMaximum(MB_MAX_REGISTERS);
 
     // write text data
     m_txtWriteData = new QPlainTextEdit(this);
-    m_txtWriteData->setObjectName(QString::fromUtf8("m_txtWriteMultiRegData"));
     m_txtWriteData->setMinimumSize(QSize(0, 100));
     m_txtWriteData->setUndoRedoEnabled(true);
-    m_txtWriteData->setReadOnly(true);
+    m_txtWriteData->setReadOnly(false);
 
     // read format
     m_cmbReadFormat = new QComboBox(this);
-    m_cmbReadFormat->setObjectName(QString::fromUtf8("cmbReadMultiRegFormat"));
-    auto ls = mb::enumFormatKeyList();
+    ls = mb::enumFormatKeyList();
     Q_FOREACH (const QString &s, ls)
     {
         m_cmbReadFormat->addItem(s);
@@ -78,41 +71,33 @@ mbClientSendMessageReadWriteMultiRegWidget::mbClientSendMessageReadWriteMultiReg
 
     // read count
     m_spReadCount = new QSpinBox(this);
-    m_spReadCount->setObjectName(QString::fromUtf8("spReadMultiRegCount"));
     m_spReadCount->setMinimumSize(QSize(80, 0));
     m_spReadCount->setMinimum(1);
     m_spReadCount->setMaximum(MB_MAX_DISCRETS); // TODO: if register was choosen than change this value
 
     // read text data
     m_txtReadData = new QPlainTextEdit(this);
-    m_txtReadData->setObjectName(QString::fromUtf8("m_txtReadMultiRegData"));
     m_txtReadData->setMinimumSize(QSize(0, 100));
     m_txtReadData->setUndoRedoEnabled(true);
     m_txtReadData->setReadOnly(true);
 
     // Labels
     auto lblWriteAddress = new QLabel(this);
-    lblWriteAddress->setObjectName(QString::fromUtf8("lblWriteMultiRegAddress"));
     lblWriteAddress->setText(QCoreApplication::translate("mbClientSendMessageUi", "Address:", nullptr));
 
     auto lblWriteCount = new QLabel(this);
-    lblWriteCount->setObjectName(QString::fromUtf8("lblWriteMultiRegCount"));
     lblWriteCount->setText(QCoreApplication::translate("mbClientSendMessageUi", "Count:", nullptr));
 
     auto lblWriteFormat = new QLabel(this);
-    lblWriteFormat->setObjectName(QString::fromUtf8("lblWriteMultiRegFormat"));
     lblWriteFormat->setText(QCoreApplication::translate("mbClientSendMessageUi", "Format:", nullptr));
 
     auto lblReadAddress = new QLabel(this);
-    lblReadAddress->setObjectName(QString::fromUtf8("lblReadMultiRegAddress"));
     lblReadAddress->setText(QCoreApplication::translate("mbClientSendMessageUi", "Address:", nullptr));
 
     auto lblReadCount = new QLabel(this);
-    lblReadCount->setObjectName(QString::fromUtf8("lblReadMultiRegCount"));
     lblReadCount->setText(QCoreApplication::translate("mbClientSendMessageUi", "Count:", nullptr));
 
     auto lblReadFormat = new QLabel(this);
-    lblReadFormat->setObjectName(QString::fromUtf8("lblReadMultiRegFormat"));
     lblReadFormat->setText(QCoreApplication::translate("mbClientSendMessageUi", "Format:", nullptr));
 
     // Spacer
@@ -159,114 +144,148 @@ mbClientSendMessageReadWriteMultiRegWidget::mbClientSendMessageReadWriteMultiReg
     this->setLayout(verticalLayout);
 }
 
-MBSETTINGS mbClientSendMessageReadWriteMultiRegWidget::cachedSettings() const
+MBSETTINGS mbClientSendMessageReadWriteMultipleRegistersWidget::cachedSettings() const
 {
     const Strings &s = Strings::instance();
 
     MBSETTINGS m;
-    m[s.rwMultiRegWriteAddress] = getWriteAddress();
-    m[s.rwMultiRegWriteFormat ] = m_cmbWriteFormat ->currentText();
-    m[s.rwMultiRegWriteCount  ] = m_spWriteCount   ->value      ();
-    m[s.rwMultiRegWriteData   ] = m_txtWriteData   ->toPlainText();
-    m[s.rwMultiRegReadAddress ] = getReadAddress();
-    m[s.rwMultiRegReadFormat  ] = m_cmbReadFormat  ->currentText();
-    m[s.rwMultiRegReadCount   ] = m_spReadCount    ->value      ();
-    m[s.rwMultiRegReadData    ] = m_txtReadData    ->toPlainText();
+    m[s.writeFormat ] = m_cmbWriteFormat ->currentText();
+    m[s.writeAddress] = getWriteAddress();
+    m[s.writeCount  ] = m_spWriteCount   ->value      ();
+    m[s.writeData   ] = m_txtWriteData   ->toPlainText();
+    m[s.readFormat  ] = m_cmbReadFormat  ->currentText();
+    m[s.readAddress ] = getReadAddress();
+    m[s.readCount   ] = m_spReadCount    ->value      ();
+    m[s.readData    ] = m_txtReadData    ->toPlainText();
 
     return m;
 }
 
-void mbClientSendMessageReadWriteMultiRegWidget::setCachedSettings(const MBSETTINGS &m)
+void mbClientSendMessageReadWriteMultipleRegistersWidget::setCachedSettings(const MBSETTINGS &m)
 {
     const Strings &s = Strings::instance();
 
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = m.end();
 
-    it = m.find(s.rwMultiRegWriteAddress); if (it != end) setWriteAddress                   (it.value().toInt()   );
-    it = m.find(s.rwMultiRegWriteFormat ); if (it != end) m_cmbWriteFormat  ->setCurrentText(it.value().toString());
-    it = m.find(s.rwMultiRegWriteCount  ); if (it != end) m_spWriteCount    ->setValue      (it.value().toInt()   );
-    it = m.find(s.rwMultiRegWriteData   ); if (it != end) m_txtWriteData    ->setPlainText  (it.value().toString());
-    it = m.find(s.rwMultiRegReadAddress ); if (it != end) setReadAddress                    (it.value().toInt()   );
-    it = m.find(s.rwMultiRegReadFormat  ); if (it != end) m_cmbReadFormat  ->setCurrentText (it.value().toString());
-    it = m.find(s.rwMultiRegReadCount   ); if (it != end) m_spReadCount    ->setValue       (it.value().toInt()   );
-    it = m.find(s.rwMultiRegReadData    ); if (it != end) m_txtReadData    ->setPlainText   (it.value().toString());
+    it = m.find(s.writeFormat ); if (it != end) setWriteAddress                   (it.value().toInt()   );
+    it = m.find(s.writeAddress); if (it != end) m_cmbWriteFormat  ->setCurrentText(it.value().toString());
+    it = m.find(s.writeCount  ); if (it != end) setWriteCount      (it.value().toInt()   );
+    it = m.find(s.writeData   ); if (it != end) m_txtWriteData    ->setPlainText  (it.value().toString());
+    it = m.find(s.readFormat  ); if (it != end) setReadAddress                    (it.value().toInt()   );
+    it = m.find(s.readAddress ); if (it != end) m_cmbReadFormat  ->setCurrentText (it.value().toString());
+    it = m.find(s.readCount   ); if (it != end) setReadCount                      (it.value().toInt()   );
+    it = m.find(s.readData    ); if (it != end) m_readData = it.value().toByteArray();
+    updateReadData();
 }
 
-QByteArray mbClientSendMessageReadWriteMultiRegWidget::getData() const
+void mbClientSendMessageReadWriteMultipleRegistersWidget::fillParams(mbClientMessageParams &params) const
 {
-
+    params.setFormat(writeFormat());
+    params.setWriteOffset(getWriteOffset());
+    params.setWriteCount(getWriteCount());
+    params.setOffset(getReadOffset());
+    params.setCount(getReadCount());
+    params.setData(m_txtWriteData->toPlainText());
 }
 
-void mbClientSendMessageReadWriteMultiRegWidget::setData(const QByteArray &data)
+void mbClientSendMessageReadWriteMultipleRegistersWidget::setParams(mbClientMessageParams &params)
 {
-
+    params.setFormat(readFormat());
+    m_readData = m_conv->toByteArray(params);
+    updateReadData();
 }
 
-int mbClientSendMessageReadWriteMultiRegWidget::getWriteAddress() const
+mb::Format mbClientSendMessageReadWriteMultipleRegistersWidget::writeFormat() const
+{
+    return mb::enumFormatValueByIndex(m_cmbWriteFormat->currentIndex());
+}
+
+int mbClientSendMessageReadWriteMultipleRegistersWidget::getWriteAddress() const
 {
     return m_writeAddress->getAddress().number();
 }
 
-void mbClientSendMessageReadWriteMultiRegWidget::setWriteAddress(int v)
+void mbClientSendMessageReadWriteMultipleRegistersWidget::setWriteAddress(int v)
 {
     mb::Address adr = m_writeAddress->getAddress();
     adr.setNumber(v);
     m_writeAddress->setAddress(adr);
 }
 
-uint16_t mbClientSendMessageReadWriteMultiRegWidget::getWriteOffset() const
+uint16_t mbClientSendMessageReadWriteMultipleRegistersWidget::getWriteOffset() const
 {
     return m_writeAddress->getAddress().offset();
 }
 
-void mbClientSendMessageReadWriteMultiRegWidget::setWriteOffset(uint16_t v)
+void mbClientSendMessageReadWriteMultipleRegistersWidget::setWriteOffset(uint16_t v)
 {
     mb::Address adr = m_writeAddress->getAddress();
     adr.setOffset(v);
     m_writeAddress->setAddress(adr);
 }
 
-uint16_t mbClientSendMessageReadWriteMultiRegWidget::getWriteCount() const
+uint16_t mbClientSendMessageReadWriteMultipleRegistersWidget::getWriteCount() const
 {
     return static_cast<uint16_t>(m_spWriteCount->value());
 }
 
-void mbClientSendMessageReadWriteMultiRegWidget::setWriteCount(uint16_t v)
+void mbClientSendMessageReadWriteMultipleRegistersWidget::setWriteCount(uint16_t v)
 {
     m_spWriteCount->setValue(v);
 }
 
-int mbClientSendMessageReadWriteMultiRegWidget::getReadAddress() const
+mb::Format mbClientSendMessageReadWriteMultipleRegistersWidget::readFormat() const
 {
-    return m_writeAddress->getAddress().number();
+    return mb::enumFormatValueByIndex(m_cmbReadFormat->currentIndex());
 }
 
-void mbClientSendMessageReadWriteMultiRegWidget::setReadAddress(int v)
+int mbClientSendMessageReadWriteMultipleRegistersWidget::getReadAddress() const
 {
-    mb::Address adr = m_writeAddress->getAddress();
+    return m_readAddress->getAddress().number();
+}
+
+void mbClientSendMessageReadWriteMultipleRegistersWidget::setReadAddress(int v)
+{
+    mb::Address adr = m_readAddress->getAddress();
     adr.setNumber(v);
-    m_writeAddress->setAddress(adr);
+    m_readAddress->setAddress(adr);
 }
 
-uint16_t mbClientSendMessageReadWriteMultiRegWidget::getReadOffset() const
+uint16_t mbClientSendMessageReadWriteMultipleRegistersWidget::getReadOffset() const
 {
-    return m_writeAddress->getAddress().offset();
+    return m_readAddress->getAddress().offset();
 }
 
-void mbClientSendMessageReadWriteMultiRegWidget::setReadOffset(uint16_t v)
+void mbClientSendMessageReadWriteMultipleRegistersWidget::setReadOffset(uint16_t v)
 {
-    mb::Address adr = m_writeAddress->getAddress();
+    mb::Address adr = m_readAddress->getAddress();
     adr.setOffset(v);
-    m_writeAddress->setAddress(adr);
+    m_readAddress->setAddress(adr);
 }
 
-uint16_t mbClientSendMessageReadWriteMultiRegWidget::getReadCount() const
+uint16_t mbClientSendMessageReadWriteMultipleRegistersWidget::getReadCount() const
 {
     return static_cast<uint16_t>(m_spReadCount->value());
 }
 
-void mbClientSendMessageReadWriteMultiRegWidget::setReadCount(uint16_t v)
+void mbClientSendMessageReadWriteMultipleRegistersWidget::setReadCount(uint16_t v)
 {
     m_spReadCount->setValue(v);
+}
+
+void mbClientSendMessageReadWriteMultipleRegistersWidget::updateReadData()
+{
+    if (m_readData.length() == 0)
+    {
+        m_txtReadData->setPlainText(QString());
+        return;
+    }
+    mbClientMessageParams params;
+    params.setFunction(function());
+    params.setFormat(readFormat());
+    params.setCount(m_readData.length()/8);
+    params.setData(m_readData);
+    QString s = m_conv->toVariant(params).toString();
+    m_txtReadData->setPlainText(s);
 }

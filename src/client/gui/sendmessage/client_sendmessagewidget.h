@@ -10,7 +10,7 @@ class mbClientSendMessageWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit mbClientSendMessageWidget(uint8_t func, mbClientMessageConverter* conv, QWidget *parent = nullptr);
+    explicit mbClientSendMessageWidget(uint8_t func, mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 
 public:
     inline uint8_t function() const { return m_func; }

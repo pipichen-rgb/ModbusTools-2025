@@ -97,7 +97,6 @@ public:
         m_format = mb::Dec16;
         m_writeOffset = 0;
         m_writeCount = 0;
-        m_writeFormat = mb::Dec16;
         m_status = 0;
         m_eventCount = 0;
         m_messageCount = 0;
@@ -145,11 +144,6 @@ public:
     inline void setWriteCount(uint16_t writeCount) { m_writeCount = writeCount; }
     inline bool hasWriteCount() const { return (m_usedFields & UsedWriteCount) != 0; }
     inline void clearWriteCount() { m_usedFields &= ~UsedWriteCount; }
-
-    inline mb::Format writeFormat() const { return m_writeFormat; }
-    inline void setWriteFormat(mb::Format writeFormat) { m_writeFormat = writeFormat; }
-    inline bool hasWriteFormat() const { return (m_usedFields & UsedWriteFormat) != 0; }
-    inline void clearWriteFormat() { m_usedFields &= ~UsedWriteFormat; }
 
     inline uint16_t status() const { return m_status; }
     inline void setStatus(uint16_t status) { m_status = status; }
@@ -209,25 +203,26 @@ public:
 private:
     enum UsedFields
     {
-        UsedFunc = 0x01,
-        UsedOffset = 0x02,
-        UsedCount = 0x04,
-        UsedFormat = 0x08,
-        UsedWriteOffset = 0x10,
-        UsedWriteCount = 0x20,
-        UsedWriteFormat = 0x40,
-        UsedSubfunction = 0x80,
-        UsedStatus = 0x200,
-        UsedEventCount = 0x400,
-        UsedMessageCount = 0x800,
-        UsedDeviceId = 0x1000,
-        UsedObjectId = 0x2000,
-        UsedNumberOfObjects = 0x4000,
-        UsedConformityLevel = 0x8000,
-        UsedNextObjectId = 0x10000,
-        UsedMoreFollows = 0x20000,
-        UsedFileRecords = 0x40000000,
-        UsedData = 0x80000000
+        UsedFunc            = 0x00000001,
+        UsedOffset          = 0x00000002,
+        UsedCount           = 0x00000004,
+        UsedFormat          = 0x00000008,
+        UsedWriteOffset     = 0x00000010,
+        UsedWriteCount      = 0x00000020,
+        UsedMaskAnd         = 0x00000040,
+        UsedMaskOr          = 0x00000080,
+        UsedSubfunction     = 0x00000100,
+        UsedStatus          = 0x00000200,
+        UsedEventCount      = 0x00000400,
+        UsedMessageCount    = 0x00000800,
+        UsedDeviceId        = 0x00001000,
+        UsedObjectId        = 0x00002000,
+        UsedNumberOfObjects = 0x00004000,
+        UsedConformityLevel = 0x00008000,
+        UsedNextObjectId    = 0x00010000,
+        UsedMoreFollows     = 0x00020000,
+        UsedFileRecords     = 0x40000000,
+        UsedData            = 0x80000000
     };
     int m_usedFields;
     int m_func;
@@ -242,13 +237,13 @@ private:
     union
     {
         uint16_t m_writeOffset;
-        uint16_t m_andMask;
+        uint16_t m_maskAnd;
     };
 
     union
     {
         uint16_t m_writeCount;
-        uint16_t m_orMask;
+        uint16_t m_maskOr;
     };
 
     union 
@@ -271,7 +266,6 @@ private:
         };
     };
     
-    mb::Format m_writeFormat;
     QVector<Modbus::FileRecord> m_fileRecords;
     QVariant m_data;
 

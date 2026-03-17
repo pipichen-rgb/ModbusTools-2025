@@ -19,8 +19,8 @@ const mbClientSendMessageReportServerIdWidget::Strings &mbClientSendMessageRepor
     return s;
 }
 
-mbClientSendMessageReportServerIdWidget::mbClientSendMessageReportServerIdWidget(mbClientMessageConverter* conv, QWidget *parent) :
-    mbClientSendMessageWidget(MBF_REPORT_SERVER_ID, conv, parent)
+mbClientSendMessageReportServerIdWidget::mbClientSendMessageReportServerIdWidget(mbClientSendMessageUi* ui, QWidget *parent) :
+    mbClientSendMessageWidget(MBF_REPORT_SERVER_ID, ui, parent)
 {
     // format
     m_cmbFormat = new QComboBox(this);

@@ -26,8 +26,8 @@ const mbClientSendMessageDefaultWidget::Strings &mbClientSendMessageDefaultWidge
     return s;
 }
 
-mbClientSendMessageDefaultWidget::mbClientSendMessageDefaultWidget(uint8_t function, mbClientMessageConverter* conv, QWidget *parent) :
-    mbClientSendMessageWidget(function, conv, parent)
+mbClientSendMessageDefaultWidget::mbClientSendMessageDefaultWidget(uint8_t function, mbClientSendMessageUi* ui, QWidget *parent) :
+    mbClientSendMessageWidget(function, ui, parent)
 {
     // format
     m_cmbFormat = new QComboBox(this);
@@ -142,8 +142,8 @@ uint16_t mbClientSendMessageDefaultWidget::getCount() const
     return static_cast<uint16_t>(m_spCount->value());
 }
 
-mbClientSendMessageReadDefaultWidget::mbClientSendMessageReadDefaultWidget(uint8_t func, mbClientMessageConverter *conv, QWidget *parent)
-    : mbClientSendMessageDefaultWidget(func, conv, parent)
+mbClientSendMessageReadDefaultWidget::mbClientSendMessageReadDefaultWidget(uint8_t func, mbClientSendMessageUi* ui, QWidget *parent)
+    : mbClientSendMessageDefaultWidget(func, ui, parent)
 {
     m_txtData->setReadOnly(true);
     connect(m_cmbFormat, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &mbClientSendMessageReadDefaultWidget::setFormat);
@@ -167,8 +167,8 @@ void mbClientSendMessageReadDefaultWidget::setFormat(int index)
     m_txtData->setPlainText(m_conv->toVariant(params).toString());
 }
 
-mbClientSendMessageWriteDefaultWidget::mbClientSendMessageWriteDefaultWidget(uint8_t func, mbClientMessageConverter *conv, QWidget *parent)
-    : mbClientSendMessageDefaultWidget(func, conv, parent)
+mbClientSendMessageWriteDefaultWidget::mbClientSendMessageWriteDefaultWidget(uint8_t func, mbClientSendMessageUi* ui, QWidget *parent)
+    : mbClientSendMessageDefaultWidget(func, ui, parent)
 {
     m_txtData->setReadOnly(false);
 }
@@ -199,38 +199,38 @@ void mbClientSendMessageWriteDefaultWidget::fillParams(mbClientMessageParams &pa
     params.setData(m_txtData->toPlainText());
 }
 
-mbClientSendMessageReadCoilsWidget::mbClientSendMessageReadCoilsWidget(mbClientMessageConverter *conv, QWidget *parent)
-    : mbClientSendMessageReadDefaultWidget(MBF_READ_COILS, conv, parent)
+mbClientSendMessageReadCoilsWidget::mbClientSendMessageReadCoilsWidget(mbClientSendMessageUi* ui, QWidget *parent)
+    : mbClientSendMessageReadDefaultWidget(MBF_READ_COILS, ui, parent)
 {
     m_address->setAddressType(Modbus::Memory_0x);
 }
 
-mbClientSendMessageReadDiscreteInputsWidget::mbClientSendMessageReadDiscreteInputsWidget(mbClientMessageConverter *conv, QWidget *parent)
-    : mbClientSendMessageReadDefaultWidget(MBF_READ_DISCRETE_INPUTS, conv, parent)
+mbClientSendMessageReadDiscreteInputsWidget::mbClientSendMessageReadDiscreteInputsWidget(mbClientSendMessageUi* ui, QWidget *parent)
+    : mbClientSendMessageReadDefaultWidget(MBF_READ_DISCRETE_INPUTS, ui, parent)
 {
     m_address->setAddressType(Modbus::Memory_1x);
 }
 
-mbClientSendMessageReadInputRegistersWidget::mbClientSendMessageReadInputRegistersWidget(mbClientMessageConverter *conv, QWidget *parent)
-    : mbClientSendMessageReadDefaultWidget(MBF_READ_INPUT_REGISTERS, conv, parent)
+mbClientSendMessageReadInputRegistersWidget::mbClientSendMessageReadInputRegistersWidget(mbClientSendMessageUi* ui, QWidget *parent)
+    : mbClientSendMessageReadDefaultWidget(MBF_READ_INPUT_REGISTERS, ui, parent)
 {
     m_address->setAddressType(Modbus::Memory_3x);
 }
 
-mbClientSendMessageReadHoldingRegistersWidget::mbClientSendMessageReadHoldingRegistersWidget(mbClientMessageConverter *conv, QWidget *parent)
-    : mbClientSendMessageReadDefaultWidget(MBF_READ_HOLDING_REGISTERS, conv, parent)
+mbClientSendMessageReadHoldingRegistersWidget::mbClientSendMessageReadHoldingRegistersWidget(mbClientSendMessageUi* ui, QWidget *parent)
+    : mbClientSendMessageReadDefaultWidget(MBF_READ_HOLDING_REGISTERS, ui, parent)
 {
     m_address->setAddressType(Modbus::Memory_4x);
 }
 
-mbClientSendMessageWriteMultipleCoilsWidget::mbClientSendMessageWriteMultipleCoilsWidget(mbClientMessageConverter *conv, QWidget *parent)
-    : mbClientSendMessageWriteDefaultWidget(MBF_WRITE_MULTIPLE_COILS, conv, parent)
+mbClientSendMessageWriteMultipleCoilsWidget::mbClientSendMessageWriteMultipleCoilsWidget(mbClientSendMessageUi* ui, QWidget *parent)
+    : mbClientSendMessageWriteDefaultWidget(MBF_WRITE_MULTIPLE_COILS, ui, parent)
 {
     m_address->setAddressType(Modbus::Memory_0x);
 }
 
-mbClientSendMessageWriteMultipleRegistersWidget::mbClientSendMessageWriteMultipleRegistersWidget(mbClientMessageConverter *conv, QWidget *parent)
-    : mbClientSendMessageWriteDefaultWidget(MBF_WRITE_MULTIPLE_REGISTERS, conv, parent)
+mbClientSendMessageWriteMultipleRegistersWidget::mbClientSendMessageWriteMultipleRegistersWidget(mbClientSendMessageUi* ui, QWidget *parent)
+    : mbClientSendMessageWriteDefaultWidget(MBF_WRITE_MULTIPLE_REGISTERS, ui, parent)
 {
     m_address->setAddressType(Modbus::Memory_4x);
 }

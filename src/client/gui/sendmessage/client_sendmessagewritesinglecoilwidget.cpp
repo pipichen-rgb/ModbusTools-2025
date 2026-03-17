@@ -20,8 +20,8 @@ const mbClientSendMessageWriteSingleCoilWidget::Strings &mbClientSendMessageWrit
     return s;
 }
 
-mbClientSendMessageWriteSingleCoilWidget::mbClientSendMessageWriteSingleCoilWidget(mbClientMessageConverter* conv, QWidget *parent) : 
-    mbClientSendMessageWidget(MBF_WRITE_SINGLE_COIL, conv, parent)
+mbClientSendMessageWriteSingleCoilWidget::mbClientSendMessageWriteSingleCoilWidget(mbClientSendMessageUi* ui, QWidget *parent) :
+    mbClientSendMessageWidget(MBF_WRITE_SINGLE_COIL, ui, parent)
 {
     // address
     m_address = new mbCoreAddressWidget(this);

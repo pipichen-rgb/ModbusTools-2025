@@ -37,13 +37,13 @@ class mbClientDevice;
 class mbClientSendMessageWidget;
 class mbClientSendMessageDefaultWidget;
 class mbClientSendMessageDiagnWidget;
-class mbClientSendMessageFIFOWidget;
+class mbClientSendMessageReadFIFOQueueWidget;
 class mbClientSendMessageFileRecordsWidget;
 class mbClientSendMessageGetCommEventCounterWidget;
 class mbClientSendMessageGetCommEventLogWidget;
 class mbClientSendMessageReportServerIdWidget;
 class mbClientSendMessageReadDeviceIdWidget;
-class mbClientSendMessageReadWriteMultiRegWidget;
+class mbClientSendMessageReadWriteMultipleRegistersWidget;
 class mbClientSendMessageMaskWriteRegisterWidget;
 class mbClientSendMessageListModel;
 
@@ -88,6 +88,7 @@ public:
     void setCachedSettings(const MBSETTINGS &settings) override;
 
 public:
+    inline mbClientMessageConverter *converter() const { return const_cast<mbClientMessageConverter *>(&m_converter); }
     inline bool isTimerRunning() const { return (m_timer > 0); }
     inline bool isTimerStopped() const { return (m_timer <= 0); }
 

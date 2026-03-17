@@ -21,7 +21,7 @@ public:
     };
 
 public:
-    mbClientSendMessageReadExceptionStatusWidget(mbClientMessageConverter* conv, QWidget *parent = nullptr);
+    mbClientSendMessageReadExceptionStatusWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 
 public:
     MBSETTINGS cachedSettings() const override;
