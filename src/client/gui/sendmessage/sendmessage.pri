@@ -13,7 +13,8 @@ HEADERS += \
 #    $$PWD/client_sendmessagereadwritemultiregwidget.h       \
  \#    $$PWD/client_sendmessagewritemaskwidget.h
      $$PWD/client_sendmessagewritesinglecoilwidget.h \
-     $$PWD/client_sendmessagewritesingleregisterwidget.h
+     $$PWD/client_sendmessagewritesingleregisterwidget.h \
+     $$PWD/client_sendmessagereadexceptionstatuswidget.h
 
 SOURCES += \
     $$PWD/client_sendmessagelistmodel.cpp                   \
@@ -30,7 +31,8 @@ SOURCES += \
 #    $$PWD/client_sendmessagereadwritemultiregwidget.cpp     \
  \#    $$PWD/client_sendmessagewritemaskwidget.h
      $$PWD/client_sendmessagewritesinglecoilwidget.cpp \
-     $$PWD/client_sendmessagewritesingleregisterwidget.cpp
+     $$PWD/client_sendmessagewritesingleregisterwidget.cpp \
+     $$PWD/client_sendmessagereadexceptionstatuswidget.cpp
 
 FORMS += \
     $$PWD/client_sendmessageui.ui

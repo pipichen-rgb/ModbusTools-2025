@@ -366,11 +366,6 @@ Modbus::StatusCode mbClientRunMessageWriteSingleRegister::setData(uint16_t /*inn
 // ----------------------------------------- READ_EXCEPTION_STATUS ----------------------------------------
 // --------------------------------------------------------------------------------------------------------
 
-Modbus::StatusCode mbClientRunMessageReadExceptionStatus::getData(uint16_t innerOffset, uint16_t count, void *buff) const
-{
-    return Modbus::readMemBits(innerOffset, count, buff, m_buff, innerBufferBitSize());
-}
-
 // --------------------------------------------------------------------------------------------------------
 // ---------------------------------------------- DIAGNOSTICS ---------------------------------------------
 // --------------------------------------------------------------------------------------------------------

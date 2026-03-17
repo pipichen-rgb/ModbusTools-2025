@@ -397,6 +397,8 @@ enum Format
 Q_ENUM_NS(Format)
 MB_ENUM_DECL_EXPORT(Format)
 
+Format toFormat(DigitalFormat digitalFormat);
+
 enum SwapData
 {
     DefaultSwapData = -1,

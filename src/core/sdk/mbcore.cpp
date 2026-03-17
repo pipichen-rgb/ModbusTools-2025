@@ -1315,6 +1315,24 @@ QString currentUser()
 #endif
 }
 
+Format toFormat(DigitalFormat digitalFormat)
+{
+    switch (digitalFormat)
+    {
+    case Bin:
+        return Bin16;
+    case Oct:
+        return Oct16;
+    case Hex:
+        return Hex16;
+    case UDec:
+        return UDec16;
+    case Dec:
+    default:
+        return Dec16;
+    }
+}
+
 RegisterOrder toRegisterOrder(const QString &s, bool *ok)
 {
     bool okInner;

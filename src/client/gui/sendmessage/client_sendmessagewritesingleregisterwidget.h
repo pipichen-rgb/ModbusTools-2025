@@ -38,9 +38,6 @@ private Q_SLOTS:
     void setDigitalFormat(int index);
 
 private:
-    static mb::Format toFormat(mb::DigitalFormat digitalFormat);
-
-private:
     QComboBox* m_cmbFormat;
     mbCoreAddressWidget* m_address;
     QSpinBox* m_spValue;

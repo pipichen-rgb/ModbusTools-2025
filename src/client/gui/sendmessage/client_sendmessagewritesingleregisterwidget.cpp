@@ -30,7 +30,7 @@ mbClientSendMessageWriteSingleRegisterWidget::mbClientSendMessageWriteSingleRegi
     const auto ls = mb::enumDigitalFormatKeyList();
     for (int i = 1; i < ls.count(); ++i) // pass DefaultDigitalFormat
     {
-        const auto format = static_cast<mb::DigitalFormat>(i);
+        const auto format = mb::enumDigitalFormatValueByIndex(i);
         m_cmbFormat->addItem(ls.at(i), static_cast<int>(format));
     }
     m_cmbFormat->setCurrentText(mb::enumDigitalFormatKey(mb::Dec));
@@ -106,7 +106,7 @@ void mbClientSendMessageWriteSingleRegisterWidget::fillParams(mbClientMessagePar
     params.setOffset(getOffset());
 
     const auto digitalFormat = static_cast<mb::DigitalFormat>(m_cmbFormat->currentData().toInt());
-    params.setFormat(toFormat(digitalFormat));
+    params.setFormat(mb::toFormat(digitalFormat));
 
     int base = 10;
     switch (digitalFormat)
@@ -183,22 +183,4 @@ void mbClientSendMessageWriteSingleRegisterWidget::setDigitalFormat(int index)
         m_spValue->setValue(static_cast<qint16>(value16));
     else
         m_spValue->setValue(value16);
-}
-
-mb::Format mbClientSendMessageWriteSingleRegisterWidget::toFormat(mb::DigitalFormat digitalFormat)
-{
-    switch (digitalFormat)
-    {
-    case mb::Bin:
-        return mb::Bin16;
-    case mb::Oct:
-        return mb::Oct16;
-    case mb::Hex:
-        return mb::Hex16;
-    case mb::UDec:
-        return mb::UDec16;
-    case mb::Dec:
-    default:
-        return mb::Dec16;
-    }
 }

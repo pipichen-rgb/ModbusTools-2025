@@ -323,8 +323,7 @@ public:
 
 public:
     uint8_t function() const override { return MBF_READ_EXCEPTION_STATUS; }
-    Modbus::MemoryType memoryType() const override { return Modbus::Memory_0x; }
-    Modbus::StatusCode getData(uint16_t innerOffset, uint16_t count, void *buff) const override;
+    Modbus::MemoryType memoryType() const override { return Modbus::Memory_Unknown; }
 };
 
 
