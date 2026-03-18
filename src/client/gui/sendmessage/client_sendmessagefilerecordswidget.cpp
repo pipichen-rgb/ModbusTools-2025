@@ -403,6 +403,7 @@ mbClientSendMessageFileRecordsWidget::mbClientSendMessageFileRecordsWidget(uint8
     horizontalLayout1->setStretch(1, 1);
 
     auto verticalLayout1 = new QVBoxLayout();
+    verticalLayout1->setSpacing(2);
     verticalLayout1->addWidget(btnFileRecordAdd);
     verticalLayout1->addWidget(btnFileRecordDelete);
     verticalLayout1->addWidget(btnFileRecordMoveUp);

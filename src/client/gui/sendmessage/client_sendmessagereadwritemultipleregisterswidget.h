@@ -61,7 +61,6 @@ private Q_SLOTS:
     void updateReadData();
 
 private:
-    QByteArray m_writeData;
     QComboBox* m_cmbWriteFormat;
     mbCoreAddressWidget* m_writeAddress;
     QSpinBox* m_spWriteCount;

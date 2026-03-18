@@ -606,7 +606,8 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
     case MBF_READ_EXCEPTION_STATUS:
         return new mbClientRunMessageReadExceptionStatus(this);
     case MBF_DIAGNOSTICS:
-        return new mbClientRunMessageDiagnostics(params.subfunction(), params.count(), this);
+        msg = new mbClientRunMessageDiagnostics(params.subfunction(), params.count(), this);
+        break;
     case MBF_GET_COMM_EVENT_COUNTER:
         return new mbClientRunMessageGetCommEventCounter(this);
     case MBF_GET_COMM_EVENT_LOG:

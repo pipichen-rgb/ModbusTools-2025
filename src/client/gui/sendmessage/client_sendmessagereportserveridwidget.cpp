@@ -61,8 +61,8 @@ MBSETTINGS mbClientSendMessageReportServerIdWidget::cachedSettings() const
     const Strings &s = Strings::instance();
 
     MBSETTINGS m;
-    m[s.format] = m_cmbFormat->currentText();
-    m[s.data  ] = m_data;
+    m[m_prefix+s.format] = m_cmbFormat->currentText();
+    m[m_prefix+s.data  ] = m_data;
 
     return m;
 }
@@ -74,8 +74,8 @@ void mbClientSendMessageReportServerIdWidget::setCachedSettings(const MBSETTINGS
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = m.end();
 
-    it = m.find(s.format); if (it != end) m_cmbFormat->setCurrentText(it.value().toString());
-    it = m.find(s.data  ); if (it != end) m_data = it.value().toByteArray();
+    it = m.find(m_prefix+s.format); if (it != end) m_cmbFormat->setCurrentText(it.value().toString());
+    it = m.find(m_prefix+s.data  ); if (it != end) m_data = it.value().toByteArray();
     updateData();
 }
 

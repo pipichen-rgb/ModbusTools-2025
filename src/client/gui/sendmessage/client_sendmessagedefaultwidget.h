@@ -15,10 +15,10 @@ class mbClientSendMessageDefaultWidget : public mbClientSendMessageWidget
 public:
     struct Strings
     {
-        const QString defaultAddress;
-        const QString defaultFormat ;
-        const QString defaultCount  ;
-        const QString defaultData   ;
+        const QString address;
+        const QString format ;
+        const QString count  ;
+        const QString data   ;
         Strings();
         static const Strings &instance();
     };
@@ -31,7 +31,8 @@ public:
     void setCachedSettings(const MBSETTINGS &settings) override;
     void fillParams(mbClientMessageParams &params) const override;
 
-public:    
+public:
+    mb::Format format() const;
     uint16_t getOffset() const;
     int getAddress() const;
     void setAddress(int v);
@@ -52,10 +53,12 @@ public:
     mbClientSendMessageReadDefaultWidget(uint8_t func, mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 
 public:
+    MBSETTINGS cachedSettings() const override;
+    void setCachedSettings(const MBSETTINGS &settings) override;
     void setParams(mbClientMessageParams &params) override;
 
 protected Q_SLOTS:
-    void setFormat(int index);
+    void updateData();
 
 protected:
     QByteArray m_data;

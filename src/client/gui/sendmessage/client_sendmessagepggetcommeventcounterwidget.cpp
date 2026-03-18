@@ -60,8 +60,8 @@ MBSETTINGS mbClientSendMessageGetCommEventCounterWidget::cachedSettings() const
     const Strings &s = Strings::instance();
 
     MBSETTINGS m;
-    m[s.status] = getStatus();
-    m[s.count ] = getCount();
+    m[m_prefix+s.status] = getStatus();
+    m[m_prefix+s.count ] = getCount();
     return m;
 }
 
@@ -72,8 +72,8 @@ void mbClientSendMessageGetCommEventCounterWidget::setCachedSettings(const MBSET
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = m.end();
 
-    it = m.find(s.status); if (it != end) setStatus(static_cast<uint16_t>(it.value().toInt()));
-    it = m.find(s.count ); if (it != end) setCount(static_cast<uint16_t>(it.value().toInt()));
+    it = m.find(m_prefix+s.status); if (it != end) setStatus(static_cast<uint16_t>(it.value().toInt()));
+    it = m.find(m_prefix+s.count ); if (it != end) setCount(static_cast<uint16_t>(it.value().toInt()));
 }
 
 void mbClientSendMessageGetCommEventCounterWidget::setParams(mbClientMessageParams &params)

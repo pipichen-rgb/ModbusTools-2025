@@ -121,10 +121,10 @@ MBSETTINGS mbClientSendMessageGetCommEventLogWidget::cachedSettings() const
     const Strings &s = Strings::instance();
 
     MBSETTINGS m;
-    m[s.status      ] = getStatus();
-    m[s.eventCount  ] = getEventCount();
-    m[s.messageCount] = getMessageCount();
-    m[s.eventData   ] = m_eventData;
+    m[m_prefix+s.status      ] = getStatus();
+    m[m_prefix+s.eventCount  ] = getEventCount();
+    m[m_prefix+s.messageCount] = getMessageCount();
+    m[m_prefix+s.eventData   ] = m_eventData;
     return m;
 }
 
@@ -135,10 +135,10 @@ void mbClientSendMessageGetCommEventLogWidget::setCachedSettings(const MBSETTING
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = m.end();
 
-    it = m.find(s.status      ); if (it != end) setStatus(static_cast<uint16_t>(it.value().toInt()));
-    it = m.find(s.eventCount  ); if (it != end) setEventCount(static_cast<uint16_t>(it.value().toInt()));
-    it = m.find(s.messageCount); if (it != end) setMessageCount(static_cast<uint16_t>(it.value().toInt()));
-    it = m.find(s.eventData   ); if (it != end) m_eventData = it.value().toByteArray();
+    it = m.find(m_prefix+s.status      ); if (it != end) setStatus(static_cast<uint16_t>(it.value().toInt()));
+    it = m.find(m_prefix+s.eventCount  ); if (it != end) setEventCount(static_cast<uint16_t>(it.value().toInt()));
+    it = m.find(m_prefix+s.messageCount); if (it != end) setMessageCount(static_cast<uint16_t>(it.value().toInt()));
+    it = m.find(m_prefix+s.eventData   ); if (it != end) m_eventData = it.value().toByteArray();
 }
 
 void mbClientSendMessageGetCommEventLogWidget::setParams(mbClientMessageParams &params)

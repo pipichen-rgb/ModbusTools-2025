@@ -12,10 +12,10 @@
 #include <gui/widgets/core_addresswidget.h>
 
 mbClientSendMessageDefaultWidget::Strings::Strings() :
-    defaultAddress         (QStringLiteral("address")),
-    defaultFormat          (QStringLiteral("format")),
-    defaultCount           (QStringLiteral("count")),
-    defaultData            (QStringLiteral("data"))
+    address(QStringLiteral("address")),
+    format (QStringLiteral("format")),
+    count  (QStringLiteral("count")),
+    data   (QStringLiteral("data"))
 {
 
 }
@@ -47,7 +47,6 @@ mbClientSendMessageDefaultWidget::mbClientSendMessageDefaultWidget(uint8_t funct
     m_spCount = new QSpinBox(this);
     m_spCount->setMinimumSize(QSize(80, 0));
     m_spCount->setMinimum(1);
-    m_spCount->setMaximum(MB_MAX_DISCRETS); // TODO: if register was choosen than change this value
 
     // text data
     m_txtData = new QPlainTextEdit(this);
@@ -93,9 +92,9 @@ MBSETTINGS mbClientSendMessageDefaultWidget::cachedSettings() const
 {
     const Strings &s = Strings::instance();
     MBSETTINGS m;
-    m[m_prefix + s.defaultAddress] = getAddress();
-    m[m_prefix + s.defaultFormat ] = m_cmbFormat->currentText();
-    m[m_prefix + s.defaultCount  ] = m_spCount  ->value      ();
+    m[m_prefix + s.address] = getAddress();
+    m[m_prefix + s.format ] = m_cmbFormat->currentText();
+    m[m_prefix + s.count  ] = m_spCount  ->value      ();
 
     return m;
 }
@@ -107,10 +106,9 @@ void mbClientSendMessageDefaultWidget::setCachedSettings(const MBSETTINGS &m)
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = m.end();
 
-    it = m.find(m_prefix + s.defaultAddress); if (it != end) setAddress                 (it.value().toInt()   );
-    it = m.find(m_prefix + s.defaultFormat ); if (it != end) m_cmbFormat->setCurrentText(it.value().toString());
-    it = m.find(m_prefix + s.defaultCount  ); if (it != end) m_spCount  ->setValue      (it.value().toInt()   );
-    it = m.find(m_prefix + s.defaultData   ); if (it != end) m_txtData  ->setPlainText  (it.value().toString());
+    it = m.find(m_prefix + s.address); if (it != end) setAddress                 (it.value().toInt()   );
+    it = m.find(m_prefix + s.format ); if (it != end) m_cmbFormat->setCurrentText(it.value().toString());
+    it = m.find(m_prefix + s.count  ); if (it != end) m_spCount  ->setValue      (it.value().toInt()   );
 }
 
 void mbClientSendMessageDefaultWidget::fillParams(mbClientMessageParams &params) const
@@ -118,6 +116,11 @@ void mbClientSendMessageDefaultWidget::fillParams(mbClientMessageParams &params)
     params.setOffset(getOffset());
     params.setCount(getCount());
     params.setFormat(mb::enumFormatValueByIndex(m_cmbFormat->currentIndex()));
+}
+
+mb::Format mbClientSendMessageDefaultWidget::format() const
+{
+    return mb::enumFormatValueByIndex(m_cmbFormat->currentIndex());
 }
 
 uint16_t mbClientSendMessageDefaultWidget::getOffset() const
@@ -146,7 +149,30 @@ mbClientSendMessageReadDefaultWidget::mbClientSendMessageReadDefaultWidget(uint8
     : mbClientSendMessageDefaultWidget(func, ui, parent)
 {
     m_txtData->setReadOnly(true);
-    connect(m_cmbFormat, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &mbClientSendMessageReadDefaultWidget::setFormat);
+
+    connect(m_cmbFormat, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &mbClientSendMessageReadDefaultWidget::updateData);
+    updateData();
+}
+
+MBSETTINGS mbClientSendMessageReadDefaultWidget::cachedSettings() const
+{
+    auto m = mbClientSendMessageDefaultWidget::cachedSettings();
+    const Strings &s = Strings::instance();
+    m[m_prefix + s.data] = m_data;
+    return m;
+}
+
+void mbClientSendMessageReadDefaultWidget::setCachedSettings(const MBSETTINGS &settings)
+{
+    mbClientSendMessageDefaultWidget::setCachedSettings(settings);
+
+    const Strings &s = Strings::instance();
+
+    MBSETTINGS::const_iterator it;
+    MBSETTINGS::const_iterator end = settings.end();
+
+    it = settings.find(m_prefix + s.data); if (it != end) m_data = it.value().toByteArray();
+    updateData();
 }
 
 void mbClientSendMessageReadDefaultWidget::setParams(mbClientMessageParams &params)
@@ -157,14 +183,20 @@ void mbClientSendMessageReadDefaultWidget::setParams(mbClientMessageParams &para
     m_txtData->setPlainText(m_conv->toVariant(params).toString());
 }
 
-void mbClientSendMessageReadDefaultWidget::setFormat(int index)
+void mbClientSendMessageReadDefaultWidget::updateData()
 {
-    if (m_data.isEmpty())
+    if (m_data.length() == 0)
+    {
+        m_txtData->setPlainText(QString());
         return;
+    }
     mbClientMessageParams params;
-    params.setFormat(mb::enumFormatValueByIndex(index));
+    params.setFunction(function());
+    params.setFormat(format());
+    params.setCount(m_data.length()*8);
     params.setData(m_data);
-    m_txtData->setPlainText(m_conv->toVariant(params).toString());
+    QString s = m_conv->toVariant(params).toString();
+    m_txtData->setPlainText(s);
 }
 
 mbClientSendMessageWriteDefaultWidget::mbClientSendMessageWriteDefaultWidget(uint8_t func, mbClientSendMessageUi* ui, QWidget *parent)
@@ -177,7 +209,7 @@ MBSETTINGS mbClientSendMessageWriteDefaultWidget::cachedSettings() const
 {
     auto m = mbClientSendMessageDefaultWidget::cachedSettings();
     const Strings &s = Strings::instance();
-    m[m_prefix + s.defaultData] = m_txtData->toPlainText();
+    m[m_prefix + s.data] = m_txtData->toPlainText();
     return m;
 }
 
@@ -190,7 +222,7 @@ void mbClientSendMessageWriteDefaultWidget::setCachedSettings(const MBSETTINGS &
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = settings.end();
 
-    it = settings.find(m_prefix + s.defaultData); if (it != end) m_txtData->setPlainText(it.value().toString());
+    it = settings.find(m_prefix + s.data); if (it != end) m_txtData->setPlainText(it.value().toString());
 }
 
 void mbClientSendMessageWriteDefaultWidget::fillParams(mbClientMessageParams &params) const
@@ -203,34 +235,40 @@ mbClientSendMessageReadCoilsWidget::mbClientSendMessageReadCoilsWidget(mbClientS
     : mbClientSendMessageReadDefaultWidget(MBF_READ_COILS, ui, parent)
 {
     m_address->setAddressType(Modbus::Memory_0x);
+    m_spCount->setMaximum(MB_MAX_DISCRETS);
 }
 
 mbClientSendMessageReadDiscreteInputsWidget::mbClientSendMessageReadDiscreteInputsWidget(mbClientSendMessageUi* ui, QWidget *parent)
     : mbClientSendMessageReadDefaultWidget(MBF_READ_DISCRETE_INPUTS, ui, parent)
 {
     m_address->setAddressType(Modbus::Memory_1x);
+    m_spCount->setMaximum(MB_MAX_DISCRETS);
 }
 
 mbClientSendMessageReadInputRegistersWidget::mbClientSendMessageReadInputRegistersWidget(mbClientSendMessageUi* ui, QWidget *parent)
     : mbClientSendMessageReadDefaultWidget(MBF_READ_INPUT_REGISTERS, ui, parent)
 {
     m_address->setAddressType(Modbus::Memory_3x);
+    m_spCount->setMaximum(MB_MAX_REGISTERS);
 }
 
 mbClientSendMessageReadHoldingRegistersWidget::mbClientSendMessageReadHoldingRegistersWidget(mbClientSendMessageUi* ui, QWidget *parent)
     : mbClientSendMessageReadDefaultWidget(MBF_READ_HOLDING_REGISTERS, ui, parent)
 {
     m_address->setAddressType(Modbus::Memory_4x);
+    m_spCount->setMaximum(MB_MAX_REGISTERS);
 }
 
 mbClientSendMessageWriteMultipleCoilsWidget::mbClientSendMessageWriteMultipleCoilsWidget(mbClientSendMessageUi* ui, QWidget *parent)
     : mbClientSendMessageWriteDefaultWidget(MBF_WRITE_MULTIPLE_COILS, ui, parent)
 {
     m_address->setAddressType(Modbus::Memory_0x);
+    m_spCount->setMaximum(MB_MAX_DISCRETS);
 }
 
 mbClientSendMessageWriteMultipleRegistersWidget::mbClientSendMessageWriteMultipleRegistersWidget(mbClientSendMessageUi* ui, QWidget *parent)
     : mbClientSendMessageWriteDefaultWidget(MBF_WRITE_MULTIPLE_REGISTERS, ui, parent)
 {
     m_address->setAddressType(Modbus::Memory_4x);
+    m_spCount->setMaximum(MB_MAX_REGISTERS);
 }

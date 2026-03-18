@@ -149,13 +149,13 @@ MBSETTINGS mbClientSendMessageReadDeviceIdWidget::cachedSettings() const
     const Strings &s = Strings::instance();
 
     MBSETTINGS m;
-    m[s.format      ] = m_cmbFormat->currentText();
-    m[s.deviceId    ] = getDeviceId();
-    m[s.objectId    ] = getObjectId();
-    m[s.conformity  ] = getConformity();
-    m[s.nextObjectId] = getNextObjectId();
-    m[s.moreFollows ] = getMoreFollows();
-    m[s.data        ] = m_data;
+    m[m_prefix+s.format      ] = m_cmbFormat->currentText();
+    m[m_prefix+s.deviceId    ] = getDeviceId();
+    m[m_prefix+s.objectId    ] = getObjectId();
+    m[m_prefix+s.conformity  ] = getConformity();
+    m[m_prefix+s.nextObjectId] = getNextObjectId();
+    m[m_prefix+s.moreFollows ] = getMoreFollows();
+    m[m_prefix+s.data        ] = m_data;
     return m;
 }
 
@@ -166,13 +166,13 @@ void mbClientSendMessageReadDeviceIdWidget::setCachedSettings(const MBSETTINGS &
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = m.end();
 
-    it = m.find(s.format      ); if (it != end) m_cmbFormat->setCurrentText(it.value().toString());
-    it = m.find(s.deviceId    ); if (it != end) setDeviceId    (it.value().toInt ());
-    it = m.find(s.objectId    ); if (it != end) setObjectId    (it.value().toInt ());
-    it = m.find(s.conformity  ); if (it != end) setConformity  (it.value().toInt ());
-    it = m.find(s.nextObjectId); if (it != end) setNextObjectId(it.value().toInt ());
-    it = m.find(s.moreFollows ); if (it != end) setMoreFollows (it.value().toBool());
-    it = m.find(s.data        ); if (it != end) m_data = it.value().toByteArray();
+    it = m.find(m_prefix+s.format      ); if (it != end) m_cmbFormat->setCurrentText(it.value().toString());
+    it = m.find(m_prefix+s.deviceId    ); if (it != end) setDeviceId    (it.value().toInt ());
+    it = m.find(m_prefix+s.objectId    ); if (it != end) setObjectId    (it.value().toInt ());
+    it = m.find(m_prefix+s.conformity  ); if (it != end) setConformity  (it.value().toInt ());
+    it = m.find(m_prefix+s.nextObjectId); if (it != end) setNextObjectId(it.value().toInt ());
+    it = m.find(m_prefix+s.moreFollows ); if (it != end) setMoreFollows (it.value().toBool());
+    it = m.find(m_prefix+s.data        ); if (it != end) m_data = it.value().toByteArray();
     updateData();
 }
 

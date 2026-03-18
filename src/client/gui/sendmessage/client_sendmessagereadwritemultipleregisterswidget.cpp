@@ -5,6 +5,7 @@
 #include <QComboBox>
 #include <QSpinBox>
 #include <QPlainTextEdit>
+#include <QGroupBox>
 #include <QHBoxLayout>
 #include <QFormLayout>
 
@@ -42,6 +43,7 @@ mbClientSendMessageReadWriteMultipleRegistersWidget::mbClientSendMessageReadWrit
 
     // write address
     m_writeAddress = new mbCoreAddressWidget(this);
+    m_writeAddress->setAddressType(Modbus::Memory_4x);
     m_writeAddress->setEnabledAddressType(false);
 
     // write count
@@ -67,13 +69,14 @@ mbClientSendMessageReadWriteMultipleRegistersWidget::mbClientSendMessageReadWrit
 
     // read address
     m_readAddress = new mbCoreAddressWidget(this);
+    m_readAddress->setAddressType(Modbus::Memory_4x);
     m_readAddress->setEnabledAddressType(false);
 
     // read count
     m_spReadCount = new QSpinBox(this);
     m_spReadCount->setMinimumSize(QSize(80, 0));
     m_spReadCount->setMinimum(1);
-    m_spReadCount->setMaximum(MB_MAX_DISCRETS); // TODO: if register was choosen than change this value
+    m_spReadCount->setMaximum(MB_MAX_REGISTERS);
 
     // read text data
     m_txtReadData = new QPlainTextEdit(this);
@@ -100,6 +103,13 @@ mbClientSendMessageReadWriteMultipleRegistersWidget::mbClientSendMessageReadWrit
     auto lblReadFormat = new QLabel(this);
     lblReadFormat->setText(QCoreApplication::translate("mbClientSendMessageUi", "Format:", nullptr));
 
+    // Groups
+    auto groupWrite = new QGroupBox(this);
+    groupWrite->setTitle(QCoreApplication::translate("mbClientSendMessageUi", "Write:", nullptr));
+
+    auto groupRead = new QGroupBox(this);
+    groupRead->setTitle(QCoreApplication::translate("mbClientSendMessageUi", "Read:", nullptr));
+
     // Spacer
     auto verticalWriteSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
     auto verticalReadSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -114,10 +124,12 @@ mbClientSendMessageReadWriteMultipleRegistersWidget::mbClientSendMessageReadWrit
     formWriteLayout->setWidget(2, QFormLayout::LabelRole, lblWriteCount);
     formWriteLayout->setWidget(2, QFormLayout::FieldRole, m_spWriteCount);
     formWriteLayout->setItem(3, QFormLayout::FieldRole, verticalWriteSpacer);
+
+    groupWrite->setLayout(formWriteLayout);
     
     auto horizontalWriteLayout = new QHBoxLayout();
     horizontalWriteLayout->setObjectName(QString::fromUtf8("horizontalWriteLayout"));
-    horizontalWriteLayout->addLayout(formWriteLayout);
+    horizontalWriteLayout->addWidget(groupWrite);
     horizontalWriteLayout->addWidget(m_txtWriteData);
     horizontalWriteLayout->setStretch(1, 1);
 
@@ -131,9 +143,11 @@ mbClientSendMessageReadWriteMultipleRegistersWidget::mbClientSendMessageReadWrit
     formReadLayout->setWidget(2, QFormLayout::FieldRole, m_spReadCount);
     formReadLayout->setItem(3, QFormLayout::FieldRole, verticalReadSpacer);
     
+    groupRead->setLayout(formReadLayout);
+
     auto horizontalReadLayout = new QHBoxLayout();
     horizontalReadLayout->setObjectName(QString::fromUtf8("horizontalReadLayout"));
-    horizontalReadLayout->addLayout(formReadLayout);
+    horizontalReadLayout->addWidget(groupRead);
     horizontalReadLayout->addWidget(m_txtReadData);
     horizontalReadLayout->setStretch(1, 1);
 
@@ -142,6 +156,9 @@ mbClientSendMessageReadWriteMultipleRegistersWidget::mbClientSendMessageReadWrit
     verticalLayout->addLayout(horizontalReadLayout);
 
     this->setLayout(verticalLayout);
+
+    connect(m_cmbReadFormat, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &mbClientSendMessageReadWriteMultipleRegistersWidget::updateReadData);
+    updateReadData();
 }
 
 MBSETTINGS mbClientSendMessageReadWriteMultipleRegistersWidget::cachedSettings() const
@@ -149,14 +166,14 @@ MBSETTINGS mbClientSendMessageReadWriteMultipleRegistersWidget::cachedSettings()
     const Strings &s = Strings::instance();
 
     MBSETTINGS m;
-    m[s.writeFormat ] = m_cmbWriteFormat ->currentText();
-    m[s.writeAddress] = getWriteAddress();
-    m[s.writeCount  ] = m_spWriteCount   ->value      ();
-    m[s.writeData   ] = m_txtWriteData   ->toPlainText();
-    m[s.readFormat  ] = m_cmbReadFormat  ->currentText();
-    m[s.readAddress ] = getReadAddress();
-    m[s.readCount   ] = m_spReadCount    ->value      ();
-    m[s.readData    ] = m_txtReadData    ->toPlainText();
+    m[m_prefix+s.writeFormat ] = m_cmbWriteFormat ->currentText();
+    m[m_prefix+s.writeAddress] = getWriteAddress();
+    m[m_prefix+s.writeCount  ] = m_spWriteCount   ->value      ();
+    m[m_prefix+s.writeData   ] = m_txtWriteData   ->toPlainText();
+    m[m_prefix+s.readFormat  ] = m_cmbReadFormat  ->currentText();
+    m[m_prefix+s.readAddress ] = getReadAddress();
+    m[m_prefix+s.readCount   ] = m_spReadCount    ->value      ();
+    m[m_prefix+s.readData    ] = m_readData                      ;
 
     return m;
 }
@@ -168,14 +185,14 @@ void mbClientSendMessageReadWriteMultipleRegistersWidget::setCachedSettings(cons
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = m.end();
 
-    it = m.find(s.writeFormat ); if (it != end) setWriteAddress                   (it.value().toInt()   );
-    it = m.find(s.writeAddress); if (it != end) m_cmbWriteFormat  ->setCurrentText(it.value().toString());
-    it = m.find(s.writeCount  ); if (it != end) setWriteCount      (it.value().toInt()   );
-    it = m.find(s.writeData   ); if (it != end) m_txtWriteData    ->setPlainText  (it.value().toString());
-    it = m.find(s.readFormat  ); if (it != end) setReadAddress                    (it.value().toInt()   );
-    it = m.find(s.readAddress ); if (it != end) m_cmbReadFormat  ->setCurrentText (it.value().toString());
-    it = m.find(s.readCount   ); if (it != end) setReadCount                      (it.value().toInt()   );
-    it = m.find(s.readData    ); if (it != end) m_readData = it.value().toByteArray();
+    it = m.find(m_prefix+s.writeFormat ); if (it != end) setWriteAddress                   (it.value().toInt()   );
+    it = m.find(m_prefix+s.writeAddress); if (it != end) m_cmbWriteFormat  ->setCurrentText(it.value().toString());
+    it = m.find(m_prefix+s.writeCount  ); if (it != end) setWriteCount      (it.value().toInt()   );
+    it = m.find(m_prefix+s.writeData   ); if (it != end) m_txtWriteData    ->setPlainText  (it.value().toString());
+    it = m.find(m_prefix+s.readFormat  ); if (it != end) setReadAddress                    (it.value().toInt()   );
+    it = m.find(m_prefix+s.readAddress ); if (it != end) m_cmbReadFormat  ->setCurrentText (it.value().toString());
+    it = m.find(m_prefix+s.readCount   ); if (it != end) setReadCount                      (it.value().toInt()   );
+    it = m.find(m_prefix+s.readData    ); if (it != end) m_readData = it.value().toByteArray();
     updateReadData();
 }
 

@@ -68,7 +68,7 @@ mbClientSendMessageDiagnosticsWidget::mbClientSendMessageDiagnosticsWidget(mbCli
     m_txtDataRequest = new QPlainTextEdit(this);
     m_txtDataRequest->setMinimumSize(QSize(0, 100));
     m_txtDataRequest->setUndoRedoEnabled(true);
-    m_txtDataRequest->setReadOnly(true);
+    m_txtDataRequest->setReadOnly(false);
 
     // request data
     m_txtDataResponse = new QPlainTextEdit(this);
@@ -116,10 +116,10 @@ MBSETTINGS mbClientSendMessageDiagnosticsWidget::cachedSettings() const
     const Strings &s = Strings::instance();
 
     MBSETTINGS m;
-    m[s.subfunction] = getSubfunction();
-    m[s.format     ] = m_cmbFormat     ->currentText();
-    m[s.request    ] = m_txtDataRequest ->toPlainText();
-    m[s.response   ] = m_responseData;
+    m[m_prefix+s.subfunction] = getSubfunction();
+    m[m_prefix+s.format     ] = m_cmbFormat     ->currentText();
+    m[m_prefix+s.request    ] = m_txtDataRequest ->toPlainText();
+    m[m_prefix+s.response   ] = m_responseData;
 
     return m;
 }
@@ -131,23 +131,32 @@ void mbClientSendMessageDiagnosticsWidget::setCachedSettings(const MBSETTINGS &m
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = m.end();
 
-    it = m.find(s.subfunction); if (it != end) setSubfunction                  (it.value().toInt   ());
-    it = m.find(s.format     ); if (it != end) m_cmbFormat     ->setCurrentText(it.value().toString());
-    it = m.find(s.request    ); if (it != end) m_txtDataRequest->setPlainText  (it.value().toString());
-    it = m.find(s.response   ); if (it != end) m_responseData = it.value().toByteArray();
+    it = m.find(m_prefix+s.subfunction); if (it != end) setSubfunction                  (it.value().toInt   ());
+    it = m.find(m_prefix+s.format     ); if (it != end) m_cmbFormat     ->setCurrentText(it.value().toString());
+    it = m.find(m_prefix+s.request    ); if (it != end) m_txtDataRequest->setPlainText  (it.value().toString());
+    it = m.find(m_prefix+s.response   ); if (it != end) m_responseData = it.value().toByteArray();
+    updateResponseData();
 }
 
 void mbClientSendMessageDiagnosticsWidget::fillParams(mbClientMessageParams &params) const
 {
     params.setSubfunction(getSubfunction());
-    params.setFormat(mb::enumFormatValueByIndex(m_cmbFormat->currentIndex()));
+    params.setFormat(format());
     params.setData(m_txtDataRequest->toPlainText());
+    if (getSubfunction() == MBF_DIAGNOSTICS_RETURN_QUERY_DATA)
+    {
+        auto b = m_conv->toByteArray(params);
+        params.setData(b);
+        params.setCount(b.count());
+    }
+    else
+        params.setCount(2); // Note: buff size
 }
 
 void mbClientSendMessageDiagnosticsWidget::setParams(mbClientMessageParams &params)
 {
     params.setSubfunction(getSubfunction());
-    params.setFormat(mb::enumFormatValueByIndex(m_cmbFormat->currentIndex()));
+    params.setFormat(format());
     m_responseData = m_conv->toByteArray(params);
     updateResponseData();
 }
