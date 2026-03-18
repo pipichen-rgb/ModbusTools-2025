@@ -111,92 +111,93 @@ public:
 
 public:
     inline int function() const { return m_func; }
-    inline void setFunction(int func) { m_func = func; }
+    inline void setFunction(int func) { m_func = func; m_usedFields |= UsedFunc; }
     inline bool hasFunction() const { return (m_usedFields & UsedFunc) != 0; }
     inline void clearFunction() { m_usedFields &= ~UsedFunc; }
 
     inline uint16_t offset() const { return m_offset; } 
-    inline void setOffset(uint16_t offset) { m_offset = offset; }
+    inline void setOffset(uint16_t offset) { m_offset = offset; m_usedFields |= UsedOffset; }
     inline bool hasOffset() const { return (m_usedFields & UsedOffset) != 0; }
     inline void clearOffset() { m_usedFields &= ~UsedOffset; }
 
     inline uint16_t count() const { return m_count; }
-    inline void setCount(uint16_t count) { m_count = count; }
+    inline void setCount(uint16_t count) { m_count = count; m_usedFields |= UsedCount; }
     inline bool hasCount() const { return (m_usedFields & UsedCount) != 0; }
     inline void clearCount() { m_usedFields &= ~UsedCount; }
 
     inline mb::Format format() const { return m_format; }
-    inline void setFormat(mb::Format format) { m_format = format; }
+    inline void setFormat(mb::Format format) { m_format = format; m_usedFields |= UsedFormat; }
     inline bool hasFormat() const { return (m_usedFields & UsedFormat) != 0; }
     inline void clearFormat() { m_usedFields &= ~UsedFormat; }
 
     inline uint16_t subfunction() const { return m_subfunc; }
-    inline void setSubfunction(uint16_t subfunc) { m_subfunc = subfunc; }
+    inline void setSubfunction(uint16_t subfunc) { m_subfunc = subfunc; m_usedFields |= UsedSubfunction; }
     inline bool hasSubfunction() const { return (m_usedFields & UsedSubfunction) != 0; }
     inline void clearSubfunction() { m_usedFields &= ~UsedSubfunction; }
 
     inline uint16_t writeOffset() const { return m_writeOffset; }
-    inline void setWriteOffset(uint16_t writeOffset) { m_writeOffset = writeOffset; }
+    inline void setWriteOffset(uint16_t writeOffset) { m_writeOffset = writeOffset; m_usedFields |= UsedWriteOffset; }
     inline bool hasWriteOffset() const { return (m_usedFields & UsedWriteOffset) != 0; }
     inline void clearWriteOffset() { m_usedFields &= ~UsedWriteOffset; }
     
     inline uint16_t writeCount() const { return m_writeCount; }
-    inline void setWriteCount(uint16_t writeCount) { m_writeCount = writeCount; }
+    inline void setWriteCount(uint16_t writeCount) { m_writeCount = writeCount; m_usedFields |= UsedWriteCount; }
     inline bool hasWriteCount() const { return (m_usedFields & UsedWriteCount) != 0; }
     inline void clearWriteCount() { m_usedFields &= ~UsedWriteCount; }
 
     inline uint16_t status() const { return m_status; }
-    inline void setStatus(uint16_t status) { m_status = status; }
+    inline void setStatus(uint16_t status) { m_status = status; m_usedFields |= UsedStatus; }
     inline bool hasStatus() const { return (m_usedFields & UsedStatus) != 0; }
     inline void clearStatus() { m_usedFields &= ~UsedStatus; }
 
     inline uint16_t eventCount() const { return m_eventCount; }
-    inline void setEventCount(uint16_t eventCount) { m_eventCount = eventCount; }
+    inline void setEventCount(uint16_t eventCount) { m_eventCount = eventCount; m_usedFields |= UsedEventCount; }
     inline bool hasEventCount() const { return (m_usedFields & UsedEventCount) != 0; }
     inline void clearEventCount() { m_usedFields &= ~UsedEventCount; } 
 
     inline uint16_t messageCount() const { return m_messageCount; }
-    inline void setMessageCount(uint16_t messageCount) { m_messageCount = messageCount; }
+    inline void setMessageCount(uint16_t messageCount) { m_messageCount = messageCount; m_usedFields |= UsedMessageCount; }
     inline bool hasMessageCount() const { return (m_usedFields & UsedMessageCount) != 0; }
     inline void clearMessageCount() { m_usedFields &= ~UsedMessageCount; }
 
     inline uint8_t deviceId() const { return m_deviceId; }
-    inline void setDeviceId(uint8_t deviceId) { m_deviceId = deviceId; }
+    inline void setDeviceId(uint8_t deviceId) { m_deviceId = deviceId; m_usedFields |= UsedDeviceId; }
     inline bool hasDeviceId() const { return (m_usedFields & UsedDeviceId) != 0; }
     inline void clearDeviceId() { m_usedFields &= ~UsedDeviceId; }  
 
     inline uint8_t objectId() const { return m_objectId; }
-    inline void setObjectId(uint8_t objectId) { m_objectId = objectId; }
+    inline void setObjectId(uint8_t objectId) { m_objectId = objectId; m_usedFields |= UsedObjectId; }
     inline bool hasObjectId() const { return (m_usedFields & UsedObjectId) != 0; }
     inline void clearObjectId() { m_usedFields &= ~UsedObjectId; }  
 
     inline uint8_t numberOfObjects() const { return m_numberOfObjects; }
-    inline void setNumberOfObjects(uint8_t numberOfObjects) { m_numberOfObjects = numberOfObjects; }
+    inline void setNumberOfObjects(uint8_t numberOfObjects) { m_numberOfObjects = numberOfObjects; m_usedFields |= UsedNumberOfObjects; }
     inline bool hasNumberOfObjects() const { return (m_usedFields & UsedNumberOfObjects) != 0; }
     inline void clearNumberOfObjects() { m_usedFields &= ~UsedNumberOfObjects; }    
 
     inline uint8_t conformityLevel() const { return m_conformityLevel; }
-    inline void setConformityLevel(uint8_t conformityLevel) { m_conformityLevel = conformityLevel; }
+    inline void setConformityLevel(uint8_t conformityLevel) { m_conformityLevel = conformityLevel; m_usedFields |= UsedConformityLevel; }
     inline bool hasConformityLevel() const { return (m_usedFields & UsedConformityLevel) != 0; }
     inline void clearConformityLevel() { m_usedFields &= ~UsedConformityLevel; }    
 
     inline uint8_t nextObjectId() const { return m_nextObjectId; }
-    inline void setNextObjectId(uint8_t nextObjectId) { m_nextObjectId = nextObjectId; }
+    inline void setNextObjectId(uint8_t nextObjectId) { m_nextObjectId = nextObjectId; m_usedFields |= UsedNextObjectId; }
     inline bool hasNextObjectId() const { return (m_usedFields & UsedNextObjectId) != 0; }
     inline void clearNextObjectId() { m_usedFields &= ~UsedNextObjectId; }
 
     inline bool moreFollows() const { return m_moreFollows; }
-    inline void setMoreFollows(bool moreFollows) { m_moreFollows = moreFollows; }
+    inline void setMoreFollows(bool moreFollows) { m_moreFollows = moreFollows; m_usedFields |= UsedMoreFollows; }
     inline bool hasMoreFollows() const { return (m_usedFields & UsedMoreFollows) != 0; }
     inline void clearMoreFollows() { m_usedFields &= ~UsedMoreFollows; }
 
     inline const QVector<Modbus::FileRecord>& fileRecords() const { return m_fileRecords; }
     inline QVector<Modbus::FileRecord>& fileRecords() { return m_fileRecords; }
+    inline void setFileRecords(const QVector<Modbus::FileRecord> &fileRecords) { m_fileRecords = fileRecords; m_usedFields |= UsedFileRecords; }
     inline bool hasFileRecords() const { return (m_usedFields & UsedFileRecords) != 0; }
     inline void clearFileRecords() { m_usedFields &= ~UsedFileRecords; }
 
     inline const QVariant& data() const { return m_data; }
-    inline void setData(const QVariant &data) { m_data = data; }
+    inline void setData(const QVariant &data) { m_data = data; m_usedFields |= UsedData; }
     inline bool hasData() const { return (m_usedFields & UsedData) != 0; }
     inline void clearData() { m_usedFields &= ~UsedData; }
 

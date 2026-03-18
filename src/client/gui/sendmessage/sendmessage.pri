@@ -9,9 +9,8 @@ HEADERS += \
     $$PWD/client_sendmessagediagnosticswidget.h                 \
     $$PWD/client_sendmessagepggetcommeventcounterwidget.h       \
     $$PWD/client_sendmessagepggetcommeventlogwidget.h           \
-#    $$PWD/client_sendmessagefilerecordswidget.h                 \
-#    $$PWD/client_sendmessagereaddatawidget.h                    \
     $$PWD/client_sendmessagereportserveridwidget.h              \
+    $$PWD/client_sendmessagefilerecordswidget.h                 \
     $$PWD/client_sendmessagemaskwriteregisterwidget.h           \
     $$PWD/client_sendmessagereadwritemultipleregisterswidget.h  \
     $$PWD/client_sendmessagereadfifoqueuewidget.h               \
@@ -28,9 +27,8 @@ SOURCES += \
     $$PWD/client_sendmessagediagnosticswidget.cpp               \
     $$PWD/client_sendmessagepggetcommeventcounterwidget.cpp     \
     $$PWD/client_sendmessagepggetcommeventlogwidget.cpp         \
-#    $$PWD/client_sendmessagefilerecordswidget.cpp               \
-#    $$PWD/client_sendmessagereaddatawidget.cpp                  \
     $$PWD/client_sendmessagereportserveridwidget.cpp            \
+    $$PWD/client_sendmessagefilerecordswidget.cpp               \
     $$PWD/client_sendmessagemaskwriteregisterwidget.cpp         \
     $$PWD/client_sendmessagereadwritemultipleregisterswidget.cpp\
     $$PWD/client_sendmessagereadfifoqueuewidget.cpp             \

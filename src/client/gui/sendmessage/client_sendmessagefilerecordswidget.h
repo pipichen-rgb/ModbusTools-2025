@@ -22,29 +22,32 @@ public:
     };
 
 public:
-    mbClientSendMessageFileRecordsModel(QObject *parent = nullptr);
+    mbClientSendMessageFileRecordsModel(mbClientMessageConverter* conv, QObject *parent = nullptr);
     ~mbClientSendMessageFileRecordsModel();
 
 public: // QAbstractItemModel interface
     int columnCount(const QModelIndex &parent = QModelIndex()) const override;
     int rowCount(const QModelIndex &parent = QModelIndex()) const override;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
+    Qt::ItemFlags flags(const QModelIndex &index) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     bool setData(const QModelIndex &index, const QVariant &value, int role) override;
 
 public:
-    void fillParams(mbClientMessageParamsOLD &params, bool useData = true);
-    void setParams(const mbClientMessageParamsOLD &params);
+    void fillParams(mbClientMessageParams &fillParams, bool useData);
+    void setParams(mbClientMessageParams &params);
     void setRecordData(const QList<QByteArray>& dataList);
 
 public:
+    inline bool editMode() const { return m_editMode; }
+    inline void setEditMode(bool editMode) { m_editMode = editMode; }
     inline mb::Format format() const { return m_format; }
-    void setFormat(mb::Format format);
     void insertRecord(int i);
     void removeRecord(int i);
     bool moveUp(int i);
     bool moveDown(int i);
     void clear();
+    void setFormat(mb::Format format);
 
 private:
     struct Item;
@@ -52,6 +55,8 @@ private:
     void setItemDataInner(Item *item, const QByteArray &data);
 
 private:
+    bool m_editMode;
+    mbClientMessageConverter* m_conv;
     QList<Item*> m_items;
     mb::Format m_format;
 };
@@ -63,40 +68,56 @@ class mbClientSendMessageFileRecordsWidget : public mbClientSendMessageWidget
 public:
     struct Strings
     {
-        const QString prefix          ;
-        const QString fileRecordFormat;
-        const QString fileRecordData  ;
+        const QString format     ;
+        const QString fileRecords;
+        const QString data       ;
         Strings();
         static const Strings &instance();
     };
 
 public:
-    mbClientSendMessageFileRecordsWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
+    mbClientSendMessageFileRecordsWidget(uint8_t func, mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 
 public:
     MBSETTINGS cachedSettings() const override;
     void setCachedSettings(const MBSETTINGS &settings) override;
-    QByteArray getData() const override;
-    void setData(const QByteArray &data) override;
+    void fillParams(mbClientMessageParams &params);
+    void setParams(mbClientMessageParams &params);
 
 public:
     uint8_t getRecordsCount() const;
 
-private Q_SLOTS: // file records
+protected Q_SLOTS: // file records
     void slotFileRecordAdd     ();
     void slotFileRecordDelete  ();
     void slotFileRecordMoveUp  ();
     void slotFileRecordMoveDown();
     void slotFileRecordClear   ();
 
-private:
+protected:
     int currentFileRecordIndex() const;
+    QByteArray saveFileRecordData(const QVector<Modbus::FileRecord> &fileRecords) const;
+    QVector<Modbus::FileRecord> restoreFileRecordData(const QByteArray &data) const;
 
-private:
+protected:
     QComboBox* m_cmbFormat;
     QTableView* m_tblFileRecords;
     mbClientSendMessageFileRecordsModel* m_fileRecordModel;
     bool m_isDirty;
+};
+
+class mbClientSendMessageReadFileRecordsWidget : public mbClientSendMessageFileRecordsWidget
+{
+    Q_OBJECT
+public:
+    explicit mbClientSendMessageReadFileRecordsWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
+};
+
+class mbClientSendMessageWriteFileRecordsWidget : public mbClientSendMessageFileRecordsWidget
+{
+    Q_OBJECT
+public:
+    explicit mbClientSendMessageWriteFileRecordsWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 };
 
 #endif // CLIENT_SENDMESSAGEFILERECORDSWIDGET_H

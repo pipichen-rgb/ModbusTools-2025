@@ -10,6 +10,7 @@
 #include <QVBoxLayout>
 
 #include <gui/widgets/core_addresswidget.h>
+#include "client_sendmessageui.h"
 
 struct mbClientSendMessageFileRecordsModel::Item
 {
@@ -30,8 +31,11 @@ struct mbClientSendMessageFileRecordsModel::Item
     }
 };
 
-mbClientSendMessageFileRecordsModel::mbClientSendMessageFileRecordsModel(QObject *parent)
-    : QAbstractTableModel{parent}
+mbClientSendMessageFileRecordsModel::mbClientSendMessageFileRecordsModel(mbClientMessageConverter* conv, QObject *parent)
+    : QAbstractTableModel(parent),
+    m_editMode(false),
+    m_conv(conv),
+    m_format(mb::ByteArray)
 {
 
 }
@@ -77,6 +81,14 @@ QVariant mbClientSendMessageFileRecordsModel::headerData(int section, Qt::Orient
         break;
     }
     return QVariant();
+}
+
+Qt::ItemFlags mbClientSendMessageFileRecordsModel::flags(const QModelIndex &index) const
+{
+    auto f = QAbstractTableModel::flags(index);
+    if (m_editMode && index.isValid())
+        f |= Qt::ItemIsEditable;
+    return f;
 }
 
 QVariant mbClientSendMessageFileRecordsModel::data(const QModelIndex &index, int role) const
@@ -128,18 +140,13 @@ bool mbClientSendMessageFileRecordsModel::setData(const QModelIndex &index, cons
                 item->file.recordLength = value.toUInt();
                 break;
             case Column_Data:
-                item->data = value.toByteArray();
-                item->cache = mb::toVariant(item->data,
-                                            m_format,
-                                            Modbus::Memory_0x,
-                                            mb::SwapNo,
-                                            mb::R0R1R2R3,
-                                            mb::DefaultDigitalFormat,
-                                            "UTF-8",
-                                            mb::DefaultStringLengthType,
-                                            " ",
-                                            item->data.count()).toString();
-
+            {
+                mbClientMessageParams params;
+                params.setFormat(m_format);
+                params.setData(value);
+                auto data = m_conv->toByteArray(params);
+                setItemDataInner(item, data);
+            }
                 break;
             }
         }
@@ -149,36 +156,52 @@ bool mbClientSendMessageFileRecordsModel::setData(const QModelIndex &index, cons
     return false;
 }
 
-void mbClientSendMessageFileRecordsModel::fillParams(mbClientMessageParamsOLD &params, bool useData)
+void mbClientSendMessageFileRecordsModel::fillParams(mbClientMessageParams &params, bool useData)
 {
-    params.fileRecords.resize(m_items.count());
+    auto fileRecords = params.fileRecords();
+    fileRecords.resize(m_items.count());
     int i = 0;
-    QVariantList ls;
+    QByteArray data;
     Q_FOREACH(const auto &item, m_items)
     {
-        params.fileRecords[i] = item->file;
+        fileRecords[i] = item->file;
         if (useData)
-            ls.append(item->getData());
+        {
+            data.append(item->getData());
+        }
         ++i;
     }
-    params.data = ls;
+    params.setFormat(m_format);
+    params.setFileRecords(fileRecords);
+    params.setData(data);
 }
 
-void mbClientSendMessageFileRecordsModel::setParams(const mbClientMessageParamsOLD &params)
+void mbClientSendMessageFileRecordsModel::setParams(mbClientMessageParams &params)
 {
     beginResetModel();
 
-    qDeleteAll(m_items);
-    m_items.clear();
-
-    QVariantList ls = params.data.toList();
-    for (int i = 0; i < params.fileRecords.count(); ++i)
+    if (m_items.count() != params.fileRecords().count())
     {
-        Item *item = new Item;
-        item->file = params.fileRecords.at(i);
-        if (i < ls.count())
-            setItemDataInner(item, ls.at(i).toByteArray());
-        m_items.append(item);
+        qDeleteAll(m_items);
+        m_items.clear();
+        for (int i = 0; i < params.fileRecords().count(); ++i)
+        {
+            Item *item = new Item;
+            item->file = params.fileRecords().at(i);
+            m_items.append(item);
+        }
+    }
+
+    int c = 0;
+    auto b = m_conv->toByteArray(params);
+    Q_FOREACH (Item *item, m_items)
+    {
+        auto len = item->file.recordLength*2;
+        if ((c+len) <= b.length())
+        {
+            setItemDataInner(item, b.mid(c, len));
+            c += len;
+        }
     }
     endResetModel();
 }
@@ -191,17 +214,6 @@ void mbClientSendMessageFileRecordsModel::setRecordData(const QList<QByteArray> 
         {
             setItemDataInner(m_items.at(i), dataList.at(i));
         }
-        Q_EMIT dataChanged(index(0, Column_Data), index(m_items.count()-1, Column_Data));
-    }
-}
-
-void mbClientSendMessageFileRecordsModel::setFormat(mb::Format format)
-{
-    if (m_format != format)
-    {
-        m_format = format;
-        for (Item *item : std::as_const(m_items))
-            setItemDataInner(item, item->data);
         Q_EMIT dataChanged(index(0, Column_Data), index(m_items.count()-1, Column_Data));
     }
 }
@@ -253,6 +265,17 @@ void mbClientSendMessageFileRecordsModel::clear()
     endResetModel();
 }
 
+void mbClientSendMessageFileRecordsModel::setFormat(mb::Format format)
+{
+    if (m_format != format)
+    {
+        m_format = format;
+        for (Item *item : std::as_const(m_items))
+            setItemDataInner(item, item->data);
+        Q_EMIT dataChanged(index(0, Column_Data), index(m_items.count()-1, Column_Data));
+    }
+}
+
 bool mbClientSendMessageFileRecordsModel::moveTo(int oldPos, int newPos)
 {
     Item *item = m_items.value(oldPos);
@@ -271,25 +294,19 @@ bool mbClientSendMessageFileRecordsModel::moveTo(int oldPos, int newPos)
 
 void mbClientSendMessageFileRecordsModel::setItemDataInner(Item *item, const QByteArray &data)
 {
+    mbClientMessageParams params;
+    params.setFormat(m_format);
+    params.setCount(data.count()*8);
+    params.setData(data);
     item->data = data;
-    item->cache = mb::toVariant(item->data,
-                                m_format,
-                                Modbus::Memory_0x,
-                                mb::SwapNo,
-                                mb::R0R1R2R3,
-                                mb::DefaultDigitalFormat,
-                                "UTF-8",
-                                mb::DefaultStringLengthType,
-                                " ",
-                                item->data.count()).toString();
+    item->cache = m_conv->toVariant(params).toString();
 }
 
 mbClientSendMessageFileRecordsWidget::Strings::Strings() :
-    prefix          (QStringLiteral("Ui.SendMessage.FileRecordsWidget.")),
-    fileRecordFormat(prefix+QStringLiteral("format")),
-    fileRecordData  (prefix+QStringLiteral("data"))
+    format     (QStringLiteral("format")),
+    fileRecords(QStringLiteral("fileRecords")),
+    data       (QStringLiteral("data"))
 {
-
 }
 
 const mbClientSendMessageFileRecordsWidget::Strings &mbClientSendMessageFileRecordsWidget::Strings::instance()
@@ -298,40 +315,38 @@ const mbClientSendMessageFileRecordsWidget::Strings &mbClientSendMessageFileReco
     return s;
 }
 
-mbClientSendMessageFileRecordsWidget::mbClientSendMessageFileRecordsWidget(mbClientSendMessageUi *ui, QWidget *parent) :
-    mbClientSendMessageWidget(ui, parent)
+mbClientSendMessageFileRecordsWidget::mbClientSendMessageFileRecordsWidget(uint8_t func, mbClientSendMessageUi *ui, QWidget *parent) :
+    mbClientSendMessageWidget(func, ui, parent)
 {
-    this->setObjectName(QString::fromUtf8("pgFileRecords"));
+    m_fileRecordModel = new mbClientSendMessageFileRecordsModel(ui->converter(), this);
 
     // format
     m_cmbFormat = new QComboBox(this);
-    m_cmbFormat->setObjectName(QString::fromUtf8("cmbFileRecordFormat"));
     auto ls = mb::enumFormatKeyList();
     Q_FOREACH (const QString &s, ls)
     {
         m_cmbFormat->addItem(s);
     }
-    m_cmbFormat->setCurrentIndex(mb::Dec16);
+    m_cmbFormat->setCurrentIndex(m_fileRecordModel->format());
+    connect(m_cmbFormat, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int index){
+        auto format = mb::enumFormatValueByIndex(index);
+        m_fileRecordModel->setFormat(format);
+    });
 
     // file records
     m_tblFileRecords = new QTableView(this);
-    m_tblFileRecords->setObjectName(QString::fromUtf8("tblFileRecords"));
-    m_fileRecordModel = new mbClientSendMessageFileRecordsModel(this);
     m_tblFileRecords->setModel(m_fileRecordModel);
     m_tblFileRecords->horizontalHeader()->setStretchLastSection(true);
     
     // Labels
     auto lblFileRecords = new QLabel(this);
-    lblFileRecords->setObjectName(QString::fromUtf8("lblFileRecords"));
     lblFileRecords->setText(QCoreApplication::translate("mbClientSendMessageUi", "File Records:", nullptr));
 
     auto lblFormat = new QLabel(this);
-    lblFormat->setObjectName(QString::fromUtf8("lblFormat"));
     lblFormat->setText(QCoreApplication::translate("mbClientSendMessageUi", "Format:", nullptr));
 
     // Buttons
     auto btnFileRecordAdd = new QPushButton(this);
-    btnFileRecordAdd->setObjectName(QString::fromUtf8("btnFileRecordAdd"));
     QSizePolicy sizePolicy1(QSizePolicy::Fixed, QSizePolicy::Fixed);
     sizePolicy1.setHorizontalStretch(0);
     sizePolicy1.setVerticalStretch(0);
@@ -342,7 +357,6 @@ mbClientSendMessageFileRecordsWidget::mbClientSendMessageFileRecordsWidget(mbCli
     btnFileRecordAdd->setIcon(icon);
 
     auto btnFileRecordDelete = new QPushButton(this);
-    btnFileRecordDelete->setObjectName(QString::fromUtf8("btnFileRecordDelete"));
     sizePolicy1.setHeightForWidth(btnFileRecordDelete->sizePolicy().hasHeightForWidth());
     btnFileRecordDelete->setSizePolicy(sizePolicy1);
     QIcon icon1;
@@ -350,7 +364,6 @@ mbClientSendMessageFileRecordsWidget::mbClientSendMessageFileRecordsWidget(mbCli
     btnFileRecordDelete->setIcon(icon1);
 
     auto btnFileRecordMoveUp = new QPushButton(this);
-    btnFileRecordMoveUp->setObjectName(QString::fromUtf8("btnFileRecordMoveUp"));
     sizePolicy1.setHeightForWidth(btnFileRecordMoveUp->sizePolicy().hasHeightForWidth());
     btnFileRecordMoveUp->setSizePolicy(sizePolicy1);
     QIcon icon2;
@@ -358,7 +371,6 @@ mbClientSendMessageFileRecordsWidget::mbClientSendMessageFileRecordsWidget(mbCli
     btnFileRecordMoveUp->setIcon(icon2);
 
     auto btnFileRecordMoveDown = new QPushButton(this);
-    btnFileRecordMoveDown->setObjectName(QString::fromUtf8("btnFileRecordMoveDown"));
     sizePolicy1.setHeightForWidth(btnFileRecordMoveDown->sizePolicy().hasHeightForWidth());
     btnFileRecordMoveDown->setSizePolicy(sizePolicy1);
     QIcon icon3;
@@ -366,7 +378,6 @@ mbClientSendMessageFileRecordsWidget::mbClientSendMessageFileRecordsWidget(mbCli
     btnFileRecordMoveDown->setIcon(icon3);
 
     auto btnFileRecordClear = new QPushButton(this);
-    btnFileRecordClear->setObjectName(QString::fromUtf8("btnFileRecordClear"));
     sizePolicy1.setHeightForWidth(btnFileRecordClear->sizePolicy().hasHeightForWidth());
     btnFileRecordClear->setSizePolicy(sizePolicy1);
     QIcon icon4;
@@ -385,7 +396,6 @@ mbClientSendMessageFileRecordsWidget::mbClientSendMessageFileRecordsWidget(mbCli
 
     // Layouts
     auto horizontalLayout1 = new QHBoxLayout();
-    horizontalLayout1->setObjectName(QString::fromUtf8("horizontalLayout1"));
     horizontalLayout1->addWidget(lblFileRecords);
     horizontalLayout1->addItem(horizontalSpacer);
     horizontalLayout1->addWidget(lblFormat);
@@ -405,7 +415,6 @@ mbClientSendMessageFileRecordsWidget::mbClientSendMessageFileRecordsWidget(mbCli
     horizontalLayout2->addLayout(verticalLayout1);
 
     auto verticalLayout2 = new QVBoxLayout(this);
-    verticalLayout2->setObjectName(QString::fromUtf8("verticalLayout2"));
     verticalLayout2->addLayout(horizontalLayout1);
     verticalLayout2->addLayout(horizontalLayout2);
 
@@ -416,10 +425,13 @@ MBSETTINGS mbClientSendMessageFileRecordsWidget::cachedSettings() const
 {
     const Strings &s = Strings::instance();
 
-    MBSETTINGS m;
-    m[s.fileRecordFormat] = m_cmbFormat->currentText();
-    m[s.fileRecordData  ] = getData();
+    mbClientMessageParams params;
+    m_fileRecordModel->fillParams(params, true);
 
+    MBSETTINGS m;
+    m[m_prefix+s.format     ] = m_cmbFormat->currentText();
+    m[m_prefix+s.fileRecords] = saveFileRecordData(params.fileRecords());
+    m[m_prefix+s.data       ] = params.data();
     return m;
 }
 
@@ -430,18 +442,23 @@ void mbClientSendMessageFileRecordsWidget::setCachedSettings(const MBSETTINGS &m
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = m.end();
 
-    it = m.find(s.fileRecordFormat ); if (it != end) m_cmbFormat->setCurrentText(it.value().toString());
-    it = m.find(s.fileRecordData   ); if (it != end) setData(it.value().toByteArray());
+    mbClientMessageParams params;
+    it = m.find(m_prefix+s.format     ); if (it != end) m_cmbFormat->setCurrentText(it.value().toString());
+    it = m.find(m_prefix+s.fileRecords); if (it != end) params.setFileRecords(restoreFileRecordData(it.value().toByteArray()));
+    it = m.find(m_prefix+s.data       ); if (it != end) params.setData(it.value().toByteArray());
+    params.setFormat(m_fileRecordModel->format());
+
+    m_fileRecordModel->setParams(params);
 }
 
-QByteArray mbClientSendMessageFileRecordsWidget::getData() const
+void mbClientSendMessageFileRecordsWidget::fillParams(mbClientMessageParams &params)
 {
-    // TODO:
+    m_fileRecordModel->fillParams(params, m_fileRecordModel->editMode());
 }
 
-void mbClientSendMessageFileRecordsWidget::setData(const QByteArray &data)
+void mbClientSendMessageFileRecordsWidget::setParams(mbClientMessageParams &params)
 {
-    // TODO:
+    m_fileRecordModel->setParams(params);
 }
 
 uint8_t mbClientSendMessageFileRecordsWidget::getRecordsCount() const
@@ -485,3 +502,29 @@ int mbClientSendMessageFileRecordsWidget::currentFileRecordIndex() const
     return -1;
 }
 
+QByteArray mbClientSendMessageFileRecordsWidget::saveFileRecordData(const QVector<Modbus::FileRecord> &fileRecords) const
+{
+    QByteArray res(reinterpret_cast<const char*>(fileRecords.constData()), fileRecords.count()*sizeof(Modbus::FileRecord));
+    return res;
+}
+
+QVector<Modbus::FileRecord> mbClientSendMessageFileRecordsWidget::restoreFileRecordData(const QByteArray &data) const
+{
+    QVector<Modbus::FileRecord> res;
+    int count = data.size() / sizeof(Modbus::FileRecord);
+    res.resize(count);
+    memcpy(res.data(), data.constData(), data.size());
+    return res;
+}
+
+mbClientSendMessageReadFileRecordsWidget::mbClientSendMessageReadFileRecordsWidget(mbClientSendMessageUi *ui, QWidget *parent) :
+            mbClientSendMessageFileRecordsWidget(MBF_READ_FILE_RECORD, ui, parent)
+{
+    m_fileRecordModel->setEditMode(false);
+}
+
+mbClientSendMessageWriteFileRecordsWidget::mbClientSendMessageWriteFileRecordsWidget(mbClientSendMessageUi *ui, QWidget *parent) :
+    mbClientSendMessageFileRecordsWidget(MBF_WRITE_FILE_RECORD, ui, parent)
+{
+    m_fileRecordModel->setEditMode(true);
+}

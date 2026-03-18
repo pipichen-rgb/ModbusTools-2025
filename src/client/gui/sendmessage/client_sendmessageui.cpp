@@ -46,12 +46,11 @@
 #include "client_sendmessagepggetcommeventcounterwidget.h"
 #include "client_sendmessagepggetcommeventlogwidget.h"
 #include "client_sendmessagereportserveridwidget.h"
+#include "client_sendmessagefilerecordswidget.h"
 #include "client_sendmessagemaskwriteregisterwidget.h"
 #include "client_sendmessagereadwritemultipleregisterswidget.h"
 #include "client_sendmessagereadfifoqueuewidget.h"
 #include "client_sendmessagereaddeviceidwidget.h"
-
-//#include "client_sendmessagefilerecordswidget.h"
 
 #include "client_sendmessagelistmodel.h"
 
@@ -114,8 +113,8 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
     addFunctionWidget(new mbClientSendMessageWriteMultipleCoilsWidget        (this, this));
     addFunctionWidget(new mbClientSendMessageWriteMultipleRegistersWidget    (this, this));
     addFunctionWidget(new mbClientSendMessageReportServerIdWidget            (this, this));
-  //addFunctionWidget(new mbClientSendMessageReadFileRecordsWidget           (this, this));
-  //addFunctionWidget(new mbClientSendMessageWriteFileRecordsWidget          (this, this));
+    addFunctionWidget(new mbClientSendMessageReadFileRecordsWidget           (this, this));
+    addFunctionWidget(new mbClientSendMessageWriteFileRecordsWidget          (this, this));
     addFunctionWidget(new mbClientSendMessageMaskWriteRegisterWidget         (this, this));
     addFunctionWidget(new mbClientSendMessageReadWriteMultipleRegistersWidget(this, this));
     addFunctionWidget(new mbClientSendMessageReadFIFOQueueWidget             (this, this));
@@ -453,7 +452,7 @@ void mbClientSendMessageUi::slotStop()
 {
     stopSendMessages();
 }
-#include <QDebug>
+
 void mbClientSendMessageUi::slotBytesTx(const QByteArray &bytes)
 {
     ui->txtModbusTx->setPlainText(Modbus::bytesToString(bytes));
