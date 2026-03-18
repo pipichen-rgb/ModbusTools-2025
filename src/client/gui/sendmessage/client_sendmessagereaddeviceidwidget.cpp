@@ -13,10 +13,13 @@
 #include <QVBoxLayout>
 
 mbClientSendMessageReadDeviceIdWidget::Strings::Strings() :
-    prefix            (QStringLiteral("Ui.SendMessage.ReadDeviceIdWidget.")),
-    readDeviceId      (prefix+QStringLiteral("deviceId")),
-    readDeviceObjectId(prefix+QStringLiteral("objectId")),
-    readDeviceFormat  (prefix+QStringLiteral("format"))
+    format      (QStringLiteral("format")),
+    deviceId    (QStringLiteral("deviceId")),
+    objectId    (QStringLiteral("objectId")),
+    conformity  (QStringLiteral("conformity")),
+    nextObjectId(QStringLiteral("nextObjectId")),
+    moreFollows (QStringLiteral("moreFollows")),
+    data        (QStringLiteral("data"))
 {
 }
 
@@ -27,29 +30,10 @@ const mbClientSendMessageReadDeviceIdWidget::Strings &mbClientSendMessageReadDev
 }
 
 mbClientSendMessageReadDeviceIdWidget::mbClientSendMessageReadDeviceIdWidget(mbClientSendMessageUi *ui, QWidget *parent) :
-    mbClientSendMessageWidget(ui, parent)
+    mbClientSendMessageWidget(MBF_ENCAPSULATED_INTERFACE_TRANSPORT ,ui, parent)
 {
-    this->setObjectName(QString::fromUtf8("pgReadDeviceId"));
-
-    // device id
-    m_spDeviceId = new QSpinBox(this);
-    m_spDeviceId->setObjectName(QString::fromUtf8("spReadDeviceId"));
-    m_spDeviceId->setMinimumSize(QSize(80, 0));
-    m_spDeviceId->setMinimum(0);
-    m_spDeviceId->setMaximum(UINT8_MAX);
-    m_spDeviceId->setValue(1);
-
-    // object id
-    m_spObjectId = new QSpinBox(this);
-    m_spObjectId->setObjectName(QString::fromUtf8("spReadObjectId"));
-    m_spObjectId->setMinimumSize(QSize(80, 0));
-    m_spObjectId->setMinimum(0);
-    m_spObjectId->setMaximum(UINT8_MAX);
-    m_spObjectId->setValue(0);
-
     // format
     m_cmbFormat = new QComboBox(this);
-    m_cmbFormat->setObjectName(QString::fromUtf8("cmbReadDeviceIdFormat"));
     auto ls = mb::enumFormatKeyList();
     Q_FOREACH (const QString &s, ls)
     {
@@ -57,37 +41,48 @@ mbClientSendMessageReadDeviceIdWidget::mbClientSendMessageReadDeviceIdWidget(mbC
     }
     m_cmbFormat->setCurrentIndex(mb::String);
 
+    // device id
+    m_spDeviceId = new QSpinBox(this);
+    m_spDeviceId->setMinimumSize(QSize(80, 0));
+    m_spDeviceId->setMinimum(0);
+    m_spDeviceId->setMaximum(UINT8_MAX);
+    m_spDeviceId->setValue(1);
+
+    // object id
+    m_spObjectId = new QSpinBox(this);
+    m_spObjectId->setMinimumSize(QSize(80, 0));
+    m_spObjectId->setMinimum(0);
+    m_spObjectId->setMaximum(UINT8_MAX);
+    m_spObjectId->setValue(0);
+
     // group response
     auto grResponse = new QGroupBox(this);
-    grResponse->setObjectName(QString::fromUtf8("grResponse")); 
     grResponse->setTitle(QCoreApplication::translate("mbClientSendMessageUi", "Response", nullptr));
 
     // conformity
     m_lnConformity = new QLineEdit(grResponse);
-    m_lnConformity->setObjectName(QString::fromUtf8("lnReadDeviceIdConformity"));
     m_lnConformity->setReadOnly(true);
 
     // next object id
     m_lnNextObjectId = new QLineEdit(grResponse);
-    m_lnNextObjectId->setObjectName(QString::fromUtf8("lnReadDeviceIdNextObjectId"));
     m_lnNextObjectId->setReadOnly(true);
 
     // more follows
     m_chbMoreFollows = new QCheckBox(grResponse);
-    m_chbMoreFollows->setObjectName(QString::fromUtf8("chbReadDeviceIdMoreFollows"));
     m_chbMoreFollows->setText(QCoreApplication::translate("mbClientSendMessageUi", "More Follows", nullptr));
     m_chbMoreFollows->setCheckable(false);
 
     // table read device objects
     m_tblReadDeviceObjects = new QTableWidget(grResponse);
-    auto *item0 = new QTableWidgetItem();
-    m_tblReadDeviceObjects->setHorizontalHeaderItem(0, item0);
-    auto *item1 = new QTableWidgetItem();
-    m_tblReadDeviceObjects->setHorizontalHeaderItem(1, item1);
-    m_tblReadDeviceObjects->setObjectName(QString::fromUtf8("tblReadDeviceObjects"));
     m_tblReadDeviceObjects->setRowCount(0);
     m_tblReadDeviceObjects->setColumnCount(2);
     m_tblReadDeviceObjects->horizontalHeader()->setStretchLastSection(true);
+    auto *item0 = new QTableWidgetItem();
+    item0->setText(QCoreApplication::translate("mbClientSendMessageUi", "Object Id", nullptr));
+    m_tblReadDeviceObjects->setHorizontalHeaderItem(0, item0);
+    auto *item1 = new QTableWidgetItem();
+    item1->setText(QCoreApplication::translate("mbClientSendMessageUi", "Value", nullptr));
+    m_tblReadDeviceObjects->setHorizontalHeaderItem(1, item1);
 
     // Labels
     auto lblDeviceId = new QLabel(this);
@@ -109,9 +104,6 @@ mbClientSendMessageReadDeviceIdWidget::mbClientSendMessageReadDeviceIdWidget(mbC
     auto lblNextObjectId = new QLabel(this);
     lblNextObjectId->setObjectName(QString::fromUtf8("lblReadDeviceIdNextObjectId"));
     lblNextObjectId->setText(QCoreApplication::translate("mbClientSendMessageUi", "Next Object ID:", nullptr));
-
-    // Spacer
-    auto verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
     // Layouts
     auto horizontalLayout1 = new QHBoxLayout();
@@ -143,6 +135,13 @@ mbClientSendMessageReadDeviceIdWidget::mbClientSendMessageReadDeviceIdWidget(mbC
     verticalLayout1->addLayout(horizontalLayout1);
     verticalLayout1->addWidget(grResponse);
     this->setLayout(verticalLayout1);
+
+    setConformity(0);
+    setNextObjectId(0);
+    setMoreFollows(0);
+
+    connect(m_cmbFormat, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &mbClientSendMessageReadDeviceIdWidget::updateData);
+    updateData();
 }
 
 MBSETTINGS mbClientSendMessageReadDeviceIdWidget::cachedSettings() const
@@ -150,10 +149,13 @@ MBSETTINGS mbClientSendMessageReadDeviceIdWidget::cachedSettings() const
     const Strings &s = Strings::instance();
 
     MBSETTINGS m;
-    m[s.readDeviceId      ] = getDeviceId();
-    m[s.readDeviceObjectId] = getObjectId();
-    m[s.readDeviceFormat  ] = m_cmbFormat->currentText();
-
+    m[s.format      ] = m_cmbFormat->currentText();
+    m[s.deviceId    ] = getDeviceId();
+    m[s.objectId    ] = getObjectId();
+    m[s.conformity  ] = getConformity();
+    m[s.nextObjectId] = getNextObjectId();
+    m[s.moreFollows ] = getMoreFollows();
+    m[s.data        ] = m_data;
     return m;
 }
 
@@ -164,46 +166,35 @@ void mbClientSendMessageReadDeviceIdWidget::setCachedSettings(const MBSETTINGS &
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = m.end();
 
-    it = m.find(s.readDeviceId      ); if (it != end) setDeviceId                (it.value().toInt()   );
-    it = m.find(s.readDeviceObjectId); if (it != end) setObjectId                (it.value().toInt()   );
-    it = m.find(s.readDeviceFormat  ); if (it != end) m_cmbFormat->setCurrentText(it.value().toString());
+    it = m.find(s.format      ); if (it != end) m_cmbFormat->setCurrentText(it.value().toString());
+    it = m.find(s.deviceId    ); if (it != end) setDeviceId    (it.value().toInt ());
+    it = m.find(s.objectId    ); if (it != end) setObjectId    (it.value().toInt ());
+    it = m.find(s.conformity  ); if (it != end) setConformity  (it.value().toInt ());
+    it = m.find(s.nextObjectId); if (it != end) setNextObjectId(it.value().toInt ());
+    it = m.find(s.moreFollows ); if (it != end) setMoreFollows (it.value().toBool());
+    it = m.find(s.data        ); if (it != end) m_data = it.value().toByteArray();
+    updateData();
 }
 
-QByteArray mbClientSendMessageReadDeviceIdWidget::getData() const
+void mbClientSendMessageReadDeviceIdWidget::fillParams(mbClientMessageParams &params) const
 {
-
+    params.setFormat(format());
+    params.setDeviceId(getDeviceId());
+    params.setObjectId(getObjectId());
 }
 
-void mbClientSendMessageReadDeviceIdWidget::setData(const QByteArray &data)
+void mbClientSendMessageReadDeviceIdWidget::setParams(mbClientMessageParams &params)
 {
-    /*
-    auto format = mb::enumFormatValueByIndex(m_cmbFormat->currentIndex());
-    auto sz = data.length();
-    for (int i = 0, c = 0; i+2 < sz; ++c)
-    {
-        uint8_t objectId = static_cast<uint8_t>(data[i]);
-        uint8_t len = static_cast<uint8_t>(data[i+1]);
-        if (i + 1 + len >= sz)
-            len = sz - i - 2;
-        QByteArray data = QByteArray::fromRawData(reinterpret_cast<const char*>(data.constData() + i + 2), len);
-        auto v = mb::toVariant(data,
-                                format,
-                                Modbus::Memory_0x,
-                                m_dataParams.swapBytes,
-                                m_dataParams.registerOrder,
-                                m_dataParams.byteArrayFormat,
-                                m_dataParams.stringEncoding,
-                                m_dataParams.stringLengthType,
-                                m_dataParams.byteArraySeparator,
-                                data.count()).toString();
-        m_tblReadDeviceObjects->insertRow(c);
-        QTableWidgetItem *item0 = new QTableWidgetItem(mb::toHexString(objectId));
-        QTableWidgetItem *item1 = new QTableWidgetItem(v);
-        m_tblReadDeviceObjects->setItem(c, 0, item0);
-        m_tblReadDeviceObjects->setItem(c, 1, item1);
-        i += len + 2;
-    }
-    */
+    setConformity(params.conformityLevel());
+    setNextObjectId(params.nextObjectId());
+    setMoreFollows(params.moreFollows());
+    m_data = m_conv->toByteArray(params);
+    updateData();
+}
+
+mb::Format mbClientSendMessageReadDeviceIdWidget::format() const
+{
+    return mb::enumFormatValueByIndex(m_cmbFormat->currentIndex());
 }
 
 uint8_t mbClientSendMessageReadDeviceIdWidget::getDeviceId() const
@@ -254,4 +245,31 @@ bool mbClientSendMessageReadDeviceIdWidget::getMoreFollows() const
 void mbClientSendMessageReadDeviceIdWidget::setMoreFollows(bool v)
 {
     m_chbMoreFollows->setChecked(v);
+}
+
+void mbClientSendMessageReadDeviceIdWidget::updateData()
+{
+    auto format = mb::enumFormatValueByIndex(m_cmbFormat->currentIndex());
+    auto sz = m_data.length();
+    mbClientMessageParams params;
+    params.setFunction(m_func);
+    params.setFormat(format);
+    m_tblReadDeviceObjects->setRowCount(0);
+    for (int i = 0, c = 0; i+2 < sz; ++c)
+    {
+        uint8_t objectId = static_cast<uint8_t>(m_data[i]);
+        uint8_t len = static_cast<uint8_t>(m_data[i+1]);
+        if (i + 1 + len >= sz)
+            len = sz - i - 2;
+        QByteArray data = QByteArray::fromRawData(reinterpret_cast<const char*>(m_data.constData() + i + 2), len);
+        params.setData(data);
+        auto v = m_conv->toVariant(params).toString();
+        m_tblReadDeviceObjects->insertRow(c);
+        QTableWidgetItem *item0 = new QTableWidgetItem(mb::toHexString(objectId));
+        QTableWidgetItem *item1 = new QTableWidgetItem(v);
+        m_tblReadDeviceObjects->setItem(c, 0, item0);
+        m_tblReadDeviceObjects->setItem(c, 1, item1);
+        i += len + 2;
+    }
+
 }

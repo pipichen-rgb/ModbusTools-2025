@@ -16,10 +16,14 @@ class mbClientSendMessageReadDeviceIdWidget : public mbClientSendMessageWidget
 public:
     struct Strings
     {
-        const QString prefix            ;
-        const QString readDeviceId      ;
-        const QString readDeviceObjectId;
-        const QString readDeviceFormat  ;
+        const QString format  ;
+        const QString deviceId;
+        const QString objectId;
+        const QString conformity;
+        const QString nextObjectId;
+        const QString moreFollows;
+        const QString data;
+
         Strings();
         static const Strings &instance();
     };
@@ -30,10 +34,12 @@ public:
 public:
     MBSETTINGS cachedSettings() const override;
     void setCachedSettings(const MBSETTINGS &settings) override;
-    QByteArray getData() const override;
-    void setData(const QByteArray &data) override;
+    void fillParams(mbClientMessageParams &params) const override;
+    void setParams(mbClientMessageParams &params) override;
 
 public:
+    mb::Format format() const;
+    
     uint8_t getDeviceId() const;
     void setDeviceId(uint8_t v);
 
@@ -49,10 +55,14 @@ public:
     bool getMoreFollows() const;
     void setMoreFollows(bool v);
 
+private Q_SLOTS:
+    void updateData();
+
 private:
+    QByteArray m_data;
+    QComboBox* m_cmbFormat;
     QSpinBox* m_spDeviceId;
     QSpinBox* m_spObjectId;
-    QComboBox* m_cmbFormat;
     QLineEdit* m_lnConformity;
     QLineEdit* m_lnNextObjectId;
     QCheckBox* m_chbMoreFollows;

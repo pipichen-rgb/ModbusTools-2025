@@ -49,10 +49,9 @@
 #include "client_sendmessagemaskwriteregisterwidget.h"
 #include "client_sendmessagereadwritemultipleregisterswidget.h"
 #include "client_sendmessagereadfifoqueuewidget.h"
+#include "client_sendmessagereaddeviceidwidget.h"
 
 //#include "client_sendmessagefilerecordswidget.h"
-//#include "client_sendmessagereaddatawidget.h"
-//#include "client_sendmessagereaddeviceidwidget.h"
 
 #include "client_sendmessagelistmodel.h"
 
@@ -128,11 +127,11 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
                          .arg(mb::ModbusFunctionString(funcNum))
                      );
     }
-    //addFunctionWidget(new mbClientSendMessageReadDeviceIdWidget(&m_converter, this));
-    //cmb->addItem(QString("%1/%2 - ReadDeviceIdentification")
-    //                .arg(MBF_ENCAPSULATED_INTERFACE_TRANSPORT, 2, 10, QChar('0'))
-    //                .arg(MBF_MEI_READ_DEVICE_ID, 2, 10, QChar('0')));
-    //cmb->setCurrentIndex(2);
+    addFunctionWidget(new mbClientSendMessageReadDeviceIdWidget(this, this));
+    cmb->addItem(QString("%1/%2 - ReadDeviceIdentification")
+                    .arg(MBF_ENCAPSULATED_INTERFACE_TRANSPORT, 2, 10, QChar('0'))
+                    .arg(MBF_MEI_READ_DEVICE_ID, 2, 10, QChar('0')));
+    cmb->setCurrentIndex(2);
 
     setSendTo(SendToDevice);
 
