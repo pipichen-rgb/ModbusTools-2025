@@ -431,7 +431,7 @@ MBSETTINGS mbClientSendMessageFileRecordsWidget::cachedSettings() const
 
     MBSETTINGS m;
     m[m_prefix+s.format     ] = m_cmbFormat->currentText();
-    m[m_prefix+s.fileRecords] = saveFileRecordData(params.fileRecords());
+    m[m_prefix+s.fileRecords] = params.fileRecordsAsByteArray();
     m[m_prefix+s.data       ] = params.data();
     return m;
 }
@@ -445,14 +445,14 @@ void mbClientSendMessageFileRecordsWidget::setCachedSettings(const MBSETTINGS &m
 
     mbClientMessageParams params;
     it = m.find(m_prefix+s.format     ); if (it != end) m_cmbFormat->setCurrentText(it.value().toString());
-    it = m.find(m_prefix+s.fileRecords); if (it != end) params.setFileRecords(restoreFileRecordData(it.value().toByteArray()));
+    it = m.find(m_prefix+s.fileRecords); if (it != end) params.setFileRecords(it.value().toByteArray());
     it = m.find(m_prefix+s.data       ); if (it != end) params.setData(it.value().toByteArray());
     params.setFormat(m_fileRecordModel->format());
 
     m_fileRecordModel->setParams(params);
 }
 
-void mbClientSendMessageFileRecordsWidget::fillParams(mbClientMessageParams &params)
+void mbClientSendMessageFileRecordsWidget::fillParams(mbClientMessageParams &params) const
 {
     m_fileRecordModel->fillParams(params, m_fileRecordModel->editMode());
 }
@@ -501,21 +501,6 @@ int mbClientSendMessageFileRecordsWidget::currentFileRecordIndex() const
     if (indexes.count())
         return indexes.first().row();
     return -1;
-}
-
-QByteArray mbClientSendMessageFileRecordsWidget::saveFileRecordData(const QVector<Modbus::FileRecord> &fileRecords) const
-{
-    QByteArray res(reinterpret_cast<const char*>(fileRecords.constData()), fileRecords.count()*sizeof(Modbus::FileRecord));
-    return res;
-}
-
-QVector<Modbus::FileRecord> mbClientSendMessageFileRecordsWidget::restoreFileRecordData(const QByteArray &data) const
-{
-    QVector<Modbus::FileRecord> res;
-    int count = data.size() / sizeof(Modbus::FileRecord);
-    res.resize(count);
-    memcpy(res.data(), data.constData(), data.size());
-    return res;
 }
 
 mbClientSendMessageReadFileRecordsWidget::mbClientSendMessageReadFileRecordsWidget(mbClientSendMessageUi *ui, QWidget *parent) :

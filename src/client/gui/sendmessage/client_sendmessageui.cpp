@@ -74,7 +74,7 @@ mbClientSendMessageUi::mbClientSendMessageUi(QWidget *parent) : mbCoreDialogBase
                                                                 ui(new Ui::mbClientSendMessageUi)
 {
     ui->setupUi(this);
-    m_list = new mbClientSendMessageListModel(this);
+    m_list = new mbClientSendMessageListModel(&m_converter, this);
     ui->lsList->setModel(m_list);
     m_project = nullptr;
     m_sendTo = -1;
@@ -319,24 +319,20 @@ void mbClientSendMessageUi::slotListShowHide()
 
 void mbClientSendMessageUi::slotListInsert()
 {
-    /*
     mbClientMessageParams params;
     fillParams(params);
     int i = currentListIndex();
     m_list->insertMessage(i, params);
-    */
 }
 
 void mbClientSendMessageUi::slotListEdit()
 {
-    /*
     int i = currentListIndex();
     if (i < 0)
         return;
     mbClientMessageParams params;
     fillParams(params);
     m_list->editMessage(i, params);
-    */
 }
 
 void mbClientSendMessageUi::slotListRemove()
@@ -366,7 +362,6 @@ void mbClientSendMessageUi::slotListMoveDown()
 
 void mbClientSendMessageUi::slotListImport()
 {
-    /*
     mbClientDialogs *dialogs = mbClient::global()->ui()->dialogs();
     QString file = dialogs->getOpenFileName(this,
                                             QString("Import Message"),
@@ -383,7 +378,7 @@ void mbClientSendMessageUi::slotListImport()
             while (!in.atEnd())
             {
                 QString line = in.readLine();
-                mbClientMessageParams m = mb::restoreClientMessageParams(line, &ok);
+                mbClientMessageParams m = m_converter.restoreClientMessageParams(line, &ok);
                 if (ok)
                     messages.append(m);
             }
@@ -391,12 +386,10 @@ void mbClientSendMessageUi::slotListImport()
             m_list->setMessages(messages);
         }
     }
-    */
 }
 
 void mbClientSendMessageUi::slotListExport()
 {
-    /*
     mbClientDialogs *dialogs = mbClient::global()->ui()->dialogs();
     QString file = dialogs->getSaveFileName(this,
                                             QString("Export Message"),
@@ -411,13 +404,12 @@ void mbClientSendMessageUi::slotListExport()
             QList<mbClientMessageParams> messages = m_list->messages();
             Q_FOREACH (const mbClientMessageParams &m, messages)
             {
-                QString line = mb::saveClientMessageParams(m);
+                QString line = m_converter.saveClientMessageParams(m);
                 out << line << '\n';
             }
             qf.close();
         }
     }
-    */
 }
 
 void mbClientSendMessageUi::slotSendOne()
@@ -492,8 +484,8 @@ void mbClientSendMessageUi::getListItem(const QModelIndex &index)
     if (i < 0)
         return;
     // TODO: check if txt already has data and ask user to confirm
-    //mbClientMessageParams p = m_list->message(i);
-    //fillForm(p);
+    mbClientMessageParams p = m_list->message(i);
+    fillForm(p);
 }
 
 void mbClientSendMessageUi::timerEvent(QTimerEvent */*event*/)
@@ -519,13 +511,12 @@ void mbClientSendMessageUi::timerEvent(QTimerEvent */*event*/)
 
 QStringList mbClientSendMessageUi::getListItems() const
 {
-    //return mb::saveClientMessages(m_list->messages());
-    return QStringList();
+    return m_converter.saveClientMessages(m_list->messages());
 }
 
 void mbClientSendMessageUi::setListItems(const QStringList &list)
 {
-    //m_list->setMessages(mb::restoreClientMessages(list));
+    m_list->setMessages(m_converter.restoreClientMessages(list));
 }
 
 int mbClientSendMessageUi::currentListIndex() const
@@ -554,7 +545,6 @@ void mbClientSendMessageUi::createMessage()
 
 void mbClientSendMessageUi::createMessageList()
 {
-    /*
     m_messageIndex = 0;
     m_messageList.clear();
     auto msgList = m_list->messages();
@@ -565,7 +555,6 @@ void mbClientSendMessageUi::createMessageList()
         mbClientRunMessage *msg = this->createMessage(params);
         m_messageList.append(msg);
     }
-    */
 }
 
 mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessageParams &params)
@@ -573,7 +562,6 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
     mbClientDevice *device = currentDevice();
     if (!device)
         return nullptr;
-    uint16_t c = 0;
     mbClientRunMessage *msg;
     switch(params.function())
     {

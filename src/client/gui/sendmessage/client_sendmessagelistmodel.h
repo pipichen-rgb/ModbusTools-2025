@@ -17,7 +17,7 @@ public:
     };
 
 public:
-    explicit mbClientSendMessageListModel(QObject *parent = nullptr);
+    explicit mbClientSendMessageListModel(mbClientMessageConverter *conv, QObject *parent = nullptr);
     ~mbClientSendMessageListModel();
 
 public: // QAbstractItemModel interface
@@ -27,13 +27,13 @@ public: // QAbstractItemModel interface
     QVariant data(const QModelIndex &index, int role) const override;
 
 public:
-    QList<mbClientMessageParamsOLD> messages() const;
-    mbClientMessageParamsOLD message(int i) const;
+    QList<mbClientMessageParams> messages() const;
+    mbClientMessageParams message(int i) const;
     QString messageRepr(int i);
-    void setMessages(const QList<mbClientMessageParamsOLD> messages);
-    void insertMessage(int i, const mbClientMessageParamsOLD &params);
-    inline void addMessage(const mbClientMessageParamsOLD &params) { insertMessage(-1, params); }
-    void editMessage(int i, const mbClientMessageParamsOLD &params);
+    void setMessages(const QList<mbClientMessageParams> messages);
+    void insertMessage(int i, const mbClientMessageParams &params);
+    inline void addMessage(const mbClientMessageParams &params) { insertMessage(-1, params); }
+    void editMessage(int i, const mbClientMessageParams &params);
     void removeMessage(int i);
     bool moveUp(int i);
     bool moveDown(int i);
@@ -42,9 +42,10 @@ public:
 private:
     struct Item;
     bool moveTo(int oldPos, int newPos);
-    QString paramsRepr(const mbClientMessageParamsOLD &params) const;
+    QString paramsRepr(const mbClientMessageParams &params) const;
 
 private:
+    mbClientMessageConverter *m_conv;
     QList<Item*> m_items;
 };
 

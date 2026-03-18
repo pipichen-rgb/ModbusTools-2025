@@ -81,8 +81,8 @@ public:
 public:
     MBSETTINGS cachedSettings() const override;
     void setCachedSettings(const MBSETTINGS &settings) override;
-    void fillParams(mbClientMessageParams &params);
-    void setParams(mbClientMessageParams &params);
+    void fillParams(mbClientMessageParams &params) const override;
+    void setParams(mbClientMessageParams &params) override;
 
 public:
     uint8_t getRecordsCount() const;
@@ -96,8 +96,6 @@ protected Q_SLOTS: // file records
 
 protected:
     int currentFileRecordIndex() const;
-    QByteArray saveFileRecordData(const QVector<Modbus::FileRecord> &fileRecords) const;
-    QVector<Modbus::FileRecord> restoreFileRecordData(const QByteArray &data) const;
 
 protected:
     QComboBox* m_cmbFormat;

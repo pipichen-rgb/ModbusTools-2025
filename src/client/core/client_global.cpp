@@ -249,7 +249,7 @@ mbClientMessageConverter::mbClientMessageConverter()
     m_dataParams.byteArraySeparator = d.byteArraySeparator;
 }
 
-QByteArray mbClientMessageConverter::toByteArray(const mbClientMessageParams &params)
+QByteArray mbClientMessageConverter::toByteArray(const mbClientMessageParams &params) const
 {
     if (params.data().type() == QVariant::ByteArray)
         return params.data().toByteArray();
@@ -293,7 +293,7 @@ QByteArray mbClientMessageConverter::toByteArray(const mbClientMessageParams &pa
     return data;
 }
 
-QVariant mbClientMessageConverter::toVariant(const mbClientMessageParams &params)
+QVariant mbClientMessageConverter::toVariant(const mbClientMessageParams &params) const
 {
     QByteArray data = params.data().toByteArray();
     QStringList ls;
@@ -336,7 +336,7 @@ QVariant mbClientMessageConverter::toVariant(const mbClientMessageParams &params
     return res;
 }
 
-QStringList mbClientMessageConverter::toStringListBits(const QByteArray &data, uint16_t count)
+QStringList mbClientMessageConverter::toStringListBits(const QByteArray &data, uint16_t count) const
 {
     QStringList ls;
     for (int i = 0; i < count; i++)
@@ -348,7 +348,7 @@ QStringList mbClientMessageConverter::toStringListBits(const QByteArray &data, u
     return ls;
 }
 
-QStringList mbClientMessageConverter::toStringListNumbers(const QByteArray &data, mb::Format format)
+QStringList mbClientMessageConverter::toStringListNumbers(const QByteArray &data, mb::Format format) const
 {
     QStringList ls;
     int sz = static_cast<int>(mb::sizeofFormat(format));
@@ -389,7 +389,7 @@ QStringList mbClientMessageConverter::toStringListNumbers(const QByteArray &data
     return ls;
 }
 
-QByteArray mbClientMessageConverter::fromStringListBits(const QStringList &ls)
+QByteArray mbClientMessageConverter::fromStringListBits(const QStringList &ls) const
 {
     QByteArray r((ls.count()+7)/8, '\0');
     int i = 0;
@@ -402,7 +402,7 @@ QByteArray mbClientMessageConverter::fromStringListBits(const QStringList &ls)
     return r;
 }
 
-QByteArray mbClientMessageConverter::fromStringListNumbers(const QStringList &ls, mb::Format format)
+QByteArray mbClientMessageConverter::fromStringListNumbers(const QStringList &ls, mb::Format format) const
 {
     QByteArray data;
     Q_FOREACH(const QString &s, ls)
@@ -420,7 +420,7 @@ QByteArray mbClientMessageConverter::fromStringListNumbers(const QStringList &ls
     return data;
 }
 
-bool mbClientMessageConverter::fromStringNumber(mb::Format format, const QString &v, void *buff)
+bool mbClientMessageConverter::fromStringNumber(mb::Format format, const QString &v, void *buff) const
 {
     bool ok = false;
     switch (format)
@@ -482,7 +482,7 @@ bool mbClientMessageConverter::fromStringNumber(mb::Format format, const QString
     return ok;
 }
 
-QStringList mbClientMessageConverter::dataToStringList(const QString &s)
+QStringList mbClientMessageConverter::dataToStringList(const QString &s) const
 {
     QStringList ls = s.split(',');
     return ls;
@@ -541,4 +541,251 @@ Modbus::MemoryType mbClientMessageConverter::getMemoryType(const mbClientMessage
         return Modbus::Memory_HoldingRegisters;
     }
     return Modbus::Memory_0x;
+}
+
+QStringList mbClientMessageConverter::saveClientMessages(const QList<mbClientMessageParams> messages) const
+{
+    QStringList res;
+    Q_FOREACH(const mbClientMessageParams &p, messages)
+    {
+        res.append(saveClientMessageParams(p));
+    }
+    return res;
+}
+
+QList<mbClientMessageParams> mbClientMessageConverter::restoreClientMessages(const QStringList &messages) const
+{
+    QList<mbClientMessageParams> res;
+    bool ok = false;
+    Q_FOREACH(const QString &s, messages)
+    {
+        auto p = restoreClientMessageParams(s, &ok);
+        if (ok)
+            res.append(p);
+    }
+    return res;
+}
+
+QString mbClientMessageConverter::saveClientMessageParams(const mbClientMessageParams &params, bool useFunc, bool useData) const
+{
+    QString res;
+    switch(params.function())
+    {
+    case MBF_READ_COILS:
+    case MBF_READ_DISCRETE_INPUTS:
+    case MBF_READ_HOLDING_REGISTERS:
+    case MBF_READ_INPUT_REGISTERS:
+        if (useData)
+            res = QString("offset=%1;count=%2;format=%3").arg(params.offset()).arg(params.count()).arg(mb::enumFormatKey(params.format()));
+        else
+            res = QString("offset=%1;count=%2").arg(params.offset()).arg(params.count());
+        break;
+    case MBF_WRITE_SINGLE_COIL:
+    case MBF_WRITE_SINGLE_REGISTER:
+        if (useData)
+            res = QString("offset=%1;format=%2;data=%3").arg(params.offset()).arg(mb::enumFormatKey(params.format()), params.data().toString());
+        else
+            res = QString("offset=%1").arg(params.offset());
+        break;
+    case MBF_READ_EXCEPTION_STATUS:
+    case MBF_REPORT_SERVER_ID:
+        if (useData)
+            res = QString("format=%1").arg(mb::enumFormatKey(params.format()));
+        break;
+    case MBF_DIAGNOSTICS:
+        if (useData)
+            res = QString("subfunc=%1;format=%2;data=%3").arg(params.subfunction()).arg(mb::enumFormatKey(params.format()), params.data().toString());
+        else
+            res = QString("subfunc=%1").arg(params.subfunction());
+        break;
+    case MBF_WRITE_MULTIPLE_COILS:
+    case MBF_WRITE_MULTIPLE_REGISTERS:
+        if (useData)
+            res = QString("offset=%1;count=%2;format=%3;data=%4")
+                      .arg(params.offset()).arg(params.count()).arg(mb::enumFormatKey(params.format()), params.data().toString());
+        else
+            res = QString("offset=%1;count=%2")
+                      .arg(params.offset()).arg(params.count());
+        break;
+    case MBF_READ_FILE_RECORD:
+    case MBF_WRITE_FILE_RECORD:
+        if (useData)
+            res = QString("records=%1;format=%2;data=%3")
+                      .arg(QString::fromLatin1(params.fileRecordsAsByteArray().toBase64()),
+                           mb::enumFormatKey(params.format()),
+                           QString::fromLatin1(this->toByteArray(params).toBase64()))
+                ;
+        else
+            res = QString("records=%1")
+                      .arg(QString::fromLatin1(params.fileRecordsAsByteArray().toBase64()))
+                ;
+        break;
+    case MBF_MASK_WRITE_REGISTER:
+        res += QString("offset=%1;and=%2;or=%3").arg(params.offset()).arg(params.writeOffset()).arg(params.writeCount());
+        break;
+    case MBF_READ_WRITE_MULTIPLE_REGISTERS:
+        if (useData)
+            res += QString("readoffset=%1;readcount=%2;readformat=%3;writeoffset=%4;writecount=%5;writeformat=%6;data=%7")
+                       .arg(params.offset())
+                       .arg(params.count())
+                       .arg(mb::enumFormatKey(params.format()))
+                       .arg(params.writeOffset())
+                       .arg(params.writeCount())
+                       .arg(mb::enumFormatKey(params.format()), params.data().toString());
+        else
+            res += QString("readoffset=%1;readcount=%2;writeoffset=%3;writecount=%5")
+                       .arg(params.offset())
+                       .arg(params.count())
+                       .arg(params.writeOffset())
+                       .arg(params.writeCount());
+        break;
+    case MBF_READ_FIFO_QUEUE:
+        if (useData)
+            res += QString("offset=%1;format=%2").arg(params.offset()).arg(mb::enumFormatKey(params.format()));
+        else
+            res += QString("offset=%1").arg(params.offset());
+        break;
+    case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
+        if (useData)
+            res += QString("deviceId=%1;objectId=%2;format=%3").arg(params.deviceId()).arg(params.objectId()).arg(mb::enumFormatKey(params.format()));
+        else
+            res += QString("deviceId=%1;objectId=%2").arg(params.deviceId()).arg(params.objectId());
+        break;
+    default:
+        break;
+    }
+    if (useFunc)
+    {
+        if (res.isEmpty())
+            res = QString("FC%1").arg(params.function(), 2, 10, QLatin1Char('0'));
+        else
+            res = QString("FC%1;%2").arg(params.function(), 2, 10, QLatin1Char('0')).arg(res);
+    }
+    return res;
+}
+
+mbClientMessageParams mbClientMessageConverter::restoreClientMessageParams(const QString &params, bool *ok, uint8_t func) const
+{
+    mbClientMessageParams res;
+    QHash<QString, QString> map = getClientParamMap(params);
+    if (func == 0)
+    {
+        bool funcOk = false;
+        Q_FOREACH(const QString &key, map.keys())
+        {
+            if (key.startsWith(QLatin1String("FC")))
+            {
+                func = static_cast<uint8_t>(key.midRef(2).toInt(&funcOk));
+                if (!funcOk)
+                {
+                    if (ok)
+                        *ok = false;
+                    return res;
+                }
+                break;
+            }
+        }
+        if (!funcOk)
+        {
+            // Support old format where func was a separate parameter
+            func = static_cast<uint8_t>(map.value(QStringLiteral("func")).toInt(&funcOk));
+            if (!funcOk)
+            {
+                if (ok)
+                    *ok = false;
+                return res;
+            }
+        }
+    }
+    res.setFunction(func);
+    switch (func)
+    {
+    case MBF_READ_COILS:
+    case MBF_READ_DISCRETE_INPUTS:
+    case MBF_READ_HOLDING_REGISTERS:
+    case MBF_READ_INPUT_REGISTERS:
+        res.setOffset(static_cast<uint16_t>(map.value(QStringLiteral("offset"), "0").toInt()));
+        res.setCount(static_cast<uint16_t>(map.value(QStringLiteral("count"), "1").toInt()));
+        res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "Dec16")));
+        return res;
+    case MBF_WRITE_SINGLE_COIL:
+    case MBF_WRITE_SINGLE_REGISTER:
+        res.setOffset(static_cast<uint16_t>(map.value(QStringLiteral("offset"), "0").toInt()));
+        res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "Dec16")));
+        res.setData(map.value(QStringLiteral("data")));
+        return res;
+    case MBF_READ_EXCEPTION_STATUS:
+    case MBF_REPORT_SERVER_ID:
+        res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "Dec16")));
+        return res;
+    case MBF_DIAGNOSTICS:
+        res.setSubfunction(static_cast<uint16_t>(map.value(QStringLiteral("subfunc"), "0").toInt()));
+        res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "Dec16")));
+        res.setData(map.value(QStringLiteral("data")));
+        return res;
+    case MBF_GET_COMM_EVENT_COUNTER:
+    case MBF_GET_COMM_EVENT_LOG:
+        return res;
+    case MBF_WRITE_MULTIPLE_COILS:
+    case MBF_WRITE_MULTIPLE_REGISTERS:
+        res.setOffset(static_cast<uint16_t>(map.value(QStringLiteral("offset"), "0").toInt()));
+        res.setCount(static_cast<uint16_t>(map.value(QStringLiteral("count"), "1").toInt()));
+        res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "Dec16")));
+        res.setData(map.value(QStringLiteral("data")));
+        return res;
+    case MBF_READ_FILE_RECORD:
+    case MBF_WRITE_FILE_RECORD:
+        res.setFileRecords(QByteArray::fromBase64(map.value(QStringLiteral("records")).toLatin1()));
+        res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "String")));
+        res.setData(QByteArray::fromBase64(map.value(QStringLiteral("data")).toLatin1()));
+        break;
+    case MBF_MASK_WRITE_REGISTER:
+        res.setOffset(static_cast<uint16_t>(map.value(QStringLiteral("offset"), "0").toInt()));
+        res.setWriteOffset(static_cast<uint16_t>(map.value(QStringLiteral("and"), "0").toInt()));
+        res.setWriteCount(static_cast<uint16_t>(map.value(QStringLiteral("or"), "0").toInt()));
+        return res;
+    case MBF_READ_WRITE_MULTIPLE_REGISTERS:
+        res.setOffset(static_cast<uint16_t>(map.value(QStringLiteral("readoffset"), "0").toInt()));
+        res.setCount(static_cast<uint16_t>(map.value(QStringLiteral("readcount"), "1").toInt()));
+        res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("readformat"), "Dec16")));
+        res.setWriteOffset(static_cast<uint16_t>(map.value(QStringLiteral("writeoffset"), "0").toInt()));
+        res.setWriteCount(static_cast<uint16_t>(map.value(QStringLiteral("writecount"), "1").toInt()));
+        res.setData(map.value(QStringLiteral("data")));
+        return res;
+    case MBF_READ_FIFO_QUEUE:
+        res.setOffset(static_cast<uint16_t>(map.value(QStringLiteral("offset"), "0").toInt()));
+        res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "Dec16")));
+        return res;
+    case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
+        res.setDeviceId(static_cast<uint8_t>(map.value(QStringLiteral("deviceId"), "1").toInt()));
+        res.setObjectId(static_cast<uint8_t>(map.value(QStringLiteral("objectId"), "0").toInt()));
+        res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "String")));
+        return res;
+    default:
+        if (ok)
+            *ok = false;
+        return res;
+    }
+    if (ok)
+        *ok = true;
+    return res;
+}
+
+QHash<QString, QString> mbClientMessageConverter::getClientParamMap(const QString &params)
+{
+    QHash<QString, QString> map;
+    QStringList parts = params.split(QLatin1Char(';'), Qt::SkipEmptyParts);
+    Q_FOREACH (const QString &part, parts)
+    {
+        QStringList keyValue = part.split(QLatin1Char('='), Qt::KeepEmptyParts);
+        if (keyValue.size() == 2)
+        {
+            map.insert(keyValue.at(0), keyValue.at(1));
+        }
+        else
+        {
+            map.insert(part, QString());
+        }
+    }
+    return map;
 }

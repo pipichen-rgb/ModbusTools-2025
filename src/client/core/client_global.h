@@ -192,7 +192,9 @@ public:
 
     inline const QVector<Modbus::FileRecord>& fileRecords() const { return m_fileRecords; }
     inline QVector<Modbus::FileRecord>& fileRecords() { return m_fileRecords; }
+    inline QByteArray fileRecordsAsByteArray() const { return QByteArray((const char*)m_fileRecords.constData(), sizeof(Modbus::FileRecord)*m_fileRecords.count()); }
     inline void setFileRecords(const QVector<Modbus::FileRecord> &fileRecords) { m_fileRecords = fileRecords; m_usedFields |= UsedFileRecords; }
+    inline void setFileRecords(const QByteArray &b) { m_fileRecords.resize(b.length()/sizeof(Modbus::FileRecord)); memcpy(m_fileRecords.data(), b.constData(), b.length()); m_usedFields |= UsedFileRecords; }
     inline bool hasFileRecords() const { return (m_usedFields & UsedFileRecords) != 0; }
     inline void clearFileRecords() { m_usedFields &= ~UsedFileRecords; }
 
@@ -309,22 +311,27 @@ public:
     inline void setByteArraySeparator(const QString &byteArraySeparator) { m_dataParams.byteArraySeparator = byteArraySeparator; }
 
 public:
-    QByteArray toByteArray(const mbClientMessageParams &params);
-    QVariant toVariant(const mbClientMessageParams &params);
+    QByteArray toByteArray(const mbClientMessageParams &params) const;
+    QVariant toVariant(const mbClientMessageParams &params) const;
 
 public:
-    QStringList toStringListBits(const QByteArray &data, uint16_t count);
-    QStringList toStringListNumbers(const QByteArray &data, mb::Format format);
-    QByteArray fromStringListBits(const QStringList &ls);
-    QByteArray fromStringListNumbers(const QStringList &ls, mb::Format format);
-    bool fromStringNumber(mb::Format format, const QString &v, void *buff);
-    QStringList dataToStringList(const QString &s);
+    QStringList toStringListBits(const QByteArray &data, uint16_t count) const;
+    QStringList toStringListNumbers(const QByteArray &data, mb::Format format) const;
+    QByteArray fromStringListBits(const QStringList &ls) const;
+    QByteArray fromStringListNumbers(const QStringList &ls, mb::Format format) const;
+    bool fromStringNumber(mb::Format format, const QString &v, void *buff) const;
+    QStringList dataToStringList(const QString &s) const;
     static QString getEventLogDescription(uint8_t eventId);
     static Modbus::MemoryType getMemoryType(const mbClientMessageParams &params);
     inline static bool isBitMemory(Modbus::MemoryType memType) { return memType == Modbus::Memory_0x || memType == Modbus::Memory_1x; }
     inline static bool isBitMemory(const mbClientMessageParams &params) { return isBitMemory(getMemoryType(params)); }
     inline static bool isRegMemory(Modbus::MemoryType memType) { return memType == Modbus::Memory_4x || memType == Modbus::Memory_3x; }
     inline static bool isRegMemory(const mbClientMessageParams &params) { return isRegMemory(getMemoryType(params)); }
+    QStringList saveClientMessages(const QList<mbClientMessageParams> messages) const;
+    QList<mbClientMessageParams> restoreClientMessages(const QStringList &messages) const;
+    QString saveClientMessageParams(const mbClientMessageParams &params, bool useFunc = true, bool useData = true) const;
+    mbClientMessageParams restoreClientMessageParams(const QString &params, bool *ok = nullptr, uint8_t func = 0) const;
+    static QHash<QString, QString> getClientParamMap(const QString &params);
 
 private:
     DataParams m_dataParams;
