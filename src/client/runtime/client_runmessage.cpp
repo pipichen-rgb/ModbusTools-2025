@@ -251,9 +251,23 @@ void mbClientRunMessageWrite::prepareToSend()
 // --------------------------------------------------------------------------------------------------------
 
 mbClientRunMessageFileRecord::mbClientRunMessageFileRecord(uint8_t unit, uint16_t count, const Modbus::FileRecord *fileRecords, QObject *parent) :
-    mbClientRunMessage(unit, 0, count, 0, parent)
+    mbClientRunMessage(unit, 0, count, count, parent)
 {
     memcpy(innerBuffer(), fileRecords, count * sizeof(Modbus::FileRecord));
+}
+
+Modbus::StatusCode mbClientRunMessageFileRecord::getData(uint16_t innerOffset, uint16_t count, void *buff) const
+{
+    // TODO: check boundaries
+    memcpy(buff, reinterpret_cast<const uint8_t*>(fileData())+innerOffset, count);
+    return Modbus::Status_Good;
+}
+
+Modbus::StatusCode mbClientRunMessageFileRecord::setData(uint16_t innerOffset, uint16_t count, const void *buff)
+{
+    // TODO: check boundaries
+    memcpy(reinterpret_cast<uint8_t*>(fileData())+innerOffset, buff, count);
+    return Modbus::Status_Good;
 }
 
 

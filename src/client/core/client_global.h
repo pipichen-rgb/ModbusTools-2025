@@ -332,6 +332,8 @@ public:
     QString saveClientMessageParams(const mbClientMessageParams &params, bool useFunc = true, bool useData = true) const;
     mbClientMessageParams restoreClientMessageParams(const QString &params, bool *ok = nullptr, uint8_t func = 0) const;
     static QHash<QString, QString> getClientParamMap(const QString &params);
+    static QString serializeStringList(const QStringList &ls, QChar sep = ',');
+    static QStringList deserializeStringList(const QString &s, QChar sep = ',');
 
 private:
     DataParams m_dataParams;

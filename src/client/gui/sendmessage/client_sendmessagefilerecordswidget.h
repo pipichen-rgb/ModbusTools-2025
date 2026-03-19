@@ -41,13 +41,19 @@ public:
 public:
     inline bool editMode() const { return m_editMode; }
     inline void setEditMode(bool editMode) { m_editMode = editMode; }
-    inline mb::Format format() const { return m_format; }
+    inline mb::DigitalFormat addressFormat() const { return m_addressFormat; }
+    inline mb::Format dataFormat() const { return m_format; }
     void insertRecord(int i);
     void removeRecord(int i);
     bool moveUp(int i);
     bool moveDown(int i);
     void clear();
-    void setFormat(mb::Format format);
+    void setAddressFormat(mb::DigitalFormat format);
+    void setDataFormat(mb::Format format);
+
+private:
+    QVariant toVariant(uint16_t v) const;
+    uint16_t toUInt16(const QVariant &v) const;
 
 private:
     struct Item;
@@ -58,6 +64,7 @@ private:
     bool m_editMode;
     mbClientMessageConverter* m_conv;
     QList<Item*> m_items;
+    mb::DigitalFormat m_addressFormat;
     mb::Format m_format;
 };
 
@@ -85,6 +92,7 @@ public:
     void setParams(mbClientMessageParams &params) override;
 
 public:
+    mb::DigitalFormat addressFormat() const;
     uint8_t getRecordsCount() const;
 
 protected Q_SLOTS: // file records
@@ -94,10 +102,14 @@ protected Q_SLOTS: // file records
     void slotFileRecordMoveDown();
     void slotFileRecordClear   ();
 
+private Q_SLOTS:
+    void setAddressFormat(int index);
+
 protected:
     int currentFileRecordIndex() const;
 
 protected:
+    QComboBox* m_cmbAddressFormat;
     QComboBox* m_cmbFormat;
     QTableView* m_tblFileRecords;
     mbClientSendMessageFileRecordsModel* m_fileRecordModel;

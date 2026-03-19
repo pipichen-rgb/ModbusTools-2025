@@ -879,13 +879,23 @@ QByteArray toByteArray(const QVariant &value, Format format, Modbus::MemoryType 
         QString s = value.toString();
         int i = 0;
         QStringList bytes = s.split(sep);
+        int cBytes;
         if (variableLength > 0)
-            data = QByteArray(variableLength, '\0');
-        else
-            data = QByteArray(bytes.length(), '\0');
-        Q_FOREACH(QString byteStr, bytes)
         {
-            byteStr = byteStr.trimmed();
+            if (variableLength < bytes.length())
+                cBytes = variableLength;
+            else
+                cBytes = bytes.length();
+            data = QByteArray(variableLength, '\0');
+        }
+        else
+        {
+            cBytes = bytes.length();
+            data = QByteArray(cBytes, '\0');
+        }
+        for (int i = 0; i < cBytes; ++i)
+        {
+            QString byteStr = bytes[i].trimmed();
             bool ok = false;
             switch (byteArrayFormat)
             {
@@ -923,7 +933,6 @@ QByteArray toByteArray(const QVariant &value, Format format, Modbus::MemoryType 
             }
             if (!ok)
                 return QByteArray();
-            i++;
         }
     }
         break;

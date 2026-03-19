@@ -35,6 +35,7 @@ mbClientSendMessageFileRecordsModel::mbClientSendMessageFileRecordsModel(mbClien
     : QAbstractTableModel(parent),
     m_editMode(false),
     m_conv(conv),
+    m_addressFormat(mb::Hex),
     m_format(mb::ByteArray)
 {
 
@@ -68,9 +69,9 @@ QVariant mbClientSendMessageFileRecordsModel::headerData(int section, Qt::Orient
             switch(section)
             {
             case Column_File:
-                return QStringLiteral("File (hex)");
+                return QStringLiteral("File");
             case Column_Record:
-                return QStringLiteral("Record (hex)");
+                return QStringLiteral("Record");
             case Column_Length:
                 return QStringLiteral("Len (reg)");
             case Column_Data:
@@ -104,9 +105,9 @@ QVariant mbClientSendMessageFileRecordsModel::data(const QModelIndex &index, int
             switch (index.column())
             {
             case Column_File:
-                return mb::toHexString(item->file.fileNumber);
+                return toVariant(item->file.fileNumber);
             case Column_Record:
-                return mb::toHexString(item->file.recordNumber);
+                return toVariant(item->file.recordNumber);
             case Column_Length:
                 return item->file.recordLength;
             case Column_Data:
@@ -131,10 +132,10 @@ bool mbClientSendMessageFileRecordsModel::setData(const QModelIndex &index, cons
             switch (index.column())
             {
             case Column_File:
-                item->file.fileNumber = value.toString().toUShort(nullptr, 16);
+                item->file.fileNumber = toUInt16(value);
                 break;
             case Column_Record:
-                item->file.recordNumber = value.toString().toUShort(nullptr, 16);
+                item->file.recordNumber = toUInt16(value);
                 break;
             case Column_Length:
                 item->file.recordLength = value.toUInt();
@@ -173,6 +174,7 @@ void mbClientSendMessageFileRecordsModel::fillParams(mbClientMessageParams &para
     }
     params.setFormat(m_format);
     params.setFileRecords(fileRecords);
+    params.setCount(data.length());
     params.setData(data);
 }
 
@@ -265,7 +267,16 @@ void mbClientSendMessageFileRecordsModel::clear()
     endResetModel();
 }
 
-void mbClientSendMessageFileRecordsModel::setFormat(mb::Format format)
+void mbClientSendMessageFileRecordsModel::setAddressFormat(mb::DigitalFormat format)
+{
+    if (m_addressFormat != format)
+    {
+        m_addressFormat = format;
+        Q_EMIT dataChanged(index(0, Column_File), index(m_items.count()-1, Column_Record));
+    }
+}
+
+void mbClientSendMessageFileRecordsModel::setDataFormat(mb::Format format)
 {
     if (m_format != format)
     {
@@ -273,6 +284,42 @@ void mbClientSendMessageFileRecordsModel::setFormat(mb::Format format)
         for (Item *item : std::as_const(m_items))
             setItemDataInner(item, item->data);
         Q_EMIT dataChanged(index(0, Column_Data), index(m_items.count()-1, Column_Data));
+    }
+}
+
+QVariant mbClientSendMessageFileRecordsModel::toVariant(uint16_t v) const
+{
+    switch (m_addressFormat)
+    {
+    case mb::Bin:
+        return mb::toBinString(v);
+    case mb::Oct:
+        return mb::toOctString(v);
+    case mb::Dec:
+        return static_cast<qint16>(v);
+    case mb::UDec:
+        return static_cast<quint16>(v);
+    case mb::Hex:
+    default:
+        return mb::toHexString(v);
+    }
+}
+
+uint16_t mbClientSendMessageFileRecordsModel::toUInt16(const QVariant &v) const
+{
+    switch (m_addressFormat)
+    {
+    case mb::Bin:
+        return v.toString().toUShort(nullptr, 2);
+    case mb::Oct:
+        return v.toString().toUShort(nullptr, 8);
+    case mb::Dec:
+        return static_cast<qint16>(v.toInt());
+    case mb::UDec:
+        return static_cast<quint16>(v.toUInt());
+    case mb::Hex:
+    default:
+        return v.toString().toUShort(nullptr, 16);
     }
 }
 
@@ -321,16 +368,27 @@ mbClientSendMessageFileRecordsWidget::mbClientSendMessageFileRecordsWidget(uint8
     m_fileRecordModel = new mbClientSendMessageFileRecordsModel(ui->converter(), this);
 
     // format
+    m_cmbAddressFormat = new QComboBox(this);
+    const auto dls = mb::enumDigitalFormatKeyList();
+    for (int i = 1; i < dls.count(); ++i) // pass DefaultDigitalFormat
+    {
+        const auto format = mb::enumDigitalFormatValueByIndex(i);
+        m_cmbAddressFormat->addItem(dls.at(i), static_cast<int>(format));
+    }
+    m_cmbAddressFormat->setCurrentText(mb::enumDigitalFormatKey(m_fileRecordModel->addressFormat()));
+    connect(m_cmbAddressFormat, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &mbClientSendMessageFileRecordsWidget::setAddressFormat);
+
+
     m_cmbFormat = new QComboBox(this);
     auto ls = mb::enumFormatKeyList();
     Q_FOREACH (const QString &s, ls)
     {
         m_cmbFormat->addItem(s);
     }
-    m_cmbFormat->setCurrentIndex(m_fileRecordModel->format());
+    m_cmbFormat->setCurrentIndex(m_fileRecordModel->dataFormat());
     connect(m_cmbFormat, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [this](int index){
         auto format = mb::enumFormatValueByIndex(index);
-        m_fileRecordModel->setFormat(format);
+        m_fileRecordModel->setDataFormat(format);
     });
 
     // file records
@@ -341,6 +399,9 @@ mbClientSendMessageFileRecordsWidget::mbClientSendMessageFileRecordsWidget(uint8
     // Labels
     auto lblFileRecords = new QLabel(this);
     lblFileRecords->setText(QCoreApplication::translate("mbClientSendMessageUi", "File Records:", nullptr));
+
+    auto lblAddressFormat = new QLabel(this);
+    lblAddressFormat->setText(QCoreApplication::translate("mbClientSendMessageUi", "Address Format:", nullptr));
 
     auto lblFormat = new QLabel(this);
     lblFormat->setText(QCoreApplication::translate("mbClientSendMessageUi", "Format:", nullptr));
@@ -398,6 +459,8 @@ mbClientSendMessageFileRecordsWidget::mbClientSendMessageFileRecordsWidget(uint8
     auto horizontalLayout1 = new QHBoxLayout();
     horizontalLayout1->addWidget(lblFileRecords);
     horizontalLayout1->addItem(horizontalSpacer);
+    horizontalLayout1->addWidget(lblAddressFormat);
+    horizontalLayout1->addWidget(m_cmbAddressFormat);
     horizontalLayout1->addWidget(lblFormat);
     horizontalLayout1->addWidget(m_cmbFormat);
     horizontalLayout1->setStretch(1, 1);
@@ -447,7 +510,7 @@ void mbClientSendMessageFileRecordsWidget::setCachedSettings(const MBSETTINGS &m
     it = m.find(m_prefix+s.format     ); if (it != end) m_cmbFormat->setCurrentText(it.value().toString());
     it = m.find(m_prefix+s.fileRecords); if (it != end) params.setFileRecords(it.value().toByteArray());
     it = m.find(m_prefix+s.data       ); if (it != end) params.setData(it.value().toByteArray());
-    params.setFormat(m_fileRecordModel->format());
+    params.setFormat(m_fileRecordModel->dataFormat());
 
     m_fileRecordModel->setParams(params);
 }
@@ -460,6 +523,11 @@ void mbClientSendMessageFileRecordsWidget::fillParams(mbClientMessageParams &par
 void mbClientSendMessageFileRecordsWidget::setParams(mbClientMessageParams &params)
 {
     m_fileRecordModel->setParams(params);
+}
+
+mb::DigitalFormat mbClientSendMessageFileRecordsWidget::addressFormat() const
+{
+    return static_cast<mb::DigitalFormat>(m_cmbAddressFormat->currentData().toInt());
 }
 
 uint8_t mbClientSendMessageFileRecordsWidget::getRecordsCount() const
@@ -493,6 +561,12 @@ void mbClientSendMessageFileRecordsWidget::slotFileRecordMoveDown()
 void mbClientSendMessageFileRecordsWidget::slotFileRecordClear()
 {
     m_fileRecordModel->clear();
+}
+
+void mbClientSendMessageFileRecordsWidget::setAddressFormat(int index)
+{
+    auto format = addressFormat();
+    m_fileRecordModel->setAddressFormat(format);
 }
 
 int mbClientSendMessageFileRecordsWidget::currentFileRecordIndex() const

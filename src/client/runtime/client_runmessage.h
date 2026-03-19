@@ -56,6 +56,7 @@ public:
     inline uint16_t writeCount () const { return m_writeCount ; }
     inline uint16_t maxCount() const { return m_count; }
     inline uint32_t period() const { return m_period; }
+    inline const void *innerBuffer() const { return m_buff; }
     inline void *innerBuffer() { return m_buff; }
     inline uint16_t *innerBufferReg() { return reinterpret_cast<uint16_t*>(innerBuffer()); }
     inline int innerBufferSize() const { return MSG_MAX_BYTES; }
@@ -197,9 +198,13 @@ public:
 
 public:
     Modbus::MemoryType memoryType() const override { return Modbus::Memory_Unknown; }
+    Modbus::StatusCode getData(uint16_t innerOffset, uint16_t count, void *buff) const override;
+    Modbus::StatusCode setData(uint16_t innerOffset, uint16_t count, const void *buff) override;
 
 public:
+    inline const Modbus::FileRecord *fileRecords() const { return reinterpret_cast<const Modbus::FileRecord*>(innerBuffer()); }
     inline Modbus::FileRecord *fileRecords() { return reinterpret_cast<Modbus::FileRecord*>(innerBuffer()); }
+    inline const void *fileData() const { return &reinterpret_cast<const Modbus::FileRecord*>(innerBuffer())[m_count]; }
     inline void *fileData() { return &reinterpret_cast<Modbus::FileRecord*>(innerBuffer())[m_count]; }
     inline uint8_t dataSize() const { return static_cast<uint8_t>(m_maxCount); }
     inline void setDataSize(uint8_t sz) { m_maxCount = sz; }

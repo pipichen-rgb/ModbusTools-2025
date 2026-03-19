@@ -619,18 +619,8 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
     case MBF_READ_FILE_RECORD:
         return new mbClientRunMessageReadFileRecord(params.fileRecords().count(), params.fileRecords().data(), this);
     case MBF_WRITE_FILE_RECORD:
-    {
-        auto *m = new mbClientRunMessageWriteFileRecord(params.fileRecords().count(), params.fileRecords().data(), this);
-        auto ls = params.data().toList();
-        uint8_t sz = 0;
-        Q_FOREACH (const auto& v, ls)
-        {
-            auto b = v.toByteArray();
-            memcpy(reinterpret_cast<uint8_t*>(m->fileData())+sz, b.constData(), b.length());
-            sz += b.length();
-        }
-        return m;
-    }
+        msg = new mbClientRunMessageWriteFileRecord(params.fileRecords().count(), params.fileRecords().data(), this);
+        break;
     case MBF_MASK_WRITE_REGISTER:
         msg = new mbClientRunMessageMaskWriteRegister(params.offset(), this);
         break;
