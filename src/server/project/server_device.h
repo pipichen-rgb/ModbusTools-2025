@@ -191,6 +191,8 @@ public: // 'Modbus'-like Interface
     Modbus::StatusCode writeMultipleCoils(uint16_t offset, uint16_t count, const void *values);
     Modbus::StatusCode writeMultipleRegisters(uint16_t offset, uint16_t count, const uint16_t *values);
     Modbus::StatusCode reportServerID(uint8_t *count, uint8_t *data);
+    Modbus::StatusCode readFileRecord(const Modbus::FileRecord *records, uint8_t recordsCount, void *outData, uint8_t *outSize = nullptr);
+    Modbus::StatusCode writeFileRecord(const Modbus::FileRecord *records, uint8_t recordsCount, const void *inData, uint8_t *inSize = nullptr);
     Modbus::StatusCode maskWriteRegister(uint16_t offset, uint16_t andMask, uint16_t orMask);
     Modbus::StatusCode readWriteMultipleRegisters(uint16_t readOffset, uint16_t readCount, uint16_t *readValues, uint16_t writeOffset, uint16_t writeCount, const uint16_t *writeValues);
     Modbus::StatusCode readDeviceIdentification(uint8_t readDeviceId, uint8_t objectId, uint8_t *dataSize, void *data, uint8_t *numberOfObjects = nullptr, uint8_t *conformityLevel = nullptr, bool *moreFollows = nullptr, uint8_t *nextObjectId = nullptr);

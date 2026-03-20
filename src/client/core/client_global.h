@@ -195,6 +195,7 @@ public:
     inline QByteArray fileRecordsAsByteArray() const { return QByteArray((const char*)m_fileRecords.constData(), sizeof(Modbus::FileRecord)*m_fileRecords.count()); }
     inline void setFileRecords(const QVector<Modbus::FileRecord> &fileRecords) { m_fileRecords = fileRecords; m_usedFields |= UsedFileRecords; }
     inline void setFileRecords(const QByteArray &b) { m_fileRecords.resize(b.length()/sizeof(Modbus::FileRecord)); memcpy(m_fileRecords.data(), b.constData(), b.length()); m_usedFields |= UsedFileRecords; }
+    inline void setFileRecords(const Modbus::FileRecord* fileRecords, int count) { m_fileRecords.resize(count); memcpy(m_fileRecords.data(), fileRecords, count*sizeof(Modbus::FileRecord)); m_usedFields |= UsedFileRecords; }
     inline bool hasFileRecords() const { return (m_usedFields & UsedFileRecords) != 0; }
     inline void clearFileRecords() { m_usedFields &= ~UsedFileRecords; }
 

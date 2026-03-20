@@ -87,7 +87,7 @@ QVariant mbClientSendMessageFileRecordsModel::headerData(int section, Qt::Orient
 Qt::ItemFlags mbClientSendMessageFileRecordsModel::flags(const QModelIndex &index) const
 {
     auto f = QAbstractTableModel::flags(index);
-    if (m_editMode && index.isValid())
+    if (m_editMode || (index.column() != Column_Data))
         f |= Qt::ItemIsEditable;
     return f;
 }

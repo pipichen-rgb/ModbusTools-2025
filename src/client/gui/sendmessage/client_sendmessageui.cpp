@@ -918,8 +918,9 @@ void mbClientSendMessageUi::fillForm(const mbClientRunMessagePtr &message)
         auto dataSize = m->dataSize();
         QByteArray b(reinterpret_cast<char*>(m->fileData()), dataSize);
         params.setData(b);
+        params.setFileRecords(m->fileRecords(), m->count());
     }
-        return;
+        break;
     case MBF_READ_FIFO_QUEUE:
     {
         uint16_t count = message->count();

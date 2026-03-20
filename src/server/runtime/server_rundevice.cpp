@@ -470,6 +470,40 @@ Modbus::StatusCode mbServerRunDevice::reportServerID(uint8_t unit, uint8_t *coun
     }
 }
 
+Modbus::StatusCode mbServerRunDevice::readFileRecord(uint8_t unit, const Modbus::FileRecord *records, uint8_t recordsCount, void *outData, uint8_t *outSize)
+{
+    if (isBroadcast(unit))
+    {
+        return Modbus::Status_Good;
+    }
+    else
+    {
+        mbServerDevice *device = this->device(unit);
+        if (!device)
+            return Modbus::Status_BadGatewayPathUnavailable;
+        CHECK_DELAY
+        return device->readFileRecord(records, recordsCount, outData, outSize);
+    }
+}
+
+Modbus::StatusCode mbServerRunDevice::writeFileRecord(uint8_t unit, const Modbus::FileRecord *records, uint8_t recordsCount, const void *inData, uint8_t *inSize)
+{
+    if (isBroadcast(unit))
+    {
+        Q_FOREACH (mbServerDevice *device, m_devices)
+            device->writeFileRecord(records, recordsCount, inData, inSize);
+        return Modbus::Status_Good;
+    }
+    else
+    {
+        mbServerDevice *device = this->device(unit);
+        if (!device)
+            return Modbus::Status_BadGatewayPathUnavailable;
+        CHECK_DELAY
+        return device->writeFileRecord(records, recordsCount, inData, inSize);
+    }
+}
+
 Modbus::StatusCode mbServerRunDevice::maskWriteRegister(uint8_t unit, uint16_t offset, uint16_t andMask, uint16_t orMask)
 {
     if (isBroadcast(unit))

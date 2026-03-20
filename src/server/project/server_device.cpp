@@ -1084,6 +1084,104 @@ Modbus::StatusCode mbServerDevice::reportServerID(uint8_t *count, uint8_t *data)
     return r;
 }
 
+Modbus::StatusCode mbServerDevice::readFileRecord(const Modbus::FileRecord *records, uint8_t recordsCount, void *outData, uint8_t *outSize)
+{
+    Modbus::StatusCode r = Modbus::Status_Good;
+    QString err;
+    beginRequest();
+    uint16_t* buff = reinterpret_cast<uint16_t*>(outData);
+    uint ptr = 0;
+    for (int i = 0; i < recordsCount; ++i)
+    {
+        const auto& rec = records[i];
+        int bufflen = (ptr+rec.recordLength)*MB_REGE_SZ_BYTES;
+        if (bufflen > MB_FILE_RECORD_BUFF_SZ)
+        {
+            r = Modbus::Status_BadIllegalDataAddress;
+            err = QString("Record buffer length is too large when ReadFileRecord");
+            break;
+        }
+        switch (rec.fileNumber & 3) // Note: use 2 LS bits to define reference type
+        {
+        case 0:
+            r = m_mem_0x.readBits(rec.recordNumber, rec.recordLength*MB_REGE_SZ_BITES, &buff[ptr]);
+            break;
+        case 1:
+            r = m_mem_1x.readBits(rec.recordNumber, rec.recordLength*MB_REGE_SZ_BITES, &buff[ptr]);
+            break;
+        case 2:
+            r = m_mem_3x.readRegs(rec.recordNumber, rec.recordLength, &buff[ptr]);
+            break;
+        default:
+            r = m_mem_4x.readRegs(rec.recordNumber, rec.recordLength, &buff[ptr]);
+            break;
+        }
+        if (!Modbus::StatusIsGood(r))
+        {
+            err = QString("Wrong record address when ReadFileRecord");
+            break;
+        }
+        ptr += rec.recordLength;
+    }
+    if (outSize)
+        *outSize = static_cast<uint8_t>(ptr*MB_REGE_SZ_BYTES);
+    endRequest(r, err);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::writeFileRecord(const Modbus::FileRecord *records, uint8_t recordsCount, const void *inData, uint8_t *inSize)
+{
+    Modbus::StatusCode r = Modbus::Status_Good;
+    QString err;
+    beginRequest();
+    if (isReadOnly())
+    {
+        err = QStringLiteral("Device is read-only");
+        r = Modbus::Status_BadIllegalFunction;
+    }
+    else
+    {
+        const uint16_t* buff = reinterpret_cast<const uint16_t*>(inData);
+        uint ptr = 0;
+        for (int i = 0; i < recordsCount; ++i)
+        {
+            const auto& rec = records[i];
+            int bufflen = (ptr+rec.recordLength)*MB_REGE_SZ_BYTES;
+            if (bufflen > MB_FILE_RECORD_BUFF_SZ)
+            {
+                r = Modbus::Status_BadIllegalDataAddress;
+                err = QString("Record buffer length is too large when WriteFileRecord");
+                break;
+            }
+            switch (rec.fileNumber & 3) // Note: use 2 LS bits to define reference type
+            {
+            case 0:
+                r = m_mem_0x.writeBits(rec.recordNumber, rec.recordLength*MB_REGE_SZ_BITES, &buff[ptr]);
+                break;
+            case 1:
+                r = m_mem_1x.writeBits(rec.recordNumber, rec.recordLength*MB_REGE_SZ_BITES, &buff[ptr]);
+                break;
+            case 2:
+                r = m_mem_3x.writeRegs(rec.recordNumber, rec.recordLength, &buff[ptr]);
+                break;
+            default:
+                r = m_mem_4x.writeRegs(rec.recordNumber, rec.recordLength, &buff[ptr]);
+                break;
+            }
+            if (!Modbus::StatusIsGood(r))
+            {
+                err = QString("Wrong record address when WriteFileRecord");
+                break;
+            }
+            ptr += rec.recordLength;
+        }
+        if (inSize)
+            *inSize = static_cast<uint8_t>(ptr*MB_REGE_SZ_BYTES);
+    }
+    endRequest(r, err);
+    return r;
+}
+
 
 Modbus::StatusCode mbServerDevice::maskWriteRegister(uint16_t offset, uint16_t andMask, uint16_t orMask)
 {
@@ -1168,7 +1266,7 @@ Modbus::StatusCode mbServerDevice::readWriteMultipleRegisters(uint16_t readOffse
 
 Modbus::StatusCode mbServerDevice::readDeviceIdentification(uint8_t readDeviceId, uint8_t objectId, uint8_t *dataSize, void *data, uint8_t *numberOfObjects, uint8_t *conformityLevel, bool *moreFollows, uint8_t *nextObjectId)
 {
-    Modbus::StatusCode r;
+    Modbus::StatusCode r = Modbus::Status_Good;
     QString err;
     beginRequest();
 

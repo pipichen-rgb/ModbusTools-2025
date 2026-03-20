@@ -384,7 +384,7 @@ Modbus::StatusCode mbClientDeviceRunnable::execExternalMessage()
     case MBF_READ_FILE_RECORD:
     {
         auto m = static_cast<mbClientRunMessageReadFileRecord*>(m_currentMessage.data());
-        res = m_modbusClient->readFileRecord(m->count(), m->fileRecords(), &m_byteCount, m->fileData());
+        res = m_modbusClient->readFileRecord(m->fileRecords(), m->count(), m->fileData(), &m_byteCount);
         if (Modbus::StatusIsGood(res))
             m->setDataSize(m_byteCount);
     }
@@ -392,7 +392,7 @@ Modbus::StatusCode mbClientDeviceRunnable::execExternalMessage()
     case MBF_WRITE_FILE_RECORD:
     {
         auto m = static_cast<mbClientRunMessageWriteFileRecord*>(m_currentMessage.data());
-        res = m_modbusClient->writeFileRecord(m->count(), m->fileRecords(), m->fileData());
+        res = m_modbusClient->writeFileRecord(m->fileRecords(), m->count(), m->fileData(), nullptr);
     }
         break;
     case MBF_MASK_WRITE_REGISTER:
