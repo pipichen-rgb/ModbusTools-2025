@@ -295,7 +295,10 @@ QByteArray mbClientMessageConverter::toByteArray(const mbClientMessageParams &pa
 
 QVariant mbClientMessageConverter::toVariant(const mbClientMessageParams &params) const
 {
-    QByteArray data = params.data().toByteArray();
+    auto v = params.data();
+    if (v.type() != QVariant::ByteArray)
+        return v;
+    QByteArray data = v.toByteArray();
     QStringList ls;
     switch (params.format())
     {
@@ -578,8 +581,6 @@ QString mbClientMessageConverter::saveClientMessageParams(const mbClientMessageP
     case MBF_READ_INPUT_REGISTERS:
         ls.append(serializeStringList({QStringLiteral("offset"), QString::number(params.offset())}, '='));
         ls.append(serializeStringList({QStringLiteral("count"), QString::number(params.count())}, '='));
-        if (useData)
-            ls.append(serializeStringList({QStringLiteral("format"), mb::enumFormatKey(params.format())}, '='));
         break;
     case MBF_WRITE_SINGLE_COIL:
     case MBF_WRITE_SINGLE_REGISTER:
@@ -592,8 +593,6 @@ QString mbClientMessageConverter::saveClientMessageParams(const mbClientMessageP
         break;
     case MBF_READ_EXCEPTION_STATUS:
     case MBF_REPORT_SERVER_ID:
-        if (useData)
-            ls.append(serializeStringList({QStringLiteral("format"), mb::enumFormatKey(params.format())}, '='));
         break;
     case MBF_DIAGNOSTICS:
         ls.append(serializeStringList({QStringLiteral("subfunc"), QString::number(params.subfunction())}, '='));
@@ -621,20 +620,10 @@ QString mbClientMessageConverter::saveClientMessageParams(const mbClientMessageP
             recordLs.append(QString("%1,%2,%3").arg(r.fileNumber).arg(r.recordNumber).arg(r.recordLength));
         QString sRecords = serializeStringList(recordLs, '|');
         ls.append(serializeStringList({QStringLiteral("records"), sRecords}, '='));
-        if (useData)
+        if ((params.function() == MBF_WRITE_FILE_RECORD) && useData)
         {
             ls.append(serializeStringList({QStringLiteral("format"), mb::enumFormatKey(params.format())}, '='));
-            auto b = this->toByteArray(params);
-            auto s = mb::toVariant(b,
-                mb::ByteArray,
-                Modbus::Memory_0x, 
-                mb::SwapNo,
-                m_dataParams.registerOrder,
-                mb::Hex,
-                m_dataParams.stringEncoding,
-                m_dataParams.stringLengthType,
-                QStringLiteral(" "),
-                0).toString();
+            auto s = this->toVariant(params).toString();
             ls.append(serializeStringList({QStringLiteral("data"), s}, '='));
         }
     }
@@ -651,21 +640,16 @@ QString mbClientMessageConverter::saveClientMessageParams(const mbClientMessageP
         ls.append(serializeStringList({QStringLiteral("writecount"), QString::number(params.writeCount())}, '='));
         if (useData)
         {
-            ls.append(serializeStringList({QStringLiteral("readformat"), mb::enumFormatKey(params.format())}, '='));
             ls.append(serializeStringList({QStringLiteral("writeformat"), mb::enumFormatKey(params.format())}, '='));
             ls.append(serializeStringList({QStringLiteral("data"), params.data().toString()}, '='));
         }
         break;
     case MBF_READ_FIFO_QUEUE:
         ls.append(serializeStringList({QStringLiteral("offset"), QString::number(params.offset())}, '='));
-        if (useData)
-            ls.append(serializeStringList({QStringLiteral("format"), mb::enumFormatKey(params.format())}, '='));
         break;
     case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
         ls.append(serializeStringList({QStringLiteral("deviceId"), QString::number(params.deviceId())}, '='));
         ls.append(serializeStringList({QStringLiteral("objectId"), QString::number(params.objectId())}, '='));
-        if (useData)
-            ls.append(serializeStringList({QStringLiteral("format"), mb::enumFormatKey(params.format())}, '='));
         break;
     default:
         break;
@@ -774,18 +758,8 @@ mbClientMessageParams mbClientMessageConverter::restoreClientMessageParams(const
         }
         res.setFileRecords(records);
         res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "ByteArray")));
-        auto s = map.value(QStringLiteral("data"));
-        auto b = mb::toByteArray(s,
-                mb::ByteArray,
-                Modbus::Memory_0x, 
-                mb::SwapNo,
-                m_dataParams.registerOrder,
-                mb::Hex,
-                m_dataParams.stringEncoding,
-                m_dataParams.stringLengthType,
-                QStringLiteral(" "),
-                0);
-        res.setData(b);
+        auto v = map.value(QStringLiteral("data"));
+        res.setData(v);
     }
         break;
     case MBF_MASK_WRITE_REGISTER:

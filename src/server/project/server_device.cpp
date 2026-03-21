@@ -1098,27 +1098,52 @@ Modbus::StatusCode mbServerDevice::readFileRecord(const Modbus::FileRecord *reco
         if (bufflen > MB_FILE_RECORD_BUFF_SZ)
         {
             r = Modbus::Status_BadIllegalDataAddress;
-            err = QString("Record buffer length is too large when ReadFileRecord");
+            err = QString("FC20. Record buffer length is too large");
             break;
         }
         switch (rec.fileNumber & 3) // Note: use 2 LS bits to define reference type
         {
         case 0:
-            r = m_mem_0x.readBits(rec.recordNumber, rec.recordLength*MB_REGE_SZ_BITES, &buff[ptr]);
+            if ((rec.recordNumber + rec.recordLength*MB_REGE_SZ_BITES) > m_mem_0x.sizeBits())
+            {
+                err = QStringLiteral("FC20. Read coils out of range: %1 + %2 > %3").arg(rec.recordNumber).arg(rec.recordLength*MB_REGE_SZ_BITES).arg(m_mem_0x.sizeBits());
+                r = Modbus::Status_BadIllegalDataAddress;
+            }
+            else
+                r = m_mem_0x.readBits(rec.recordNumber, rec.recordLength*MB_REGE_SZ_BITES, &buff[ptr]);
             break;
         case 1:
-            r = m_mem_1x.readBits(rec.recordNumber, rec.recordLength*MB_REGE_SZ_BITES, &buff[ptr]);
+            if ((rec.recordNumber + rec.recordLength*MB_REGE_SZ_BITES) > m_mem_0x.sizeBits())
+            {
+                err = QStringLiteral("FC20. Read discrete inputs out of range: %1 + %2 > %3").arg(rec.recordNumber).arg(rec.recordLength*MB_REGE_SZ_BITES).arg(m_mem_1x.sizeBits());
+                r = Modbus::Status_BadIllegalDataAddress;
+            }
+            else
+                r = m_mem_1x.readBits(rec.recordNumber, rec.recordLength*MB_REGE_SZ_BITES, &buff[ptr]);
             break;
         case 2:
-            r = m_mem_3x.readRegs(rec.recordNumber, rec.recordLength, &buff[ptr]);
+            if ((rec.recordNumber + rec.recordLength) > m_mem_3x.sizeRegs())
+            {
+                err = QStringLiteral("FC20. Read input registers out of range: %1 + %2 > %3").arg(rec.recordNumber).arg(rec.recordLength).arg(m_mem_3x.sizeRegs());
+                r = Modbus::Status_BadIllegalDataAddress;
+            }
+            else
+                r = m_mem_3x.readRegs(rec.recordNumber, rec.recordLength, &buff[ptr]);
             break;
         default:
-            r = m_mem_4x.readRegs(rec.recordNumber, rec.recordLength, &buff[ptr]);
+            if ((rec.recordNumber + rec.recordLength) > m_mem_4x.sizeRegs())
+            {
+                err = QStringLiteral("FC20. Read holding registers out of range: %1 + %2 > %3").arg(rec.recordNumber).arg(rec.recordLength).arg(m_mem_4x.sizeRegs());
+                r = Modbus::Status_BadIllegalDataAddress;
+            }
+            else
+                r = m_mem_4x.readRegs(rec.recordNumber, rec.recordLength, &buff[ptr]);
             break;
         }
         if (!Modbus::StatusIsGood(r))
         {
-            err = QString("Wrong record address when ReadFileRecord");
+            if (err.isEmpty())
+                err = QString("FC20. Wrong record address");
             break;
         }
         ptr += rec.recordLength;
@@ -1136,7 +1161,7 @@ Modbus::StatusCode mbServerDevice::writeFileRecord(const Modbus::FileRecord *rec
     beginRequest();
     if (isReadOnly())
     {
-        err = QStringLiteral("Device is read-only");
+        err = QStringLiteral("FC21. Device is read-only");
         r = Modbus::Status_BadIllegalFunction;
     }
     else
@@ -1150,27 +1175,52 @@ Modbus::StatusCode mbServerDevice::writeFileRecord(const Modbus::FileRecord *rec
             if (bufflen > MB_FILE_RECORD_BUFF_SZ)
             {
                 r = Modbus::Status_BadIllegalDataAddress;
-                err = QString("Record buffer length is too large when WriteFileRecord");
+                err = QString("FC21. Record buffer length is too large");
                 break;
             }
             switch (rec.fileNumber & 3) // Note: use 2 LS bits to define reference type
             {
             case 0:
-                r = m_mem_0x.writeBits(rec.recordNumber, rec.recordLength*MB_REGE_SZ_BITES, &buff[ptr]);
+                if ((rec.recordNumber + rec.recordLength*MB_REGE_SZ_BITES) > m_mem_0x.sizeBits())
+                {
+                    err = QStringLiteral("FC21. Write coils out of range: %1 + %2 > %3").arg(rec.recordNumber).arg(rec.recordLength*MB_REGE_SZ_BITES).arg(m_mem_0x.sizeBits());
+                    r = Modbus::Status_BadIllegalDataAddress;
+                }
+                else
+                    r = m_mem_0x.writeBits(rec.recordNumber, rec.recordLength*MB_REGE_SZ_BITES, &buff[ptr]);
                 break;
             case 1:
-                r = m_mem_1x.writeBits(rec.recordNumber, rec.recordLength*MB_REGE_SZ_BITES, &buff[ptr]);
+                if ((rec.recordNumber + rec.recordLength*MB_REGE_SZ_BITES) > m_mem_0x.sizeBits())
+                {
+                    err = QStringLiteral("FC21. Write discrete inputs out of range: %1 + %2 > %3").arg(rec.recordNumber).arg(rec.recordLength*MB_REGE_SZ_BITES).arg(m_mem_1x.sizeBits());
+                    r = Modbus::Status_BadIllegalDataAddress;
+                }
+                else
+                    r = m_mem_1x.writeBits(rec.recordNumber, rec.recordLength*MB_REGE_SZ_BITES, &buff[ptr]);
                 break;
             case 2:
-                r = m_mem_3x.writeRegs(rec.recordNumber, rec.recordLength, &buff[ptr]);
+                if ((rec.recordNumber + rec.recordLength) > m_mem_3x.sizeRegs())
+                {
+                    err = QStringLiteral("FC21. Write input registers out of range: %1 + %2 > %3").arg(rec.recordNumber).arg(rec.recordLength).arg(m_mem_3x.sizeRegs());
+                    r = Modbus::Status_BadIllegalDataAddress;
+                }
+                else
+                    r = m_mem_3x.writeRegs(rec.recordNumber, rec.recordLength, &buff[ptr]);
                 break;
             default:
-                r = m_mem_4x.writeRegs(rec.recordNumber, rec.recordLength, &buff[ptr]);
+                if ((rec.recordNumber + rec.recordLength) > m_mem_4x.sizeRegs())
+                {
+                    err = QStringLiteral("FC21. Write holding registers out of range: %1 + %2 > %3").arg(rec.recordNumber).arg(rec.recordLength).arg(m_mem_4x.sizeRegs());
+                    r = Modbus::Status_BadIllegalDataAddress;
+                }
+                else
+                    r = m_mem_4x.writeRegs(rec.recordNumber, rec.recordLength, &buff[ptr]);
                 break;
             }
             if (!Modbus::StatusIsGood(r))
             {
-                err = QString("Wrong record address when WriteFileRecord");
+                if (err.isEmpty())
+                    err = QString("FC21. Wrong record address");
                 break;
             }
             ptr += rec.recordLength;

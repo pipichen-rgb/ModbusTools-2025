@@ -213,8 +213,6 @@ private:
         UsedFormat          = 0x00000008,
         UsedWriteOffset     = 0x00000010,
         UsedWriteCount      = 0x00000020,
-        UsedMaskAnd         = 0x00000040,
-        UsedMaskOr          = 0x00000080,
         UsedSubfunction     = 0x00000100,
         UsedStatus          = 0x00000200,
         UsedEventCount      = 0x00000400,
@@ -241,13 +239,11 @@ private:
     union
     {
         uint16_t m_writeOffset;
-        uint16_t m_maskAnd;
     };
 
     union
     {
         uint16_t m_writeCount;
-        uint16_t m_maskOr;
     };
 
     union 

@@ -21,10 +21,13 @@ struct mbClientSendMessageFileRecordsModel::Item
     QByteArray getData() const
     {
         auto expectedSize = file.recordLength*2;
-        if (data.length() != expectedSize)
+        auto datalen = data.length();
+        if (datalen != expectedSize)
         {
             QByteArray b = data;
             b.resize(expectedSize);
+            if (expectedSize > datalen)
+                memset(b.data()+datalen, 0, expectedSize-datalen);
             return b;
         }
         return data;
@@ -172,26 +175,26 @@ void mbClientSendMessageFileRecordsModel::fillParams(mbClientMessageParams &para
         }
         ++i;
     }
-    params.setFormat(m_format);
     params.setFileRecords(fileRecords);
-    params.setCount(data.length());
-    params.setData(data);
+    if (useData)
+    {
+        params.setFormat(m_format);
+        params.setData(data);
+        params.setCount(data.length());
+    }
 }
 
 void mbClientSendMessageFileRecordsModel::setParams(mbClientMessageParams &params)
 {
     beginResetModel();
 
-    if (m_items.count() != params.fileRecords().count())
+    qDeleteAll(m_items);
+    m_items.clear();
+    for (int i = 0; i < params.fileRecords().count(); ++i)
     {
-        qDeleteAll(m_items);
-        m_items.clear();
-        for (int i = 0; i < params.fileRecords().count(); ++i)
-        {
-            Item *item = new Item;
-            item->file = params.fileRecords().at(i);
-            m_items.append(item);
-        }
+        Item *item = new Item;
+        item->file = params.fileRecords().at(i);
+        m_items.append(item);
     }
 
     int c = 0;
