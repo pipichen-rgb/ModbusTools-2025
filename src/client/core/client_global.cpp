@@ -640,7 +640,7 @@ QString mbClientMessageConverter::saveClientMessageParams(const mbClientMessageP
         ls.append(serializeStringList({QStringLiteral("writecount"), QString::number(params.writeCount())}, '='));
         if (useData)
         {
-            ls.append(serializeStringList({QStringLiteral("writeformat"), mb::enumFormatKey(params.format())}, '='));
+            ls.append(serializeStringList({QStringLiteral("format"), mb::enumFormatKey(params.format())}, '='));
             ls.append(serializeStringList({QStringLiteral("data"), params.data().toString()}, '='));
         }
         break;
@@ -770,9 +770,9 @@ mbClientMessageParams mbClientMessageConverter::restoreClientMessageParams(const
     case MBF_READ_WRITE_MULTIPLE_REGISTERS:
         res.setOffset(static_cast<uint16_t>(map.value(QStringLiteral("readoffset"), "0").toInt()));
         res.setCount(static_cast<uint16_t>(map.value(QStringLiteral("readcount"), "1").toInt()));
-        res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("readformat"), "Dec16")));
         res.setWriteOffset(static_cast<uint16_t>(map.value(QStringLiteral("writeoffset"), "0").toInt()));
         res.setWriteCount(static_cast<uint16_t>(map.value(QStringLiteral("writecount"), "1").toInt()));
+        res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "Dec16")));
         res.setData(map.value(QStringLiteral("data")));
         break;
     case MBF_READ_FIFO_QUEUE:

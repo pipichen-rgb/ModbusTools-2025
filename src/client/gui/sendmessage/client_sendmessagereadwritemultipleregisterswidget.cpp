@@ -185,12 +185,12 @@ void mbClientSendMessageReadWriteMultipleRegistersWidget::setCachedSettings(cons
     MBSETTINGS::const_iterator it;
     MBSETTINGS::const_iterator end = m.end();
 
-    it = m.find(m_prefix+s.writeFormat ); if (it != end) setWriteAddress                   (it.value().toInt()   );
-    it = m.find(m_prefix+s.writeAddress); if (it != end) m_cmbWriteFormat  ->setCurrentText(it.value().toString());
+    it = m.find(m_prefix+s.writeFormat ); if (it != end) m_cmbWriteFormat  ->setCurrentText(it.value().toString());
+    it = m.find(m_prefix+s.writeAddress); if (it != end) setWriteAddress                   (it.value().toInt()   );
     it = m.find(m_prefix+s.writeCount  ); if (it != end) setWriteCount      (it.value().toInt()   );
     it = m.find(m_prefix+s.writeData   ); if (it != end) m_txtWriteData    ->setPlainText  (it.value().toString());
-    it = m.find(m_prefix+s.readFormat  ); if (it != end) setReadAddress                    (it.value().toInt()   );
-    it = m.find(m_prefix+s.readAddress ); if (it != end) m_cmbReadFormat  ->setCurrentText (it.value().toString());
+    it = m.find(m_prefix+s.readFormat  ); if (it != end) m_cmbReadFormat  ->setCurrentText (it.value().toString());
+    it = m.find(m_prefix+s.readAddress ); if (it != end) setReadAddress                    (it.value().toInt()   );
     it = m.find(m_prefix+s.readCount   ); if (it != end) setReadCount                      (it.value().toInt()   );
     it = m.find(m_prefix+s.readData    ); if (it != end) m_readData = it.value().toByteArray();
     updateReadData();
@@ -208,9 +208,37 @@ void mbClientSendMessageReadWriteMultipleRegistersWidget::fillParams(mbClientMes
 
 void mbClientSendMessageReadWriteMultipleRegistersWidget::setParams(mbClientMessageParams &params)
 {
-    params.setFormat(readFormat());
-    m_readData = m_conv->toByteArray(params);
-    updateReadData();
+    bool isDataToWrite = false;
+    if (params.hasOffset())
+        setReadOffset(params.offset());
+    if (params.hasCount())
+        m_spReadCount->setValue(params.count());
+    if (params.hasWriteOffset())
+    {
+        setWriteOffset(params.writeOffset());
+        isDataToWrite = true;
+    }
+    if (params.hasWriteCount())
+    {
+        m_spWriteCount->setValue(params.writeCount());
+        isDataToWrite = true;
+    }
+    if (isDataToWrite)
+    {
+        if (writeFormat() != params.format())
+        {
+            auto data = m_conv->toByteArray(params);
+            params.setFormat(writeFormat());
+            params.setData(data);
+        }
+        m_txtWriteData->setPlainText(m_conv->toVariant(params).toString());
+    }
+    else
+    {
+        params.setFormat(readFormat());
+        m_readData = m_conv->toByteArray(params);
+        updateReadData();
+    }
 }
 
 mb::Format mbClientSendMessageReadWriteMultipleRegistersWidget::writeFormat() const
