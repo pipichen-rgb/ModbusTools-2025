@@ -683,7 +683,8 @@ void mbClientSendMessageUi::prepareToSend(mbClientRunMessage *msg)
     connect(msg, &mbClientRunMessage::signalAsciiRx, this, &mbClientSendMessageUi::slotBytesRx     );
     connect(msg, &mbClientRunMessage::completed    , this, &mbClientSendMessageUi::messageCompleted);
     auto w = currentFunctionWidget();
-    w->prepareToSend();
+    if (w->function() == msg->function())
+        w->prepareToSend();
 }
 
 void mbClientSendMessageUi::clearAfterSend(mbClientRunMessage *msg)

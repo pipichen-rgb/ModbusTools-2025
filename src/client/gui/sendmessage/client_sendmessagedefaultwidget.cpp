@@ -115,7 +115,15 @@ void mbClientSendMessageDefaultWidget::fillParams(mbClientMessageParams &params)
 {
     params.setOffset(getOffset());
     params.setCount(getCount());
-    params.setFormat(mb::enumFormatValueByIndex(m_cmbFormat->currentIndex()));
+    params.setFormat(format());
+}
+
+void mbClientSendMessageDefaultWidget::setParams(mbClientMessageParams &params)
+{
+    if (params.hasOffset())
+        setOffset(params.offset());
+    if (params.hasCount())
+        m_spCount->setValue(params.count());
 }
 
 mb::Format mbClientSendMessageDefaultWidget::format() const
@@ -126,6 +134,13 @@ mb::Format mbClientSendMessageDefaultWidget::format() const
 uint16_t mbClientSendMessageDefaultWidget::getOffset() const
 {
     return m_address->getAddress().offset();
+}
+
+void mbClientSendMessageDefaultWidget::setOffset(uint16_t offset)
+{
+    mb::Address adr = m_address->getAddress();
+    adr.setOffset(offset);
+    m_address->setAddress(adr);
 }
 
 int mbClientSendMessageDefaultWidget::getAddress() const
@@ -178,8 +193,8 @@ void mbClientSendMessageReadDefaultWidget::setCachedSettings(const MBSETTINGS &s
 void mbClientSendMessageReadDefaultWidget::setParams(mbClientMessageParams &params)
 {
     mbClientSendMessageDefaultWidget::setParams(params);
-    params.setFormat(mb::enumFormatValueByIndex(m_cmbFormat->currentIndex()));
     m_data = m_conv->toByteArray(params);
+    params.setFormat(format());
     m_txtData->setPlainText(m_conv->toVariant(params).toString());
 }
 
@@ -229,6 +244,21 @@ void mbClientSendMessageWriteDefaultWidget::fillParams(mbClientMessageParams &pa
 {
     mbClientSendMessageDefaultWidget::fillParams(params);
     params.setData(m_txtData->toPlainText());
+}
+
+void mbClientSendMessageWriteDefaultWidget::setParams(mbClientMessageParams &params)
+{
+    mbClientSendMessageDefaultWidget::setParams(params);
+    if (params.hasData())
+    {
+        if (format() != params.format())
+        {
+            auto data = m_conv->toByteArray(params);
+            params.setFormat(format());
+            params.setData(data);
+        }
+        m_txtData->setPlainText(m_conv->toVariant(params).toString());
+    }
 }
 
 mbClientSendMessageReadCoilsWidget::mbClientSendMessageReadCoilsWidget(mbClientSendMessageUi* ui, QWidget *parent)

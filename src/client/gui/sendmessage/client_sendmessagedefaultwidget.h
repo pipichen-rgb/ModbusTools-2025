@@ -30,10 +30,12 @@ public:
     MBSETTINGS cachedSettings() const override;
     void setCachedSettings(const MBSETTINGS &settings) override;
     void fillParams(mbClientMessageParams &params) const override;
+    void setParams(mbClientMessageParams &params) override;
 
 public:
     mb::Format format() const;
     uint16_t getOffset() const;
+    void setOffset(uint16_t offset);
     int getAddress() const;
     void setAddress(int v);
     uint16_t getCount() const;
@@ -75,6 +77,7 @@ public:
     MBSETTINGS cachedSettings() const override;
     void setCachedSettings(const MBSETTINGS &settings) override;
     void fillParams(mbClientMessageParams &params) const override;
+    void setParams(mbClientMessageParams &params) override;
 };
 
 class mbClientSendMessageReadCoilsWidget : public mbClientSendMessageReadDefaultWidget

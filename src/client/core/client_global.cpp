@@ -711,32 +711,32 @@ mbClientMessageParams mbClientMessageConverter::restoreClientMessageParams(const
         res.setOffset(static_cast<uint16_t>(map.value(QStringLiteral("offset"), "0").toInt()));
         res.setCount(static_cast<uint16_t>(map.value(QStringLiteral("count"), "1").toInt()));
         res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "Dec16")));
-        return res;
+        break;
     case MBF_WRITE_SINGLE_COIL:
     case MBF_WRITE_SINGLE_REGISTER:
         res.setOffset(static_cast<uint16_t>(map.value(QStringLiteral("offset"), "0").toInt()));
         res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "Dec16")));
         res.setData(map.value(QStringLiteral("data")));
-        return res;
+        break;
     case MBF_READ_EXCEPTION_STATUS:
     case MBF_REPORT_SERVER_ID:
         res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "Dec16")));
-        return res;
+        break;
     case MBF_DIAGNOSTICS:
         res.setSubfunction(static_cast<uint16_t>(map.value(QStringLiteral("subfunc"), "0").toInt()));
         res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "Dec16")));
         res.setData(map.value(QStringLiteral("data")));
-        return res;
+        break;
     case MBF_GET_COMM_EVENT_COUNTER:
     case MBF_GET_COMM_EVENT_LOG:
-        return res;
+        break;
     case MBF_WRITE_MULTIPLE_COILS:
     case MBF_WRITE_MULTIPLE_REGISTERS:
         res.setOffset(static_cast<uint16_t>(map.value(QStringLiteral("offset"), "0").toInt()));
         res.setCount(static_cast<uint16_t>(map.value(QStringLiteral("count"), "1").toInt()));
         res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "Dec16")));
         res.setData(map.value(QStringLiteral("data")));
-        return res;
+        break;
     case MBF_READ_FILE_RECORD:
     case MBF_WRITE_FILE_RECORD:
     {
@@ -766,7 +766,7 @@ mbClientMessageParams mbClientMessageConverter::restoreClientMessageParams(const
         res.setOffset(static_cast<uint16_t>(map.value(QStringLiteral("offset"), "0").toInt()));
         res.setWriteOffset(static_cast<uint16_t>(map.value(QStringLiteral("and"), "0").toInt()));
         res.setWriteCount(static_cast<uint16_t>(map.value(QStringLiteral("or"), "0").toInt()));
-        return res;
+        break;
     case MBF_READ_WRITE_MULTIPLE_REGISTERS:
         res.setOffset(static_cast<uint16_t>(map.value(QStringLiteral("readoffset"), "0").toInt()));
         res.setCount(static_cast<uint16_t>(map.value(QStringLiteral("readcount"), "1").toInt()));
@@ -774,16 +774,16 @@ mbClientMessageParams mbClientMessageConverter::restoreClientMessageParams(const
         res.setWriteOffset(static_cast<uint16_t>(map.value(QStringLiteral("writeoffset"), "0").toInt()));
         res.setWriteCount(static_cast<uint16_t>(map.value(QStringLiteral("writecount"), "1").toInt()));
         res.setData(map.value(QStringLiteral("data")));
-        return res;
+        break;
     case MBF_READ_FIFO_QUEUE:
         res.setOffset(static_cast<uint16_t>(map.value(QStringLiteral("offset"), "0").toInt()));
         res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "Dec16")));
-        return res;
+        break;
     case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
         res.setDeviceId(static_cast<uint8_t>(map.value(QStringLiteral("deviceId"), "1").toInt()));
         res.setObjectId(static_cast<uint8_t>(map.value(QStringLiteral("objectId"), "0").toInt()));
         res.setFormat(mb::enumFormatValue(map.value(QStringLiteral("format"), "String")));
-        return res;
+        break;
     default:
         if (ok)
             *ok = false;

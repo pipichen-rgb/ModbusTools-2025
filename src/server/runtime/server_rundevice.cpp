@@ -542,7 +542,7 @@ Modbus::StatusCode mbServerRunDevice::readWriteMultipleRegisters(uint8_t unit, u
     }
 }
 
-Modbus::StatusCode mbServerRunDevice::readDeviceIdentification(uint8_t unit, uint8_t readDeviceId, uint8_t objectId, uint8_t *dataSize, void *data, uint8_t *numberOfObjects, uint8_t *conformityLevel, bool *moreFollows, uint8_t *nextObjectId)
+Modbus::StatusCode mbServerRunDevice::readDeviceIdentification(uint8_t unit, uint8_t readDeviceId, uint8_t objectId, void *data, uint8_t *dataSize, uint8_t *numberOfObjects, uint8_t *conformityLevel, bool *moreFollows, uint8_t *nextObjectId)
 {
     if (isBroadcast(unit))
     {
@@ -554,7 +554,7 @@ Modbus::StatusCode mbServerRunDevice::readDeviceIdentification(uint8_t unit, uin
         if (!device)
             return Modbus::Status_BadGatewayPathUnavailable;
         CHECK_DELAY
-        return device->readDeviceIdentification(readDeviceId, objectId, dataSize, data, numberOfObjects, conformityLevel, moreFollows, nextObjectId);
+        return device->readDeviceIdentification(readDeviceId, objectId, data, dataSize, numberOfObjects, conformityLevel, moreFollows, nextObjectId);
     }
 }
 

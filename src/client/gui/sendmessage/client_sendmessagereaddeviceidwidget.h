@@ -29,11 +29,15 @@ public:
     };
 
 public:
+    static QString objectIdString(uint8_t objectId);
+    
+public:
     mbClientSendMessageReadDeviceIdWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
 
 public:
     MBSETTINGS cachedSettings() const override;
     void setCachedSettings(const MBSETTINGS &settings) override;
+    void prepareToSend() override;
     void fillParams(mbClientMessageParams &params) const override;
     void setParams(mbClientMessageParams &params) override;
 

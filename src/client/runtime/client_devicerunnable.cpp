@@ -418,8 +418,8 @@ Modbus::StatusCode mbClientDeviceRunnable::execExternalMessage()
         bool moreFollows;
         res = m_modbusClient->readDeviceIdentification(m->deviceId(),
                                                        m->objectId(),
-                                                       &dataSize,
                                                        m->innerBuffer(),
+                                                       &dataSize,
                                                        &numberOfObjects,
                                                        &conformityLevel,
                                                        &moreFollows,
