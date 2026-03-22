@@ -630,8 +630,8 @@ QString mbClientMessageConverter::saveClientMessageParams(const mbClientMessageP
         break;
     case MBF_MASK_WRITE_REGISTER:
         ls.append(serializeStringList({QStringLiteral("offset"), QString::number(params.offset())}, '='));
-        ls.append(serializeStringList({QStringLiteral("and"), QString::number(params.writeOffset())}, '='));
-        ls.append(serializeStringList({QStringLiteral("or"), QString::number(params.writeCount())}, '='));
+        ls.append(serializeStringList({QStringLiteral("and"), QString::number(params.maskAnd())}, '='));
+        ls.append(serializeStringList({QStringLiteral("or"), QString::number(params.maskOr())}, '='));
         break;
     case MBF_READ_WRITE_MULTIPLE_REGISTERS:
         ls.append(serializeStringList({QStringLiteral("readoffset"), QString::number(params.offset())}, '='));
@@ -764,8 +764,8 @@ mbClientMessageParams mbClientMessageConverter::restoreClientMessageParams(const
         break;
     case MBF_MASK_WRITE_REGISTER:
         res.setOffset(static_cast<uint16_t>(map.value(QStringLiteral("offset"), "0").toInt()));
-        res.setWriteOffset(static_cast<uint16_t>(map.value(QStringLiteral("and"), "0").toInt()));
-        res.setWriteCount(static_cast<uint16_t>(map.value(QStringLiteral("or"), "0").toInt()));
+        res.setMaskAnd(static_cast<uint16_t>(map.value(QStringLiteral("and"), "0").toInt()));
+        res.setMaskOr(static_cast<uint16_t>(map.value(QStringLiteral("or"), "0").toInt()));
         break;
     case MBF_READ_WRITE_MULTIPLE_REGISTERS:
         res.setOffset(static_cast<uint16_t>(map.value(QStringLiteral("readoffset"), "0").toInt()));

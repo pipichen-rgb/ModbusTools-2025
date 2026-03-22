@@ -623,7 +623,9 @@ mbClientRunMessage *mbClientSendMessageUi::createMessage(const mbClientMessagePa
         break;
     case MBF_MASK_WRITE_REGISTER:
         msg = new mbClientRunMessageMaskWriteRegister(params.offset(), this);
-        break;
+        msg->innerBufferReg()[0] = params.maskAnd();
+        msg->innerBufferReg()[1] = params.maskOr ();
+        return msg;
     case MBF_READ_WRITE_MULTIPLE_REGISTERS:
         msg = new mbClientRunMessageReadWriteMultipleRegisters(params.offset(),
                                                                params.count(),

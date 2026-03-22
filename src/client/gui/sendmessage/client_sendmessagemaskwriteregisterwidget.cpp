@@ -123,18 +123,20 @@ void mbClientSendMessageMaskWriteRegisterWidget::setCachedSettings(const MBSETTI
 void mbClientSendMessageMaskWriteRegisterWidget::fillParams(mbClientMessageParams &params) const
 {
     const auto digitalFormat = static_cast<mb::DigitalFormat>(m_cmbFormat->currentData().toInt());
-
-    auto maskAnd = getMaskAnd();
-    auto maskOr  = getMaskOr();
-
-    QByteArray data(4, '\0');
-    reinterpret_cast<uint16_t*>(data.data())[0] = static_cast<uint16_t>(maskAnd);
-    reinterpret_cast<uint16_t*>(data.data())[1] = static_cast<uint16_t>(maskOr );
-
     params.setFormat(mb::toFormat(digitalFormat));
     params.setOffset(getOffset());
-    params.setCount(2);
-    params.setData(data);
+    params.setMaskAnd(getMaskAnd());
+    params.setMaskOr(getMaskOr());
+}
+
+void mbClientSendMessageMaskWriteRegisterWidget::setParams(mbClientMessageParams &params)
+{
+    if (params.hasOffset())
+        setOffset(params.offset());
+    if (params.hasMaskAnd())
+        setMaskAnd(params.maskAnd());
+    if (params.hasMaskOr())
+        setMaskOr(params.maskOr());
 }
 
 int mbClientSendMessageMaskWriteRegisterWidget::getAddress() const

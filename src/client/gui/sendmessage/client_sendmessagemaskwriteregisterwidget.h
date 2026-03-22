@@ -29,6 +29,7 @@ public:
     MBSETTINGS cachedSettings() const override;
     void setCachedSettings(const MBSETTINGS &settings) override;
     void fillParams(mbClientMessageParams &params) const override;
+    void setParams(mbClientMessageParams &params) override;
 
 public:
     int getAddress() const;

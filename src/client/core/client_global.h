@@ -145,6 +145,16 @@ public:
     inline bool hasWriteCount() const { return (m_usedFields & UsedWriteCount) != 0; }
     inline void clearWriteCount() { m_usedFields &= ~UsedWriteCount; }
 
+    inline uint16_t maskAnd() const { return m_maskAnd; }
+    inline void setMaskAnd(uint16_t maskAnd) { m_maskAnd = maskAnd; m_usedFields |= UsedMaskAnd; }
+    inline bool hasMaskAnd() const { return (m_usedFields & UsedMaskAnd) != 0; }
+    inline void clearMaskAnd() { m_usedFields &= ~UsedMaskAnd; }
+
+    inline uint16_t maskOr() const { return m_maskOr; }
+    inline void setMaskOr(uint16_t maskOr) { m_maskOr = maskOr; m_usedFields |= UsedMaskOr; }
+    inline bool hasMaskOr() const { return (m_usedFields & UsedMaskOr) != 0; }
+    inline void clearMaskOr() { m_usedFields &= ~UsedMaskOr; }
+
     inline uint16_t status() const { return m_status; }
     inline void setStatus(uint16_t status) { m_status = status; m_usedFields |= UsedStatus; }
     inline bool hasStatus() const { return (m_usedFields & UsedStatus) != 0; }
@@ -213,6 +223,8 @@ private:
         UsedFormat          = 0x00000008,
         UsedWriteOffset     = 0x00000010,
         UsedWriteCount      = 0x00000020,
+        UsedMaskAnd         = 0x00000040,
+        UsedMaskOr          = 0x00000080,
         UsedSubfunction     = 0x00000100,
         UsedStatus          = 0x00000200,
         UsedEventCount      = 0x00000400,
@@ -239,11 +251,13 @@ private:
     union
     {
         uint16_t m_writeOffset;
+        uint16_t m_maskAnd;
     };
 
     union
     {
         uint16_t m_writeCount;
+        uint16_t m_maskOr;
     };
 
     union 
