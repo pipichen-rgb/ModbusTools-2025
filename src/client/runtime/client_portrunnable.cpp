@@ -147,10 +147,10 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
         res = m_modbusPort->readDiscreteInputs(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBuffer());
         break;
     case MBF_READ_INPUT_REGISTERS:
-        res = m_modbusPort->readInputRegisters(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+        res = m_modbusPort->readInputRegisters(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBufferReg());
         break;
     case MBF_READ_HOLDING_REGISTERS:
-        res = m_modbusPort->readHoldingRegisters(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+        res = m_modbusPort->readHoldingRegisters(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBufferReg());
         break;
     case MBF_WRITE_SINGLE_COIL:
         res = m_modbusPort->writeSingleCoil(m_currentMessage->unit(), m_currentMessage->offset(), *reinterpret_cast<const bool*>(m_currentMessage->innerBuffer()));
@@ -166,10 +166,10 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
         {
         case MBF_DIAGNOSTICS_RETURN_QUERY_DATA:
             res = m_modbusPort->diagnosticsReturnQueryData(m_currentMessage->unit(), 
-                                                           static_cast<uint8_t>(m_currentMessage->count()),
-                                                           m_currentMessage->innerBuffer(),
-                                                           &m_byteCount,
-                                                           reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
+                                                             m_currentMessage->innerBuffer(),
+                                                             static_cast<uint8_t>(m_currentMessage->count()),
+                                                             reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()),
+                                                             &m_byteCount);
             break;
         case MBF_DIAGNOSTICS_RESTART_COMMUNICATIONS_OPTION:
             res = m_modbusPort->diagnosticsRestartCommunicationsOption(m_currentMessage->unit(), reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer())[0]);
@@ -238,8 +238,8 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
     {
         uint16_t status, eventCount;
         res = m_modbusPort->getCommEventCounter(m_currentMessage->unit(),
-                                                      &status,
-                                                      &eventCount);
+                                                &status,
+                                                &eventCount);
         if (Modbus::StatusIsGood(res))
         {
             auto m = static_cast<mbClientRunMessageGetCommEventCounter*>(m_currentMessage.data());
@@ -252,12 +252,12 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
     {
         uint16_t status, eventCount, messageCount;
         uint8_t byteCount;
-        res = m_modbusPort->getCommEventLog(m_currentMessage->unit(),
-                                                  &status,
-                                                  &eventCount,
-                                                  &messageCount,
-                                                  &byteCount,
-                                                  reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
+        res = m_modbusPort->getCommEventLog(m_currentMessage->unit(), 
+                                            &status,
+                                            &eventCount,
+                                            &messageCount,
+                                            m_currentMessage->innerBuffer(),
+                                            &byteCount);
         if (Modbus::StatusIsGood(res))
         {
             auto m = static_cast<mbClientRunMessageGetCommEventLog*>(m_currentMessage.data());
@@ -275,7 +275,7 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
         res = m_modbusPort->writeMultipleRegisters(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBufferReg());
         break;
     case MBF_REPORT_SERVER_ID:
-        res = m_modbusPort->reportServerID(m_currentMessage->unit(), &m_byteCount, reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
+        res = m_modbusPort->reportServerID(m_currentMessage->unit(), m_currentMessage->innerBuffer(), &m_byteCount);
         if (Modbus::StatusIsGood(res))
             static_cast<mbClientRunMessageReportServerID*>(m_currentMessage.data())->setCount(m_byteCount);
         break;
@@ -303,7 +303,7 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
     case MBF_READ_FIFO_QUEUE:
     {
         uint16_t count;
-        res = m_modbusPort->readFIFOQueue(m_currentMessage->unit(), m_currentMessage->offset(), &count, reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+        res = m_modbusPort->readFIFOQueue(m_currentMessage->unit(), m_currentMessage->offset(), m_currentMessage->innerBufferReg(), &count);
         if (Modbus::StatusIsGood(res))
             static_cast<mbClientRunMessageReadFIFOQueue*>(m_currentMessage.data())->setCount(count);
     }
@@ -314,7 +314,7 @@ Modbus::StatusCode mbClientPortRunnable::execExternalMessage()
         auto m = static_cast<mbClientRunMessageReadDeviceId*>(m_currentMessage.data());
         uint8_t numberOfObjects, conformityLevel, nextObjectId, dataSize;
         bool moreFollows;
-        res = m_modbusPort->readDeviceIdentification(m->unit(),
+        res = m_modbusPort->readDeviceIdentification(m_currentMessage->unit(), 
                                                      m->deviceId(),
                                                      m->objectId(),
                                                      m->innerBuffer(),

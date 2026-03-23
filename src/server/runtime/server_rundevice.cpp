@@ -168,7 +168,7 @@ Modbus::StatusCode mbServerRunDevice::readExceptionStatus(uint8_t unit, uint8_t 
     }
 }
 
-Modbus::StatusCode mbServerRunDevice::diagnosticsReturnQueryData(uint8_t unit, uint8_t insize, const void *indata, uint8_t *outsize, void *outdata)
+Modbus::StatusCode mbServerRunDevice::diagnosticsReturnQueryData(uint8_t unit, const void *indata, uint8_t insize, void *outdata, uint8_t *outsize)
 {
     if (isBroadcast(unit))
     {
@@ -180,7 +180,7 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsReturnQueryData(uint8_t unit, u
         if (!device)
             return Modbus::Status_BadGatewayPathUnavailable;
         CHECK_DELAY
-        return device->diagnosticsReturnQueryData(insize, indata, outsize, outdata);
+        return device->diagnosticsReturnQueryData(indata, insize, outdata, outsize);
     }
 }
 
@@ -454,7 +454,7 @@ Modbus::StatusCode mbServerRunDevice::writeMultipleRegisters(uint8_t unit, uint1
     }
 }
 
-Modbus::StatusCode mbServerRunDevice::reportServerID(uint8_t unit, uint8_t *count, uint8_t *data)
+Modbus::StatusCode mbServerRunDevice::reportServerID(uint8_t unit, void *data, uint8_t *count)
 {
     if (isBroadcast(unit))
     {
@@ -466,7 +466,7 @@ Modbus::StatusCode mbServerRunDevice::reportServerID(uint8_t unit, uint8_t *coun
         if (!device)
             return Modbus::Status_BadGatewayPathUnavailable;
         CHECK_DELAY
-        return device->reportServerID(count, data);
+        return device->reportServerID(data, count);
     }
 }
 

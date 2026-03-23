@@ -43,7 +43,7 @@ public: // Modbus::Interface
     Modbus::StatusCode writeSingleCoil(uint8_t unit, uint16_t offset, bool value) override;
     Modbus::StatusCode writeSingleRegister(uint8_t unit, uint16_t offset, uint16_t value) override;
     Modbus::StatusCode readExceptionStatus(uint8_t unit, uint8_t *status) override;
-    Modbus::StatusCode diagnosticsReturnQueryData(uint8_t unit, uint8_t insize, const void *indata, uint8_t *outsize, void *outdata) override;
+    Modbus::StatusCode diagnosticsReturnQueryData(uint8_t unit, const void *indata, uint8_t insize, void *outdata, uint8_t *outsize) override;
     Modbus::StatusCode diagnosticsRestartCommunicationsOption(uint8_t unit, bool clearEventLog) override;
     Modbus::StatusCode diagnosticsReturnDiagnosticRegister(uint8_t unit, uint16_t *value) override;
     Modbus::StatusCode diagnosticsChangeAsciiInputDelimiter(uint8_t unit, char delimiter) override;
@@ -60,7 +60,7 @@ public: // Modbus::Interface
     Modbus::StatusCode diagnosticsClearOverrunCounterAndFlag(uint8_t unit) override;
     Modbus::StatusCode writeMultipleCoils(uint8_t unit, uint16_t offset, uint16_t count, const void *values) override;
     Modbus::StatusCode writeMultipleRegisters(uint8_t unit, uint16_t offset, uint16_t count, const uint16_t *values) override;
-    Modbus::StatusCode reportServerID(uint8_t unit, uint8_t *count, uint8_t *data) override;
+    Modbus::StatusCode reportServerID(uint8_t unit, void *data, uint8_t *count) override;
     Modbus::StatusCode readFileRecord(uint8_t unit, const Modbus::FileRecord *records, uint8_t recordsCount, void *outData, uint8_t *outSize = nullptr) override;
     Modbus::StatusCode writeFileRecord(uint8_t unit, const Modbus::FileRecord *records, uint8_t recordsCount, const void *inData, uint8_t *inSize = nullptr) override;
     Modbus::StatusCode maskWriteRegister(uint8_t unit, uint16_t offset, uint16_t andMask, uint16_t orMask) override;

@@ -252,10 +252,10 @@ Modbus::StatusCode mbClientDeviceRunnable::execExternalMessage()
         res = m_modbusClient->readDiscreteInputs(m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBuffer());
         break;
     case MBF_READ_INPUT_REGISTERS:
-        res = m_modbusClient->readInputRegisters(m_currentMessage->offset(), m_currentMessage->count(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+        res = m_modbusClient->readInputRegisters(m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBufferReg());
         break;
     case MBF_READ_HOLDING_REGISTERS:
-        res = m_modbusClient->readHoldingRegisters(m_currentMessage->offset(), m_currentMessage->count(), reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+        res = m_modbusClient->readHoldingRegisters(m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBufferReg());
         break;
     case MBF_WRITE_SINGLE_COIL:
         res = m_modbusClient->writeSingleCoil(m_currentMessage->offset(), *reinterpret_cast<const bool*>(m_currentMessage->innerBuffer()));
@@ -270,10 +270,10 @@ Modbus::StatusCode mbClientDeviceRunnable::execExternalMessage()
         switch (static_cast<mbClientRunMessageDiagnostics*>(m_currentMessage.data())->subFunction())
         {
         case MBF_DIAGNOSTICS_RETURN_QUERY_DATA:
-            res = m_modbusClient->diagnosticsReturnQueryData(static_cast<uint8_t>(m_currentMessage->count()),
-                                                             m_currentMessage->innerBuffer(),
-                                                             &m_byteCount,
-                                                             reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
+            res = m_modbusClient->diagnosticsReturnQueryData(m_currentMessage->innerBuffer(),
+                                                             static_cast<uint8_t>(m_currentMessage->count()),
+                                                             reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()),
+                                                             &m_byteCount);
             break;
         case MBF_DIAGNOSTICS_RESTART_COMMUNICATIONS_OPTION:
             res = m_modbusClient->diagnosticsRestartCommunicationsOption(reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer())[0]);
@@ -358,8 +358,8 @@ Modbus::StatusCode mbClientDeviceRunnable::execExternalMessage()
         res = m_modbusClient->getCommEventLog(&status,
                                               &eventCount,
                                               &messageCount,
-                                              &byteCount,
-                                              reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
+                                              m_currentMessage->innerBuffer(),
+                                              &byteCount);
         if (Modbus::StatusIsGood(res))
         {
             auto m = static_cast<mbClientRunMessageGetCommEventLog*>(m_currentMessage.data());
@@ -377,7 +377,7 @@ Modbus::StatusCode mbClientDeviceRunnable::execExternalMessage()
         res = m_modbusClient->writeMultipleRegisters(m_currentMessage->offset(), m_currentMessage->count(), m_currentMessage->innerBufferReg());
         break;
     case MBF_REPORT_SERVER_ID:
-        res = m_modbusClient->reportServerID(&m_byteCount, reinterpret_cast<uint8_t*>(m_currentMessage->innerBuffer()));
+        res = m_modbusClient->reportServerID(m_currentMessage->innerBuffer(), &m_byteCount);
         if (Modbus::StatusIsGood(res))
             static_cast<mbClientRunMessageReportServerID*>(m_currentMessage.data())->setCount(m_byteCount);
         break;
@@ -405,7 +405,7 @@ Modbus::StatusCode mbClientDeviceRunnable::execExternalMessage()
     case MBF_READ_FIFO_QUEUE:
     {
         uint16_t count;
-        res = m_modbusClient->readFIFOQueue(m_currentMessage->offset(), &count, reinterpret_cast<uint16_t*>(m_currentMessage->innerBuffer()));
+        res = m_modbusClient->readFIFOQueue(m_currentMessage->offset(), m_currentMessage->innerBufferReg(), &count);
         if (Modbus::StatusIsGood(res))
             static_cast<mbClientRunMessageReadFIFOQueue*>(m_currentMessage.data())->setCount(count);
     }

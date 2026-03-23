@@ -264,10 +264,25 @@ bool mbClientSendMessageFileRecordsModel::moveDown(int i)
 
 void mbClientSendMessageFileRecordsModel::clear()
 {
-    beginResetModel();
-    qDeleteAll(m_items);
-    m_items.clear();
-    endResetModel();
+    if (m_items.count())
+    {
+        beginResetModel();
+        qDeleteAll(m_items);
+        m_items.clear();
+        endResetModel();
+    }
+}
+
+void mbClientSendMessageFileRecordsModel::clearValues()
+{
+    if (m_items.count())
+    {
+        Q_FOREACH (auto *item, m_items)
+        {
+            setItemDataInner(item, QByteArray());
+        }
+        Q_EMIT dataChanged(index(0, Column_Data), index(m_items.count()-1, Column_Data));
+    }
 }
 
 void mbClientSendMessageFileRecordsModel::setAddressFormat(mb::DigitalFormat format)
@@ -407,7 +422,7 @@ mbClientSendMessageFileRecordsWidget::mbClientSendMessageFileRecordsWidget(uint8
     lblAddressFormat->setText(QCoreApplication::translate("mbClientSendMessageUi", "Address Format:", nullptr));
 
     auto lblFormat = new QLabel(this);
-    lblFormat->setText(QCoreApplication::translate("mbClientSendMessageUi", "Format:", nullptr));
+    lblFormat->setText(QCoreApplication::translate("mbClientSendMessageUi", "Data Format:", nullptr));
 
     // Buttons
     auto btnFileRecordAdd = new QPushButton(this);
@@ -566,7 +581,7 @@ void mbClientSendMessageFileRecordsWidget::slotFileRecordClear()
     m_fileRecordModel->clear();
 }
 
-void mbClientSendMessageFileRecordsWidget::setAddressFormat(int index)
+void mbClientSendMessageFileRecordsWidget::setAddressFormat(int)
 {
     auto format = addressFormat();
     m_fileRecordModel->setAddressFormat(format);
@@ -584,6 +599,11 @@ mbClientSendMessageReadFileRecordsWidget::mbClientSendMessageReadFileRecordsWidg
             mbClientSendMessageFileRecordsWidget(MBF_READ_FILE_RECORD, ui, parent)
 {
     m_fileRecordModel->setEditMode(false);
+}
+
+void mbClientSendMessageReadFileRecordsWidget::prepareToSend()
+{
+    m_fileRecordModel->clearValues();
 }
 
 mbClientSendMessageWriteFileRecordsWidget::mbClientSendMessageWriteFileRecordsWidget(mbClientSendMessageUi *ui, QWidget *parent) :

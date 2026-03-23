@@ -48,6 +48,7 @@ public:
     bool moveUp(int i);
     bool moveDown(int i);
     void clear();
+    void clearValues();
     void setAddressFormat(mb::DigitalFormat format);
     void setDataFormat(mb::Format format);
 
@@ -121,6 +122,9 @@ class mbClientSendMessageReadFileRecordsWidget : public mbClientSendMessageFileR
     Q_OBJECT
 public:
     explicit mbClientSendMessageReadFileRecordsWidget(mbClientSendMessageUi* ui, QWidget *parent = nullptr);
+
+public:
+    void prepareToSend() override;
 };
 
 class mbClientSendMessageWriteFileRecordsWidget : public mbClientSendMessageFileRecordsWidget

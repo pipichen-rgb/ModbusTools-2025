@@ -173,7 +173,7 @@ public: // 'Modbus'-like Interface
     Modbus::StatusCode writeSingleRegister(uint16_t offset, uint16_t value);
     Modbus::StatusCode readExceptionStatus(uint8_t *status);
     Modbus::StatusCode diagnostics(mbServerPort *port, uint16_t subfunc, uint8_t insize, const void *indata, uint8_t *outsize, void *outdata);
-    Modbus::StatusCode diagnosticsReturnQueryData(uint8_t insize, const void *indata, uint8_t *outsize, void *outdata);
+    Modbus::StatusCode diagnosticsReturnQueryData(const void *indata, uint8_t insize, void *outdata, uint8_t *outsize);
     Modbus::StatusCode diagnosticsRestartCommunicationsOption(bool clearEventLog);
     Modbus::StatusCode diagnosticsReturnDiagnosticRegister(uint16_t *value);
     Modbus::StatusCode diagnosticsChangeAsciiInputDelimiter(char delimiter);
@@ -190,7 +190,7 @@ public: // 'Modbus'-like Interface
     Modbus::StatusCode diagnosticsClearOverrunCounterAndFlag();
     Modbus::StatusCode writeMultipleCoils(uint16_t offset, uint16_t count, const void *values);
     Modbus::StatusCode writeMultipleRegisters(uint16_t offset, uint16_t count, const uint16_t *values);
-    Modbus::StatusCode reportServerID(uint8_t *count, uint8_t *data);
+    Modbus::StatusCode reportServerID(void *data, uint8_t *count);
     Modbus::StatusCode readFileRecord(const Modbus::FileRecord *records, uint8_t recordsCount, void *outData, uint8_t *outSize = nullptr);
     Modbus::StatusCode writeFileRecord(const Modbus::FileRecord *records, uint8_t recordsCount, const void *inData, uint8_t *inSize = nullptr);
     Modbus::StatusCode maskWriteRegister(uint16_t offset, uint16_t andMask, uint16_t orMask);

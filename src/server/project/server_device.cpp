@@ -866,7 +866,7 @@ Modbus::StatusCode mbServerDevice::readExceptionStatus(uint8_t *status)
     return r;
 }
 
-Modbus::StatusCode mbServerDevice::diagnosticsReturnQueryData(uint8_t insize, const void *indata, uint8_t *outsize, void *outdata)
+Modbus::StatusCode mbServerDevice::diagnosticsReturnQueryData(const void *indata, uint8_t insize, void *outdata, uint8_t *outsize)
 {
     auto r = Modbus::Status_Good;
     beginRequest();
@@ -1069,7 +1069,7 @@ Modbus::StatusCode mbServerDevice::writeMultipleRegisters(uint16_t offset, uint1
     return r;
 }
 
-Modbus::StatusCode mbServerDevice::reportServerID(uint8_t *count, uint8_t *data)
+Modbus::StatusCode mbServerDevice::reportServerID(void *data, uint8_t *count)
 {
     Modbus::StatusCode r;
     beginRequest();
