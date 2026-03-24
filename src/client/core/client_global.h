@@ -39,51 +39,6 @@ class mbClientRunMessageRaw;
 typedef mb::SharedPointer<mbClientRunMessage> mbClientRunMessagePtr;
 typedef mb::SharedPointer<mbClientRunMessageRaw> mbClientRunMessageRawPtr;
 
-struct mbClientMessageParamsOLD
-{
-    mbClientMessageParamsOLD()
-    {
-        func = MBF_READ_HOLDING_REGISTERS;
-        offset = 0;
-        count = 0;
-        format = mb::Dec16;
-        writeOffset = 0;
-        writeCount = 0;
-        writeFormat = mb::Dec16;
-    }
-
-    int func;
-    union
-    {
-        uint16_t offset;
-        uint16_t subfunc;
-        struct 
-        {
-            uint8_t deviceId;
-            uint8_t objectId;
-        };
-    };
-    uint16_t count;
-    mb::Format format;
-
-    union
-    {
-        uint16_t writeOffset;
-        uint16_t andMask;
-    };
-
-    union
-    {
-        uint16_t writeCount;
-        uint16_t orMask;
-    };
-
-    mb::Format writeFormat;
-    QVector<Modbus::FileRecord> fileRecords;
-    QVariant data;
-
-};
-Q_DECLARE_METATYPE(mbClientMessageParamsOLD)
 
 // Note: Memento class for Client messages
 class mbClientMessageParams
@@ -359,16 +314,6 @@ typedef mbClientDevice* DeviceHandle_t;
 typedef mbClientDataViewItem* ItemHandle_t;
 
 } // namespace Client
-
-QStringList saveClientMessages(const QList<mbClientMessageParamsOLD> messages);
-
-QList<mbClientMessageParamsOLD> restoreClientMessages(const QStringList &messages);
-
-QString saveClientMessageParams(const mbClientMessageParamsOLD &params, bool useFunc = true, bool useData = true);
-
-mbClientMessageParamsOLD restoreClientMessageParams(const QString &params, bool *ok = nullptr, uint8_t func = 0);
-
-QHash<QString, QString> getClientParamMap(const QString &params);
 
 } // namespace mb
 

@@ -51,6 +51,18 @@ mbClientDialogScannerRequest::mbClientDialogScannerRequest(QWidget *parent) :
     sp->setMaximum(USHRT_MAX);
     sp->setValue(1);
 
+    // device id
+    sp = ui->spDeviceId;
+    sp->setMinimum(0);
+    sp->setMaximum(UINT8_MAX);
+    sp->setValue(1);
+
+    // object id
+    sp = ui->spObjectId;
+    sp->setMinimum(0);
+    sp->setMaximum(UINT8_MAX);
+    sp->setValue(0);
+
     m_funcNums.append(MBF_READ_COILS                   );
     m_funcNums.append(MBF_READ_DISCRETE_INPUTS         );
     m_funcNums.append(MBF_READ_HOLDING_REGISTERS       );
@@ -95,6 +107,10 @@ mbClientDialogScannerRequest::mbClientDialogScannerRequest(QWidget *parent) :
                     .arg(mb::ModbusFunctionString(funcNum))
                     );
     }
+    m_funcNums.append(MBF_ENCAPSULATED_INTERFACE_TRANSPORT);
+    cmb->addItem(QString("%1/%2 - ReadDeviceIdentification")
+                     .arg(MBF_ENCAPSULATED_INTERFACE_TRANSPORT, 2, 10, QChar('0'))
+                     .arg(MBF_MEI_READ_DEVICE_ID, 2, 10, QChar('0')));
     cmb->setCurrentIndex(2);
 
     cmb = ui->cmbDiagnSubfunction;
@@ -345,6 +361,11 @@ mbClientMessageParams mbClientDialogScannerRequest::getCurrentFunc() const
         func.setFileRecords(getCurrentFileRecords());
     }
         break;
+    case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
+        func.setFunction(funcNum);
+        func.setDeviceId(static_cast<uint8_t>(ui->spDeviceId->value()));
+        func.setObjectId(static_cast<uint8_t>(ui->spObjectId->value()));
+        break;
     }
     return func;
 }
@@ -383,6 +404,10 @@ void mbClientDialogScannerRequest::setCurrentFunc(const mbClientMessageParams &f
     case MBF_READ_FILE_RECORD:
     case MBF_WRITE_FILE_RECORD:
         setCurrentFileRecords(f.fileRecords());
+        break;
+    case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
+        ui->spDeviceId->setValue(f.deviceId());
+        ui->spObjectId->setValue(f.objectId());
         break;
     default:
         return;
@@ -432,6 +457,9 @@ void mbClientDialogScannerRequest::setCurrentFuncNum(uint8_t funcNum)
     case MBF_READ_FILE_RECORD:
     case MBF_WRITE_FILE_RECORD:
         ui->swFuncParams->setCurrentWidget(ui->pgFileRecord);
+        break;
+    case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
+        ui->swFuncParams->setCurrentWidget(ui->pgReadDeviceId);
         break;
     default:
         ui->swFuncParams->setCurrentWidget(ui->pgEmpty);

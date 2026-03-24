@@ -292,6 +292,9 @@ void mbClientScannerThread::run()
                     case MBF_READ_FIFO_QUEUE:
                         status = clientPort->readFIFOQueue(static_cast<uint8_t>(unit), f.offset(), &regdummy[1], &regdummy[0]);
                         break;
+                    case MBF_ENCAPSULATED_INTERFACE_TRANSPORT:
+                        status = clientPort->readDeviceIdentification(static_cast<uint8_t>(unit), f.deviceId(), f.objectId(), &dummy[1], &dummy[0]);
+                        break;
                     }
 
                     if (Modbus::StatusIsProcessing(status))
