@@ -348,7 +348,7 @@
           </property>
           <property name="icon">
            <iconset resource="../../../core/gui/core_rsc.qrc">
-            <normaloff>:/core/icons/remove.png</normaloff>:/core/icons/remove.png</iconset>
+            <normaloff>:/core/icons/minus.ico</normaloff>:/core/icons/minus.ico</iconset>
           </property>
          </widget>
         </item>

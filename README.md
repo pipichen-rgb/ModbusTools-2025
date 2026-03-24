@@ -2,17 +2,12 @@
 
 ## Overview
 
-ModbusTools are cross-platform (Windows, Linux) Modbus simulator tools (client and server) with GUI
-to work with standard Modbus Protocol. 
-Modbus Tools are a free, open-source  tools with a simple user interface written in C++/Qt. 
-It implements TCP, RTU and ASCII versions of Modbus Protocol.
+ModbusTools are cross-platform (Windows, Linux) GUI simulators (client/server) that support 
+TCP, UDP, RTU, ASCII, RTU/ASCII over TCP/UDP Modbus protocol types. 
+Modbus tools are a free, open-source  tools with a simple user interface written in C++/Qt. 
 
-### *New in version 0.4*:
+Supported Modbus functions:
 
-*From now server application allows you to create program logic for the Modbus device simulator 
-using your favorite Python programming language.*
-
-Software implements such Modbus functions as:
 * `1 ` (`0x01`) - `READ_COILS`
 * `2 ` (`0x02`) - `READ_DISCRETE_INPUTS`
 * `3 ` (`0x03`) - `READ_HOLDING_REGISTERS`
@@ -20,11 +15,18 @@ Software implements such Modbus functions as:
 * `5 ` (`0x05`) - `WRITE_SINGLE_COIL`
 * `6 ` (`0x06`) - `WRITE_SINGLE_REGISTER`
 * `7 ` (`0x07`) - `READ_EXCEPTION_STATUS`
+* `8 ` (`0x08`) - `DIAGNOSTICS` (v0.5+)
+* `11` (`0x0B`) - `GET_COMM_EVENT_COUNTER` (v0.5+)
+* `12` (`0x0C`) - `GET_COMM_EVENT_LOG` (v0.5+)
 * `15` (`0x0F`) - `WRITE_MULTIPLE_COILS`
 * `16` (`0x10`) - `WRITE_MULTIPLE_REGISTERS`
-* `17` (`0x11`) - `REPORT_SERVER_ID` (since v0.4)
-* `22` (`0x16`) - `MASK_WRITE_REGISTER` (since v0.3)
+* `17` (`0x11`) - `REPORT_SERVER_ID` (v0.4+)
+* `20` (`0x14`) - `READ_FILE_RECORD` (v0.5+)
+* `21` (`0x15`) - `WRITE_FILE_RECORD` (v0.5+)
+* `22` (`0x16`) - `MASK_WRITE_REGISTER` (v0.3+)
 * `23` (`0x17`) - `READ_WRITE_MULTIPLE_REGISTERS` (since v0.3)
+* `24` (`0x18`) - `READ_FIFO_QUEUE` (v0.5+)
+* `43/14` (`0x2B/0x0E`) - `READ_DEVICE_ID` (v0.5+)
 
 ModbusTools work with Qt Framework version 5 (5.8 or later).
 It based on `ModbusLib` cross platform library project:
@@ -109,7 +111,29 @@ to the specified port with unit address (e.g. `unit=0` for broadcast request).
 It works in parallel with regular Modbus application messages and 
 can be seen in LogView as regular Modbus message as well.
 
-### Scanner window (since v0.3)
+__*New in version 0.5*__:
+
+`SendMessage` window contains list with predefined functions
+with parameters that can be periodically sent to the server.
+
+### Send Bytes window (v0.5+)
+
+This is a new tool for Modbus client that provides abillity to send
+any byte sequence to the server which can be non standard sequence.
+This tool can be useful for the server that provides non standard 
+behavior or to test server's response for some byte sequence.
+
+![](./doc/images/client_sendbytes_window.png)
+
+This window can be opened using menu `Tools->Send Bytes`.
+User can send message to the predefined port.
+It works in parallel with regular Modbus application messages and 
+can be seen in LogView as regular Modbus message as well.
+
+`SendBytes` window contains list with predefined byte sequences
+that can be periodically sent to the server.
+
+### Scanner window (v0.3+)
 
 `Scanner` tool window is intended to scan Modbus network to determine which device 
 with current settings are present in the network.
@@ -124,6 +148,12 @@ which is called using `...` button in `Request` field.
 There is a list of found devices in central widget.
 Found devices can be add to the current project:
 button `To Project` add selected devices, `All To Project` - all devices will be added to the project.
+
+__*New in version 0.5*__:
+
+`Scanner` window contains special tab `Functions`, that shows 
+result of every request function, so it can be used to scan device(s)
+for specific function or function parameter support.
 
 ## About Modbus Server
 
@@ -144,7 +174,7 @@ Device contains settings for a single device (such as Modbus Unit Address, memor
 The DataViewItem contains a single data unit to be read/write from the device and has many formats to 
 represent the current data. Action provides simulation capabilities (automatic change of device memory values).
 
-### Scripting using Python (since v0.4)
+### Scripting using Python (v0.4+)
 
 Since v0.4 version 'server' application allows to extend logic of your Modbus device 
 simulator using one the most popular programming language - Python.

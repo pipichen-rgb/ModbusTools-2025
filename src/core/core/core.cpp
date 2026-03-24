@@ -75,7 +75,7 @@ void coreMessageHandler(QtMsgType type, const QMessageLogContext &context, const
 }
 
 mbCore::Strings::Strings() :
-    settings_organization   (QStringLiteral("ModbusTools"       )),
+    settings_organization   (QStringLiteral("mbtools"           )),
     settings_lastProject    (QStringLiteral("lastProject"       )),
     settings_logFlags       (QStringLiteral("Log.Flags"         )),
     settings_useTimestamp   (QStringLiteral("Log.UseTimestamp"  )),

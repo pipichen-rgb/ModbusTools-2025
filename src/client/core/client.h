@@ -46,7 +46,6 @@ public:
     {
         const QString settings_application;
         const QString default_client;
-        const QString default_conf_file;
         const QString GUID;
         Strings();
         static const Strings &instance();

@@ -45,9 +45,9 @@ class mbServer : public mbCore
 public:
     struct Strings : mbCore::Strings
     {
-        const QString GUID;
         const QString settings_application;
         const QString default_server;
+        const QString GUID;
 
         const QString settings_scriptEnable         ;
         const QString settings_scriptUseOptimization;

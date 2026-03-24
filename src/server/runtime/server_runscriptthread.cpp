@@ -106,7 +106,7 @@ void mbServerRunScriptThread::run()
     QEventLoop eloop;
     mbCoreFileManager *fileManager = mbServer::global()->fileManager();
 
-    const QString prefix = QString("ModbusTools.Server.%1.%2").arg(getProcessIdString(), m_device->name());
+    const QString prefix = QString("mbtools.server.%1.%2").arg(getProcessIdString(), m_device->name());
 
     const QString sMemDev = prefix+QStringLiteral(".device");
     const QString sMemPy  = prefix+QStringLiteral(".python");

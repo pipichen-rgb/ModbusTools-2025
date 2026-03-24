@@ -214,7 +214,14 @@ List of changes of new v0.4 version of ModbusTools:
     * `RTU` over `TCP`
     * `ASCII` over `TCP`
     * `RTU` over `UDP`
-    * `ASCII` over `UDP` 
-* Added `SendBytes`-tool for Modbus client
-* Updated `Send Message` dialog for Modbus client
+    * `ASCII` over `UDP`
+* Added support for `FC08`, `FC11`, `FC12`, `FC20`, `FC21`, `FC24`, `FC43/14`
+* Added `SendBytes`-tool for Modbus client ((+ predefined message list))
+* Updated `Send Message` dialog for Modbus client (added predefined message list)
 * Updated `Scanner` dialog for Modbus client (added function support scanning)
+* Added `LogView` message category colorization
+* Added statistics for Port/Device of `mbclient`/`mbserver`
+* Renamed `ByteOrder` param into `SwapBytes`
+* Renamed project file extensions `pjc`/`pjs` into `mbc`/`mbs`
+* Renamed `core`/`client`/`server` into `mbcore`/`mbclient`/`mbserver`
+* Added cmake option to separate client and server compilation
