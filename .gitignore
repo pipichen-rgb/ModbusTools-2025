@@ -14,3 +14,6 @@ TODO
 __pycache__/
 *.py[cod]
 *$py.class
+
+# CMake build directories
+/build*
