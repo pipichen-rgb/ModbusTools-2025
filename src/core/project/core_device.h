@@ -30,12 +30,12 @@
 
 class mbCoreProject;
 
-class MB_EXPORT mbCoreDevice : public QObject
+class MBTOOLS_EXPORT mbCoreDevice : public QObject
 {
     Q_OBJECT
 
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString name                     ;
         const QString maxReadCoils             ;
@@ -55,7 +55,7 @@ public:
         static const Strings &instance();
     };
 
-    struct MB_EXPORT Defaults
+    struct MBTOOLS_EXPORT Defaults
     {
         const QString              name                     ;
         const uint16_t             maxReadCoils             ;
@@ -76,7 +76,7 @@ public:
     };
 
 public: // statistics
-    struct MB_EXPORT CoreStatistics : public mb::BaseStatistics
+    struct MBTOOLS_EXPORT CoreStatistics : public mb::BaseStatistics
     {
         quint32 countBadIllegalFunction                   ;
         quint32 countBadIllegalDataAddress                ;

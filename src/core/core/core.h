@@ -44,12 +44,12 @@ class mbCoreRuntime;
 
 Q_DECLARE_METATYPE(mb::LogFlag)
 
-class MB_EXPORT mbCore : public mbCoreBase
+class MBTOOLS_EXPORT mbCore : public mbCoreBase
 {
     Q_OBJECT
 
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString settings_organization   ;
         const QString settings_lastProject    ;
@@ -62,7 +62,7 @@ public:
         static const Strings &instance();
     };
 
-    struct MB_EXPORT Defaults
+    struct MBTOOLS_EXPORT Defaults
     {
         const mb::LogFlags        settings_logFlags       ;
         const bool                settings_useTimestamp   ;

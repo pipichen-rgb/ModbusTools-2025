@@ -27,7 +27,7 @@
 
 #include <mbcore.h>
 
-class MB_EXPORT mbCoreDataViewDelegate : public QStyledItemDelegate
+class MBTOOLS_EXPORT mbCoreDataViewDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 public:

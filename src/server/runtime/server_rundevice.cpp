@@ -629,6 +629,23 @@ Modbus::StatusCode mbServerRunDevice::readWriteMultipleRegisters(uint8_t unit, u
     }
 }
 
+Modbus::StatusCode mbServerRunDevice::readFIFOQueue(uint8_t unit, uint16_t fifoadr, uint16_t *values, uint16_t *count)
+{
+    if (isBroadcast(unit))
+    {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
+        return Modbus::Status_Good;
+    }
+    else
+    {
+        mbServerDevice *device = this->device(unit);
+        if (!device)
+            return Modbus::Status_BadGatewayPathUnavailable;
+        CHECK_DELAY
+        return device->readFIFOQueue(fifoadr, values, count);
+    }
+}
+
 Modbus::StatusCode mbServerRunDevice::readDeviceIdentification(uint8_t unit, uint8_t readDeviceId, uint8_t objectId, void *data, uint8_t *dataSize, uint8_t *numberOfObjects, uint8_t *conformityLevel, bool *moreFollows, uint8_t *nextObjectId)
 {
     if (isBroadcast(unit))

@@ -12,7 +12,7 @@ class mbCoreDialogValueList : public mbCoreDialogBase
     Q_OBJECT
 
 public:
-    struct MB_EXPORT Strings : public mbCoreDialogBase::Strings
+    struct MBTOOLS_EXPORT Strings : public mbCoreDialogBase::Strings
     {
         const QString title;
         const QString cachePrefix;

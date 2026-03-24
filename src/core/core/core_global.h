@@ -32,34 +32,34 @@ class mbCoreDevice;
 
 namespace mb {
 
-MB_EXPORT MBSETTINGS parseExtendedAttributesStr(const QString &str);
+MBTOOLS_EXPORT MBSETTINGS parseExtendedAttributesStr(const QString &str);
 
 /// \details Return list of baud rates
-MB_EXPORT QVariantList availableBaudRate();
+MBTOOLS_EXPORT QVariantList availableBaudRate();
 
 /// \details Return list of data bits
-MB_EXPORT QVariantList availableDataBits();
+MBTOOLS_EXPORT QVariantList availableDataBits();
 
 /// \details Return list of `Parity` values
-MB_EXPORT QVariantList availableParity();
+MBTOOLS_EXPORT QVariantList availableParity();
 
 /// \details Return list of `StopBits` values
-MB_EXPORT QVariantList availableStopBits();
+MBTOOLS_EXPORT QVariantList availableStopBits();
 
 /// \details Return list of `FlowControl` values
-MB_EXPORT QVariantList availableFlowControl();
+MBTOOLS_EXPORT QVariantList availableFlowControl();
 
 /// \details Return processed byte order counting device setting `SwapBytes`
-MB_EXPORT mb::SwapData getSwapBytes(mbCoreDevice *device, mb::SwapData swapBytes);
+MBTOOLS_EXPORT mb::SwapData getSwapBytes(mbCoreDevice *device, mb::SwapData swapBytes);
 
 /// \details Return processed register order counting device setting `RegisterOrder`
-MB_EXPORT mb::RegisterOrder getRegisterOrder(mbCoreDevice *device, mb::RegisterOrder registerOrder);
+MBTOOLS_EXPORT mb::RegisterOrder getRegisterOrder(mbCoreDevice *device, mb::RegisterOrder registerOrder);
 
 /// \details Fill Modbus ProtocolType combo box
-MB_EXPORT void fillProtocolTypeComboBox(QComboBox *cmb);
+MBTOOLS_EXPORT void fillProtocolTypeComboBox(QComboBox *cmb);
 
 /// \details Fill digital format combo box
-MB_EXPORT void fillDigitalFormatComboBox(QComboBox *cmb);
+MBTOOLS_EXPORT void fillDigitalFormatComboBox(QComboBox *cmb);
 
 
 } // namespace mb

@@ -27,7 +27,7 @@
 
 #include "mbcore.h"
 
-class MB_EXPORT mbCoreTask : public QObject
+class MBTOOLS_EXPORT mbCoreTask : public QObject
 {
     Q_OBJECT
     

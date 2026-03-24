@@ -10,12 +10,12 @@ class mbCoreWidgetSettingsView;
 class mbCoreWidgetSettingsDataView;
 class mbCoreWidgetSettingsLog;
 
-class MB_EXPORT mbCoreDialogSettings : public mbCoreDialogBase
+class MBTOOLS_EXPORT mbCoreDialogSettings : public mbCoreDialogBase
 {
     Q_OBJECT
 
 public:
-    struct MB_EXPORT Strings : public mbCoreDialogBase::Strings
+    struct MBTOOLS_EXPORT Strings : public mbCoreDialogBase::Strings
     {
         const QString title;
         const QString cachePrefix;

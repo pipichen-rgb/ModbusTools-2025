@@ -56,10 +56,10 @@ const mbServerDevice::Strings &mbServerDevice::Strings::instance()
 }
 
 mbServerDevice::Defaults::Defaults() :
-    maxCount0x(MB_MEMORY_MAX_COUNT),
-    maxCount1x(MB_MEMORY_MAX_COUNT),
-    maxCount3x(MB_MEMORY_MAX_COUNT),
-    maxCount4x(MB_MEMORY_MAX_COUNT),
+    maxCount0x(MBTOOLS_MEMORY_MAX_COUNT),
+    maxCount1x(MBTOOLS_MEMORY_MAX_COUNT),
+    maxCount3x(MBTOOLS_MEMORY_MAX_COUNT),
+    maxCount4x(MBTOOLS_MEMORY_MAX_COUNT),
     count0x(65536),
     count1x(65536),
     count3x(65536),
@@ -1366,6 +1366,18 @@ Modbus::StatusCode mbServerDevice::readWriteMultipleRegisters(uint16_t readOffse
         }
     }
     endRequest(r, err);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::readFIFOQueue(uint16_t /*fifoadr*/, uint16_t *values, uint16_t *count)
+{
+    Modbus::StatusCode r = Modbus::Status_Good;
+    beginRequest();
+    int c = static_cast<uint16_t>(mb::rand()) % (MB_READ_FIFO_QUEUE_MAX+1);
+    for (int i = 0; i < c; ++i)
+        values[i] = static_cast<uint16_t>(mb::rand());
+    *count = static_cast<uint16_t>(c);
+    endRequest(r);
     return r;
 }
 

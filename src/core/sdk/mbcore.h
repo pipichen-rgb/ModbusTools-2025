@@ -42,6 +42,7 @@
 
 #define MBTOOLS_PRODUCT_CODE MBTOOLS_VERSION_STR
 
+#include <stdint.h>
 #include <typeinfo>
 
 #include <QMetaEnum>
@@ -53,20 +54,22 @@
 #include <QVariant>
 #include <QAtomicInt>
 
-#if defined(MB_EXPORTS) && defined(Q_DECL_EXPORT)
-#define MB_EXPORT Q_DECL_EXPORT
+#if defined(MBTOOLS_EXPORTS) && defined(Q_DECL_EXPORT)
+#define MBTOOLS_EXPORT Q_DECL_EXPORT
 #elif defined(Q_DECL_IMPORT)
-#define MB_EXPORT Q_DECL_IMPORT
+#define MBTOOLS_EXPORT Q_DECL_IMPORT
 #else
-#define MB_EXPORT
+#define MBTOOLS_EXPORT
 #endif
+
+#define MBTOOLS_RAND_MAX RAND_MAX
 
 #include <ModbusQt.h>
 
 #include "mbcore_sharedpointer.h"
 
-#define MB_MEMORY_MAX_COUNT 65536
-#define MB_MEMORY_SIZEOF ((MB_MEMORY_MAX_COUNT)*2)
+#define MBTOOLS_MEMORY_MAX_COUNT 65536
+#define MBTOOLS_MEMORY_SIZEOF ((MBTOOLS_MEMORY_MAX_COUNT)*2)
 
 extern QString MBTOOLS_VERSION_QSTRING;
 
@@ -77,6 +80,8 @@ typedef QMap<int, QVariant> MBPARAMS;
 namespace mb
 {
 Q_NAMESPACE
+
+int rand();
 
 typedef QAtomicInt RefCount_t;
 
@@ -289,15 +294,15 @@ inline EnumType enumValue(const QVariant& value)
 }
 
 #define MB_ENUM_DECL_EXPORT(type)                                           \
-MB_EXPORT int enum##type##KeyCount();                                       \
-MB_EXPORT QStringList enum##type##KeyList();                                \
-MB_EXPORT QString enum##type##Key(type value);                              \
-MB_EXPORT QString enum##type##KeyByIndex(int index);                        \
-MB_EXPORT QString enum##type##Keys(int value);                              \
-MB_EXPORT type enum##type##Value(const QString& key, bool* ok = nullptr);   \
-MB_EXPORT type enum##type##Value(const QVariant& value, bool* ok = nullptr);\
-MB_EXPORT type enum##type##Value(const QVariant& value, type defaultValue); \
-MB_EXPORT type enum##type##ValueByIndex(int index);
+MBTOOLS_EXPORT int enum##type##KeyCount();                                       \
+MBTOOLS_EXPORT QStringList enum##type##KeyList();                                \
+MBTOOLS_EXPORT QString enum##type##Key(type value);                              \
+MBTOOLS_EXPORT QString enum##type##KeyByIndex(int index);                        \
+MBTOOLS_EXPORT QString enum##type##Keys(int value);                              \
+MBTOOLS_EXPORT type enum##type##Value(const QString& key, bool* ok = nullptr);   \
+MBTOOLS_EXPORT type enum##type##Value(const QVariant& value, bool* ok = nullptr);\
+MBTOOLS_EXPORT type enum##type##Value(const QVariant& value, type defaultValue); \
+MBTOOLS_EXPORT type enum##type##ValueByIndex(int index);
 
 enum StatusCode
 {
@@ -343,7 +348,7 @@ enum DataType
 Q_ENUM_NS(DataType)
 MB_ENUM_DECL_EXPORT(DataType)
 
-MB_EXPORT void processMinMax(DataType dataType, QVariant &min, QVariant &max);
+MBTOOLS_EXPORT void processMinMax(DataType dataType, QVariant &min, QVariant &max);
 
 /*enum AddressType
 {
@@ -421,9 +426,9 @@ enum RegisterOrder
 Q_ENUM_NS(RegisterOrder)
 MB_ENUM_DECL_EXPORT(RegisterOrder)
 
-MB_EXPORT RegisterOrder toRegisterOrder(const QString &s, bool *ok = nullptr);
-MB_EXPORT RegisterOrder toRegisterOrder(const QVariant &v, bool *ok = nullptr);
-MB_EXPORT RegisterOrder toRegisterOrder(const QVariant &v, RegisterOrder defaultValue);
+MBTOOLS_EXPORT RegisterOrder toRegisterOrder(const QString &s, bool *ok = nullptr);
+MBTOOLS_EXPORT RegisterOrder toRegisterOrder(const QVariant &v, bool *ok = nullptr);
+MBTOOLS_EXPORT RegisterOrder toRegisterOrder(const QVariant &v, RegisterOrder defaultValue);
 inline QString toString(RegisterOrder order) { return enumRegisterOrderKey(order); }
 inline SwapData toSwapData(RegisterOrder order) { if (order == R3R2R1R0 || order == R1R0R3R2) return SwapYes; return SwapNo; }
 
@@ -438,7 +443,7 @@ MB_ENUM_DECL_EXPORT(StringLengthType)
 
 typedef QByteArray StringEncoding;
 
-struct MB_EXPORT Defaults
+struct MBTOOLS_EXPORT Defaults
 {
     const QString default_string_value;
     const StringEncoding stringEncoding;
@@ -447,7 +452,7 @@ struct MB_EXPORT Defaults
     static const Defaults &instance();
 };
 
-struct MB_EXPORT Strings
+struct MBTOOLS_EXPORT Strings
 {
     const QString ReadCoils                              ;
     const QString ReadDiscreteInputs                     ;
@@ -496,7 +501,7 @@ struct MB_EXPORT Strings
     static const Strings &instance();
 };
 
-struct MB_EXPORT BaseStatistics
+struct MBTOOLS_EXPORT BaseStatistics
 {
     mb::Timestamp_t     sinceTimestamp      ;
     Modbus::StatusCode  lastStatus          ;
@@ -515,7 +520,7 @@ struct MB_EXPORT BaseStatistics
     virtual ~BaseStatistics() = default;
 };
 
-MB_EXPORT StringEncoding toStringEncoding(const QString &s);
+MBTOOLS_EXPORT StringEncoding toStringEncoding(const QString &s);
 inline StringEncoding toStringEncoding(const QString &s, bool *ok) { *ok = true; return toStringEncoding(s); }
 inline StringEncoding toStringEncoding(const QVariant &v, bool *ok) { return toStringEncoding(v.toString(), ok); }
 
@@ -542,13 +547,13 @@ constexpr mb::DataType dataTypeFromT()
            static_cast<mb::DataType>(-1);
 }
 // size of data type in bytes
-MB_EXPORT unsigned int sizeOfDataType(mb::DataType dataType);
+MBTOOLS_EXPORT unsigned int sizeOfDataType(mb::DataType dataType);
 
 // DataType to QVariant::Type converter function
-MB_EXPORT QVariant::Type toQVariantType(mb::DataType dataType);
+MBTOOLS_EXPORT QVariant::Type toQVariantType(mb::DataType dataType);
 
 // size of format type value in bytes
-MB_EXPORT size_t sizeofFormat(mb::Format format);
+MBTOOLS_EXPORT size_t sizeofFormat(mb::Format format);
 
 // size of format type value in regs
 inline size_t sizeFormat(mb::Format format) { return sizeofFormat(format)/sizeof(short); }
@@ -563,19 +568,19 @@ inline int toInt(const mb::Address& address) { return address.toInt(); }
 inline mb::Address toAddress(const QString& address) { return Modbus::addressFromQString(address); }
 
 // convert struct 'Address' to string representation of address
-MB_EXPORT QString toString(const mb::Address& address, mb::AddressNotation notation = mb::Address::Notation_Modbus);
+MBTOOLS_EXPORT QString toString(const mb::Address& address, mb::AddressNotation notation = mb::Address::Notation_Modbus);
 
 // convert enum 'AddressNotation' to string representation of address
-MB_EXPORT QString toString(mb::AddressNotation notation);
+MBTOOLS_EXPORT QString toString(mb::AddressNotation notation);
 
 // convert string representation of address to struct 'Address'
-MB_EXPORT mb::AddressNotation toAddressNotation(const QString& address, bool *ok = nullptr);
+MBTOOLS_EXPORT mb::AddressNotation toAddressNotation(const QString& address, bool *ok = nullptr);
 
 // convert Variant representation of address to struct 'Address'
-MB_EXPORT mb::AddressNotation toAddressNotation(const QVariant& address, bool *ok = nullptr);
+MBTOOLS_EXPORT mb::AddressNotation toAddressNotation(const QVariant& address, bool *ok = nullptr);
 
 // convert enum 'AddressNotation' to fine string representation of address
-MB_EXPORT QString toFineString(mb::AddressNotation notation);
+MBTOOLS_EXPORT QString toFineString(mb::AddressNotation notation);
 
 // convert string representation of format to enumeration 'Format'
 inline mb::Format toFormat(const QString& format, bool *ok = nullptr) { return enumValueTypeStr<mb::Format>(format, ok); }
@@ -583,48 +588,48 @@ inline mb::Format toFormat(const QString& format, bool *ok = nullptr) { return e
 // convert enumeration 'Format' to string representation of format
 inline QString toString(mb::Format format) { return enumKey<mb::Format>(format); }
 
-MB_EXPORT QString resolveEscapeSequnces(const QString &src);
+MBTOOLS_EXPORT QString resolveEscapeSequnces(const QString &src);
 
-MB_EXPORT QString makeEscapeSequnces(const QString &src);
+MBTOOLS_EXPORT QString makeEscapeSequnces(const QString &src);
 
-MB_EXPORT bool isDefaultStringValue(const QString &value);
+MBTOOLS_EXPORT bool isDefaultStringValue(const QString &value);
 
 // convert enum 'Modbus::StatusCode' to string representation
-MB_EXPORT QString toString(Modbus::StatusCode status);
+MBTOOLS_EXPORT QString toString(Modbus::StatusCode status);
 
 // convert enum 'StatusCode' to string representation
-MB_EXPORT QString toString(mb::StatusCode status);
+MBTOOLS_EXPORT QString toString(mb::StatusCode status);
 
 // convert enum 'LogFlag' to string representation
-MB_EXPORT QString toString(mb::LogFlag flag);
+MBTOOLS_EXPORT QString toString(mb::LogFlag flag);
 
 // return current timestamp
-MB_EXPORT Timestamp_t currentTimestamp();
+MBTOOLS_EXPORT Timestamp_t currentTimestamp();
 
 // convert integer timestamp to string representation
-MB_EXPORT QString toString(mb::Timestamp_t timestamp);
+MBTOOLS_EXPORT QString toString(mb::Timestamp_t timestamp);
 
 // convert string representation to Modbus function number
-MB_EXPORT uint8_t ModbusFunction(const QString &s);
+MBTOOLS_EXPORT uint8_t ModbusFunction(const QString &s);
 
 // convert Modbus diagnostic function number to string representation
-MB_EXPORT QString ModbusFunctionString(uint8_t func);
+MBTOOLS_EXPORT QString ModbusFunctionString(uint8_t func);
 
 // convert string representation to Modbus diagnostic subfunction number
-MB_EXPORT uint16_t ModbusDiagnSubfunction(const QString &s);
+MBTOOLS_EXPORT uint16_t ModbusDiagnSubfunction(const QString &s);
 
 // convert Modbus diagnostic subfunction number to string representation
-MB_EXPORT QString ModbusDiagnSubfunctionString(uint16_t func);
+MBTOOLS_EXPORT QString ModbusDiagnSubfunctionString(uint16_t func);
 
-MB_EXPORT QString toModbusMemoryTypeString(Modbus::MemoryType mem, mb::AddressNotation notation = mb::Address::Notation_Modbus);
+MBTOOLS_EXPORT QString toModbusMemoryTypeString(Modbus::MemoryType mem, mb::AddressNotation notation = mb::Address::Notation_Modbus);
 
-MB_EXPORT Modbus::MemoryType toModbusMemoryType(const QString &mem);
+MBTOOLS_EXPORT Modbus::MemoryType toModbusMemoryType(const QString &mem);
 
-MB_EXPORT QString toUnitsString(const QList<quint8> units);
+MBTOOLS_EXPORT QString toUnitsString(const QList<quint8> units);
 
-MB_EXPORT QList<quint8> toUnitsList(const QString &unitsStr, bool *ok = nullptr);
+MBTOOLS_EXPORT QList<quint8> toUnitsList(const QString &unitsStr, bool *ok = nullptr);
 
-MB_EXPORT void changeByteOrder(void *data, int len);
+MBTOOLS_EXPORT void changeByteOrder(void *data, int len);
 
 inline void swapRegisters32(void *buff)
 {
@@ -670,7 +675,7 @@ inline void swapRegisters64(void *buff, RegisterOrder order)
     }
 }
 
-MB_EXPORT QByteArray toByteArray(const QVariant &v,
+MBTOOLS_EXPORT QByteArray toByteArray(const QVariant &v,
                                  mb::Format format,
                                  Modbus::MemoryType memoryType,
                                  mb::SwapData swapBytes,
@@ -681,7 +686,7 @@ MB_EXPORT QByteArray toByteArray(const QVariant &v,
                                  const QString &byteArraySeparator,
                                  int variableLength);
 
-MB_EXPORT QVariant toVariant(const QByteArray &v,
+MBTOOLS_EXPORT QVariant toVariant(const QByteArray &v,
                              mb::Format format,
                              Modbus::MemoryType memoryType,
                              mb::SwapData swapBytes,
@@ -692,8 +697,8 @@ MB_EXPORT QVariant toVariant(const QByteArray &v,
                              const QString &byteArraySeparator,
                              int variableLength);
 
-MB_EXPORT QString escapeSequence(const QString &src);
-MB_EXPORT QString fromEscapeSequence(const QString &esc);
+MBTOOLS_EXPORT QString escapeSequence(const QString &src);
+MBTOOLS_EXPORT QString fromEscapeSequence(const QString &esc);
 
 template<class T>
 inline QString toBinString(T value) { return Modbus::toBinString<QString, T>(value); }
@@ -707,13 +712,13 @@ inline QString toHexString(T value) { return Modbus::toHexString<QString, T>(val
 template<class T>
 inline QString toDecString(T value) { return Modbus::toDecString<QString, T>(value); }
 
-MB_EXPORT Modbus::MemoryType memoryType(int index);
+MBTOOLS_EXPORT Modbus::MemoryType memoryType(int index);
 
-MB_EXPORT int memoryTypeIndex(Modbus::MemoryType type);
+MBTOOLS_EXPORT int memoryTypeIndex(Modbus::MemoryType type);
 
-MB_EXPORT void unite(MBSETTINGS &s1, const MBSETTINGS &s2);
+MBTOOLS_EXPORT void unite(MBSETTINGS &s1, const MBSETTINGS &s2);
 
-MB_EXPORT QString currentUser();
+MBTOOLS_EXPORT QString currentUser();
 
 inline void msleep(uint32_t msec) { Modbus::msleep(msec); }
 

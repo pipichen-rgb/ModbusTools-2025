@@ -34,11 +34,11 @@ class mbCoreDevice;
 class mbCoreDataView;
 class mbCoreTaskInfo;
 
-class MB_EXPORT mbCoreProject : public QObject
+class MBTOOLS_EXPORT mbCoreProject : public QObject
 {
     Q_OBJECT
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString name;
         const QString author;

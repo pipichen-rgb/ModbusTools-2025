@@ -30,7 +30,7 @@
 class mbCoreProject;
 class mbCoreRunTaskThread;
 
-class MB_EXPORT mbCoreRuntime : public QObject
+class MBTOOLS_EXPORT mbCoreRuntime : public QObject
 {
     Q_OBJECT
 public:

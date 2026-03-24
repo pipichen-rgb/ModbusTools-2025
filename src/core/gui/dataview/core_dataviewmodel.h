@@ -30,7 +30,7 @@
 class mbCoreDataView;
 class mbCoreDataViewItem;
 
-class MB_EXPORT mbCoreDataViewModel : public QAbstractTableModel
+class MBTOOLS_EXPORT mbCoreDataViewModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:

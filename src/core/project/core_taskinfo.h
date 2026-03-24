@@ -30,7 +30,7 @@
 class mbCoreProject;
 class mbCoreTaskFactory;
 
-class MB_EXPORT mbCoreTaskInfo
+class MBTOOLS_EXPORT mbCoreTaskInfo
 {
 public:
     mbCoreTaskInfo(const QString &type, mbCoreTaskFactory *factory);

@@ -36,7 +36,7 @@ class mbCoreStatisticsUi;
 class mbCorePortStatisticsUi;
 class mbCoreDeviceStatisticsUi;
 
-class MB_EXPORT mbCoreStatisticsManager : public QObject
+class MBTOOLS_EXPORT mbCoreStatisticsManager : public QObject
 {
     Q_OBJECT
 

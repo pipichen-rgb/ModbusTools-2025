@@ -159,7 +159,7 @@ if (WIN32)
 endif()
 
 add_library(${MBTOOLS_CORE_LIB_NAME} SHARED ${HEADERS} ${SOURCES} ${RESOURCES})
-target_compile_definitions(${MBTOOLS_CORE_LIB_NAME} PRIVATE QT_NO_KEYWORDS MB_EXPORTS)
+target_compile_definitions(${MBTOOLS_CORE_LIB_NAME} PRIVATE QT_NO_KEYWORDS MBTOOLS_EXPORTS)
 
 set_target_properties(
     ${MBTOOLS_CORE_LIB_NAME}

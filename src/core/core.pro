@@ -10,7 +10,7 @@ DESTDIR = ../../bin
 
 QT = core gui widgets help
 
-DEFINES += MB_EXPORTS
+DEFINES += MBTOOLS_EXPORTS
 
 INCLUDEPATH += . \
     ./../../modbus/src \

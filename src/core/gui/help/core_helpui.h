@@ -33,7 +33,7 @@ class mbCoreHelpUi : public QMainWindow
     Q_OBJECT
 
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString prefix;
         const QString wGeometry;

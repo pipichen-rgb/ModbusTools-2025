@@ -45,12 +45,12 @@ class mbCoreDataViewUi;
 class mbCoreStatisticsManager;
 class mbCoreStatisticsUi;
 
-class MB_EXPORT mbCoreWindowManager : public QObject
+class MBTOOLS_EXPORT mbCoreWindowManager : public QObject
 {
     Q_OBJECT
 
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString prefixViewMode;
         const QString prefixDataView;

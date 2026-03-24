@@ -32,7 +32,7 @@ class mbCoreProject;
 class mbCoreDataView;
 class mbCoreDataViewUi;
 
-class MB_EXPORT mbCoreDataViewManager : public QObject
+class MBTOOLS_EXPORT mbCoreDataViewManager : public QObject
 {
     Q_OBJECT
 

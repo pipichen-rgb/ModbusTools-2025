@@ -206,6 +206,12 @@ void mbClientSendMessageReadWriteMultipleRegistersWidget::fillParams(mbClientMes
     params.setData(m_txtWriteData->toPlainText());
 }
 
+void mbClientSendMessageReadWriteMultipleRegistersWidget::prepareToSend()
+{
+    m_readData.clear();
+    updateReadData();
+}
+
 void mbClientSendMessageReadWriteMultipleRegistersWidget::setParams(mbClientMessageParams &params)
 {
     bool isDataToWrite = false;

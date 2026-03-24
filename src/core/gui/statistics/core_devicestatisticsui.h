@@ -29,7 +29,7 @@ class QLineEdit;
 class QPlainTextEdit;
 class mbCoreDevice;
 
-class MB_EXPORT mbCoreDeviceStatisticsUi : public mbCoreStatisticsUi
+class MBTOOLS_EXPORT mbCoreDeviceStatisticsUi : public mbCoreStatisticsUi
 {
     Q_OBJECT
 public:

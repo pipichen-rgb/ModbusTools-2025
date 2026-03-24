@@ -44,10 +44,10 @@ class mbCoreDialogDataViewItem;
 class mbCoreDialogValueList;
 class mbCoreDialogEdit;
 
-class MB_EXPORT mbCoreDialogs
+class MBTOOLS_EXPORT mbCoreDialogs
 {
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString settings_lastDir;
         const QString settings_lastFilter;

@@ -30,10 +30,10 @@ class QSpinBox;
 class QComboBox;
 class QDialogButtonBox;
 
-class MB_EXPORT mbCoreDialogDevice : public mbCoreDialogEdit
+class MBTOOLS_EXPORT mbCoreDialogDevice : public mbCoreDialogEdit
 {
 public:
-    struct MB_EXPORT Strings : public mbCoreDialogEdit::Strings
+    struct MBTOOLS_EXPORT Strings : public mbCoreDialogEdit::Strings
     {
         const QString title;
         const QString cachePrefix;

@@ -190,6 +190,12 @@ void mbClientSendMessageReadDefaultWidget::setCachedSettings(const MBSETTINGS &s
     updateData();
 }
 
+void mbClientSendMessageReadDefaultWidget::prepareToSend()
+{
+    m_data.clear();
+    updateData();
+}
+
 void mbClientSendMessageReadDefaultWidget::setParams(mbClientMessageParams &params)
 {
     mbClientSendMessageDefaultWidget::setParams(params);

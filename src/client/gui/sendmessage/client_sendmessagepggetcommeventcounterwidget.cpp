@@ -76,6 +76,12 @@ void mbClientSendMessageGetCommEventCounterWidget::setCachedSettings(const MBSET
     it = m.find(m_prefix+s.count ); if (it != end) setCount(static_cast<uint16_t>(it.value().toInt()));
 }
 
+void mbClientSendMessageGetCommEventCounterWidget::prepareToSend()
+{
+    setStatus(0);
+    setCount(0);
+}
+
 void mbClientSendMessageGetCommEventCounterWidget::setParams(mbClientMessageParams &params)
 {
     setStatus(params.status());

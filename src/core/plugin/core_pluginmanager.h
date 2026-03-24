@@ -41,7 +41,7 @@ struct mbCorePluginInfo
     }
 };
 
-class MB_EXPORT mbCorePluginManager: public QObject
+class MBTOOLS_EXPORT mbCorePluginManager: public QObject
 {
     Q_OBJECT
 

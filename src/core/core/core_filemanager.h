@@ -9,7 +9,7 @@ class QSettings;
 
 #include "core.h"
 
-class MB_EXPORT mbCoreFileManager : public QObject
+class MBTOOLS_EXPORT mbCoreFileManager : public QObject
 {
     Q_OBJECT
 
@@ -27,7 +27,7 @@ public:
     };
 
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString dirname_mbtools  ;
         const QString dirname_project  ;

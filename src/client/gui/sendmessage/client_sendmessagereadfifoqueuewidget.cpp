@@ -101,6 +101,12 @@ void mbClientSendMessageReadFIFOQueueWidget::setCachedSettings(const MBSETTINGS 
     updateData();
 }
 
+void mbClientSendMessageReadFIFOQueueWidget::prepareToSend()
+{
+    m_data.clear();
+    updateData();
+}
+
 void mbClientSendMessageReadFIFOQueueWidget::fillParams(mbClientMessageParams &params) const
 {
     params.setOffset(getOffset());

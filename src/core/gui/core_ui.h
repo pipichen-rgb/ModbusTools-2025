@@ -52,12 +52,12 @@ namespace Ui {
 class mbCoreUi;
 }
 
-class MB_EXPORT mbCoreUi : public QMainWindow
+class MBTOOLS_EXPORT mbCoreUi : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString settings_useNameWithSettings;
         const QString settings_recentProjects;
@@ -67,7 +67,7 @@ public:
         static const Strings &instance();
     };
 
-    struct MB_EXPORT Defaults
+    struct MBTOOLS_EXPORT Defaults
     {
         const bool settings_useNameWithSettings;
         Defaults();

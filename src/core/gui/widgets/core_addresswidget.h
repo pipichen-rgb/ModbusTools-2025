@@ -6,7 +6,7 @@
 
 class QComboBox;
 
-class MB_EXPORT mbCoreAddressWidget : public QWidget
+class MBTOOLS_EXPORT mbCoreAddressWidget : public QWidget
 {
     Q_OBJECT
 public:

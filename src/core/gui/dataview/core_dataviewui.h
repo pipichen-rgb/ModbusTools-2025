@@ -34,7 +34,7 @@ class mbCoreDataViewItem;
 class mbCoreDataViewModel;
 class mbCoreDataViewDelegate;
 
-class MB_EXPORT mbCoreDataViewUi : public QWidget
+class MBTOOLS_EXPORT mbCoreDataViewUi : public QWidget
 {
     Q_OBJECT
 

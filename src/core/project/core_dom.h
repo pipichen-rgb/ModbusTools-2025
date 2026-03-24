@@ -33,7 +33,7 @@
 
 // Note: tagName values are supposed to be lowercase
 
-class MB_EXPORT mbCoreXmlStreamReader : public QXmlStreamReader
+class MBTOOLS_EXPORT mbCoreXmlStreamReader : public QXmlStreamReader
 {
 public:
     using QXmlStreamReader::QXmlStreamReader;
@@ -47,13 +47,13 @@ protected:
     QStringList m_warnings;
 };
 
-class MB_EXPORT mbCoreXmlStreamWriter : public QXmlStreamWriter
+class MBTOOLS_EXPORT mbCoreXmlStreamWriter : public QXmlStreamWriter
 {
 public:
     using QXmlStreamWriter::QXmlStreamWriter;
 };
 
-class MB_EXPORT mbCoreDom
+class MBTOOLS_EXPORT mbCoreDom
 {
 public:
     virtual ~mbCoreDom();
@@ -155,10 +155,10 @@ private:
 // ------------------------------------------------------ DATA VIEW ------------------------------------------------------
 // -----------------------------------------------------------------------------------------------------------------------
 
-class MB_EXPORT mbCoreDomDataViewItem : public mbCoreDom
+class MBTOOLS_EXPORT mbCoreDomDataViewItem : public mbCoreDom
 {
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString tagName;
         const QString device ;
@@ -191,10 +191,10 @@ private:
     MBSETTINGS m_settings;
 };
 
-class MB_EXPORT mbCoreDomDataView : public mbCoreDom
+class MBTOOLS_EXPORT mbCoreDomDataView : public mbCoreDom
 {
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString tagName;
         const QString name;
@@ -257,10 +257,10 @@ private:
 // -------------------------------------------------------- DEVICE -------------------------------------------------------
 // -----------------------------------------------------------------------------------------------------------------------
 
-class MB_EXPORT mbCoreDomDevice : public mbCoreDom
+class MBTOOLS_EXPORT mbCoreDomDevice : public mbCoreDom
 {
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString tagName;
 
@@ -302,10 +302,10 @@ private:
 // --------------------------------------------------------- PORT --------------------------------------------------------
 // -----------------------------------------------------------------------------------------------------------------------
 
-class MB_EXPORT mbCoreDomPort : public mbCoreDom
+class MBTOOLS_EXPORT mbCoreDomPort : public mbCoreDom
 {
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString tagName;
 
@@ -347,10 +347,10 @@ private:
 // --------------------------------------------------------- TASK --------------------------------------------------------
 // -----------------------------------------------------------------------------------------------------------------------
 
-class MB_EXPORT mbCoreDomTaskInfo : public mbCoreDom
+class MBTOOLS_EXPORT mbCoreDomTaskInfo : public mbCoreDom
 {
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString tagName;
         const QString name;
@@ -418,10 +418,10 @@ public:
     mbCoreDomTasks() : mbCoreDomItems<mbCoreDomTaskInfo>(QStringLiteral("tasks"), QStringLiteral("task")) {}
 };
 
-class MB_EXPORT mbCoreDomProject : public mbCoreDom
+class MBTOOLS_EXPORT mbCoreDomProject : public mbCoreDom
 {
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString tagName;
         const QString version;

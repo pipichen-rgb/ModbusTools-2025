@@ -31,12 +31,12 @@ class mbCoreDialogProject;
 
 class mbCoreProject;
 
-class MB_EXPORT mbCoreDialogProject : public mbCoreDialogEdit
+class MBTOOLS_EXPORT mbCoreDialogProject : public mbCoreDialogEdit
 {
     Q_OBJECT
 
 public:
-    struct MB_EXPORT Strings : public mbCoreDialogEdit::Strings
+    struct MBTOOLS_EXPORT Strings : public mbCoreDialogEdit::Strings
     {
         const QString title;
         const QString cachePrefix;

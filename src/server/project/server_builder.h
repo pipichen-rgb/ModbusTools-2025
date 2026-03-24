@@ -162,8 +162,8 @@ public:
 
 private:
     void importDomProject(mbCoreDomProject *dom) override;
-    BoolData_t toBoolData(const QString &str, int reserve = MB_MEMORY_MAX_COUNT);
-    UInt16Data_t toUInt16Data(const QString &str, int reserve = MB_MEMORY_MAX_COUNT);
+    BoolData_t toBoolData(const QString &str, int reserve = MBTOOLS_MEMORY_MAX_COUNT);
+    UInt16Data_t toUInt16Data(const QString &str, int reserve = MBTOOLS_MEMORY_MAX_COUNT);
     QString fromBoolData(const BoolData_t &data);
     QString fromUInt16Data(const UInt16Data_t &data);
 

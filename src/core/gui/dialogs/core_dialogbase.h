@@ -27,10 +27,10 @@
 
 #include <mbcore.h>
 
-class MB_EXPORT mbCoreDialogBase : public QDialog
+class MBTOOLS_EXPORT mbCoreDialogBase : public QDialog
 {
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString wGeometry;
         Strings();

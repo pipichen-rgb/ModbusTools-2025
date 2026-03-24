@@ -27,7 +27,7 @@
 
 #include <mbcore.h>
 
-class MB_EXPORT mbCoreStatisticsUi : public QWidget
+class MBTOOLS_EXPORT mbCoreStatisticsUi : public QWidget
 {
     Q_OBJECT
 public:

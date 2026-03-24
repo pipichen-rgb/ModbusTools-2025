@@ -29,7 +29,7 @@ class QWidget;
 
 #include "mbcore.h"
 
-class MB_EXPORT mbCoreBase : public QObject
+class MBTOOLS_EXPORT mbCoreBase : public QObject
 {
     Q_OBJECT
 

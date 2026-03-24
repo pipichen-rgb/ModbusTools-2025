@@ -35,7 +35,7 @@ class mbCoreProjectModel;
 class mbCoreProjectDelegate;
 class mbCoreProjectTreeView;
 
-class MB_EXPORT mbCoreProjectUi : public QWidget
+class MBTOOLS_EXPORT mbCoreProjectUi : public QWidget
 {
     Q_OBJECT
 public:

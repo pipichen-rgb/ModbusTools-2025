@@ -26,6 +26,7 @@ public:
 public:
     MBSETTINGS cachedSettings() const override;
     void setCachedSettings(const MBSETTINGS &settings) override;
+    void prepareToSend() override;
     void setParams(mbClientMessageParams &params) override;
 
 public:

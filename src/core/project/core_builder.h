@@ -46,11 +46,11 @@ class mbCoreDomTaskInfo;
 
 class DomDataViewItems;
 
-class MB_EXPORT mbCoreBuilder : public QObject
+class MBTOOLS_EXPORT mbCoreBuilder : public QObject
 {
     Q_OBJECT
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString dataViewPrefix;
         const QStringList dataViewAttrNames;

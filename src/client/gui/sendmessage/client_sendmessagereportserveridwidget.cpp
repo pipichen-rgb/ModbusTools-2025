@@ -79,6 +79,12 @@ void mbClientSendMessageReportServerIdWidget::setCachedSettings(const MBSETTINGS
     updateData();
 }
 
+void mbClientSendMessageReportServerIdWidget::prepareToSend()
+{
+    m_data.clear();
+    updateData();
+}
+
 void mbClientSendMessageReportServerIdWidget::setParams(mbClientMessageParams &params)
 {
     params.setFormat(format());

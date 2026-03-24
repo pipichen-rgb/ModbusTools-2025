@@ -32,12 +32,12 @@ class mbCoreProject;
 class mbCorePort;
 class mbCoreDevice;
 
-class MB_EXPORT mbCoreProjectModel : public QAbstractItemModel
+class MBTOOLS_EXPORT mbCoreProjectModel : public QAbstractItemModel
 {
     Q_OBJECT
 
 public:
-    struct MB_EXPORT Strings
+    struct MBTOOLS_EXPORT Strings
     {
         const QString mimeTypeDevice;
 

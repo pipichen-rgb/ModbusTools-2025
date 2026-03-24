@@ -141,6 +141,14 @@ void mbClientSendMessageGetCommEventLogWidget::setCachedSettings(const MBSETTING
     it = m.find(m_prefix+s.eventData   ); if (it != end) m_eventData = it.value().toByteArray();
 }
 
+void mbClientSendMessageGetCommEventLogWidget::prepareToSend()
+{
+    setStatus(0);
+    setEventCount(0);
+    setMessageCount(0);
+    m_tblEventLog->setRowCount(0);
+}
+
 void mbClientSendMessageGetCommEventLogWidget::setParams(mbClientMessageParams &params)
 {
     setStatus(params.status());

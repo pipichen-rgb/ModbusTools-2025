@@ -29,7 +29,7 @@
 
 class mbCoreTask;
 
-class MB_EXPORT mbCoreRunTaskThread : public QThread
+class MBTOOLS_EXPORT mbCoreRunTaskThread : public QThread
 {
 public:
     explicit mbCoreRunTaskThread(mbCoreTask *task, QObject *parent = nullptr);

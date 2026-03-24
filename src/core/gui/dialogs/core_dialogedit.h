@@ -25,7 +25,7 @@
 
 #include "core_dialogbase.h"
 
-class MB_EXPORT mbCoreDialogEdit : public mbCoreDialogBase
+class MBTOOLS_EXPORT mbCoreDialogEdit : public mbCoreDialogBase
 {
 public:
     using mbCoreDialogBase::mbCoreDialogBase;

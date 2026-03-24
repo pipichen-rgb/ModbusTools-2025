@@ -28,9 +28,24 @@
 #include <QDateTime>
 #include <QTextCodec>
 
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+#include <QRandomGenerator>
+#endif
+
 QString MBTOOLS_VERSION_QSTRING(MBTOOLS_VERSION_STR);
 
 namespace mb {
+
+
+int rand()
+{
+#if QT_VERSION >= QT_VERSION_CHECK(5, 10, 0)
+    return static_cast<int>(QRandomGenerator::global()->generate64() % (MBTOOLS_RAND_MAX + 1));
+#else
+    return qrand();
+#endif
+}
+
 
 #define MB_ENUM_DEF(type)                                                   \
 int enum##type##KeyCount()                                                  \

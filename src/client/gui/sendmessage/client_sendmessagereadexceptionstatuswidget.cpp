@@ -85,6 +85,12 @@ void mbClientSendMessageReadExceptionStatusWidget::setCachedSettings(const MBSET
     updateData();
 }
 
+void mbClientSendMessageReadExceptionStatusWidget::prepareToSend()
+{
+    m_data = 0;
+    updateData();
+}
+
 void mbClientSendMessageReadExceptionStatusWidget::setParams(mbClientMessageParams &params)
 {
     const auto digitalFormat = static_cast<mb::DigitalFormat>(m_cmbFormat->currentData().toInt());
