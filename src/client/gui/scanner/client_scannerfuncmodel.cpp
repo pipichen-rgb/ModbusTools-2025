@@ -75,14 +75,15 @@ QVariant mbClientScannerFuncModel::data(const QModelIndex &index, int role) cons
     return QVariant();
 }
 
-void mbClientScannerFuncModel::funcAdd(const QString &port, quint8 unit, const mbClientMessageParamsOLD &params, int status)
+void mbClientScannerFuncModel::funcAdd(const QString &port, quint8 unit, const mbClientMessageParams &params, int status)
 {
+    mbClientMessageConverter conv;
     int c = m_func.count();
     Item item;
     item.port = port;
     item.unit = unit;
-    item.func = params.func;
-    item.params = mb::saveClientMessageParams(params, false, false);
+    item.func = params.function();
+    item.params = conv.saveClientMessageParams(params, false, false);
     item.status = static_cast<Modbus::StatusCode>(status);
     beginInsertRows(QModelIndex(), c, c);
     m_func.append(item);

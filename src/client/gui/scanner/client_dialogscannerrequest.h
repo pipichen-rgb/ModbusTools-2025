@@ -25,6 +25,7 @@ public:
         const QString offset1       ;
         const QString offset2       ;
         const QString count2        ;
+        const QString fileRecords   ;
         const QString wGeometry     ;
         const QString wSplitterState;
 
@@ -53,13 +54,21 @@ private Q_SLOTS:
     void clearFuncs();
     void setCurrentFuncIndex(int i);
 
+    void addFileRecord();
+    void deleteFileRecord();
+    void moveUpFileRecord();
+    void moveDownFileRecord();
+    void clearFileRecords();
+
 private:
-    mbClientMessageParamsOLD getCurrentFunc() const;
-    void setCurrentFunc(const mbClientMessageParamsOLD &f);
+    mbClientMessageParams getCurrentFunc() const;
+    void setCurrentFunc(const mbClientMessageParams &f);
     uint8_t getCurrentFuncNum() const;
     uint16_t getCurrentDiagnSubfuncNum() const;
     void setCurrentFuncNum(uint8_t funcNum);
     void setCurrentDiagnSubfuncNum(uint16_t subfunc);
+    QVector<Modbus::FileRecord> getCurrentFileRecords() const;
+    void setCurrentFileRecords(const QVector<Modbus::FileRecord> &fileRecords);
 
 private:
     class Model : public QAbstractListModel
@@ -76,9 +85,9 @@ private:
         void setRequest(const mbClientScanner::Request_t &req);
 
     public:
-        mbClientMessageParamsOLD func(int i);
-        void addFunc(const mbClientMessageParamsOLD &f);
-        void modifyFunc(int i, const mbClientMessageParamsOLD &f);
+        mbClientMessageParams func(int i);
+        void addFunc(const mbClientMessageParams &f);
+        void modifyFunc(int i, const mbClientMessageParams &f);
         void deleteFunc(int i);
         void moveUpFunc(int i);
         void moveDownFunc(int i);

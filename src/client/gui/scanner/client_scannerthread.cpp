@@ -189,31 +189,31 @@ void mbClientScannerThread::run()
                 auto tmend = mb::currentTimestamp() + m_period;
                 while (m_ctrlRun)
                 {
-                    switch (f.func)
+                    switch (f.function())
                     {
                     case MBF_READ_COILS:
-                        status = clientPort->readCoils(static_cast<uint8_t>(unit), f.offset, f.count, dummy);
+                        status = clientPort->readCoils(static_cast<uint8_t>(unit), f.offset(), f.count(), dummy);
                         break;
                     case MBF_READ_DISCRETE_INPUTS:
-                        status = clientPort->readDiscreteInputs(static_cast<uint8_t>(unit), f.offset, f.count, dummy);
+                        status = clientPort->readDiscreteInputs(static_cast<uint8_t>(unit), f.offset(), f.count(), dummy);
                         break;
                     case MBF_READ_HOLDING_REGISTERS:
-                        status = clientPort->readHoldingRegisters(static_cast<uint8_t>(unit), f.offset, f.count, regdummy);
+                        status = clientPort->readHoldingRegisters(static_cast<uint8_t>(unit), f.offset(), f.count(), regdummy);
                         break;
                     case MBF_READ_INPUT_REGISTERS:
-                        status = clientPort->readInputRegisters(static_cast<uint8_t>(unit), f.offset, f.count, regdummy);
+                        status = clientPort->readInputRegisters(static_cast<uint8_t>(unit), f.offset(), f.count(), regdummy);
                         break;
                     case MBF_WRITE_SINGLE_COIL:
-                        status = clientPort->writeSingleCoil(static_cast<uint8_t>(unit), f.offset, 0);
+                        status = clientPort->writeSingleCoil(static_cast<uint8_t>(unit), f.offset(), 0);
                         break;
                     case MBF_WRITE_SINGLE_REGISTER:
-                        status = clientPort->writeSingleRegister(static_cast<uint8_t>(unit), f.offset, 0);
+                        status = clientPort->writeSingleRegister(static_cast<uint8_t>(unit), f.offset(), 0);
                         break;
                     case MBF_READ_EXCEPTION_STATUS:
                         status = clientPort->readExceptionStatus(static_cast<uint8_t>(unit), dummy);
                         break;
                     case MBF_DIAGNOSTICS:
-                        switch (f.subfunc)
+                        switch (f.subfunction())
                         {
                         case MBF_DIAGNOSTICS_RETURN_QUERY_DATA:
                             status = clientPort->diagnosticsReturnQueryData(static_cast<uint8_t>(unit), dummy, 2, &dummy[1], dummy);
@@ -272,22 +272,25 @@ void mbClientScannerThread::run()
                         status = clientPort->getCommEventLog(static_cast<uint8_t>(unit), &regdummy[0], &regdummy[1], &regdummy[2], &dummy[7], &dummy[6]);
                         break;
                     case MBF_WRITE_MULTIPLE_COILS:
-                        status = clientPort->writeMultipleCoils(static_cast<uint8_t>(unit), f.offset, f.count, dummy);
+                        status = clientPort->writeMultipleCoils(static_cast<uint8_t>(unit), f.offset(), f.count(), dummy);
                         break;
                     case MBF_WRITE_MULTIPLE_REGISTERS:
-                        status = clientPort->writeMultipleRegisters(static_cast<uint8_t>(unit), f.offset, f.count, regdummy);
+                        status = clientPort->writeMultipleRegisters(static_cast<uint8_t>(unit), f.offset(), f.count(), regdummy);
                         break;
                     case MBF_REPORT_SERVER_ID:
                         status = clientPort->reportServerID(static_cast<uint8_t>(unit), &dummy[1], &dummy[0]);
                         break;
+                    case MBF_READ_FILE_RECORD:
+                        status = clientPort->readFileRecord(static_cast<uint8_t>(unit), f.fileRecords().data(), f.fileRecords().count(), &dummy[1], &dummy[0]);
+                        break;
                     case MBF_MASK_WRITE_REGISTER:
-                        status = clientPort->maskWriteRegister(static_cast<uint8_t>(unit), f.offset, 0, 0);
+                        status = clientPort->maskWriteRegister(static_cast<uint8_t>(unit), f.offset(), 0, 0);
                         break;
                     case MBF_READ_WRITE_MULTIPLE_REGISTERS:
-                        status = clientPort->readWriteMultipleRegisters(static_cast<uint8_t>(unit), f.offset, f.count, regdummy, f.offset, f.count, regdummy);
+                        status = clientPort->readWriteMultipleRegisters(static_cast<uint8_t>(unit), f.offset(), f.count(), regdummy, f.offset(), f.count(), regdummy);
                         break;
                     case MBF_READ_FIFO_QUEUE:
-                        status = clientPort->readFIFOQueue(static_cast<uint8_t>(unit), f.offset, &regdummy[1], &regdummy[0]);
+                        status = clientPort->readFIFOQueue(static_cast<uint8_t>(unit), f.offset(), &regdummy[1], &regdummy[0]);
                         break;
                     }
 

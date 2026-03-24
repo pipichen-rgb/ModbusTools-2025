@@ -499,7 +499,7 @@ void mbClientScannerUi::setRequest(const mbClientScanner::Request_t &req)
         m_request.append(mbClientScanner::Defaults::instance().request);
     QString s;
     if (m_request.count() == 1)
-        s = QString("FC%1").arg(m_request.first().func, 2, 10, QLatin1Char('0'));
+        s = QString("FC%1").arg(m_request.first().function(), 2, 10, QLatin1Char('0'));
     else
         s = QString("%1 functions").arg(m_request.count());
     ui->lnRequest->setText(s);

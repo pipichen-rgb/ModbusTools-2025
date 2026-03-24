@@ -10,6 +10,7 @@ mbClientDialogScannerRequest::Strings::Strings() :
     offset1       (prefix+QStringLiteral("offset1")),
     offset2       (prefix+QStringLiteral("offset2")),
     count2        (prefix+QStringLiteral("count2")),
+    fileRecords   (prefix+QStringLiteral("fileRecords")),
     wGeometry     (prefix+QStringLiteral("geometry")),
     wSplitterState(prefix+QStringLiteral("splitterState"))
 {
@@ -63,6 +64,8 @@ mbClientDialogScannerRequest::mbClientDialogScannerRequest(QWidget *parent) :
     m_funcNums.append(MBF_WRITE_MULTIPLE_COILS         );
     m_funcNums.append(MBF_WRITE_MULTIPLE_REGISTERS     );
     m_funcNums.append(MBF_REPORT_SERVER_ID             );
+    m_funcNums.append(MBF_READ_FILE_RECORD             );
+    m_funcNums.append(MBF_WRITE_FILE_RECORD            );
     m_funcNums.append(MBF_MASK_WRITE_REGISTER          );
     m_funcNums.append(MBF_READ_WRITE_MULTIPLE_REGISTERS);
     m_funcNums.append(MBF_READ_FIFO_QUEUE              );
@@ -116,6 +119,13 @@ mbClientDialogScannerRequest::mbClientDialogScannerRequest(QWidget *parent) :
     connect(ui->btnIcoMoveUp  , &QPushButton::clicked, this, &mbClientDialogScannerRequest::moveUpFunc  );
     connect(ui->btnIcoMoveDown, &QPushButton::clicked, this, &mbClientDialogScannerRequest::moveDownFunc);
     connect(ui->btnIcoClear   , &QPushButton::clicked, this, &mbClientDialogScannerRequest::clearFuncs  );
+
+    connect(ui->btnAddFileRecord     , &QPushButton::clicked, this, &mbClientDialogScannerRequest::addFileRecord     );
+    connect(ui->btnDeleteFileRecord  , &QPushButton::clicked, this, &mbClientDialogScannerRequest::deleteFileRecord  );
+    connect(ui->btnMoveUpFileRecord  , &QPushButton::clicked, this, &mbClientDialogScannerRequest::moveUpFileRecord  );
+    connect(ui->btnMoveDownFileRecord, &QPushButton::clicked, this, &mbClientDialogScannerRequest::moveDownFileRecord);
+    connect(ui->btnClearFileRecords  , &QPushButton::clicked, this, &mbClientDialogScannerRequest::clearFileRecords  );
+
 }
 
 mbClientDialogScannerRequest::~mbClientDialogScannerRequest()
@@ -128,11 +138,15 @@ MBSETTINGS mbClientDialogScannerRequest::cachedSettings() const
     MBSETTINGS m;
     const Strings &s = Strings::instance();
 
+    mbClientMessageParams params;
+    params.setFileRecords(getCurrentFileRecords());
+
     m[s.func          ] = getCurrentFuncNum();
     m[s.subfunc       ] = getCurrentDiagnSubfuncNum();
     m[s.offset1       ] = ui->spOffset1        ->value      ();
     m[s.offset2       ] = ui->spOffset2        ->value      ();
     m[s.count2        ] = ui->spCount2         ->value      ();
+    m[s.fileRecords   ] = params.fileRecordsAsByteArray();
     m[s.wGeometry     ] = this->saveGeometry();
     m[s.wSplitterState] = ui->splitter->saveState();
 
@@ -152,6 +166,11 @@ void mbClientDialogScannerRequest::setCachedSettings(const MBSETTINGS &m)
     it = m.find(s.offset1       ); if (it != end) ui->spOffset1        ->setValue       (it.value().toInt()   );
     it = m.find(s.offset2       ); if (it != end) ui->spOffset2        ->setValue       (it.value().toInt()   );
     it = m.find(s.count2        ); if (it != end) ui->spCount2         ->setValue       (it.value().toInt()   );
+    it = m.find(s.fileRecords   ); if (it != end) {
+        mbClientMessageParams params;
+        params.setFileRecords(it.value().toByteArray());
+        setCurrentFileRecords(params.fileRecords());
+    }
     it = m.find(s.wGeometry     ); if (it != end) this                 ->restoreGeometry(it.value().toByteArray());
     it = m.find(s.wSplitterState); if (it != end) ui->splitter         ->restoreState   (it.value().toByteArray());
 }
@@ -172,13 +191,13 @@ bool mbClientDialogScannerRequest::getRequest(mbClientScanner::Request_t &req)
 
 void mbClientDialogScannerRequest::selectionChanged(const QModelIndex &current, const QModelIndex &)
 {
-    mbClientMessageParamsOLD func = m_model->func(current.row());
+    mbClientMessageParams func = m_model->func(current.row());
     setCurrentFunc(func);
 }
 
 void mbClientDialogScannerRequest::addFunc()
 {
-    mbClientMessageParamsOLD func = getCurrentFunc();
+    mbClientMessageParams func = getCurrentFunc();
     m_model->addFunc(func);
 }
 
@@ -187,7 +206,7 @@ void mbClientDialogScannerRequest::modifyFunc()
     QModelIndexList ls = ui->lsRequest->selectionModel()->selectedRows();
     if (ls.count())
     {
-        mbClientMessageParamsOLD func = getCurrentFunc();
+        mbClientMessageParams func = getCurrentFunc();
         m_model->modifyFunc(ls.first().row(), func);
     }
 }
@@ -230,10 +249,64 @@ void mbClientDialogScannerRequest::setCurrentFuncIndex(int i)
     setCurrentFuncNum(funcNum);
 }
 
-mbClientMessageParamsOLD mbClientDialogScannerRequest::getCurrentFunc() const
+void mbClientDialogScannerRequest::addFileRecord()
+{
+    auto itemFile = new QTableWidgetItem(QString("0"));
+    auto itemRecord = new QTableWidgetItem(QString("0"));
+    auto itemLen = new QTableWidgetItem(QString("1"));
+    int i = ui->tblFileRecord->rowCount();
+    ui->tblFileRecord->insertRow(i);
+    ui->tblFileRecord->setItem(i, 0, itemFile);
+    ui->tblFileRecord->setItem(i, 1, itemRecord);
+    ui->tblFileRecord->setItem(i, 2, itemLen);
+}
+
+void mbClientDialogScannerRequest::deleteFileRecord()
+{
+    int i = ui->tblFileRecord->currentRow();
+    if (i >= 0)
+        ui->tblFileRecord->removeRow(i);
+}
+
+void mbClientDialogScannerRequest::moveUpFileRecord()
+{
+    int i = ui->tblFileRecord->currentRow();
+    if (i > 0)
+    {
+        ui->tblFileRecord->insertRow(i - 1);
+        for (int j = 0; j < ui->tblFileRecord->columnCount(); ++j)
+        {
+            ui->tblFileRecord->setItem(i - 1, j, ui->tblFileRecord->takeItem(i + 1, j));
+        }
+        ui->tblFileRecord->removeRow(i + 1);
+        ui->tblFileRecord->setCurrentCell(i - 1, 0);
+    }
+}
+
+void mbClientDialogScannerRequest::moveDownFileRecord()
+{
+    int i = ui->tblFileRecord->currentRow();
+    if (i >= 0 && i < ui->tblFileRecord->rowCount() - 1)
+    {
+        ui->tblFileRecord->insertRow(i + 2);
+        for (int j = 0; j < ui->tblFileRecord->columnCount(); ++j)
+        {
+            ui->tblFileRecord->setItem(i + 2, j, ui->tblFileRecord->takeItem(i, j));
+        }
+        ui->tblFileRecord->removeRow(i);
+        ui->tblFileRecord->setCurrentCell(i + 1, 0);
+    }
+}
+
+void mbClientDialogScannerRequest::clearFileRecords()
+{
+    ui->tblFileRecord->setRowCount(0);
+}
+
+mbClientMessageParams mbClientDialogScannerRequest::getCurrentFunc() const
 {
     uint8_t funcNum = getCurrentFuncNum();
-    mbClientMessageParamsOLD func;
+    mbClientMessageParams func;
     switch(funcNum)
     {
     case MBF_READ_COILS:
@@ -243,38 +316,45 @@ mbClientMessageParamsOLD mbClientDialogScannerRequest::getCurrentFunc() const
     case MBF_WRITE_MULTIPLE_COILS:
     case MBF_WRITE_MULTIPLE_REGISTERS:
     case MBF_READ_WRITE_MULTIPLE_REGISTERS:
-        func.func   = funcNum;
-        func.offset = static_cast<uint16_t>(ui->spOffset2->value());
-        func.count  = static_cast<uint16_t>(ui->spCount2 ->value());
+        func.setFunction(funcNum);
+        func.setOffset(static_cast<uint16_t>(ui->spOffset2->value()));
+        func.setCount(static_cast<uint16_t>(ui->spCount2 ->value()));
         break;
     case MBF_WRITE_SINGLE_COIL:
     case MBF_WRITE_SINGLE_REGISTER:
     case MBF_MASK_WRITE_REGISTER:
     case MBF_READ_FIFO_QUEUE:
-        func.func   = funcNum;
-        func.offset = static_cast<uint16_t>(ui->spOffset1->value());
-        func.count  = 1;
+        func.setFunction(funcNum);
+        func.setOffset(static_cast<uint16_t>(ui->spOffset1->value()));
+        func.setCount(1);
         break;
     case MBF_READ_EXCEPTION_STATUS:
     case MBF_REPORT_SERVER_ID:
     case MBF_GET_COMM_EVENT_COUNTER:
     case MBF_GET_COMM_EVENT_LOG:
-        func.func   = funcNum;
+        func.setFunction(funcNum);
         break;
     case MBF_DIAGNOSTICS:
-        func.func   = funcNum;
-        func.subfunc= getCurrentDiagnSubfuncNum();
+        func.setFunction(funcNum);
+        func.setSubfunction(getCurrentDiagnSubfuncNum());
+        break;
+    case MBF_READ_FILE_RECORD:
+    case MBF_WRITE_FILE_RECORD:
+    {
+        func.setFunction(funcNum);
+        func.setFileRecords(getCurrentFileRecords());
+    }
         break;
     }
     return func;
 }
 
-void mbClientDialogScannerRequest::setCurrentFunc(const mbClientMessageParamsOLD &f)
+void mbClientDialogScannerRequest::setCurrentFunc(const mbClientMessageParams &f)
 {
-    int index = m_funcNums.indexOf(f.func);
+    int index = m_funcNums.indexOf(f.function());
     if (index < 0)
         return;
-    switch(f.func)
+    switch(f.function())
     {
     case MBF_READ_COILS:
     case MBF_READ_DISCRETE_INPUTS:
@@ -283,14 +363,14 @@ void mbClientDialogScannerRequest::setCurrentFunc(const mbClientMessageParamsOLD
     case MBF_WRITE_MULTIPLE_COILS:
     case MBF_WRITE_MULTIPLE_REGISTERS:
     case MBF_READ_WRITE_MULTIPLE_REGISTERS:
-        ui->spOffset2->setValue(f.offset);
-        ui->spCount2 ->setValue(f.count);
+        ui->spOffset2->setValue(f.offset());
+        ui->spCount2 ->setValue(f.count());
         break;
     case MBF_WRITE_SINGLE_COIL:
     case MBF_WRITE_SINGLE_REGISTER:
     case MBF_MASK_WRITE_REGISTER:
     case MBF_READ_FIFO_QUEUE:
-        ui->spOffset1->setValue(f.offset);
+        ui->spOffset1->setValue(f.offset());
         break;
     case MBF_READ_EXCEPTION_STATUS:
     case MBF_REPORT_SERVER_ID:
@@ -298,7 +378,11 @@ void mbClientDialogScannerRequest::setCurrentFunc(const mbClientMessageParamsOLD
     case MBF_GET_COMM_EVENT_LOG:
         break;
     case MBF_DIAGNOSTICS:
-        setCurrentDiagnSubfuncNum(f.subfunc);
+        setCurrentDiagnSubfuncNum(f.subfunction());
+        break;
+    case MBF_READ_FILE_RECORD:
+    case MBF_WRITE_FILE_RECORD:
+        setCurrentFileRecords(f.fileRecords());
         break;
     default:
         return;
@@ -345,6 +429,10 @@ void mbClientDialogScannerRequest::setCurrentFuncNum(uint8_t funcNum)
     case MBF_DIAGNOSTICS:
         ui->swFuncParams->setCurrentWidget(ui->pgDiagn);
         break;
+    case MBF_READ_FILE_RECORD:
+    case MBF_WRITE_FILE_RECORD:
+        ui->swFuncParams->setCurrentWidget(ui->pgFileRecord);
+        break;
     default:
         ui->swFuncParams->setCurrentWidget(ui->pgEmpty);
         break;
@@ -362,6 +450,35 @@ void mbClientDialogScannerRequest::setCurrentDiagnSubfuncNum(uint16_t subfunc)
             break;
         }
         ++i;
+    }
+}
+
+QVector<Modbus::FileRecord> mbClientDialogScannerRequest::getCurrentFileRecords() const
+{
+    QVector<Modbus::FileRecord> fileRecords;
+    fileRecords.resize(ui->tblFileRecord->rowCount());
+    for (int i = 0; i < ui->tblFileRecord->rowCount(); ++i)
+    {
+        uint16_t fileNum = static_cast<uint16_t>(ui->tblFileRecord->item(i, 0)->text().toUInt());
+        uint16_t recordNum = static_cast<uint16_t>(ui->tblFileRecord->item(i, 1)->text().toUInt());
+        uint16_t recordLen = static_cast<uint16_t>(ui->tblFileRecord->item(i, 2)->text().toUInt());
+        fileRecords[i] = {fileNum, recordNum, recordLen};
+    }
+    return fileRecords;
+}
+
+void mbClientDialogScannerRequest::setCurrentFileRecords(const QVector<Modbus::FileRecord> &fileRecords)
+{
+    ui->tblFileRecord->setRowCount(fileRecords.size());
+    for (int i = 0; i < fileRecords.size(); ++i)
+    {
+        const auto &fr = fileRecords[i];
+        auto itemFile = new QTableWidgetItem(QString::number(fr.fileNumber));
+        auto itemRecord = new QTableWidgetItem(QString::number(fr.recordNumber));
+        auto itemLen = new QTableWidgetItem(QString::number(fr.recordLength));
+        ui->tblFileRecord->setItem(i, 0, itemFile);
+        ui->tblFileRecord->setItem(i, 1, itemRecord);
+        ui->tblFileRecord->setItem(i, 2, itemLen);
     }
 }
 
@@ -387,12 +504,12 @@ void mbClientDialogScannerRequest::Model::setRequest(const mbClientScanner::Requ
     endResetModel();
 }
 
-mbClientMessageParamsOLD mbClientDialogScannerRequest::Model::func(int i)
+mbClientMessageParams mbClientDialogScannerRequest::Model::func(int i)
 {
     return m_req.value(i);
 }
 
-void mbClientDialogScannerRequest::Model::addFunc(const mbClientMessageParamsOLD &f)
+void mbClientDialogScannerRequest::Model::addFunc(const mbClientMessageParams &f)
 {
     int c = m_req.count();
     beginInsertRows(QModelIndex(), c, c);
@@ -400,7 +517,7 @@ void mbClientDialogScannerRequest::Model::addFunc(const mbClientMessageParamsOLD
     endInsertRows();
 }
 
-void mbClientDialogScannerRequest::Model::modifyFunc(int i, const mbClientMessageParamsOLD &f)
+void mbClientDialogScannerRequest::Model::modifyFunc(int i, const mbClientMessageParams &f)
 {
     if ((0 <= i) && (i < m_req.size()))
     {

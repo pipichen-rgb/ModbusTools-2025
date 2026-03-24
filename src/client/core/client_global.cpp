@@ -2,7 +2,7 @@
 
 #include <project/client_device.h>
 
-int id_mbClientMessageParams = qRegisterMetaType<mbClientMessageParamsOLD>();
+int id_mbClientMessageParams = qRegisterMetaType<mbClientMessageParams>();
 
 namespace mb {
 

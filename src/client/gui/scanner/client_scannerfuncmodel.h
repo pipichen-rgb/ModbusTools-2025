@@ -30,7 +30,7 @@ public: // table model interface
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
 
 private Q_SLOTS:
-    void funcAdd(const QString &port, quint8 unit, const mbClientMessageParamsOLD &params, int status);
+    void funcAdd(const QString &port, quint8 unit, const mbClientMessageParams &params, int status);
     void clear();
 
 private:
