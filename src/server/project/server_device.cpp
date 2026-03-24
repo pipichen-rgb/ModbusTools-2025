@@ -489,6 +489,37 @@ Modbus::StatusCode mbServerDevice::MemoryBlock::writeFrameRegs(uint regOffset, i
     return Modbus::Status_Good;
 }
 
+mbServerDevice::EventBuffer::EventBuffer(int size)
+{
+    m_queue.resize(size);
+    m_ptr = 0;
+    m_count = 0; 
+}
+
+void mbServerDevice::EventBuffer::push(uint8_t e)
+{
+    QMutexLocker _(&m_lock);
+    m_queue[m_ptr] = e;
+    auto sz = m_queue.size();
+    m_ptr = (m_ptr + 1) % sz;
+    bool isNotFull = (m_count < sz);
+    m_count += isNotFull; 
+}
+
+int mbServerDevice::EventBuffer::pop(uint8_t *buff, int maxSize)
+{
+    QMutexLocker _(&m_lock);
+    int c = 0;
+    while (c < maxSize && m_count > 0)
+    {
+        auto i = realIndex(m_count); // Get oldest element index
+        buff[c] = m_queue.at(i);
+        c++;
+        m_count--;
+    }
+    return c;
+}
+
 mbServerDevice::mbServerDevice(QObject * /*parent*/)
 {
     Defaults d = Defaults::instance();
@@ -504,6 +535,7 @@ mbServerDevice::mbServerDevice(QObject * /*parent*/)
     m_settings.isSaveData = d.isSaveData;
     m_settings.delay = d.delay;
     m_settings.isEnableScript = d.isEnableScript;
+    m_events.push(MB_EVENT_INITIATED_COMMUNICATION_RESTART);
 }
 
 quint8 mbServerDevice::exceptionStatus() const
@@ -1003,6 +1035,29 @@ Modbus::StatusCode mbServerDevice::diagnosticsClearOverrunCounterAndFlag()
     return r;
 }
 
+Modbus::StatusCode mbServerDevice::getCommEventCounter(uint16_t *status, uint16_t *eventCount)
+{
+    auto r = Modbus::Status_Good;
+    beginRequest();
+    *status = 0;
+    *eventCount = static_cast<uint16_t>(m_events.count());
+    endRequest(r);
+    return r;
+}
+
+Modbus::StatusCode mbServerDevice::getCommEventLog(uint16_t *status, uint16_t *eventCount, uint16_t *messageCount, void *eventBuff, uint8_t *eventBuffSize)
+{
+    auto r = Modbus::Status_Good;
+    beginRequest();
+    *status = 0;
+    *eventCount = static_cast<uint16_t>(m_events.count());
+    *messageCount = static_cast<uint16_t>(statCountRx());
+    auto c = m_events.pop(reinterpret_cast<uint8_t*>(eventBuff), MB_GET_COMM_EVENT_LOG_MAX);
+    *eventBuffSize = static_cast<uint8_t>(c);
+    endRequest(r);
+    return r;
+}
+
 Modbus::StatusCode mbServerDevice::writeMultipleCoils(uint16_t offset, uint16_t count, const void *values)
 {
     Modbus::StatusCode r;
@@ -1433,6 +1488,12 @@ Modbus::StatusCode mbServerDevice::readDeviceIdentification(uint8_t readDeviceId
     return r;
 }
 
+void mbServerDevice::resetStatistics()
+{
+    mbCoreDevice::resetStatistics();
+    m_events.push(MB_EVENT_INITIATED_COMMUNICATION_RESTART);
+}
+
 void mbServerDevice::beginRequest()
 {
     incStatCountRx();
@@ -1443,6 +1504,8 @@ void mbServerDevice::endRequest(Modbus::StatusCode status, const QString &err)
     incStatCountTx();
     mb::Timestamp_t time = mb::currentTimestamp();
     setStatStatus(status, time, err);
+    if (Modbus::StatusIsStandardError(status))
+        m_events.push(MB_SEND_EVENT_READ_EXCEPTION_SENT);
 }
 
 void mbServerDevice::realloc_0x(int count)

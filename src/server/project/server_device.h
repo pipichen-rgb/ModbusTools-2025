@@ -24,6 +24,7 @@
 #define SERVER_DEVICE_H
 
 #include <QReadWriteLock>
+#include <QMutex>
 #include <QSharedMemory>
 
 #include <project/core_device.h>
@@ -129,6 +130,27 @@ public: // memory block
         Script_Final
     };
 
+    class EventBuffer
+    {
+    public:
+        EventBuffer(int size = 1024);
+
+    public:
+        inline int size() const { QMutexLocker _(&m_lock); return m_queue.size(); }
+        inline int count() const { QMutexLocker _(&m_lock); return m_count; }
+        void push(uint8_t event);
+        int pop(uint8_t *buff, int maxSize);
+    
+    private:
+        inline int realIndex(size_t i) const { auto sz = m_queue.size(); return (m_ptr + sz - i) % sz; }
+
+    private:
+        mutable QMutex m_lock;
+        QByteArray m_queue;
+        int m_count;
+        int m_ptr;
+    };
+
 public:
     explicit mbServerDevice(QObject *parent = nullptr);
 
@@ -188,7 +210,8 @@ public: // 'Modbus'-like Interface
     Modbus::StatusCode diagnosticsReturnServerBusyCount(uint16_t *count);
     Modbus::StatusCode diagnosticsReturnBusCharacterOverrunCount(uint16_t *count);
     Modbus::StatusCode diagnosticsClearOverrunCounterAndFlag();
-    Modbus::StatusCode writeMultipleCoils(uint16_t offset, uint16_t count, const void *values);
+    Modbus::StatusCode getCommEventCounter(uint16_t *status, uint16_t *eventCount);
+    Modbus::StatusCode getCommEventLog(uint16_t *status, uint16_t *eventCount, uint16_t *messageCount, void *eventBuff, uint8_t *eventBuffSize);    Modbus::StatusCode writeMultipleCoils(uint16_t offset, uint16_t count, const void *values);
     Modbus::StatusCode writeMultipleRegisters(uint16_t offset, uint16_t count, const uint16_t *values);
     Modbus::StatusCode reportServerID(void *data, uint8_t *count);
     Modbus::StatusCode readFileRecord(const Modbus::FileRecord *records, uint8_t recordsCount, void *outData, uint8_t *outSize = nullptr);
@@ -196,6 +219,10 @@ public: // 'Modbus'-like Interface
     Modbus::StatusCode maskWriteRegister(uint16_t offset, uint16_t andMask, uint16_t orMask);
     Modbus::StatusCode readWriteMultipleRegisters(uint16_t readOffset, uint16_t readCount, uint16_t *readValues, uint16_t writeOffset, uint16_t writeCount, const uint16_t *writeValues);
     Modbus::StatusCode readDeviceIdentification(uint8_t readDeviceId, uint8_t objectId, void *data, uint8_t *dataSize, uint8_t *numberOfObjects = nullptr, uint8_t *conformityLevel = nullptr, bool *moreFollows = nullptr, uint8_t *nextObjectId = nullptr);
+
+public:
+    inline void pushEvent(uint8_t event) { m_events.push(event); }
+    void resetStatistics() override;
 
 private:
     void beginRequest();
@@ -417,6 +444,9 @@ private: // Memory
     MemoryBlock m_mem_1x;
     MemoryBlock m_mem_3x;
     MemoryBlock m_mem_4x;
+
+private: // events
+    EventBuffer m_events;
 
 private: // settings
     struct

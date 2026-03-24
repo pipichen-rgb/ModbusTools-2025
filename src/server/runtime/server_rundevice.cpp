@@ -56,6 +56,7 @@ Modbus::StatusCode mbServerRunDevice::readCoils(uint8_t unit, uint16_t offset, u
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -72,6 +73,7 @@ Modbus::StatusCode mbServerRunDevice::readDiscreteInputs(uint8_t unit, uint16_t 
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -88,6 +90,7 @@ Modbus::StatusCode mbServerRunDevice::readHoldingRegisters(uint8_t unit, uint16_
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -104,6 +107,7 @@ Modbus::StatusCode mbServerRunDevice::readInputRegisters(uint8_t unit, uint16_t 
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -121,7 +125,10 @@ Modbus::StatusCode mbServerRunDevice::writeSingleCoil(uint8_t unit, uint16_t off
     if (isBroadcast(unit))
     {
         Q_FOREACH (mbServerDevice *device, m_devices)
+        {
             device->writeSingleCoil(offset, value);
+            device->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
+        }
         return Modbus::Status_Good;
     }
     else
@@ -139,7 +146,10 @@ Modbus::StatusCode mbServerRunDevice::writeSingleRegister(uint8_t unit, uint16_t
     if (isBroadcast(unit))
     {
         Q_FOREACH (mbServerDevice *device, m_devices)
+        {
             device->writeSingleRegister(offset, value);
+            device->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
+        }
         return Modbus::Status_Good;
     }
     else
@@ -156,6 +166,7 @@ Modbus::StatusCode mbServerRunDevice::readExceptionStatus(uint8_t unit, uint8_t 
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -172,6 +183,7 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsReturnQueryData(uint8_t unit, c
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -189,7 +201,10 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsRestartCommunicationsOption(uin
     if (isBroadcast(unit))
     {
         Q_FOREACH (mbServerDevice *device, m_devices)
+        {
             device->diagnosticsRestartCommunicationsOption(clearEventLog);
+            device->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
+        }
         return Modbus::Status_Good;
     }
     else
@@ -206,6 +221,7 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsReturnDiagnosticRegister(uint8_
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -223,7 +239,10 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsChangeAsciiInputDelimiter(uint8
     if (isBroadcast(unit))
     {
         Q_FOREACH (mbServerDevice *device, m_devices)
+        {
             device->diagnosticsChangeAsciiInputDelimiter(delimiter);
+            device->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
+        }
         return Modbus::Status_Good;
     }
     else
@@ -241,7 +260,10 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsForceListenOnlyMode(uint8_t uni
     if (isBroadcast(unit))
     {
         Q_FOREACH (mbServerDevice *device, m_devices)
+        {
             device->diagnosticsForceListenOnlyMode();
+            device->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
+        }
         return Modbus::Status_Good;
     }
     else
@@ -259,7 +281,10 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsClearCountersAndDiagnosticRegis
     if (isBroadcast(unit))
     {
         Q_FOREACH (mbServerDevice *device, m_devices)
+        {
             device->diagnosticsClearCountersAndDiagnosticRegister();
+            device->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
+        }
         return Modbus::Status_Good;
     }
     else
@@ -276,6 +301,7 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsReturnBusMessageCount(uint8_t u
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -292,6 +318,7 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsReturnBusCommunicationErrorCoun
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -308,6 +335,7 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsReturnBusExceptionErrorCount(ui
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -324,6 +352,7 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsReturnServerMessageCount(uint8_
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -340,6 +369,7 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsReturnServerNoResponseCount(uin
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -356,6 +386,7 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsReturnServerNAKCount(uint8_t un
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -372,6 +403,7 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsReturnServerBusyCount(uint8_t u
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -388,6 +420,7 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsReturnBusCharacterOverrunCount(
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -405,7 +438,10 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsClearOverrunCounterAndFlag(uint
     if (isBroadcast(unit))
     {
         Q_FOREACH (mbServerDevice *device, m_devices)
+        {
             device->diagnosticsClearOverrunCounterAndFlag();
+            device->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
+        }
         return Modbus::Status_Good;
     }
     else
@@ -418,12 +454,49 @@ Modbus::StatusCode mbServerRunDevice::diagnosticsClearOverrunCounterAndFlag(uint
     }
 }
 
+Modbus::StatusCode mbServerRunDevice::getCommEventCounter(uint8_t unit, uint16_t *status, uint16_t *eventCount)
+{
+    if (isBroadcast(unit))
+    {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
+        return Modbus::Status_Good;
+    }
+    else
+    {
+        mbServerDevice *device = this->device(unit);
+        if (!device)
+            return Modbus::Status_BadGatewayPathUnavailable;
+        CHECK_DELAY
+        return device->getCommEventCounter(status, eventCount);
+    }
+}
+
+Modbus::StatusCode mbServerRunDevice::getCommEventLog(uint8_t unit, uint16_t *status, uint16_t *eventCount, uint16_t *messageCount, void *eventBuff, uint8_t *eventBuffSize)
+{
+    if (isBroadcast(unit))
+    {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
+        return Modbus::Status_Good;
+    }
+    else
+    {
+        mbServerDevice *device = this->device(unit);
+        if (!device)
+            return Modbus::Status_BadGatewayPathUnavailable;
+        CHECK_DELAY
+        return device->getCommEventLog(status, eventCount, messageCount, eventBuff, eventBuffSize);
+    }
+}
+
 Modbus::StatusCode mbServerRunDevice::writeMultipleCoils(uint8_t unit, uint16_t offset, uint16_t count, const void *values)
 {
     if (isBroadcast(unit))
     {
         Q_FOREACH (mbServerDevice *device, m_devices)
+        {
             device->writeMultipleCoils(offset, count, values);
+            device->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
+        }
         return Modbus::Status_Good;
     }
     else
@@ -441,7 +514,10 @@ Modbus::StatusCode mbServerRunDevice::writeMultipleRegisters(uint8_t unit, uint1
     if (isBroadcast(unit))
     {
         Q_FOREACH (mbServerDevice *device, m_devices)
+        {
             device->writeMultipleRegisters(offset, count, values);
+            device->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
+        }
         return Modbus::Status_Good;
     }
     else
@@ -458,6 +534,7 @@ Modbus::StatusCode mbServerRunDevice::reportServerID(uint8_t unit, void *data, u
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -474,6 +551,7 @@ Modbus::StatusCode mbServerRunDevice::readFileRecord(uint8_t unit, const Modbus:
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -491,7 +569,10 @@ Modbus::StatusCode mbServerRunDevice::writeFileRecord(uint8_t unit, const Modbus
     if (isBroadcast(unit))
     {
         Q_FOREACH (mbServerDevice *device, m_devices)
+        {
             device->writeFileRecord(records, recordsCount, inData, inSize);
+            device->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
+        }
         return Modbus::Status_Good;
     }
     else
@@ -509,7 +590,10 @@ Modbus::StatusCode mbServerRunDevice::maskWriteRegister(uint8_t unit, uint16_t o
     if (isBroadcast(unit))
     {
         Q_FOREACH (mbServerDevice *device, m_devices)
+        {
             device->maskWriteRegister(offset, andMask, orMask);
+            device->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
+        }
         return Modbus::Status_Good;
     }
     else
@@ -529,7 +613,10 @@ Modbus::StatusCode mbServerRunDevice::readWriteMultipleRegisters(uint8_t unit, u
         // Note: No need to fill read buffer and return it to client in broadcast mode.
         //       So use `writeMultipleRegisters`-part only.
         Q_FOREACH (mbServerDevice *device, m_devices)
-            device->writeMultipleRegisters(writeOffset, writeCount, writeValues);
+        {
+            device->readWriteMultipleRegisters(readOffset, readCount, readValues, writeOffset, writeCount, writeValues);
+            device->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
+        }
         return Modbus::Status_Good;
     }
     else
@@ -546,6 +633,7 @@ Modbus::StatusCode mbServerRunDevice::readDeviceIdentification(uint8_t unit, uin
 {
     if (isBroadcast(unit))
     {
+        this->pushEvent(MB_RECEIVE_EVENT_BROADCAST_RECEIVED);
         return Modbus::Status_Good;
     }
     else
@@ -555,6 +643,14 @@ Modbus::StatusCode mbServerRunDevice::readDeviceIdentification(uint8_t unit, uin
             return Modbus::Status_BadGatewayPathUnavailable;
         CHECK_DELAY
         return device->readDeviceIdentification(readDeviceId, objectId, data, dataSize, numberOfObjects, conformityLevel, moreFollows, nextObjectId);
+    }
+}
+
+void mbServerRunDevice::pushEvent(uint8_t event)
+{
+    Q_FOREACH (mbServerDevice *device, m_devices)
+    {
+        device->pushEvent(event);
     }
 }
 

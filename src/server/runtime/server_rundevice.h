@@ -58,6 +58,9 @@ public: // Modbus::Interface
     Modbus::StatusCode diagnosticsReturnServerBusyCount(uint8_t unit, uint16_t *count) override;
     Modbus::StatusCode diagnosticsReturnBusCharacterOverrunCount(uint8_t unit, uint16_t *count) override;
     Modbus::StatusCode diagnosticsClearOverrunCounterAndFlag(uint8_t unit) override;
+    Modbus::StatusCode getCommEventCounter(uint8_t unit, uint16_t *status, uint16_t *eventCount) override;
+    Modbus::StatusCode getCommEventLog(uint8_t unit, uint16_t *status, uint16_t *eventCount, uint16_t *messageCount, void *eventBuff, uint8_t *eventBuffSize) override;
+    Modbus::StatusCode writeMultipleCoils(uint16_t offset, uint16_t count, const void *values);
     Modbus::StatusCode writeMultipleCoils(uint8_t unit, uint16_t offset, uint16_t count, const void *values) override;
     Modbus::StatusCode writeMultipleRegisters(uint8_t unit, uint16_t offset, uint16_t count, const uint16_t *values) override;
     Modbus::StatusCode reportServerID(uint8_t unit, void *data, uint8_t *count) override;
@@ -66,6 +69,9 @@ public: // Modbus::Interface
     Modbus::StatusCode maskWriteRegister(uint8_t unit, uint16_t offset, uint16_t andMask, uint16_t orMask) override;
     Modbus::StatusCode readWriteMultipleRegisters(uint8_t unit, uint16_t readOffset, uint16_t readCount, uint16_t *readValues, uint16_t writeOffset, uint16_t writeCount, const uint16_t *writeValues) override;
     Modbus::StatusCode readDeviceIdentification(uint8_t unit, uint8_t readDeviceId, uint8_t objectId, void *data, uint8_t *dataSize, uint8_t *numberOfObjects = nullptr, uint8_t *conformityLevel = nullptr, bool *moreFollows = nullptr, uint8_t *nextObjectId = nullptr) override;
+
+public:
+    void pushEvent(uint8_t event);
 
 public: // settings
     inline bool isBroadcastEnabled() const { return m_settings.isBroadcastEnabled; }

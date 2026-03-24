@@ -145,15 +145,17 @@ void mbServerPortRunnable::slotError(const Modbus::Char *source, Modbus::StatusC
     {
     case Modbus::Status_BadSerialReadTimeout:
     case Modbus::Status_BadUdpReadTimeout:
+        return; // do not count timeout errors, because they are normal for server
+    case Modbus::Status_BadCrc:
+    case Modbus::Status_BadLrc:
+        m_device->pushEvent(MB_RECEIVE_EVENT_COMMUNICATION_ERROR);
         break;
     default:
-    {
-        Modbus::Timestamp tm = Modbus::currentTimestamp();
-        m_port->setStatStatus(status, tm, QString(text));
-        mbServer::LogError(source, QString("Error(0x%1): %2").arg(QString::number(status, 16), text));
-    }
         break;
     }
+    Modbus::Timestamp tm = Modbus::currentTimestamp();
+    m_port->setStatStatus(status, tm, QString(text));
+    mbServer::LogError(source, QString("Error(0x%1): %2").arg(QString::number(status, 16), text));
 }
 
 void mbServerPortRunnable::slotCompleted(const Modbus::Char *, Modbus::StatusCode status)
