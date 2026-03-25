@@ -54,7 +54,7 @@
              </property>
              <property name="icon">
               <iconset resource="../../../core/gui/core_rsc.qrc">
-               <normaloff>:/core/icons/plus.ico</normaloff>:/core/icons/plus.ico</iconset>
+               <normaloff>:/core/icons/plus.png</normaloff>:/core/icons/plus.png</iconset>
              </property>
             </widget>
            </item>
@@ -94,7 +94,7 @@
              </property>
              <property name="icon">
               <iconset resource="../../../core/gui/core_rsc.qrc">
-               <normaloff>:/core/icons/minus.ico</normaloff>:/core/icons/minus.ico</iconset>
+               <normaloff>:/core/icons/minus.png</normaloff>:/core/icons/minus.png</iconset>
              </property>
             </widget>
            </item>
@@ -303,7 +303,7 @@
                </property>
                <property name="icon">
                 <iconset resource="../../../core/gui/core_rsc.qrc">
-                 <normaloff>:/core/icons/plus.ico</normaloff>:/core/icons/plus.ico</iconset>
+                 <normaloff>:/core/icons/plus.png</normaloff>:/core/icons/plus.png</iconset>
                </property>
               </widget>
              </item>
@@ -323,7 +323,7 @@
                </property>
                <property name="icon">
                 <iconset resource="../../../core/gui/core_rsc.qrc">
-                 <normaloff>:/core/icons/minus.ico</normaloff>:/core/icons/minus.ico</iconset>
+                 <normaloff>:/core/icons/minus.png</normaloff>:/core/icons/minus.png</iconset>
                </property>
               </widget>
              </item>

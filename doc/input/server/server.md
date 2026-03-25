@@ -332,6 +332,47 @@ Window for displaying Python script standard output.
 
 If you can not see this window, use menu `View->Output`.
 
+## Port Statistics Window
+
+![](server_port_statistics_window.png)
+
+`Port Statistics` window displays communication quality and timing statistics for selected project port.
+To open it, select port in `Project` window and use menu/context menu `Port->Statistics...`.
+
+Window is updated automatically while it is visible (about each 500 msec) and can be cleared using `Reset` button.
+
+Window groups:
+* `Since` - timestamp when current statistics collection was started;
+* `Common` - last status, last timestamp, last successful timestamp, last error status/time/text;
+* `Counters`:
+  * `Tx` / `Rx` - transmitted and received packets count;
+  * `Good` / `Bad` - successful and failed operations count;
+  * `Bad (Exception)` - Modbus protocol exception responses;
+  * `Bad (Timeout)` - response timeout errors;
+  * `Bad (CRC/LRC)` - checksum validation errors;
+* `Cycle` - runtime cycle timing in microseconds: `Count`, `Sum Durat.`, `Last Durat.`, `Min Durat.`, `Max Durat.`, `Avg Durat.`.
+
+If port statistics window was closed, it can be reopened from `Window->Statistics` menu.
+
+## Device Statistics Window
+
+![](server_device_statistics_window.png)
+
+`Device Statistics` window shows communication statistics for selected Modbus device.
+To open it, select device in `Project` window and use menu/context menu `Device->Statistics...`.
+
+Window is updated automatically while it is visible (about each 500 msec) and can be cleared using `Reset` button.
+
+Window groups:
+* `Since` - timestamp when current statistics collection was started;
+* `Common` - last status, last timestamp, last successful timestamp, last error status/time/text;
+* `Counters`:
+  * `Tx` / `Rx` - transmitted and received messages count for this device;
+  * `Good` / `Bad` - successful and failed device operations count;
+  * `Bad (Exception)` - Modbus exception responses from this device;
+
+If device statistics window was closed, it can be reopened from `Window->Statistics` menu.
+
 ## Menu {#sec_server_gui_menu}
 
 Main menu provides access to all the features of the program. It consists of:
@@ -412,11 +453,14 @@ The `Data` menu provides access to work with DataViews and DataViewItems and inc
 * `Export DataView...` - export active DataView to file in `xml` or `csv`-format;
 
 ### Tools
+
 The `Tools` menu provides access to work with various system settings and includes submenus:
 * `Settings...` - open `SystemSettings`-dialog;
 
 ### Simulation
+
 The `Simulation` menu provides access to work with actions and includes submenus:
+* `Simulation` - show simulation actions editor;
 * `New Action(s)...` - open `Actions`-dialog to create new action(s);
 * `Edit Action(s)...` - open `Actions`-dialog to edit selected action(s);
 * `Insert Action` – insert new action to `Actions`-view window.
@@ -426,7 +470,9 @@ Address and other parameters will be calculated automaticaly;
 * `Export Actions...` - export selected items to file in `xml`-format;
 
 ### Scripting
+
 The `Scripting` menu provides access to script modules of the project:
+* `Script Modules` - show script modules list editor;
 * `New Module...` - open `New Script Module`-dialog to create new module;
 * `Open Module` - open editor for selected script module;
 * `Delete Module` – delete selected module(s);
@@ -448,8 +494,10 @@ and includes submenus. It can be viewed in `SubWindows` or `Tabbed` mode.:
 * `DataViews-><dataview>` - show the corresponding DataView;
 * `Devices->Close All` - close all devices MDI/Tabbed windows;
 * `Devices-><device>` - show the corresponding device;
-* `DataViews->Close All` - close all Script Editor MDI/Tabbed windows;
-* `DataViews-><dataview>` - show the corresponding Script Editor;
+* `Scripts->Close All` - close all Script Editor MDI/Tabbed windows;
+* `Scripts-><script>` - show the corresponding Script Editor;
+* `Simulation` - show simulation actions editor;
+* `Script Modules` - show script modules list editor;
 * `Close All` - close all MDI/Tabbed windows;
 * `Cascade` - located all MDI windows in cascade way;
 * `Tile` - located all MDI windows in tile way;
@@ -487,7 +535,7 @@ Server application have following list of dialog windows:
 * `Device` – dialog for create/edit device settings;
 * `DataView` – dialog for create/edit DataView settings;
 * `DataViewItem` – dialog for create/edit DataViewItem settings;
-* `Action` – dialog for create/edit action settings;
+* `SimAction` – dialog for create/edit simulation action settings;
 * `Find/Replace` – dialog for find/replace text in Script Editor;
 
 ## System Settings dialog
@@ -513,12 +561,14 @@ For port it displays port main settings, for device it displays device reference
 
 ### Log
 
-![](server_settings_logX.png)
+![](server_settings_logx.png)
 
 * `Log Flags` - show log message categories that will be displayed in LogView;
 * `Use timestamp` - display timestamp for log message in LogView;
 * `DateTime Format` - set format for timestamp to be displayed in LogView; 
-* `Font` - font style of LogView.
+* `Max size (symbols)` - maximum symbols in the LogView after it partially cleared;
+* `Font` - font style of LogView;
+* `Colors` - list of message category colors.
 
 |Format        |Result         |
 |--------------|---------------|
@@ -622,7 +672,7 @@ input (3x) and holding (4x) registers respectively;
 * `Read Coils`, `Read Discrete Inputs`, `Read Holding Registers`, `Read Input Registers`, `Write Mulptiple Coils`,
 `Write Multiple Registers` – maximum value of the quantity parameter for the corresponding messages;
 * `Exception Status` – address of memory that considering as exception status. Can be any type of memory;
-* `Byte order` - default byte order within 16 bit register for device's items;
+* `Swap Bytes` - swap bytes within 16-bit registers;
 * `Register order` – default register order used for 32-bit size items and higher by default for current device;
 * `Byte Array Format` – default byte array format items (used `ByteArray` as its format) for current device. 
 Can be `Bin`, `Oct`, `Dec`, `UDec` and `Hex`; 
@@ -663,7 +713,7 @@ Address of next item are calculated automaticaly according to it address and siz
   `UDec16`, `Hex16`, `Bin32`, `Oct32`, `Dec32`, `UDec32`, `Hex32`, `Bin64`, `Oct64`, `Dec64`,
   `UDec64`, `Hex64`, `Float`, `Double`, `ByteArray`, `String`;
 * `Bytes` - size of current item in bytes. It's enable to edit only for `ByteArray` and `String` format;
-* `Byte order` - byte order within 16 bit register current items;
+* `Swap Bytes` - swap bytes within 16-bit registers;
 * `Register order` - register order used for 32-bit size items and higher.
 If `Default` current device register order is used;
 * `Byte Array Format` - byte array format for item. Can be `Bin`, `Oct`, `Dec`, `UDec` and `Hex`.
@@ -702,11 +752,11 @@ Buttons:
 * `Replace All` - replace all data in the current `Script Editor` window;
 * `Close` - close the dialog;
 
-### Byte order {#mbtools_byteorder}
+### Swap bytes {#mbtools_swapbytes}
 
-Byte order changes byte order within 16-bit register for view:
-* `LessSignifiedFirst` - little-endian
-* `MostSignifiedFirst` - big-endian
+Swap byte order within 16-bit register:
+* `SwapNo` - do not swap
+* `SwapYes` - swap
 
 ### Register order {#mbtools_registerorder}
 

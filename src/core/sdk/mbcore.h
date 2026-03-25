@@ -81,7 +81,7 @@ namespace mb
 {
 Q_NAMESPACE
 
-int rand();
+MBTOOLS_EXPORT int rand();
 
 typedef QAtomicInt RefCount_t;
 
@@ -402,7 +402,7 @@ enum Format
 Q_ENUM_NS(Format)
 MB_ENUM_DECL_EXPORT(Format)
 
-Format toFormat(DigitalFormat digitalFormat);
+MBTOOLS_EXPORT Format toFormat(DigitalFormat digitalFormat);
 
 enum SwapData
 {

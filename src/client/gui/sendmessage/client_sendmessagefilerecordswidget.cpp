@@ -432,14 +432,14 @@ mbClientSendMessageFileRecordsWidget::mbClientSendMessageFileRecordsWidget(uint8
     sizePolicy1.setHeightForWidth(btnFileRecordAdd->sizePolicy().hasHeightForWidth());
     btnFileRecordAdd->setSizePolicy(sizePolicy1);
     QIcon icon;
-    icon.addFile(QString::fromUtf8(":/core/icons/plus.ico"), QSize(), QIcon::Normal, QIcon::Off);
+    icon.addFile(QString::fromUtf8(":/core/icons/plus.png"), QSize(), QIcon::Normal, QIcon::Off);
     btnFileRecordAdd->setIcon(icon);
 
     auto btnFileRecordDelete = new QPushButton(this);
     sizePolicy1.setHeightForWidth(btnFileRecordDelete->sizePolicy().hasHeightForWidth());
     btnFileRecordDelete->setSizePolicy(sizePolicy1);
     QIcon icon1;
-    icon1.addFile(QString::fromUtf8(":/core/icons/minus.ico"), QSize(), QIcon::Normal, QIcon::Off);
+    icon1.addFile(QString::fromUtf8(":/core/icons/minus.png"), QSize(), QIcon::Normal, QIcon::Off);
     btnFileRecordDelete->setIcon(icon1);
 
     auto btnFileRecordMoveUp = new QPushButton(this);

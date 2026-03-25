@@ -77,6 +77,8 @@ consisting of such nodes as Port and Device
 * `Main menu` - access to all the features of the program
 * `Tool bar` - access to the most frequently used commands
 * `Status bar` - the current status of the program
+* `Port Statistics` - statistics of selected port
+* `Device Statistics` - statistics of selected device
 
 ## Project window
 
@@ -184,6 +186,51 @@ Parameters descibed at `System settings`-dialog section.
 
 If you can not see this window, use menu `View->LogView`.
 
+## Port Statistics Window
+
+![](client_port_statistics_window.png)
+
+`Port Statistics` window displays communication quality and timing statistics for selected project port.
+To open it, select port in `Project` window and use menu/context menu `Port->Statistics...`.
+
+Window is updated automatically while it is visible (about each 500 msec) and can be cleared using `Reset` button.
+
+Window groups:
+* `Since` - timestamp when current statistics collection was started;
+* `Common` - last status, last timestamp, last successful timestamp, last error status/time/text;
+* `Counters`:
+  * `Tx` / `Rx` - transmitted and received packets count;
+  * `Good` / `Bad` - successful and failed operations count;
+  * `Bad (Exception)` - Modbus protocol exception responses;
+  * `Bad (Connection)` - transport/open/connect errors;
+  * `Bad (Timeout)` - response timeout errors;
+  * `Bad (CRC/LRC)` - checksum validation errors;
+* `Cycle` - runtime cycle timing in microseconds: `Count`, `Sum Durat.`, `Last Durat.`, `Min Durat.`, `Max Durat.`, `Avg Durat.`.
+
+If port statistics window was closed, it can be reopened from `Window->Statistics` menu.
+
+## Device Statistics Window
+
+![](client_device_statistics_window.png)
+
+`Device Statistics` window shows communication statistics for selected Modbus device.
+To open it, select device in `Project` window and use menu/context menu `Device->Statistics...`.
+
+Window is updated automatically while it is visible (about each 500 msec) and can be cleared using `Reset` button.
+
+Window groups:
+* `Since` - timestamp when current statistics collection was started;
+* `Common` - last status, last timestamp, last successful timestamp, last error status/time/text;
+* `Counters`:
+  * `Tx` / `Rx` - transmitted and received messages count for this device;
+  * `Good` / `Bad` - successful and failed device operations count;
+  * `Bad (Exception)` - Modbus exception responses from this device;
+  * `Bad (Connection)` - connection/open errors;
+  * `Bad (Timeout)` - timeout errors;
+  * `Bad (CRC/LRC)` - checksum errors.
+
+If device statistics window was closed, it can be reopened from `Window->Statistics` menu.
+
 ## Menu
 Main menu provides access to all the features of the program. It consists of:
 
@@ -247,6 +294,7 @@ The `Data` menu provides access to work with DataViews and DataViewItems and inc
 The `Tools` menu provides access to work with various system settings and includes submenus:
 * `Settings...` - open `SystemSettings`-dialog;
 * `Send Message...` - individual Modbus message dialog;
+* `Send Bytes...` - raw byte sequence dialog;
 * `Scanner...` - open Modbus Device Scanner dialog window;
 
 ### Runtime
@@ -309,34 +357,108 @@ can be viewed in the Data window for read function and set for write functions.
 `unit=0` indended for broadcast address (if `Enable Broadcast` is set in the port settings);
 
 * `Function` - supported Modbus functions such as:
-* `1 ` (`0x01`) - `READ_COILS`
-* `2 ` (`0x02`) - `READ_DISCRETE_INPUTS`
-* `3 ` (`0x03`) - `READ_HOLDING_REGISTERS`
-* `4 ` (`0x04`) - `READ_INPUT_REGISTERS`
-* `5 ` (`0x05`) - `WRITE_SINGLE_COIL`
-* `6 ` (`0x06`) - `WRITE_SINGLE_REGISTER`
-* `7 ` (`0x07`) - `READ_EXCEPTION_STATUS`
-* `15` (`0x0F`) - `WRITE_MULTIPLE_COILS`
-* `16` (`0x10`) - `WRITE_MULTIPLE_REGISTERS`
-* `17` (`0x11`) - `REPORT_SERVER_ID` (since v0.4)
-* `22` (`0x16`) - `MASK_WRITE_REGISTER` (since v0.3)
-* `23` (`0x17`) - `WRITE_MULTIPLE_REGISTERS` (since v0.3)
+  * `1 ` (`0x01`) - `READ_COILS`
+  * `2 ` (`0x02`) - `READ_DISCRETE_INPUTS`
+  * `3 ` (`0x03`) - `READ_HOLDING_REGISTERS`
+  * `4 ` (`0x04`) - `READ_INPUT_REGISTERS`
+  * `5 ` (`0x05`) - `WRITE_SINGLE_COIL`
+  * `6 ` (`0x06`) - `WRITE_SINGLE_REGISTER`
+  * `7 ` (`0x07`) - `READ_EXCEPTION_STATUS`
+  * `8 ` (`0x08`) - `DIAGNOSTICS`
+  * `11` (`0x0B`) - `GET_COMM_EVENT_COUNTER`
+  * `12` (`0x0C`) - `GET_COMM_EVENT_LOG`
+  * `15` (`0x0F`) - `WRITE_MULTIPLE_COILS`
+  * `16` (`0x10`) - `WRITE_MULTIPLE_REGISTERS`
+  * `17` (`0x11`) - `REPORT_SERVER_ID`
+  * `20` (`0x14`) - `READ_FILE_RECORD`
+  * `21` (`0x15`) - `WRITE_FILE_RECORD`
+  * `22` (`0x16`) - `MASK_WRITE_REGISTER`
+  * `23` (`0x17`) - `READ_WRITE_MULTIPLE_REGISTERS`
+  * `24` (`0x18`) - `READ_FIFO_QUEUE`
+  * `43/14` (`0x2B/0x0E`) - `READ_DEVICE_ID`
 
 `Send Message` dialog items:
 * `Address` and `Count` - selected function`s parameters for read/write remote device`s data;
 * `Format` - data format to view read data and to set write data;
-* `Data (comma-separated)` - main field to view/set data. For read messages this field is read only. For write messages you can set data to be write into remote device separated by comma with specified format. The specified format determines the type of input/output;
+* `Data (comma-separated)` - main field to view/set data. For read messages this field is read only.
+For write messages you can set data to be write into remote device separated by comma with specified format.
+The specified format determines the type of input/output;
 * `Tx` - transmitted message byte data (depends on protocol);
 * `Rx` - received message byte data (depends on protocol);
 * `Status` - last message status;
 * `Timestamp` - last message timestamp;
 * `Send Period (msec)` - period of send message for `Send Periodically` mode.
+* `Loop` - if checked message (or message list) sending will be looped
+
+List commands:
+* `Show/Hide` - expand or collapse list panel;
+* `Insert` - add current message to list;
+* `Edit` - replace selected list item by current message;
+* `Import...` - load list from text file (one sequence per line);
+* `Export...` - save current list to text file;
+* `Remove` - delete selected list item;
+* `Move Up` / `Move Down` - reorder selected list item;
+* `Clear` - remove all list items.
 
 Commands:
 * `Send One` - command to send only single message;
-* `Send Periodically` - command to set periodical mode with period `Send Period (msec)`. This mode can be finished using `Stop` button.
+* `Send List` - command to set periodical mode with period `Send Period (msec)`. This mode can be finished using `Stop` button.
 * `Stop` - finish to send messages periodically;
 * `Close` - close window.
+
+## Send Bytes window
+
+![](client_sendbytes_window.png)
+
+`Send Bytes` tool window is intended to send arbitrary byte sequences to the selected client port.
+This is useful for testing non-standard server behavior, protocol edge cases, and raw packet exchange
+that is not limited to standard Modbus function templates.
+
+This window can be opened using menu `Tools->Send Bytes`.
+Sending works in parallel with regular Modbus application messages and can be tracked in `LogView`.
+
+Input bytes are typed in the main text field and parsed according to selected `Format`
+(`Hex`, `Bin`, `Oct`, `Dec`, `Unsigned Dec`).
+Any non-format symbols can be used as separators between values.
+
+Optional checksum can be appended automatically when `Add` is enabled:
+* `CRC` - append Modbus CRC16;
+* `LRC` - append ASCII LRC;
+* `LRC+CR LF` - append ASCII LRC and terminator `CR LF`.
+
+`Send Bytes` window contains message list support for periodical and sequence transmission.
+Current byte sequence can be inserted/edited in list, imported/exported from text file,
+reordered, or removed.
+
+`Send Bytes` dialog items:
+* `Port` - destination project port used to transmit raw data;
+* `Format` - numeric format used to parse input byte sequence;
+* `Add` + checksum mode (`CRC`, `LRC`, `LRC+CR LF`) - append checksum/tail automatically;
+* `Data` (main text field) - source byte sequence to send;
+* `List` panel - predefined byte sequences for `Send List` mode;
+* `Tx` - transmitted byte data;
+* `Rx` - received byte data;
+* `Status` - last message status;
+* `Time` - last message timestamp;
+* `Send period (msec)` - period between messages in list/loop mode;
+* `Loop` - repeat list transmission continuously.
+
+List commands:
+* `Show/Hide` - expand or collapse list panel;
+* `Insert` - add current `Data` sequence to list;
+* `Edit` - replace selected list item by current `Data` sequence;
+* `Import...` - load list from text file (one sequence per line);
+* `Export...` - save current list to text file;
+* `Remove` - delete selected list item;
+* `Move Up` / `Move Down` - reorder selected list item;
+* `Clear` - remove all list items.
+
+Commands:
+* `Send One` - send single message from current `Data` field;
+* `Send List` - send list items sequentially with period from `Send period (msec)`;
+* `Stop` - stop current sending operation;
+* `Close` - close window.
+
 
 ## Scanner window
 
@@ -349,7 +471,7 @@ Scanner scans Modbus network in range `[UnitStart:UnitEnd]` with `tries` attempt
 The request can be customized using `Scanner Request`-dialog, 
 which is called using `...` button in `Request` field.
 
-There is a list of founded devices in central widget.
+There is a list of founded devices in `Units` tab.
 Founded devices can be add to the current project:
 button `To Project` add selected devices, `All To Project` - all devices is added to the project.
 
@@ -368,8 +490,11 @@ Can be edited in `Scanner Request`-dialog using `...` button.
 * `Parity` - list of parity of data: `No`,`Even`, `Odd`;
 * `Stop Bits` - list of count of stop bits of serial port;
 
-`Baud Rate`, `Data Bits`, `Parity`, `Stop Bits` lists define parameters combinations for the 
+`Host`, `Port`, `Baud Rate`, `Data Bits`, `Parity`, `Stop Bits` lists define parameters combinations for the 
 serial port scanning.
+
+`Functions` tab shows result of every function that scanner uses, 
+so scanner can scan every device to support defined list of functions. 
 
 # Dialogs
 
@@ -380,7 +505,6 @@ Client application have following list of dialog windows:
 * `Device` - dialog for create/edit device settings;
 * `DataView` - dialog for create/edit DataView settings;
 * `DataViewItem` - dialog for create/edit DataViewItem settings;
-* `Send Message` - dialog for send individual Modbus-message.
 
 ## System Settings dialog
 
@@ -405,12 +529,14 @@ For port it displays port main settings, for device it displays device reference
 
 ### Log
 
-![](client_settings_log.png)
+![](client_settings_logx.png)
 
 * `Log Flags` - show log message categories that will be displayed in LogView;
 * `Use timestamp` - display timestamp for log message in LogView;
 * `DateTime Format` - set format for timestamp to be displayed in LogView;
-* `Font` - font style of LogView.
+* `Max size (symbols)` - maximum symbols in the LogView after it partially cleared;
+* `Font` - font style of LogView;
+* `Colors` - list of message category colors.
 
 |Format        |Result         |
 |--------------|---------------|
@@ -469,7 +595,7 @@ In this dialog port for current device can be changed or created new port. Main 
 * `Unit` - Modbus unit address of remote device;
 * `Read Coils`, `Read Discrete Inputs`, `Read Holding Registers`, `Read Input Registers`, `Write Mulptiple Coils`, `Write Multiple Registers` - maximum value of the quantity parameter for the corresponding messages;
 * `Exception Status` - address of memory that considering as exception status. Can be any type of memory;
-* `Byte order` - default byte order within 16 bit register for device's items;
+* `Swap Bytes` - swap bytes within 16-bit registers;
 * `Register order` - default register order used for 32-bit size items and higher by default for current device;
 * `Byte Array Format` - default byte array format items (used `ByteArray` as its format) for current device.
 Can be `Bin`, `Oct`, `Dec`, `UDec` and `Hex`; 
@@ -509,7 +635,7 @@ Address of next item are calculated automaticaly according to it address and siz
 `Oct32`, `Dec32`, `UDec32`, `Hex32`, `Bin64`, `Oct64`, `Dec64`, `UDec64`, `Hex64`, `Float`, `Double`, `ByteArray`, `String`;
 * `Bytes` - size of current item in bytes. It's enable to edit only for `ByteArray` and `String` format;
 * `Period` - period for updating item values (milliseconds);
-* `Byte order` - byte order current items;
+* `Swap Bytes` - swap bytes within 16-bit registers;
 * `Register order` - register order used for 32-bit size items and higher.
 If `Default` current device register order is used;
 * `Byte Array Format` - byte array format for item. Can be `Bin`, `Oct`, `Dec`, `UDec` and `Hex`.
@@ -524,11 +650,11 @@ If `Default` current device string length type is used;
 * `String Encoding` - string encoding for current item. Can be `Utf8`, `Utf16`, `Latin1`.
 If `Default` current device string encoding is used.
 
-### Byte order {#mbtools_byteorder}
+### Swap bytes {#mbtools_swapbytes}
 
-Byte order changes byte order within 16-bit register for view:
-* `LessSignifiedFirst` - little-endian
-* `MostSignifiedFirst` - big-endian
+Swap byte order within 16-bit register:
+* `SwapNo` - do not swap
+* `SwapYes` - swap
 
 ### Register order {#mbtools_registerorder}
 

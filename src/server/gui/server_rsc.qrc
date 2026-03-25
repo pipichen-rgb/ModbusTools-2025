@@ -1,7 +1,5 @@
 <RCC>
     <qresource prefix="/server">
-        <file>icons/minus.ico</file>
-        <file>icons/plus.ico</file>
         <file>icons/mbserver.ico</file>
         <file>icons/greenmark.ico</file>
     </qresource>

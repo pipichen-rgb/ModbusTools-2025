@@ -61,7 +61,7 @@ mbCoreLogView::Defaults::Defaults() :
         {mb::Log_Warning,    QColor(255, 170, 0)},
         {mb::Log_Info,       QColor(0, 140, 0)},
         {mb::Log_Tx,         QColor(Qt::darkBlue)},
-        {mb::Log_Rx,         QColor(100, 0, 160)},
+        {mb::Log_Rx,         QColor(50, 0, 50)},
         {mb::Log_Debug,      QColor(Qt::gray)},
         {mb::Log_QtFatal,    QColor(180, 0, 0)},
         {mb::Log_QtCritical, QColor(Qt::red)},

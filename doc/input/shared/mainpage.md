@@ -2,12 +2,12 @@
 
 # Overview
 
-ModbusTools are cross-platform (Windows, Linux) Modbus simulator tools (client and server) 
-with GUI to work with standard Modbus Protocol. 
-Modbus Tools are a free, open-source  tools with a simple user interface written in C++/Qt. 
-It implements TCP, RTU and ASCII versions of Modbus Protocol.
+ModbusTools are cross-platform (Windows, Linux) GUI simulators (client/server) that support 
+TCP, UDP, RTU, ASCII, RTU/ASCII over TCP/UDP Modbus protocol types. 
+Modbus tools are a free, open-source  tools with a simple user interface written in C++/Qt. 
 
-Software implements such Modbus functions as:
+Supported Modbus functions:
+
 * `1 ` (`0x01`) - `READ_COILS`
 * `2 ` (`0x02`) - `READ_DISCRETE_INPUTS`
 * `3 ` (`0x03`) - `READ_HOLDING_REGISTERS`
@@ -15,16 +15,23 @@ Software implements such Modbus functions as:
 * `5 ` (`0x05`) - `WRITE_SINGLE_COIL`
 * `6 ` (`0x06`) - `WRITE_SINGLE_REGISTER`
 * `7 ` (`0x07`) - `READ_EXCEPTION_STATUS`
+* `8 ` (`0x08`) - `DIAGNOSTICS` (v0.5+)
+* `11` (`0x0B`) - `GET_COMM_EVENT_COUNTER` (v0.5+)
+* `12` (`0x0C`) - `GET_COMM_EVENT_LOG` (v0.5+)
 * `15` (`0x0F`) - `WRITE_MULTIPLE_COILS`
 * `16` (`0x10`) - `WRITE_MULTIPLE_REGISTERS`
-* `17` (`0x11`) - `REPORT_SERVER_ID` (since v0.4)
-* `22` (`0x16`) - `MASK_WRITE_REGISTER` (since v0.3)
+* `17` (`0x11`) - `REPORT_SERVER_ID` (v0.4+)
+* `20` (`0x14`) - `READ_FILE_RECORD` (v0.5+)
+* `21` (`0x15`) - `WRITE_FILE_RECORD` (v0.5+)
+* `22` (`0x16`) - `MASK_WRITE_REGISTER` (v0.3+)
 * `23` (`0x17`) - `READ_WRITE_MULTIPLE_REGISTERS` (since v0.3)
+* `24` (`0x18`) - `READ_FIFO_QUEUE` (v0.5+)
+* `43/14` (`0x2B/0x0E`) - `READ_DEVICE_ID` (v0.5+)
 
 ModbusTools work with Qt Framework version 5 (5.8 or later).
-It is based on `ModbusLib` cross platform library project:
+It based on `ModbusLib` cross platform library project:
 
-https://github.com/serhmarch/ModbusLib
+<https://github.com/serhmarch/ModbusLib>
 
 ## Memory item addressing
 

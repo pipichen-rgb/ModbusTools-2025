@@ -31,7 +31,7 @@ Supported Modbus functions:
 ModbusTools work with Qt Framework version 5 (5.8 or later).
 It based on `ModbusLib` cross platform library project:
 
-https://github.com/serhmarch/ModbusLib
+<https://github.com/serhmarch/ModbusLib>
 
 ### Memory item addressing
 
@@ -116,6 +116,8 @@ __*New in version 0.5*__:
 `SendMessage` window contains list with predefined functions
 with parameters that can be periodically sent to the server.
 
+To loop single message or message list checkup `Loop` checkbox.
+
 ### Send Bytes window (v0.5+)
 
 This is a new tool for Modbus client that provides abillity to send
@@ -132,6 +134,8 @@ can be seen in LogView as regular Modbus message as well.
 
 `SendBytes` window contains list with predefined byte sequences
 that can be periodically sent to the server.
+
+To loop single message or message list checkup `Loop` checkbox.
 
 ### Scanner window (v0.3+)
 
@@ -239,8 +243,7 @@ To view all documentation and possible uses of objects and methods, use the buil
 ### Server Simulation window
 
 The server has the ability to simulate/change data (actions, automaticaly change values)
-with predefined simulation action types (`Simulation` tab near `LogView`,
-menu `View->Simulation` window and menu `Simulation`):
+with predefined simulation action types (menu `Simulation->Simulation` or `Window->Simulation`):
 * `Increment` - changing value by adding or subtracting (if incrementValue < 0) incrementValue
 * `Sine` - sine function with parameters of period, shift, amplitude
 * `Random` - randomly changing values with specified range

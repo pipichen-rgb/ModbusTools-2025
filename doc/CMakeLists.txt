@@ -15,6 +15,24 @@ if(MBTOOLS_DOXYGEN_EXECUTABLE)
     message(STATUS "MBTOOLS-DOC: Found Doxygen: ${MBTOOLS_DOXYGEN_EXECUTABLE}")
     project("mbtools-doc" VERSION ${MBTOOLS_VERSION})
 
+    find_program(MBTOOLS_DOT_EXECUTABLE
+        NAMES dot dot.exe
+        PATHS
+            "$ENV{ProgramFiles}\\Graphviz\\bin"
+            "$ENV{ProgramFiles\(x86\)}\\Graphviz\\bin"
+        DOC "Graphviz dot executable"
+    )
+
+    if(MBTOOLS_DOT_EXECUTABLE)
+        get_filename_component(MBTOOLS_DOC_DOT_PATH "${MBTOOLS_DOT_EXECUTABLE}" DIRECTORY)
+        set(MBTOOLS_DOC_HAVE_DOT YES)
+        message(STATUS "MBTOOLS-DOC: Found Graphviz dot: ${MBTOOLS_DOT_EXECUTABLE}")
+    else()
+        set(MBTOOLS_DOC_DOT_PATH "")
+        set(MBTOOLS_DOC_HAVE_DOT NO)
+        message(WARNING "MBTOOLS-DOC: Graphviz dot not found. Class/collaboration graphs will be disabled in generated docs.")
+    endif()
+
     set(MBTOOLS_DOC_SRC_DIR "${CMAKE_CURRENT_LIST_DIR}")
     set(MBTOOLS_DOC_DIR "${CMAKE_BINARY_DIR}/doc")
 
