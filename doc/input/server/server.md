@@ -417,6 +417,7 @@ set unit reference(s);
 * `Delete Device` - delete selected device from current port;
 * `Import Port...` - import new port in project from file in `xml`-format;
 * `Export Port...` - export selected port in project to file in `xml`-format;
+* `Statistics...` - open statistics window for current port.
 
 ### Device
 
@@ -428,13 +429,14 @@ In this menu port for current device can be changed;
 * `Delete Device` - delete active device;
 * `Import Device...` - import new device in project from file in `xml`-format;
 * `Export Device...` - export selected device in project to file in `xml`-format;
-* `Zerro Memory` – zerro all memory values in current memory tab of active device;
-* `Zerro Memory All` - zerro all memory values of all memory types of active device;
+* `Zero Memory` – zerro all memory values in current memory tab of active device;
+* `Zero Memory All` - zerro all memory values of all memory types of active device;
 * `Import Memory...` - fill current memory values from file in `.csv` format;
 * `Export memory` - dump current memory values to file in `.csv` format;
 * `Script Init...` - open initialize script for current device;
 * `Script Loop...` - open loop script for current device;
 * `Script Final...` - open finalize script for current device;
+* `Statistics...` - open statistics window for current device.
 
 ### Data
 

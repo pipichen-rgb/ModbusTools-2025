@@ -265,6 +265,7 @@ bind newly created device to selected port;
 * `Clear All Devices` - delete all devices for selected port;
 * `Import Port...` - import new port in project from file in `xml`-format;
 * `Export Port...` - export selected port in project to file in `xml`-format;
+* `Statistics...` - open statistics window for current port.
 
 ### Device
 The `Device` menu provides access to work with device and includes submenus:
@@ -274,6 +275,7 @@ In this menu port for current device can be changed;
 * `Delete Device` - delete active device;
 * `Import Device...` - import new device in project from file in `xml`-format;
 * `Export Device...` - export selected device in project to file in `xml`-format;
+* `Statistics...` - open statistics window for current device.
 
 ### Data
 The `Data` menu provides access to work with DataViews and DataViewItems and includes submenus:

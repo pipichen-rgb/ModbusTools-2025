@@ -24,7 +24,7 @@ Supported Modbus functions:
 * `20` (`0x14`) - `READ_FILE_RECORD` (v0.5+)
 * `21` (`0x15`) - `WRITE_FILE_RECORD` (v0.5+)
 * `22` (`0x16`) - `MASK_WRITE_REGISTER` (v0.3+)
-* `23` (`0x17`) - `READ_WRITE_MULTIPLE_REGISTERS` (since v0.3)
+* `23` (`0x17`) - `READ_WRITE_MULTIPLE_REGISTERS` (v0.3+)
 * `24` (`0x18`) - `READ_FIFO_QUEUE` (v0.5+)
 * `43/14` (`0x2B/0x0E`) - `READ_DEVICE_ID` (v0.5+)
 
